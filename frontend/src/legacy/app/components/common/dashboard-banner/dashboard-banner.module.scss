@@ -1,0 +1,781 @@
+@import '../../../../assets/styles/variables/variables.scss';
+
+.banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(1.6 * var(--np-rem));
+  padding: calc(1.2 * var(--np-rem)) calc(1.4 * var(--np-rem)) calc(1.2 * var(--np-rem)) calc(1.4 * var(--np-rem));
+  padding-right: calc(3.8 * var(--np-rem));
+  border: 1px solid $border-color-4;
+  border-radius: calc(1 * var(--np-rem));
+  background: #f7f9ff;
+  box-shadow: 0 2px 8px rgba(63, 79, 218, 0.06);
+  // The host page spaces its sections, so the banner carries no outer margin here.
+  margin: 0;
+  overflow: hidden;
+  animation: bannerRise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at var(--sx, 30%) var(--sy, 40%),
+      rgba(108, 131, 248, 0.12),
+      transparent 55%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+@keyframes bannerRise {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ---------- Shine sweep ----------
+
+.shine {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 34%;
+  height: 240%;
+  transform: rotate(22deg) translateX(-160%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: shineSweep 4.5s ease-in-out infinite;
+}
+
+@keyframes shineSweep {
+  0% {
+    transform: rotate(22deg) translateX(-160%);
+  }
+  16%,
+  100% {
+    transform: rotate(22deg) translateX(420%);
+  }
+}
+
+// ---------- Logo cluster ----------
+
+.visualCluster {
+  display: flex;
+  align-items: center;
+  gap: calc(0.9 * var(--np-rem));
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  animation: clusterIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.08s;
+}
+
+@keyframes clusterIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.visualLink {
+  position: relative;
+  width: calc(1.6 * var(--np-rem));
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba($primary-color, 0.2),
+    rgba($primary-color-variant-1, 0.45)
+  );
+  flex-shrink: 0;
+}
+
+.signalDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(0.7 * var(--np-rem));
+  height: calc(0.7 * var(--np-rem));
+  border-radius: 50%;
+  background: $primary-color;
+  box-shadow: 0 0 calc(0.5 * var(--np-rem)) rgba($primary-color, 0.8);
+  transform: translate(-50%, -50%) translateX(calc(-0.9 * var(--np-rem)));
+  animation: signalTravel 2.4s ease-in-out infinite alternate;
+}
+
+.signalDotOffset {
+  animation-delay: -1.2s;
+}
+
+@keyframes signalTravel {
+  0% {
+    transform: translate(-50%, -50%) translateX(calc(-0.9 * var(--np-rem)));
+    opacity: 0.9;
+  }
+  45%,
+  55% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(-50%, -50%) translateX(calc(0.9 * var(--np-rem)));
+    opacity: 0.9;
+  }
+}
+
+// ---------- Text ----------
+
+.textWrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.headlineRow {
+  display: flex;
+  align-items: center;
+  gap: calc(0.6 * var(--np-rem));
+  margin-bottom: calc(0.15 * var(--np-rem));
+}
+
+.headline {
+  font-size: calc(1.6 * var(--np-rem));
+  font-weight: 700;
+  line-height: calc(2 * var(--np-rem));
+  color: $main-text;
+  font-family: $font-family;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.badgeNew {
+  display: inline-flex;
+  align-items: center;
+  font-size: calc(1 * var(--np-rem));
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: $primary-color;
+  background: $primary-color-dropzone;
+  border: 1px solid $alt-primary-color;
+  padding: calc(0.2 * var(--np-rem)) calc(0.8 * var(--np-rem));
+  border-radius: 999px;
+  font-family: $font-family;
+  line-height: calc(1.4 * var(--np-rem));
+  flex-shrink: 0;
+}
+
+.subline {
+  font-size: calc(1.2 * var(--np-rem));
+  font-weight: 400;
+  line-height: 1.5;
+  color: $sub-text-2;
+  font-family: $font-family;
+  margin: 0;
+}
+
+// ---------- Actions ----------
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: calc(0.8 * var(--np-rem));
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.connectBtn {
+  height: calc(3.2 * var(--np-rem));
+  padding: 0 calc(1.2 * var(--np-rem));
+  background: $primary-color;
+  color: $foreground-color;
+  border: none;
+  border-radius: calc(0.8 * var(--np-rem));
+  font-family: $font-family;
+  font-size: calc(1.3 * var(--np-rem));
+  font-weight: 600;
+  line-height: calc(2 * var(--np-rem));
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(63, 79, 218, 0.2);
+  transition: box-shadow 0.15s;
+  animation: ctaPulse 2.4s ease-in-out infinite;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(63, 79, 218, 0.35);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes ctaPulse {
+  0%,
+  100% {
+    box-shadow: 0 2px 6px rgba(63, 79, 218, 0.2);
+  }
+  50% {
+    box-shadow: 0 2px 16px rgba(63, 79, 218, 0.5);
+  }
+}
+
+// ---------- Close ----------
+
+.closeBtn {
+  position: absolute;
+  top: calc(0.8 * var(--np-rem));
+  right: calc(0.8 * var(--np-rem));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(2.4 * var(--np-rem));
+  height: calc(2.4 * var(--np-rem));
+  min-width: calc(2.4 * var(--np-rem));
+  color: $sub-text-4;
+  background: transparent;
+  border: none;
+  border-radius: calc(0.4 * var(--np-rem));
+  cursor: pointer;
+  flex-shrink: 0;
+  z-index: 2;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: $background-color-3;
+    color: $main-text;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+// ---------- Responsive ----------
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+  }
+
+  .shine {
+    display: none;
+  }
+
+  .connectBtn {
+    animation: none;
+  }
+
+  .visualCluster {
+    animation: none;
+  }
+
+  .signalDot {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+// ---------- Carousel ----------
+
+// Room under the slides for the dots.
+.banner {
+  padding-bottom: calc(1.8 * var(--np-rem));
+}
+
+// Every slide sits in the same grid cell, so the banner keeps one height whichever is showing.
+.track {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  position: relative;
+  z-index: 1;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  gap: calc(1.6 * var(--np-rem));
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(calc(1 * var(--np-rem)));
+  transition: opacity 0.32s ease-out, transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.32s;
+}
+
+.slideActive {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.32s ease-out, transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+}
+
+.dots {
+  position: absolute;
+  left: 50%;
+  bottom: calc(0.6 * var(--np-rem));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: calc(0.5 * var(--np-rem));
+  z-index: 2;
+}
+
+.dot {
+  width: calc(0.6 * var(--np-rem));
+  height: calc(0.6 * var(--np-rem));
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba($primary-color, 0.22);
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.2s ease;
+
+  &:hover {
+    background: rgba($primary-color, 0.45);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.dotActive {
+  width: calc(1.8 * var(--np-rem));
+  background: $primary-color;
+
+  &:hover {
+    background: $primary-color;
+  }
+}
+
+// ---------- Slack slide illustration: a tiny Slack thread ----------
+
+// One 8s loop: question pops in → JIVA types → reply rises → bars grow → chip → Approved → fade, repeat.
+$loop: 8s;
+
+.slackScene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(1 * var(--np-rem));
+  flex-shrink: 0;
+  height: calc(5 * var(--np-rem));
+  padding-left: calc(0.2 * var(--np-rem));
+}
+
+.sceneGlow {
+  position: absolute;
+  left: calc(-1.2 * var(--np-rem));
+  top: 50%;
+  width: calc(22 * var(--np-rem));
+  height: calc(9 * var(--np-rem));
+  transform: translateY(-50%);
+  background:
+    radial-gradient(closest-side at 18% 50%, rgba(251, 105, 114, 0.22), transparent 70%),
+    radial-gradient(closest-side at 62% 48%, rgba($primary-color, 0.16), transparent 75%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+// JIVA as a Slack app: the mascot with a Slack badge on its corner.
+.botAvatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(4.2 * var(--np-rem));
+  height: calc(4.2 * var(--np-rem));
+  border-radius: calc(1.2 * var(--np-rem));
+  background: #ffffff;
+  border: 1px solid rgba($primary-color, 0.12);
+  box-shadow: 0 6px 16px -8px rgba(63, 79, 218, 0.45);
+  flex-shrink: 0;
+  animation: botBob 4s ease-in-out infinite;
+}
+
+@keyframes botBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.botBadge {
+  position: absolute;
+  right: calc(-0.5 * var(--np-rem));
+  bottom: calc(-0.5 * var(--np-rem));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(1.9 * var(--np-rem));
+  height: calc(1.9 * var(--np-rem));
+  border-radius: calc(0.6 * var(--np-rem));
+  background: #ffffff;
+  border: 1px solid #eceef1;
+  box-shadow: 0 2px 5px rgba(20, 22, 33, 0.14);
+}
+
+.thread {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(0.25 * var(--np-rem));
+  // Sized by its content (chart + finding + chip), so the headline always starts after it instead of underneath.
+  width: max-content;
+}
+
+// The teammate's question.
+.askBubble {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(0.5 * var(--np-rem));
+  padding: calc(0.15 * var(--np-rem)) calc(0.8 * var(--np-rem)) calc(0.15 * var(--np-rem)) calc(0.2 * var(--np-rem));
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #eceef1;
+  font-family: $font-family;
+  font-size: calc(1 * var(--np-rem));
+  line-height: calc(1.4 * var(--np-rem));
+  color: $sub-text-2;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(20, 22, 33, 0.05);
+  transform-origin: left center;
+  animation: askIn $loop cubic-bezier(0.34, 1.4, 0.64, 1) infinite;
+}
+
+.askAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(1.4 * var(--np-rem));
+  height: calc(1.4 * var(--np-rem));
+  border-radius: 50%;
+  background: #5c6f9e;
+  color: #ffffff;
+  font-size: calc(0.75 * var(--np-rem));
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.mention {
+  padding: 0 calc(0.25 * var(--np-rem));
+  border-radius: calc(0.3 * var(--np-rem));
+  background: rgba(12, 231, 158, 0.12);
+  color: #123da3;
+  font-weight: 600;
+}
+
+// Typing dots and the reply share one spot and take turns.
+.replyStage {
+  display: grid;
+  width: 100%;
+}
+
+.replyTyping,
+.replyCard {
+  grid-area: 1 / 1;
+}
+
+.replyTyping {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(0.3 * var(--np-rem));
+  width: max-content;
+  margin-left: calc(0.4 * var(--np-rem));
+  padding: calc(0.6 * var(--np-rem)) calc(0.8 * var(--np-rem));
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #eceef1;
+  animation: typingShow $loop ease-in-out infinite;
+
+  i {
+    width: calc(0.45 * var(--np-rem));
+    height: calc(0.45 * var(--np-rem));
+    border-radius: 50%;
+    background: #b4b8c1;
+    animation: typingBounce 0.9s ease-in-out infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+}
+
+// JIVA's answer: a mini chart, the finding, and the action.
+.replyCard {
+  display: flex;
+  align-items: center;
+  gap: calc(0.8 * var(--np-rem));
+  padding: calc(0.4 * var(--np-rem)) calc(0.7 * var(--np-rem));
+  border-radius: calc(0.9 * var(--np-rem));
+  background: #ffffff;
+  border: 1px solid rgba($primary-color, 0.14);
+  box-shadow: 0 8px 18px -10px rgba(63, 79, 218, 0.5);
+  animation: replyIn $loop cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(0.2 * var(--np-rem));
+  width: calc(2.8 * var(--np-rem));
+  height: calc(1.9 * var(--np-rem));
+  flex-shrink: 0;
+
+  i {
+    flex: 1;
+    border-radius: calc(0.15 * var(--np-rem)) calc(0.15 * var(--np-rem)) 0 0;
+    background: #c9cff8;
+    transform-origin: bottom;
+    animation: barGrow $loop cubic-bezier(0.34, 1.3, 0.64, 1) infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.06s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.12s;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.18s;
+    }
+  }
+
+  .barDrop {
+    background: #f34751;
+    animation-delay: 0.26s;
+  }
+}
+
+.replyText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  font-family: $font-family;
+  font-size: calc(1.05 * var(--np-rem));
+  line-height: calc(1.25 * var(--np-rem));
+  color: $main-text;
+  white-space: nowrap;
+
+  b {
+    color: #dd2935;
+    font-weight: 700;
+  }
+
+  small {
+    font-size: calc(0.9 * var(--np-rem));
+    color: #9a9fa8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.chipStage {
+  display: grid;
+  flex-shrink: 0;
+}
+
+.chipApprove,
+.chipDone {
+  grid-area: 1 / 1;
+  justify-self: end;
+  padding: calc(0.2 * var(--np-rem)) calc(0.6 * var(--np-rem));
+  border-radius: calc(0.5 * var(--np-rem));
+  font-family: $font-family;
+  font-size: calc(0.95 * var(--np-rem));
+  font-weight: 600;
+  line-height: calc(1.3 * var(--np-rem));
+  white-space: nowrap;
+}
+
+.chipApprove {
+  border: 1px solid #2eb67d;
+  color: #0da139;
+  background: #ffffff;
+  animation: chipApprove $loop cubic-bezier(0.34, 1.4, 0.64, 1) infinite;
+}
+
+.chipDone {
+  border: 1px solid #2eb67d;
+  color: #ffffff;
+  background: #2eb67d;
+  animation: chipDone $loop cubic-bezier(0.34, 1.4, 0.64, 1) infinite;
+}
+
+@keyframes askIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  6%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes typingShow {
+  0%,
+  10% {
+    opacity: 0;
+  }
+  13%,
+  24% {
+    opacity: 1;
+  }
+  27%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes replyIn {
+  0%,
+  25% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  31%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes barGrow {
+  0%,
+  29% {
+    transform: scaleY(0);
+  }
+  38%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes chipApprove {
+  0%,
+  40% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  46%,
+  64% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes chipDone {
+  0%,
+  65% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes typingBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .slideActive {
+    transition: none;
+    transform: none;
+  }
+
+  // A still frame: the question, the reply, and the action waiting.
+  .botAvatar,
+  .askBubble,
+  .replyCard,
+  .bars i,
+  .chipApprove {
+    animation: none;
+  }
+
+  .replyTyping,
+  .chipDone {
+    display: none;
+  }
+}
+
+// ── Thinner banner (requested for this app): less padding above and below, the dots a little lower, and the Slack
+//    thread illustration (the tallest part) scaled down as a whole so its layout stays the same.
+.banner {
+  padding-top: calc(0.6 * var(--np-rem));
+  padding-bottom: calc(1.3 * var(--np-rem));
+}
+.dots {
+  bottom: calc(0.35 * var(--np-rem));
+}
+.slackScene {
+  zoom: 0.84;
+}

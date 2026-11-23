@@ -2,12 +2,12 @@
  "#ffffff": {
   "hex": "#ffffff",
   "family": "kept",
-  "uses": 424
+  "uses": 436
  },
  "#77469b": {
   "hex": "#3f4fda",
   "family": "brand",
-  "uses": 273
+  "uses": 280
  },
  "#b3453f": {
   "hex": "#cc2b2b",
@@ -37,7 +37,7 @@
  "#9aa0a8": {
   "hex": "#9a9fa8",
   "family": "neutral",
-  "uses": 81
+  "uses": 82
  },
  "#e78a2e": {
   "hex": "#f5a520",
@@ -67,7 +67,7 @@
  "#141821": {
   "hex": "#141621",
   "family": "blue",
-  "uses": 50
+  "uses": 52
  },
  "#7b808a": {
   "hex": "#7b808a",
@@ -92,7 +92,7 @@
  "#5c7f9e": {
   "hex": "#5c6f9e",
   "family": "blue",
-  "uses": 35
+  "uses": 36
  },
  "#f6f4fa": {
   "hex": "#f4f6fd",
@@ -147,7 +147,7 @@
  "#eceef1": {
   "hex": "#eceef1",
   "family": "neutral",
-  "uses": 19
+  "uses": 22
  },
  "#8a909b": {
   "hex": "#8a909b",
@@ -192,7 +192,7 @@
  "#f46d76": {
   "hex": "#fb6972",
   "family": "red",
-  "uses": 11
+  "uses": 12
  },
  "#dadeeb": {
   "hex": "#dadceb",
@@ -622,7 +622,7 @@
  "#ea4335": {
   "hex": "#ea4335",
   "family": "kept",
-  "uses": 3
+  "uses": 4
  },
  "#f3f4f6": {
   "hex": "#f3f4f6",
@@ -937,27 +937,27 @@
  "#4285f4": {
   "hex": "#4285f4",
   "family": "kept",
-  "uses": 2
+  "uses": 3
  },
  "#e01e5a": {
   "hex": "#e01e5a",
   "family": "kept",
-  "uses": 2
+  "uses": 4
  },
  "#36c5f0": {
   "hex": "#36c5f0",
   "family": "kept",
-  "uses": 2
+  "uses": 4
  },
  "#2eb67d": {
   "hex": "#2eb67d",
   "family": "kept",
-  "uses": 2
+  "uses": 7
  },
  "#ecb22e": {
   "hex": "#ecb22e",
   "family": "kept",
-  "uses": 2
+  "uses": 4
  },
  "#bfbfbf": {
   "hex": "#bfbfbf",
@@ -2212,12 +2212,12 @@
  "#34a853": {
   "hex": "#34a853",
   "family": "kept",
-  "uses": 1
+  "uses": 2
  },
  "#fbbc05": {
   "hex": "#fbbc05",
   "family": "kept",
-  "uses": 1
+  "uses": 2
  },
  "#00ac47": {
   "hex": "#00ac47",
@@ -2247,7 +2247,7 @@
  "#d9c8ea": {
   "hex": "#c9cff8",
   "family": "brand",
-  "uses": 1
+  "uses": 2
  },
  "#dcdfe5": {
   "hex": "#dcdfe5",
@@ -2267,7 +2267,7 @@
  "#b4b9c1": {
   "hex": "#b4b8c1",
   "family": "neutral",
-  "uses": 1
+  "uses": 2
  },
  "#b8853f": {
   "hex": "#de9c19",
@@ -2723,5 +2723,60 @@
   "hex": "#11182b",
   "family": "brand",
   "uses": 4
+ },
+ "#f8f5ff": {
+  "hex": "#f7f9ff",
+  "family": "brand",
+  "uses": 1
+ },
+ "#1264a3": {
+  "hex": "#123da3",
+  "family": "blue",
+  "uses": 1
+ },
+ "#e0565f": {
+  "hex": "#f34751",
+  "family": "red",
+  "uses": 1
+ },
+ "#c43d48": {
+  "hex": "#dd2935",
+  "family": "red",
+  "uses": 1
+ },
+ "#1f8a5c": {
+  "hex": "#0da139",
+  "family": "green",
+  "uses": 1
+ },
+ "#9555ea": {
+  "hex": "#6c83f8",
+  "family": "brand",
+  "uses": 1
+ },
+ "#1d9bd1": {
+  "hex": "#0ce79e",
+  "family": "green",
+  "uses": 1
+ },
+ "#25d366": {
+  "hex": "#0fed3c",
+  "family": "green",
+  "uses": 1
+ },
+ "#5b5fc7": {
+  "hex": "#5b5fc7",
+  "family": "blue",
+  "uses": 1
+ },
+ "#5865f2": {
+  "hex": "#5861f2",
+  "family": "blue",
+  "uses": 1
+ },
+ "#0b5cff": {
+  "hex": "#0b38ff",
+  "family": "blue",
+  "uses": 1
  }
 }
