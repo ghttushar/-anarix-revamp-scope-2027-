@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RefreshCw, Download, Camera, Lightbulb, GripVertical, Bell, Sun, Moon, Inbox } from "lucide-react";
+import { RefreshCw, Lightbulb, GripVertical, Bell, Sun, Moon, Inbox } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 import { AanGlyph } from "@/components/aan/AanGlyph";
@@ -13,7 +13,6 @@ import { toast } from "sonner";
 import { useActivePanel } from "@/contexts/ActivePanelContext";
 import { useAan } from "@/components/aan/AanContext";
 import { KeyboardShortcutsDialog } from "@/components/shortcuts/KeyboardShortcutsDialog";
-import html2canvas from "html2canvas";
 import { LegacyNotificationsDrawer, useLegacyUnreadNotifications } from "@legacy/shell/notifications-bridge";
 
 interface ActionItem {
@@ -30,7 +29,6 @@ const hiddenRoutes = ["/login", "/onboarding", "/settings", "/signals", "/advert
 export function FloatingActionIsland() {
   const isTabletView = false;
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isCapturing, setIsCapturing] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -137,29 +135,12 @@ export function FloatingActionIsland() {
   const appActions: ActionItem[] = [
     notificationsAction,
     { icon: RefreshCw, label: "Refresh", onClick: () => toast.info("Refreshing data...") },
-    { icon: Download, label: "Export", onClick: () => toast.success("Export started") },
     themeAction,
   ];
 
 
 
   const actions = appActions;
-
-  const takeScreenshot = async () => {
-    setIsCapturing(true);
-    try {
-      const canvas = await html2canvas(document.body, { useCORS: true, allowTaint: true, backgroundColor: null });
-      const link = document.createElement("a");
-      link.download = `anarix-screenshot-${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-      toast.success("Screenshot saved!");
-    } catch {
-      toast.error("Failed to capture screenshot");
-    } finally {
-      setIsCapturing(false);
-    }
-  };
 
   const style: React.CSSProperties = position
     ? { left: `${position.x}px`, top: `${position.y}px`, transform: "translateX(-50%)" }
@@ -244,18 +225,6 @@ export function FloatingActionIsland() {
                 </Button>
                 );
               })}
-              {!isTabletView && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={takeScreenshot}
-                  disabled={isCapturing}
-                  className={cn("rounded-full transition-all duration-200 h-8", isExpanded ? "px-3 gap-1.5" : "px-2")}
-                >
-                  <Camera className={cn("h-3.5 w-3.5 shrink-0", isCapturing && "animate-pulse")} />
-                  {isExpanded && <span className="text-xs whitespace-nowrap animate-in fade-in duration-200">{isCapturing ? "Capturing..." : "Screenshot"}</span>}
-                </Button>
-              )}
             </div>
 
             {isExpanded && (

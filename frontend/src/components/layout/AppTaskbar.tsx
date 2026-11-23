@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { CalendarIcon, Play, Bell, Lightbulb, RefreshCw, Clock, ChevronRight, Inbox } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { CalendarIcon, Play, Bell, Lightbulb, RefreshCw, Clock, Inbox } from "lucide-react";
 import { AanGlyph } from "@/components/aan/AanGlyph";
 import { format, subDays, startOfWeek, endOfWeek, subWeeks, startOfMonth, endOfMonth, subMonths, startOfQuarter, endOfQuarter, subQuarters } from "date-fns";
 
@@ -24,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import amazonLogo from "@/assets/amazon-logo.png";
 import walmartLogo from "@/assets/walmart-logo.png";
-import { AanAutonomyBadge } from "@/components/aan/autonomous/AanAutonomyBadge";
 import { useAanEvents } from "@/components/aan/autonomous/AanEventsContext";
 
 interface BreadcrumbItem {
@@ -120,6 +119,7 @@ interface AppTaskbarProps {
   showRunButton?: boolean;
   onRun?: () => void;
   children?: ReactNode;
+  /** No longer shown (the page level metric bar has no breadcrumb); kept so pages that pass it still compile. */
   breadcrumbItems?: BreadcrumbItem[];
   /** Optional override — when provided, the taskbar date picker reads/writes
    *  these instead of the global FilterContext (used by /alerts). */
@@ -194,45 +194,18 @@ export function AppTaskbar({ showAdType = false, showFrequency = false, showDate
     return null;
   };
 
-  const renderBreadcrumb = () => {
-    if (!breadcrumbItems || breadcrumbItems.length === 0) return null;
-    return (
-      <nav className="flex items-center gap-0.5 text-xs shrink-0">
-        {breadcrumbItems.map((item, index) => {
-          const isLast = index === breadcrumbItems.length - 1;
-          return (
-            <div key={index} className="flex items-center gap-0.5">
-              {index > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/50" />}
-              {item.href && !isLast ? (
-                <Link to={item.href} className="text-muted-foreground hover:text-foreground transition-colors">
-                  {item.label}
-                </Link>
-              ) : (
-                <span className={cn(isLast ? "font-medium text-foreground" : "text-muted-foreground")}>
-                  {item.label}
-                </span>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-    );
-  };
-
   const hasRow1 = true; // always show account/sync info
   const hasRow2 = showAdType || showFrequency || showDateRange || showRunButton || !!children || (islandOff && !hideUtilityCluster);
 
   return (
     <div data-app-taskbar data-tour-id="taskbar" className="flex flex-col rounded-lg border bg-card shrink-0 sticky top-0 z-30 border-primary">
-      {/* Row 1: Breadcrumb left, Account + Sync right */}
+      {/* Row 1: Account + Sync, on the right */}
       {hasRow1 && (
         <div className={cn(
           "flex items-center justify-between px-4 py-2",
           hasRow2 && "border-b border-border/30"
         )}>
-          <div className="flex items-center gap-2 min-w-0">
-            {renderBreadcrumb()}
-          </div>
+          <div className="flex items-center gap-2 min-w-0" />
           <div className="flex items-center gap-3 shrink-0">
             {/* Marketplace + Account */}
             <div className="flex items-center gap-1.5" style={{ color: marketplaceColor }}>
@@ -244,8 +217,6 @@ export function AppTaskbar({ showAdType = false, showFrequency = false, showDate
             {/* Last synced */}
             <Clock className="h-3 w-3 text-muted-foreground taskbar-last-synced" />
             <span className="taskbar-last-synced text-[11px] text-muted-foreground whitespace-nowrap">Last synced: {lastSyncTime}</span>
-            <div className="h-3.5 w-px bg-border" />
-            <AanAutonomyBadge />
           </div>
         </div>
       )}
