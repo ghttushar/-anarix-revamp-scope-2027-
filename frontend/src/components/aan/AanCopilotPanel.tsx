@@ -21,7 +21,7 @@ export function AanCopilotPanel() {
         data-app-panel="copilot"
         className={cn(
           "h-full shrink-0 flex flex-col border-l border-border bg-background transition-all duration-200 ease-out overflow-hidden relative",
-          isOpen ? "w-56 opacity-100" : "w-0 opacity-0 border-l-0"
+          isOpen ? "w-[28rem] opacity-100" : "w-0 opacity-0 border-l-0"
         )}
       >
         {isOpen && (
@@ -29,7 +29,7 @@ export function AanCopilotPanel() {
           {/* Header with Aan gradient */}
           <div className="border-b border-border shrink-0">
             <div className="flex items-center justify-between gap-2 px-3 py-3">
-              <AanLogo showByAnarix={false} />
+              <AanLogo />
               <div className="flex shrink-0 items-center">
                 <Button variant="ghost" size="icon" onClick={openWorkspace} className="h-8 w-8" title="Open full workspace">
                   <Maximize2 className="h-4 w-4" />
@@ -58,14 +58,14 @@ export function AanCopilotPanel() {
           {/* Conversation Area - independent scroll. Radix wraps the content in a display:table div that grows to the
               content's width; making it a block keeps messages inside the panel so they wrap. */}
           <ScrollArea className="flex-1 min-h-0 [&_[data-radix-scroll-area-viewport]>div]:!block">
-            <AanConversation compact />
+            <AanConversation />
           </ScrollArea>
 
           {/* Draft preview removed - drafts are now shown inline in the conversation */}
 
           {/* Input Area */}
           <div className="shrink-0">
-            <AanInput compact />
+            <AanInput />
           </div>
           </>
         )}
