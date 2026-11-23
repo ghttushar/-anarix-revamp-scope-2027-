@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import {
@@ -17,6 +17,12 @@ import { IntegrationCard } from "@/components/integrations/IntegrationCard";
 import { ConnectionRow } from "@/components/integrations/ConnectionRow";
 import { WhatsAppPurposeInfo } from "@/components/integrations/WhatsAppPurposeInfo";
 import { IntegrationWhatsAppFlow } from "./IntegrationWhatsApp";
+import { IntegrationOption } from "@/components/integrations/IntegrationOption";
+import { IntegrationsBanner, type BannerConnect } from "@/components/integrations/IntegrationsBanner";
+import { McpConnectFlow } from "@/components/integrations/McpConnectFlow";
+import { WorkspaceConnectFlow } from "@/components/integrations/WorkspaceConnectFlow";
+import { ChatGptLogo, ClaudeLogo, WORKSPACE_APPS, WorkspaceStack } from "@/components/integrations/BrandLogos";
+import { AanMascot } from "@/components/aan/AanMascot";
 import { toast } from "sonner";
 
 const breadcrumbItems = [
@@ -25,7 +31,28 @@ const breadcrumbItems = [
 ];
 
 export default function Integrations() {
-  const { integrations, removeIntegration, toggleEnabled } = useIntegrations();
+  const { integrations, removeIntegration, toggleEnabled, mcpConnected, workspaces } = useIntegrations();
+  const [mcpOpen, setMcpOpen] = useState(false);
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
+  const connectedApps = WORKSPACE_APPS.filter((a) => workspaces.includes(a.id));
+
+  // Arriving from a banner elsewhere (location.state.connect): bring that card into view, flash it, open its panel.
+  const location = useLocation();
+  const mcpCardRef = useRef<HTMLDivElement | null>(null);
+  const workspaceCardRef = useRef<HTMLDivElement | null>(null);
+  const [flash, setFlash] = useState<BannerConnect | null>(null);
+  const openConnect = (kind: BannerConnect) => (kind === "mcp" ? setMcpOpen(true) : setWorkspaceOpen(true));
+  useEffect(() => {
+    const kind = (location.state as { connect?: BannerConnect } | null)?.connect;
+    if (!kind) return undefined;
+    (kind === "mcp" ? mcpCardRef : workspaceCardRef).current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    setFlash(kind);
+    openConnect(kind);
+    navigate(location.pathname, { replace: true, state: null });
+    const t = window.setTimeout(() => setFlash(null), 1600);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key]);
   const [flowOpen, setFlowOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
@@ -52,18 +79,54 @@ export default function Integrations() {
   return (
     <AppLayout>
       <div className="space-y-6 max-w-5xl">
+        <IntegrationsBanner onConnect={openConnect} />
         <AppTaskbar breadcrumbItems={breadcrumbItems} />
 
         <div>
           <h1 className="text-2xl font-heading font-semibold text-foreground">Integrations</h1>
           <p className="text-sm text-muted-foreground">
-            Send Anarix alerts to the channels you actually check.
+            Connect your AI assistants, chat workspaces and alert channels to Anarix.
           </p>
         </div>
 
         <section className="space-y-3">
           <h2 className="text-sm font-medium text-foreground">Available integrations</h2>
+          <IntegrationOption
+            ref={mcpCardRef}
+            highlight={flash === "mcp"}
+            icon={<AanMascot size={28} interactive={false} />}
+            title="MCP"
+            tag="AI assistants"
+            isNew={!mcpConnected}
+            description="Connect Claude or ChatGPT to Aan and unlock AI-powered marketplace intelligence."
+            actionLabel={mcpConnected ? "Set up again" : "Connect MCP"}
+            onAction={() => setMcpOpen(true)}
+            status={mcpConnected ? (
+              <span className="flex items-center gap-1.5 text-xs font-medium text-success">
+                <ClaudeLogo size={14} />
+                <ChatGptLogo size={14} />
+                Connected
+              </span>
+            ) : undefined}
+          />
           <IntegrationCard count={integrations.length} onConnect={openCreate} />
+          <IntegrationOption
+            ref={workspaceCardRef}
+            highlight={flash === "workspace"}
+            icon={<WorkspaceStack size={12} />}
+            title="Workspace AI"
+            tag="Chat"
+            isNew={connectedApps.length === 0}
+            description="Chat with Aan where your team works: alerts, answers and approvals in Slack, Teams or Google Chat."
+            actionLabel={connectedApps.length > 0 ? "Manage" : "Connect a workspace"}
+            onAction={() => setWorkspaceOpen(true)}
+            status={connectedApps.length > 0 ? (
+              <span className="flex items-center gap-1.5 text-xs font-medium text-success">
+                {connectedApps.map(({ id, Logo }) => <Logo key={id} size={14} />)}
+                {connectedApps.length} connected
+              </span>
+            ) : undefined}
+          />
         </section>
 
         <section className="space-y-3">
@@ -103,6 +166,9 @@ export default function Integrations() {
         </section>
 
       </div>
+
+      <McpConnectFlow open={mcpOpen} onOpenChange={setMcpOpen} />
+      <WorkspaceConnectFlow open={workspaceOpen} onOpenChange={setWorkspaceOpen} />
 
       <IntegrationWhatsAppFlow
         open={flowOpen}

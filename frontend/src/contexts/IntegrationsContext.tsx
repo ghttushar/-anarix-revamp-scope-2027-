@@ -27,10 +27,27 @@ interface IntegrationsContextType {
   removeIntegration: (id: string) => void;
   toggleEnabled: (id: string) => void;
   getIntegration: (id: string) => WhatsAppIntegration | undefined;
+  /** MCP: an AI assistant (Claude, ChatGPT) connected to Aan. */
+  mcpConnected: boolean;
+  setMcpConnected: (on: boolean) => void;
+  /** Workspace AI: ids of the chat workspaces Aan is connected to (slack, teams, google, discord, zoom). */
+  workspaces: string[];
+  setWorkspaceConnected: (id: string, on: boolean) => void;
 }
 
 const IntegrationsContext = createContext<IntegrationsContextType | null>(null);
 const STORAGE_KEY = "anarix_integrations";
+const MCP_KEY = "anarix_mcp_connected";
+const WORKSPACES_KEY = "anarix_workspaces";
+
+function readStored<T>(key: string, fallback: T): T {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? (JSON.parse(stored) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export function IntegrationsProvider({ children }: { children: ReactNode }) {
   const [integrations, setIntegrations] = useState<WhatsAppIntegration[]>(() => {
@@ -45,6 +62,17 @@ export function IntegrationsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(integrations));
   }, [integrations]);
+
+  const [mcpConnected, setMcpConnected] = useState<boolean>(() => readStored(MCP_KEY, false));
+  const [workspaces, setWorkspaces] = useState<string[]>(() => readStored(WORKSPACES_KEY, []));
+  useEffect(() => {
+    try { localStorage.setItem(MCP_KEY, JSON.stringify(mcpConnected)); } catch { /* storage unavailable */ }
+  }, [mcpConnected]);
+  useEffect(() => {
+    try { localStorage.setItem(WORKSPACES_KEY, JSON.stringify(workspaces)); } catch { /* storage unavailable */ }
+  }, [workspaces]);
+  const setWorkspaceConnected = (id: string, on: boolean) =>
+    setWorkspaces((prev) => (on ? (prev.includes(id) ? prev : [...prev, id]) : prev.filter((w) => w !== id)));
 
   const addIntegration: IntegrationsContextType["addIntegration"] = (i) => {
     const now = new Date().toISOString();
@@ -80,7 +108,10 @@ export function IntegrationsProvider({ children }: { children: ReactNode }) {
 
   return (
     <IntegrationsContext.Provider
-      value={{ integrations, addIntegration, updateIntegration, removeIntegration, toggleEnabled, getIntegration }}
+      value={{
+        integrations, addIntegration, updateIntegration, removeIntegration, toggleEnabled, getIntegration,
+        mcpConnected, setMcpConnected, workspaces, setWorkspaceConnected,
+      }}
     >
       {children}
     </IntegrationsContext.Provider>

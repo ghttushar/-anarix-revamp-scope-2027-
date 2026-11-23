@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
+import { IntegrationsBanner } from "@/components/integrations/IntegrationsBanner";
 import { InlineKPIStrip } from "@/components/advertising/InlineKPIStrip";
 import { UnderlineTabs } from "@/components/advertising/UnderlineTabs";
 import { DataTableToolbar } from "@/components/advertising/DataTableToolbar";
@@ -278,6 +279,7 @@ function CampaignManagerInner() {
             title="Campaign Manager"
             subtitle="Manage and optimize your advertising campaigns"
           />
+          <IntegrationsBanner />
           <AppTaskbar showFrequency showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems}>
             <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
               <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Ad Type</span>

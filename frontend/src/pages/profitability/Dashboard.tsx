@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
+import { IntegrationsBanner } from "@/components/integrations/IntegrationsBanner";
 import { ProfitabilityHeroCard } from "@/components/profitability/ProfitabilityHeroCard";
 import { ProductsPnLTable } from "@/components/profitability/ProductsPnLTable";
 import { COGSEditModal } from "@/components/profitability/COGSEditModal";
@@ -142,6 +143,7 @@ export default function ProfitabilityDashboard() {
             title="Profitability Dashboard"
             subtitle="Track your profit metrics and financial performance"
           />
+          <IntegrationsBanner />
           <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems} />
 
           <ProfitabilityHeroCard
