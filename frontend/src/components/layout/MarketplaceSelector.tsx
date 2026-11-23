@@ -6,8 +6,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MarketplaceHoverPopup } from "./MarketplaceHoverPopup";
-import amazonLogo from "@/assets/amazon-logo.png";
-import walmartLogo from "@/assets/walmart-logo.png";
+import { AmazonLogo } from "@phosphor-icons/react";
 
 interface MarketplaceOption {
   id: Marketplace;
@@ -22,6 +21,31 @@ const marketplaceOptions: MarketplaceOption[] = [
   { id: "shopify", label: "Shopify", brandColor: "#96BF48", logo: "shopify" },
   { id: "tiktok", label: "TikTok", brandColor: "#000000", logo: "tiktok" },
 ];
+
+/**
+ * Amazon and Walmart as the same filled brand circles Signals uses: big, bold and legible at sidebar size. They keep
+ * their colours when not selected, just a little softer.
+ */
+function BrandBadge({ brand, selected }: { brand: "amazon" | "walmart"; selected: boolean }) {
+  const size = 22;
+  const icon = Math.round(size * 0.62);
+  return (
+    <span
+      className={cn("flex shrink-0 items-center justify-center rounded-full ring-1 ring-black/5 transition-opacity", !selected && "opacity-70")}
+      style={{ width: size, height: size, background: brand === "amazon" ? "#FF9900" : "#0071CE" }}
+    >
+      {brand === "amazon" ? (
+        <AmazonLogo size={icon} color="#FFFFFF" weight="bold" />
+      ) : (
+        <svg width={icon} height={icon} viewBox="0 0 16 16" fill="none" aria-hidden>
+          <g stroke="#FFC220" strokeWidth="2.1" strokeLinecap="round">
+            <path d="M8 1.2v4.6M8 10.2v4.6M2.3 4l4 2.3M9.7 9.7l4 2.3M2.3 12l4-2.3M9.7 6.3l4-2.3" />
+          </g>
+        </svg>
+      )}
+    </span>
+  );
+}
 
 function ShopifyIcon({ className, color }: { className?: string; color?: string }) {
   return (
@@ -100,9 +124,9 @@ export function MarketplaceSelector() {
     const color = isSelected ? opt.brandColor : undefined;
     switch (opt.logo) {
       case "amazon":
-        return <img src={amazonLogo} alt="Amazon" className={cn(size, "object-contain", !isSelected && "opacity-50 grayscale")} />;
+        return <BrandBadge brand="amazon" selected={isSelected} />;
       case "walmart":
-        return <img src={walmartLogo} alt="Walmart" className={cn(size, "object-contain", !isSelected && "opacity-50 grayscale")} />;
+        return <BrandBadge brand="walmart" selected={isSelected} />;
       case "shopify":
         return <ShopifyIcon className={size} color={isSelected ? opt.brandColor : "currentColor"} />;
       case "tiktok": {

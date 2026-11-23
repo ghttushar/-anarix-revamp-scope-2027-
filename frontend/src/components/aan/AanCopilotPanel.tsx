@@ -55,8 +55,9 @@ export function AanCopilotPanel() {
             </div>
           </div>
 
-          {/* Conversation Area - independent scroll */}
-          <ScrollArea className="flex-1 min-h-0">
+          {/* Conversation Area - independent scroll. Radix wraps the content in a display:table div that grows to the
+              content's width; making it a block keeps messages inside the 360px panel so they wrap. */}
+          <ScrollArea className="flex-1 min-h-0 [&_[data-radix-scroll-area-viewport]>div]:!block">
             <AanConversation />
           </ScrollArea>
 
