@@ -38,17 +38,16 @@ export default function ProductSOV() {
 
         <SOVChart data={sovTrendData} title="Product SOV Trend" subtitle="Hourly breakdown" />
 
-        <div className="rounded-lg border border-border bg-card">
-          <div className="border-b border-border p-4">
-            <DataTableToolbar
-              searchValue={searchQuery}
-              onSearchChange={setSearchQuery}
-              searchPlaceholder="Search by product name or SKU..."
-              onDownload={() => toast.success("Exporting product SOV...")}
-              showDeltas={showDeltas}
-              onShowDeltasChange={setShowDeltas}
-            />
-          </div>
+        <div className="space-y-2">
+          <DataTableToolbar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder="Search by product name or SKU..."
+            onDownload={() => toast.success("Exporting product SOV...")}
+            showDeltas={showDeltas}
+            onShowDeltasChange={setShowDeltas}
+          />
+          <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -85,6 +84,7 @@ export default function ProductSOV() {
             </TableBody>
           </Table>
           <TablePagination page={page} pageSize={pageSize} totalItems={filteredProducts.length} onPageChange={setPage} onPageSizeChange={setPageSize} />
+        </div>
         </div>
       </div>
 </AppLayout>

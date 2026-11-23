@@ -58,11 +58,7 @@ export default function KeywordTracker() {
           onDownload={() => toast.success("Exporting keywords...")}
           showDeltas={showDeltas}
           onShowDeltasChange={setShowDeltas}
-          leftContent={
-            <Button data-write-action size="sm" className="gap-1.5 text-xs h-8" onClick={() => setIsAddModalOpen(true)}>
-              <Plus className="h-3.5 w-3.5" />Add Keyword
-            </Button>
-          }
+          primaryAction={{ label: "Add keyword", write: true, onClick: () => setIsAddModalOpen(true) }}
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>

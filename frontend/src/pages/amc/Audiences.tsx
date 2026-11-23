@@ -33,15 +33,14 @@ export default function AMCAudiences() {
         <PageHeader title="AMC Audiences" subtitle="Audiences generated from AMC query results" />
         <AppTaskbar />
 
-        <div className="rounded-lg border border-border bg-card">
-          <div className="border-b border-border p-4">
-            <DataTableToolbar
-              searchValue={searchQuery}
-              onSearchChange={setSearchQuery}
-              searchPlaceholder="Search audiences..."
-              onDownload={() => toast.success("Exporting audiences...")}
-            />
-          </div>
+        <div className="space-y-2">
+          <DataTableToolbar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder="Search audiences..."
+            onDownload={() => toast.success("Exporting audiences...")}
+          />
+          <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -67,6 +66,7 @@ export default function AMCAudiences() {
               )}
             </TableBody>
           </Table>
+        </div>
         </div>
       </div>
 </AppLayout>

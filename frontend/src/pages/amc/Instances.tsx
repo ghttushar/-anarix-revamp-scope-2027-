@@ -33,15 +33,14 @@ export default function AMCInstances() {
         <PageHeader title="AMC Instances" subtitle="Manage your Amazon Marketing Cloud instances" />
         <AppTaskbar />
 
-        <div className="rounded-lg border border-border bg-card">
-          <div className="border-b border-border p-4">
-            <DataTableToolbar
-              searchValue={searchQuery}
-              onSearchChange={setSearchQuery}
-              searchPlaceholder="Search instances..."
-              onDownload={() => toast.success("Exporting instances...")}
-            />
-          </div>
+        <div className="space-y-2">
+          <DataTableToolbar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder="Search instances..."
+            onDownload={() => toast.success("Exporting instances...")}
+          />
+          <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -67,6 +66,7 @@ export default function AMCInstances() {
               )}
             </TableBody>
           </Table>
+        </div>
         </div>
       </div>
 </AppLayout>

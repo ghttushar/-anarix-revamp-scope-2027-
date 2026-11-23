@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Plus, Archive, DollarSign, MoreHorizontal } from "lucide-react";
+import { BarIconButton } from "@/components/bars";
 import { mockTargetingActions, mockTargetCampaigns, mockTargetAdGroups } from "@/data/mockTargetingActions";
 import { MatchTypePicker } from "@/components/advertising/MatchTypePicker";
 import { cn } from "@/lib/utils";
@@ -189,20 +190,17 @@ export default function TargetingActions() {
           sortField={sortField}
           sortDirection={sortDirection}
           onSortChange={(f, d) => { setSortField(f); setSortDirection(d); }}
-          rightContent={
-            <>
-              {hasSelection && activeTab !== "archive" && (
-                <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={archiveSelected}>
-                  <Archive className="h-3.5 w-3.5" />Archive ({selectedRowIds.size})
-                </Button>
-              )}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" disabled={!hasSelection}>
-                    <DollarSign className="h-3.5 w-3.5" />Custom Bid
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-72" align="end">
+          selection={{
+            count: selectedRowIds.size,
+            onClear: () => setSelectedRowIds(new Set()),
+            actions: (
+              <>
+                {activeTab !== "archive" && <BarIconButton icon={Archive} label="Archive" onClick={archiveSelected} />}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <BarIconButton icon={DollarSign} label="Custom bid" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72" align="start">
                   <div className="space-y-3">
                     <p className="text-sm font-medium">Adjust Bids</p>
                     <Select value={bidAction} onValueChange={setBidAction}>
@@ -218,19 +216,17 @@ export default function TargetingActions() {
                     <Button size="sm" className="w-full" onClick={handleApplyBid} disabled={!bidValue}>Apply</Button>
                   </div>
                 </PopoverContent>
-              </Popover>
-              <Button
-                data-write-action
-                size="sm"
-                className="h-8 gap-1.5 text-xs"
-                onClick={() => setAddKeywordsOpen(true)}
-                disabled={!hasSelection}
-                title={hasSelection ? "Add selected search terms as keyword targets" : "Select at least one search term to enable"}
-              >
-                <Plus className="h-3.5 w-3.5" />Add Keyword{hasSelection ? ` (${selectedRowIds.size})` : ""}
-              </Button>
-            </>
-          }
+                </Popover>
+              </>
+            ),
+          }}
+          primaryAction={{
+            label: hasSelection ? `Add keyword (${selectedRowIds.size})` : "Add keyword",
+            write: true,
+            disabled: !hasSelection,
+            hint: hasSelection ? "Add selected search terms as keyword targets" : "Select at least one search term to enable",
+            onClick: () => setAddKeywordsOpen(true),
+          }}
         />
 
         <div className="rounded-lg border border-border bg-card">

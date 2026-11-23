@@ -99,11 +99,7 @@ export default function ProductAdDetail() {
             activeFilters={activeFilters}
             onFiltersChange={setActiveFilters}
             filterFields={["Search Term", "Impressions", "Clicks", "CTR", "Spend", "Sales", "ACOS", "ROAS"]}
-            leftContent={
-              <Button size="sm" className="gap-1.5 text-xs h-8" onClick={() => setDataPanel("addProductAd")}>
-                <Plus className="h-3.5 w-3.5" />Add Product Ad
-              </Button>
-            }
+            primaryAction={{ label: "Add product ad", onClick: () => setDataPanel("addProductAd") }}
           />
 
 

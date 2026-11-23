@@ -10,7 +10,6 @@ import { COGSEditModal } from "@/components/profitability/COGSEditModal";
 import { BulkCogsUploadModal } from "@/components/profitability/BulkCogsUploadModal";
 import { ProductDetailPanel } from "@/components/profitability/ProductDetailPanel";
 import { ProductTrendsModal } from "@/components/profitability/ProductTrendsModal";
-import { ProductsOrdersToggle } from "@/components/profitability/ProductsOrdersToggle";
 import { PeriodBreakdownPanel } from "@/components/profitability/PeriodBreakdownPanel";
 import { DataTableToolbar } from "@/components/advertising/DataTableToolbar";
 import { profitabilitySummaries, profitabilityProducts, profitabilityOrders, trendDataByPeriod } from "@/data/mockProfitability";
@@ -154,7 +153,10 @@ export default function ProfitabilityDashboard() {
 
           <div className="space-y-3">
             <DataTableToolbar
-              leftContent={<ProductsOrdersToggle activeTab={tableTab} onTabChange={handleTabChange} />}
+              view={{ value: tableTab, onChange: (v) => handleTabChange(v as "products" | "orders"), items: [
+                { value: "products", label: "Products" },
+                { value: "orders", label: "Orders" },
+              ] }}
               searchValue={searchValue}
               onSearchChange={setSearchValue}
               searchPlaceholder={tableTab === "products" ? "Search by Product Name / Item ID / SKU..." : "Search by Order ID / Country / Product..."}
@@ -169,8 +171,7 @@ export default function ProfitabilityDashboard() {
               onShowDeltasChange={setShowDeltas}
               showUpload
               onUploadClick={() => setBulkCogsOpen(true)}
-              uploadTitle="Upload Cogs"
-              uploadLabel="Upload Cogs"
+              uploadTitle="Upload COGS"
               onDownload={handleDownload}
               sortableFields={SORTABLE_FIELDS}
               sortField={sortField}

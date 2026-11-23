@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import { UnderlineTabs } from "@/components/advertising/UnderlineTabs";
+import { DataTableToolbar } from "@/components/advertising/DataTableToolbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -39,6 +40,7 @@ export default function AppliedRules() {
   const initialTab = searchParams.get("tab") || "all";
 
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState("10");
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState<SortKey>("name");
@@ -58,9 +60,10 @@ export default function AppliedRules() {
     setPage(0);
   };
 
-  const filteredRules = activeTab === "all"
+  const filteredRules = (activeTab === "all"
     ? appliedRules
-    : appliedRules.filter((rule) => rule.status === activeTab);
+    : appliedRules.filter((rule) => rule.status === activeTab)
+  ).filter((rule) => !search || rule.name.toLowerCase().includes(search.toLowerCase()));
 
   const sorted = [...filteredRules].sort((a, b) => {
     const av = a[sortKey];
@@ -94,15 +97,15 @@ export default function AppliedRules() {
         />
         <AppTaskbar />
 
-        <div data-write-action className="flex items-center justify-end">
-          <Button size="sm" onClick={() => navigate("/advertising/rules/agents")}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Rule
-          </Button>
-        </div>
-
         {/* Status Filter Tabs */}
         <UnderlineTabs tabs={statusTabs} value={activeTab} onChange={handleTabChange} />
+
+        <DataTableToolbar
+          searchValue={search}
+          onSearchChange={(v) => { setSearch(v); setPage(0); }}
+          searchPlaceholder="Search rules..."
+          primaryAction={{ label: "Create rule", write: true, onClick: () => navigate("/advertising/rules/agents") }}
+        />
 
         <div className="rounded-lg border border-border">
           <Table>

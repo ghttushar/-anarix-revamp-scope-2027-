@@ -6,7 +6,6 @@ import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import { PnLParameterTable } from "@/components/profitability/PnLParameterTable";
 import { ProductsPnLTable } from "@/components/profitability/ProductsPnLTable";
 import { ProductDetailPanel } from "@/components/profitability/ProductDetailPanel";
-import { ProductsOrdersToggle } from "@/components/profitability/ProductsOrdersToggle";
 import { DataTableToolbar } from "@/components/advertising/DataTableToolbar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -230,7 +229,10 @@ export default function ProfitLoss() {
 
           <div className="space-y-3">
             <DataTableToolbar
-              leftContent={<ProductsOrdersToggle activeTab={tableTab} onTabChange={setTableTab} />}
+              view={{ value: tableTab, onChange: (v) => setTableTab(v as "products" | "orders"), items: [
+                { value: "products", label: "Products" },
+                { value: "orders", label: "Orders" },
+              ] }}
               searchValue={searchValue}
               onSearchChange={setSearchValue}
               searchPlaceholder="Search by Product Name / Item ID / SKU..."

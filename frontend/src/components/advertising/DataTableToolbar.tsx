@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Search, Filter, Download, Columns, X, Pencil, Plus, Trash2, TrendingUp, Upload, Pin, PinOff, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Search, Filter, Download, Columns, X, Pencil, Plus, Trash2, TrendingUp, Upload, Pin, PinOff, ArrowUpDown, ArrowUp, ArrowDown, type LucideIcon } from "lucide-react";
+import { BarDivider, BarIconButton, BarSegmented, type SegmentItem } from "@/components/bars";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,14 +48,16 @@ interface DataTableToolbarProps {
   onSelectAllColumns?: () => void;
   onClearAllColumns?: () => void;
   onDownload?: () => void;
-  onFilter?: () => void;
-  filterCount?: number;
   viewMode?: "view" | "edit";
   onViewModeChange?: (mode: "view" | "edit") => void;
   showViewToggle?: boolean;
   filterFields?: string[];
-  leftContent?: React.ReactNode;
-  rightContent?: React.ReactNode;
+  /** A segmented switch before the search (Products | Orders, State | Product). */
+  view?: { value: string; onChange: (value: string) => void; items: SegmentItem<string>[] };
+  /** The one labelled button, fixed at the far right (Create campaign, Add keyword…). */
+  primaryAction?: TablePrimaryAction;
+  /** While rows are selected the left zone shows the count, Clear and these actions instead of the view and search. */
+  selection?: { count: number; onClear: () => void; actions?: ReactNode };
   showDeltas?: boolean;
   onShowDeltasChange?: (show: boolean) => void;
   onUpload?: (files: File[]) => void;
@@ -62,8 +65,8 @@ interface DataTableToolbarProps {
   onUploadClick?: () => void;
   showUpload?: boolean;
   uploadAccept?: string;
+  /** The Upload tooltip (default "Upload COGS"). */
   uploadTitle?: string;
-  uploadLabel?: string;
   pinnedColumns?: string[];
   onPinColumn?: (columnId: string) => void;
   // Sort props
@@ -71,6 +74,17 @@ interface DataTableToolbarProps {
   sortField?: string | null;
   sortDirection?: "asc" | "desc";
   onSortChange?: (field: string | null, direction: "asc" | "desc") => void;
+}
+
+export interface TablePrimaryAction {
+  label: string;
+  icon?: LucideIcon;
+  onClick?: () => void;
+  disabled?: boolean;
+  /** Tooltip, e.g. why it is disabled. */
+  hint?: string;
+  /** A write action: hidden on mobile, like the other write actions. */
+  write?: boolean;
 }
 
 const OPERATORS = [
@@ -94,16 +108,16 @@ export function DataTableToolbar({
   onViewModeChange,
   showViewToggle = false,
   filterFields = [],
-  leftContent,
-  rightContent,
+  view,
+  primaryAction,
+  selection,
   showDeltas,
   onShowDeltasChange,
   onUpload,
   onUploadClick,
   showUpload = false,
   uploadAccept,
-  uploadTitle,
-  uploadLabel,
+  uploadTitle = "Upload COGS",
   pinnedColumns = [],
   onPinColumn,
   sortableFields = [],
@@ -190,93 +204,71 @@ export function DataTableToolbar({
 
   return (
     <div className={"space-y-1.5"} data-table-toolbar>
-      {/* Main Toolbar Row */}
-      <div className={cn(
-        "flex items-center justify-between gap-2",
-        "flex-wrap"
-      )}>
-        {/* Left Side */}
-        <div className="flex items-center gap-2 min-w-0 flex-1">
-          {/* Edit Mode Toggle — first position */}
-          {showViewToggle && onViewModeChange && (
-            <Button
-              data-write-action
-              variant="ghost"
-              size="sm"
-              className={cn("h-8 gap-1 text-xs cursor-pointer shrink-0", viewMode === "edit" && "bg-destructive/10 text-destructive")}
-              onClick={handleEditToggle}
-              title={viewMode === "edit" ? "Save & exit edit mode" : "Switch to Edit mode"}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              <span data-tb-label>Edit</span>
-            </Button>
+      {/* One row with fixed zones (components/bars/README.md):
+          [view] [search] or [n selected · actions]   ·····   ✎ | Δ ⇅ ⏷ ▥ | ⤒ ⤓ | [Primary]
+          The icon actions keep this order on every table; a table only switches them on or off. */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          {selection && selection.count > 0 ? (
+            <div className="flex h-8 items-center gap-1 rounded-md bg-primary/5 pl-2.5 pr-1 text-xs">
+              <span className="font-medium text-primary">{selection.count} selected</span>
+              <Button variant="ghost" size="xs" className="h-6 px-2 text-muted-foreground" onClick={selection.onClear}>Clear</Button>
+              {selection.actions && <><BarDivider />{selection.actions}</>}
+            </div>
+          ) : (
+            <>
+              {view && <BarSegmented value={view.value} onChange={view.onChange} items={view.items} aria-label="View" />}
+              <div className="relative min-w-0 max-w-xs flex-1">
+                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={searchValue}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder={searchPlaceholder}
+                  className="h-8 w-full border-0 bg-muted/50 pl-8 text-xs shadow-none focus-visible:ring-1 focus-visible:ring-offset-0"
+                />
+              </div>
+            </>
           )}
-          {leftContent}
-          <div className="relative min-w-0 flex-1 max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={searchPlaceholder}
-              className="h-8 w-full pl-8 text-sm"
-            />
-          </div>
         </div>
 
-        {/* Right Side */}
-        <div className="flex items-center gap-1 flex-wrap" data-tb-actions>
-          {rightContent}
-
-          {/* Upload Button */}
-          {(showUpload || onUpload || onUploadClick) && (
-            <Button data-write-action variant="ghost" size="sm" className="h-8 gap-1 text-xs cursor-pointer" onClick={() => (onUploadClick ? onUploadClick() : setUploadOpen(true))} title={uploadTitle || "Upload files"}>
-              <Upload className="h-3.5 w-3.5" />
-              <span data-tb-label>{uploadLabel || "Upload"}</span>
-            </Button>
-          )}
-
-          {/* Delta Toggle */}
-          {onShowDeltasChange !== undefined && (
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-pressed={showDeltas || undefined}
-              data-active={showDeltas || undefined}
-              className={cn(
-                "h-8 gap-1 text-xs cursor-pointer border",
-                showDeltas
-                  ? "bg-primary text-primary-foreground border-primary hover:bg-primary hover:text-primary-foreground"
-                  : "border-transparent"
-              )}
-              onClick={() => onShowDeltasChange(!showDeltas)}
-              title={showDeltas ? "Hide deltas" : "Show deltas"}
-            >
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span data-tb-label>Delta</span>
-            </Button>
-          )}
-
-          {/* Sort Button — opens popover with field list */}
-          {sortableFields.length > 0 && onSortChange && (
-            <Popover open={sortPopoverOpen} onOpenChange={setSortPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn("h-8 gap-1 text-xs cursor-pointer", sortField && "bg-primary/10 text-primary")}
-                  title="Sort table data"
-                >
-                  {!sortField ? (
-                    <ArrowUpDown className="h-3.5 w-3.5" />
-                  ) : sortDirection === "asc" ? (
-                    <ArrowUp className="h-3.5 w-3.5" />
-                  ) : (
-                    <ArrowDown className="h-3.5 w-3.5" />
-                  )}
-                  <span data-tb-label>Group By</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-[220px] p-2 space-y-0.5">
+        <div className="flex shrink-0 items-center gap-0.5" data-tb-actions>
+          {(() => {
+            const groups: ReactNode[][] = [
+              [
+                showViewToggle && onViewModeChange && (
+                  <BarIconButton
+                    key="edit"
+                    data-write-action
+                    icon={Pencil}
+                    label={viewMode === "edit" ? "Save & exit edit mode" : "Edit table"}
+                    active={viewMode === "edit"}
+                    tone="danger"
+                    onClick={handleEditToggle}
+                  />
+                ),
+              ],
+              [
+                onShowDeltasChange !== undefined && (
+                  <BarIconButton
+                    key="delta"
+                    icon={TrendingUp}
+                    label={showDeltas ? "Hide deltas" : "Show deltas"}
+                    hint="Change vs the previous period"
+                    active={!!showDeltas}
+                    onClick={() => onShowDeltasChange(!showDeltas)}
+                  />
+                ),
+                sortableFields.length > 0 && onSortChange && (
+                  <Popover key="sort" open={sortPopoverOpen} onOpenChange={setSortPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <BarIconButton
+                        icon={!sortField ? ArrowUpDown : sortDirection === "asc" ? ArrowUp : ArrowDown}
+                        label="Group by"
+                        hint={sortField ? `By ${sortableFields.find((s) => s.id === sortField)?.label ?? sortField}` : undefined}
+                        active={!!sortField}
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-[220px] p-2 space-y-0.5">
                 <p className="text-[11px] font-medium text-muted-foreground px-2 pb-1">Group by</p>
                 {sortableFields.map((field) => {
                   const isActive = sortField === field.id;
@@ -299,24 +291,21 @@ export function DataTableToolbar({
                   );
                 })}
               </PopoverContent>
-            </Popover>
-          )}
-
-          {/* Filter Button */}
-          {filterFields.length > 0 && (
-            <Popover open={filterOpen} onOpenChange={setFilterOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs cursor-pointer" onClick={handleOpenFilter} title="Add or manage filters">
-                  <Filter className="h-3.5 w-3.5" />
-                  <span data-tb-label>Filter</span>
-                  {activeFilters.length > 0 && (
-                    <span className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                      {activeFilters.length}
-                    </span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-[520px] max-w-[92vw] p-3 space-y-2">
+                  </Popover>
+                ),
+                filterFields.length > 0 && (
+                  <Popover key="filter" open={filterOpen} onOpenChange={setFilterOpen}>
+                    <PopoverTrigger asChild>
+                      <BarIconButton
+                        icon={Filter}
+                        label="Filter"
+                        hint={activeFilters.length > 0 ? `${activeFilters.length} applied` : undefined}
+                        active={activeFilters.length > 0}
+                        badge={activeFilters.length}
+                        onClick={handleOpenFilter}
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-[520px] max-w-[92vw] p-3 space-y-2">
                 <p className="text-xs font-medium text-foreground">Filters</p>
                 <div className="space-y-1.5">
                   {draftFilters.map((rule, idx) => (
@@ -356,24 +345,18 @@ export function DataTableToolbar({
                   </div>
                 </div>
               </PopoverContent>
-            </Popover>
-          )}
-
-          {/* Columns Dropdown with Pin Toggle */}
-          {columns.length > 0 && onColumnToggle && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs cursor-pointer" title="Toggle column visibility">
-                  <Columns className="h-3.5 w-3.5" />
-                  <span data-tb-label>Columns</span>
-                  {pinnedColumns.length > 0 && (
-                    <span className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary/20 text-[10px] text-primary">
-                      {pinnedColumns.length}
-                    </span>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 p-0">
+                  </Popover>
+                ),
+                columns.length > 0 && onColumnToggle && (
+                  <DropdownMenu key="columns">
+                    <DropdownMenuTrigger asChild>
+                      <BarIconButton
+                        icon={Columns}
+                        label="Columns"
+                        hint={pinnedColumns.length > 0 ? `${pinnedColumns.length} pinned` : "Show, hide and pin columns"}
+                      />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 p-0">
                 <div className="p-2 border-b border-border">
                   <div className="relative">
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
@@ -424,17 +407,47 @@ export function DataTableToolbar({
                   ))}
                 </div>
               </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                  </DropdownMenu>
+                ),
+              ],
+              [
+                (showUpload || onUpload || onUploadClick) && (
+                  <BarIconButton
+                    key="upload"
+                    data-write-action
+                    icon={Upload}
+                    label={uploadTitle}
+                    onClick={() => (onUploadClick ? onUploadClick() : setUploadOpen(true))}
+                  />
+                ),
+                onDownload && <BarIconButton key="export" data-write-action icon={Download} label="Export CSV" onClick={onDownload} />,
+              ],
+            ].map((g) => g.filter(Boolean)).filter((g) => g.length > 0);
+            return groups.map((g, i) => (
+              <div key={i} className="flex items-center gap-0.5">
+                {i > 0 && <BarDivider />}
+                {g}
+              </div>
+            ));
+          })()}
 
-          {/* Export/Download Button — hidden on mobile */}
-          {onDownload && (
-            <Button data-write-action variant="ghost" size="sm" className="h-8 gap-1 text-xs cursor-pointer" onClick={onDownload} title="Export data">
-              <Download className="h-3.5 w-3.5" />
-              <span data-tb-label>Export</span>
-            </Button>
+          {primaryAction && (
+            <>
+              <BarDivider />
+              <Button
+                size="xs"
+                className="gap-1.5"
+                onClick={primaryAction.onClick}
+                disabled={primaryAction.disabled}
+                title={primaryAction.hint}
+                data-write-action={primaryAction.write || undefined}
+                data-tb-primary
+              >
+                {primaryAction.icon ? <primaryAction.icon /> : <Plus />}
+                {primaryAction.label}
+              </Button>
+            </>
           )}
-
         </div>
       </div>
 

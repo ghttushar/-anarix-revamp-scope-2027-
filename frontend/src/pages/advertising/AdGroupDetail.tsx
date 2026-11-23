@@ -91,13 +91,7 @@ export default function AdGroupDetail() {
             onDownload={() => toast.success("Exporting data as CSV...")}
             showDeltas={showDeltas}
             onShowDeltasChange={setShowDeltas}
-            leftContent={
-              activeTab === "product-ads" ? (
-                <Button size="sm" className="gap-1.5 text-xs h-8" onClick={() => setDataPanel("addProductAd")}>
-                  <Plus className="h-3.5 w-3.5" />Add Product Ad
-                </Button>
-              ) : undefined
-            }
+            primaryAction={activeTab === "product-ads" ? { label: "Add product ad", onClick: () => setDataPanel("addProductAd") } : undefined}
           />
 
           {renderTable()}

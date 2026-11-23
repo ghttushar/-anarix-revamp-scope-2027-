@@ -270,11 +270,7 @@ export default function HourlyData() {
                   onDownload={() => toast.success("Exporting data...")}
                   showDeltas={showDeltas}
                   onShowDeltasChange={setShowDeltas}
-                  leftContent={
-                    <Button data-write-action size="sm" className="gap-1.5 text-xs h-8" onClick={() => setDataPanel("createSchedule")}>
-                      <Plus className="h-3.5 w-3.5" />Create Schedule
-                    </Button>
-                  }
+                  primaryAction={{ label: "Create schedule", write: true, onClick: () => setDataPanel("createSchedule") }}
                 />
                 <div className="rounded-lg border border-border bg-card overflow-auto">
                   <Table>

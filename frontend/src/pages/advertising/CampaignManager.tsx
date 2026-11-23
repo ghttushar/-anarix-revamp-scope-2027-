@@ -326,11 +326,7 @@ function CampaignManagerInner() {
             sortField={sortField}
             sortDirection={sortDirection}
             onSortChange={(field, dir) => { setSortField(field); setSortDirection(dir); }}
-            leftContent={
-              <Button data-write-action size="sm" className="gap-1.5 text-xs h-8" onClick={() => navigate("/advertising/campaign-creator")}>
-                <Plus className="h-3.5 w-3.5" />Create Campaign
-              </Button>
-            }
+            primaryAction={{ label: "Create campaign", write: true, onClick: () => navigate("/advertising/campaign-creator") }}
           />
 
           {viewMode === "edit" && activeTab === "campaigns" && (
