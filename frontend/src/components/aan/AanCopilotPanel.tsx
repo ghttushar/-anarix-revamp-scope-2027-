@@ -21,16 +21,16 @@ export function AanCopilotPanel() {
         data-app-panel="copilot"
         className={cn(
           "h-full shrink-0 flex flex-col border-l border-border bg-background transition-all duration-200 ease-out overflow-hidden relative",
-          isOpen ? "w-[360px] opacity-100" : "w-0 opacity-0 border-l-0"
+          isOpen ? "w-56 opacity-100" : "w-0 opacity-0 border-l-0"
         )}
       >
         {isOpen && (
           <>
           {/* Header with Aan gradient */}
           <div className="border-b border-border shrink-0">
-            <div className="flex items-center justify-between px-4 py-4">
-              <AanLogo />
-              <div className="flex items-center gap-1">
+            <div className="flex items-center justify-between gap-2 px-3 py-3">
+              <AanLogo showByAnarix={false} />
+              <div className="flex shrink-0 items-center">
                 <Button variant="ghost" size="icon" onClick={openWorkspace} className="h-8 w-8" title="Open full workspace">
                   <Maximize2 className="h-4 w-4" />
                 </Button>
@@ -41,7 +41,7 @@ export function AanCopilotPanel() {
             </div>
 
             {/* Context Bar */}
-            <div className="flex items-center gap-4 border-t border-border/50 bg-muted/30 px-4 py-2 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border/50 bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <span className="font-medium">Context:</span>
                 <span>{context.page}</span>
@@ -56,16 +56,16 @@ export function AanCopilotPanel() {
           </div>
 
           {/* Conversation Area - independent scroll. Radix wraps the content in a display:table div that grows to the
-              content's width; making it a block keeps messages inside the 360px panel so they wrap. */}
+              content's width; making it a block keeps messages inside the panel so they wrap. */}
           <ScrollArea className="flex-1 min-h-0 [&_[data-radix-scroll-area-viewport]>div]:!block">
-            <AanConversation />
+            <AanConversation compact />
           </ScrollArea>
 
           {/* Draft preview removed - drafts are now shown inline in the conversation */}
 
           {/* Input Area */}
           <div className="shrink-0">
-            <AanInput />
+            <AanInput compact />
           </div>
           </>
         )}

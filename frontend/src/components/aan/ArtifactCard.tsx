@@ -45,7 +45,7 @@ export function ArtifactCard({ artifact, onClick, className }: ArtifactCardProps
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {config.label}
             </span>

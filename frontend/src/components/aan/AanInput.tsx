@@ -102,7 +102,8 @@ function formatFileSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
-export function AanInput() {
+/** compact: the narrow side panel (nav width). */
+export function AanInput({ compact = false }: { compact?: boolean } = {}) {
   const { addMessage, setGenerationState, messages, selectedModel, setSelectedModel, pendingPrompt, setPendingPrompt, isGenerating, generationType, setInputFocused } = useAan();
   const { fireScenario } = useAanEvents();
   const { setDataPanel } = useActivePanel();
@@ -302,7 +303,7 @@ export function AanInput() {
 
   return (
     <div className="shrink-0 bg-background">
-      <div className="px-4 pb-4 pt-3">
+      <div className={compact ? "px-3 pb-3 pt-2" : "px-4 pb-4 pt-3"}>
         <div className="relative">
           {/* Aan presence slot - sits above the input, left-aligned. Reserves height even when no suggestion is active. */}
           <div className="flex items-center gap-3 pl-3 mb-2 h-[52px]">
@@ -381,7 +382,7 @@ export function AanInput() {
               onKeyDown={handleKeyDown}
               onFocus={() => { setIsFocused(true); setInputFocused(true); }}
               onBlur={() => { setIsFocused(false); setInputFocused(input.trim().length > 0); }}
-              placeholder="Ask Aan anything..."
+              placeholder={compact ? "Ask Aan…" : "Ask Aan anything..."}
               className="min-h-[44px] max-h-[120px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 pr-12 pl-0"
               rows={1}
               disabled={isLoading}
@@ -401,10 +402,10 @@ export function AanInput() {
         </div>
 
         {/* Model selector + disclaimer */}
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <Popover open={modelOpen} onOpenChange={setModelOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors">
+              <button className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors">
                 <currentModel.icon className="h-3 w-3" />
                 <span className="font-medium">{currentModel.name}</span>
                 <ChevronDown className="h-3 w-3" />
@@ -436,7 +437,7 @@ export function AanInput() {
               </div>
             </PopoverContent>
           </Popover>
-          <p className="text-[10px] text-muted-foreground font-thin mx-0">
+          <p className="whitespace-nowrap text-[10px] text-muted-foreground font-thin mx-0">
             Aan can make mistakes.
           </p>
         </div>

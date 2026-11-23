@@ -8,7 +8,8 @@ import { format } from "date-fns";
 import { ArtifactCard } from "./ArtifactCard";
 import { FloatingDots } from "./FloatingDots";
 
-export function AanConversation() {
+/** compact: the narrow side panel (nav width). Smaller gutters, no user avatar, wider bubbles. */
+export function AanConversation({ compact = false }: { compact?: boolean }) {
   const { messages, openSplit, isGenerating, generationType, generationProgress } = useAan();
   const { registerAnchor } = useAanPresence();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -32,26 +33,29 @@ export function AanConversation() {
   }, [isGenerating, generationAnchorEl, registerAnchor]);
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div ref={scrollRef} className={cn("flex-1 overflow-y-auto", compact ? "p-3 space-y-3" : "p-4 space-y-4")}>
       {messages.map((message) => (
         <div
           key={message.id}
           className={cn(
-            "flex gap-3",
+            "flex",
+            compact ? "gap-2" : "gap-3",
             message.role === "user" ? "flex-row-reverse" : "flex-row"
           )}
         >
           {/* Avatar */}
           <div
             className={cn(
-              "flex h-8 w-8 shrink-0 items-center justify-center",
+              "flex shrink-0 items-center justify-center",
+              compact ? "h-6 w-6" : "h-8 w-8",
+              compact && message.role === "user" && "hidden",
               message.role === "assistant"
                 ? "text-foreground"
                 : "rounded-full bg-muted text-muted-foreground"
             )}
           >
             {message.role === "assistant" ? (
-              <AanMascot size={20} state="anchor" interactive={false} />
+              <AanMascot size={compact ? 16 : 20} state="anchor" interactive={false} />
             ) : (
               <User className="h-4 w-4" />
             )}
@@ -60,13 +64,15 @@ export function AanConversation() {
           {/* Message Bubble */}
           <div
             className={cn(
-              "flex max-w-[80%] flex-col gap-2",
+              "flex flex-col gap-2 min-w-0",
+              compact ? "max-w-[88%]" : "max-w-[80%]",
               message.role === "user" ? "items-end" : "items-start"
             )}
           >
             <div
               className={cn(
-                "rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap",
+                "rounded-2xl text-sm whitespace-pre-wrap break-words",
+                compact ? "px-3 py-2" : "px-4 py-2.5",
                 message.role === "assistant"
                   ? "bg-card text-foreground border border-border"
                   : "bg-primary text-primary-foreground"
@@ -80,7 +86,7 @@ export function AanConversation() {
               <ArtifactCard
                 artifact={message.draft}
                 onClick={() => openSplit(message.draft!)}
-                className="max-w-sm"
+                className={compact ? "max-w-full" : "max-w-sm"}
               />
             )}
 
@@ -93,16 +99,17 @@ export function AanConversation() {
 
       {/* Generation Progress Indicator - rendered like an assistant message */}
       {isGenerating && (
-        <div className="flex flex-row gap-3">
+        <div className={cn("flex flex-row", compact ? "gap-2" : "gap-3")}>
           <div
             className={cn(
-              "flex h-8 w-8 shrink-0 items-center justify-center text-foreground"
+              "flex shrink-0 items-center justify-center text-foreground",
+              compact ? "h-6 w-6" : "h-8 w-8"
             )}
           >
-            <AanMascot size={20} state="anchor" interactive={false} />
+            <AanMascot size={compact ? 16 : 20} state="anchor" interactive={false} />
           </div>
-          <div className="flex max-w-[80%] flex-col gap-2 items-start">
-            <div className="flex flex-row items-center gap-4 px-5 py-4 rounded-2xl border border-border bg-card shadow-sm w-fit min-w-[280px]">
+          <div className={cn("flex flex-col gap-2 items-start min-w-0", compact ? "max-w-[88%]" : "max-w-[80%]")}>
+            <div className={cn("flex flex-row items-center rounded-2xl border border-border bg-card shadow-sm w-fit", compact ? "gap-3 px-3 py-3" : "gap-4 px-5 py-4 min-w-[280px]")}>
               <div
                 ref={setGenerationAnchorEl}
                 aria-hidden
