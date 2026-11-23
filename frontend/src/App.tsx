@@ -69,6 +69,7 @@ import AMCInstances from "./pages/amc/Instances";
 // Day Parting
 import HourlyData from "./pages/dayparting/HourlyData";
 import Glance from "./pages/glance/Glance";
+import TableDesigns from "./pages/design-lab/TableDesigns";
 
 // Aan
 import AanWorkspacePage from "./pages/aan/Workspace";
@@ -156,6 +157,7 @@ function AppRoutes() {
 
       {/* Sandbox */}
       <Route path="/glance" element={<Glance />} />
+      <Route path="/design-lab/tables" element={<TableDesigns />} />
       <Route path="/workspace" element={<Navigate to="/glance" replace />} />
       <Route path="/workspace/*" element={<Navigate to="/glance" replace />} />
       <Route path="/dashboard" element={<Navigate to="/glance" replace />} />
