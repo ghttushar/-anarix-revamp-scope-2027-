@@ -5,11 +5,11 @@
  *  - ChartCard's bar, on top of every chart
  *
  * Constant controls sit at fixed ends and never move; variable controls go in the middle slot as dropdown chips.
- * Every control in a bar is 32px tall.
+ * Every control in a bar is h-8 (2rem: 36px at this app's 18px root).
  */
 
-/** Height of every control inside a bar (chips, icon buttons, segmented controls, primary buttons). */
-export const BAR_CONTROL_HEIGHT = 32;
+/** Height of every control inside a bar (chips, icon buttons, segmented controls, primary buttons): Tailwind h-8. */
+export const BAR_CONTROL_HEIGHT = "2rem";
 
 /** The one style every dropdown chip in every bar uses. */
 export const BAR_CHIP_CLASS =

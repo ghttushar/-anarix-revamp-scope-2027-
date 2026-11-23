@@ -19,7 +19,7 @@ const buttonVariants = cva(
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
-        /** The bars (page bar, table toolbar, chart bar): every control there is 32px tall. */
+        /** The bars (page bar, table toolbar, chart bar): every control there is h-8. */
         xs: "h-8 rounded-md px-3 text-xs [&_svg]:size-3.5",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",

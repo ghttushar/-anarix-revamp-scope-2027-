@@ -37,7 +37,8 @@ export const BarChipTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functi
     <button ref={ref} type="button" className={cn(BAR_CHIP_CLASS, className)} {...props}>
       {icon && <span className="flex shrink-0 text-muted-foreground [&_svg]:h-3.5 [&_svg]:w-3.5">{icon}</span>}
       {label && <span className="bar-chip-label shrink-0 text-muted-foreground">{label}</span>}
-      {value !== undefined && <span className="min-w-0 truncate font-medium text-foreground">{value}</span>}
+      {/* A long value (a campaign name) truncates so the bar stays one row; the full text is in the menu. */}
+      {value !== undefined && <span className="min-w-0 max-w-[12rem] truncate font-medium text-foreground">{value}</span>}
       {children}
       {!noCaret && <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
     </button>

@@ -19,7 +19,7 @@ interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "chi
 }
 
 /**
- * An icon-only bar action (32×32) with its name in a tooltip. Bars never spell actions out in text; the only labelled
+ * An icon-only bar action (h-8 square) with its name in a tooltip. Bars never spell actions out in text; the only labelled
  * button in a bar is its primary action (Run, Create…).
  */
 export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIconButton(

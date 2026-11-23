@@ -21,7 +21,7 @@ interface Props<V extends string> {
 }
 
 /**
- * A segmented switch (32px): a table's view switch (Products | Orders) and a chart's type switch (line | bar | area).
+ * A segmented switch (h-8): a table's view switch (Products | Orders) and a chart's type switch (line | bar | area).
  * One look everywhere: a muted track with the selected segment raised on the card color.
  */
 export function BarSegmented<V extends string>({ value, onChange, items, iconOnly, className, ...rest }: Props<V>) {
