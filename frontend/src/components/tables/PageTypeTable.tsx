@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { Input } from "@/components/ui/input";
 import {
-  Table, TableBody, TableCell, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
 import { mockPageTypes, pageTypesTotals } from "@/data/mockPageTypePlatform";
@@ -58,7 +57,7 @@ export function PageTypeTable({ searchQuery = "", showDeltas = false }: PageType
   const TotalCell = ({ value, metric }: { value: string; metric: string }) => (
     <div className="flex flex-col items-end">
       <span className="text-foreground">{value}</span>
-      {showDeltas && <DeltaBadge value={getDelta("total", metric)} />}
+      <DeltaBadge value={getDelta("total", metric)} />
     </div>
   );
 
@@ -69,7 +68,7 @@ export function PageTypeTable({ searchQuery = "", showDeltas = false }: PageType
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
+            <TableRow className="bg-card hover:bg-card">
               <SortableTableHead field="pageType" {...sp} className={cn("min-w-[180px]", pc("pageType", true))} style={ps("pageType")}>Page Type</SortableTableHead>
               <SortableTableHead field="bidModifier" {...sp} className={cn("w-32 text-right", pc("bidModifier", true))} style={ps("bidModifier")} align="right">Bid Modifier %</SortableTableHead>
               <SortableTableHead field="impressions" {...sp} className={cn("text-right", pc("impressions", true))} style={ps("impressions")} align="right">Impressions</SortableTableHead>
@@ -81,6 +80,17 @@ export function PageTypeTable({ searchQuery = "", showDeltas = false }: PageType
               <SortableTableHead field="roas" {...sp} className={cn("text-right", pc("roas", true))} style={ps("roas")} align="right">ROAS</SortableTableHead>
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
+            <TableTotalsRow>
+              <TableCell colSpan={2} className="font-semibold">Total ({filteredTypes.length} page types)</TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(pageTypesTotals.impressions)} metric="impressions" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(pageTypesTotals.clicks)} metric="clicks" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(pageTypesTotals.ctr)} metric="ctr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(pageTypesTotals.cpc)} metric="cpc" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(pageTypesTotals.adSpend)} metric="adSpend" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(pageTypesTotals.adSales)} metric="adSales" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={pageTypesTotals.roas.toFixed(2)} metric="roas" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(pageTypesTotals.acos)} metric="acos" /></TableCell>
+            </TableTotalsRow>
           </TableHeader>
           <TableBody>
             {paginatedTypes.map((pageType) => (
@@ -102,17 +112,6 @@ export function PageTypeTable({ searchQuery = "", showDeltas = false }: PageType
                 <TableCell style={ps("acos")} className={cn("text-right", pc("acos"))}><NumCell formatted={formatPercent(pageType.acos)} id={pageType.id} metric="acos" /></TableCell>
               </TableRow>
             ))}
-            <TableRow className="bg-muted font-medium hover:bg-muted">
-              <TableCell colSpan={2} className="font-semibold">Total ({filteredTypes.length} page types)</TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(pageTypesTotals.impressions)} metric="impressions" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(pageTypesTotals.clicks)} metric="clicks" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(pageTypesTotals.ctr)} metric="ctr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(pageTypesTotals.cpc)} metric="cpc" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(pageTypesTotals.adSpend)} metric="adSpend" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(pageTypesTotals.adSales)} metric="adSales" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={pageTypesTotals.roas.toFixed(2)} metric="roas" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(pageTypesTotals.acos)} metric="acos" /></TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

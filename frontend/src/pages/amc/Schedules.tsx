@@ -48,7 +48,7 @@ export default function AMCSchedules() {
           <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableRow className="bg-card hover:bg-card">
                 <TableHead>Schedule Name</TableHead>
                 <TableHead>Query</TableHead>
                 <TableHead>Frequency</TableHead>

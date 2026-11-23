@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
-  Table, TableBody, TableCell, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { profitabilityProducts } from "@/data/mockProfitability";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -63,8 +62,8 @@ export function RegionalProductTable({ searchValue = "", sortField: externalSort
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
-              <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-20 bg-muted min-w-[300px] border-r border-border">Product Details</SortableTableHead>
+            <TableRow className="bg-card hover:bg-card">
+              <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[300px] border-r border-border">Product Details</SortableTableHead>
               <SortableTableHead field="units" {...sp} className={cn("text-right", pc("units", true))} style={ps("units")} align="right">Units</SortableTableHead>
               <SortableTableHead field="gmv" {...sp} className={cn("text-right", pc("gmv", true))} style={ps("gmv")} align="right">GMV</SortableTableHead>
               <SortableTableHead field="authSales" {...sp} className={cn("text-right", pc("authSales", true))} style={ps("authSales")} align="right">Auth Sales</SortableTableHead>
@@ -72,13 +71,22 @@ export function RegionalProductTable({ searchValue = "", sortField: externalSort
               <SortableTableHead field="netProfit" {...sp} className={cn("text-right", pc("netProfit", true))} style={ps("netProfit")} align="right">Net Profit</SortableTableHead>
               <SortableTableHead field="margin" {...sp} className={cn("text-right", pc("margin", true))} style={ps("margin")} align="right">Margin</SortableTableHead>
             </TableRow>
+            <TableTotalsRow>
+              <TableCell className="sticky left-0 z-10 bg-card border-r border-border">Total ({filtered.length} products)</TableCell>
+              <TableCell className="text-right text-foreground">{formatNumber(totals.units)}</TableCell>
+              <TableCell className="text-right text-foreground">{formatCurrency(totals.gmv)}</TableCell>
+              <TableCell className="text-right text-foreground">{formatCurrency(totals.authSales)}</TableCell>
+              <TableCell className="text-right text-foreground">{formatCurrency(totals.adSpend)}</TableCell>
+              <TableCell className="text-right font-medium text-foreground">{formatCurrency(totals.netProfit)}</TableCell>
+              <TableCell className="text-right text-foreground">{totalMargin.toFixed(1)}%</TableCell>
+            </TableTotalsRow>
           </TableHeader>
           <TableBody>
             {paginated.map((product) => {
               const margin = product.gmv > 0 ? (product.netProfit / product.gmv) * 100 : 0;
               return (
                 <TableRow key={product.id} className="hover:bg-muted/30 group">
-                  <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted transition-colors border-r border-border">
+                  <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors border-r border-border">
                     <div className="flex items-center gap-3">
                       <img src={product.image} alt={product.name} className="h-10 w-10 rounded-md border border-border object-cover flex-shrink-0" />
                       <div className="flex flex-col min-w-0">
@@ -102,15 +110,6 @@ export function RegionalProductTable({ searchValue = "", sortField: externalSort
                 </TableRow>
               );
             })}
-            <TableRow className="bg-muted font-medium hover:bg-muted">
-              <TableCell className="sticky left-0 z-10 bg-muted border-r border-border font-semibold">Total ({filtered.length} products)</TableCell>
-              <TableCell className="text-right text-foreground">{formatNumber(totals.units)}</TableCell>
-              <TableCell className="text-right text-foreground">{formatCurrency(totals.gmv)}</TableCell>
-              <TableCell className="text-right text-foreground">{formatCurrency(totals.authSales)}</TableCell>
-              <TableCell className="text-right text-foreground">{formatCurrency(totals.adSpend)}</TableCell>
-              <TableCell className="text-right font-medium text-foreground">{formatCurrency(totals.netProfit)}</TableCell>
-              <TableCell className="text-right text-foreground">{totalMargin.toFixed(1)}%</TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

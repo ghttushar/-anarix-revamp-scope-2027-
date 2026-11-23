@@ -3,8 +3,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
 import { mockSearchTerms, searchTermsTotals } from "@/data/mockSearchTerms";
@@ -73,7 +72,7 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
   const TotalCell = ({ value, metric }: { value: string; metric: string }) => (
     <div className="flex flex-col items-end">
       <span className="text-foreground">{value}</span>
-      {showDeltas && <DeltaBadge value={getDelta("total", metric)} />}
+      <DeltaBadge value={getDelta("total", metric)} />
     </div>
   );
 
@@ -84,11 +83,11 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
-              <TableHead className="w-10 sticky left-0 z-10 bg-muted">
+            <TableRow className="bg-card hover:bg-card">
+              <TableHead className="w-10 sticky left-0 z-10 bg-card">
                 <Checkbox checked={selectedRows.size === paginatedTerms.length && paginatedTerms.length > 0} onCheckedChange={toggleAll} />
               </TableHead>
-              <SortableTableHead field="searchTerm" {...sp} isFixed className="min-w-[200px] sticky left-[40px] z-10 bg-muted">Search Term</SortableTableHead>
+              <SortableTableHead field="searchTerm" {...sp} isFixed className="min-w-[200px] sticky left-[40px] z-10 bg-card">Search Term</SortableTableHead>
               <SortableTableHead field="keyword" {...sp} className={cn("min-w-[150px]", pc("keyword", true))} style={ps("keyword")}>Keyword</SortableTableHead>
               <TableHead className="w-24">Match Type</TableHead>
               <SortableTableHead field="adGroupName" {...sp} className={cn("min-w-[150px]", pc("adGroupName", true))} style={ps("adGroupName")}>Ad Group</SortableTableHead>
@@ -104,14 +103,27 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
               <SortableTableHead field="roas" {...sp} className={cn("text-right", pc("roas", true))} style={ps("roas")} align="right">ROAS</SortableTableHead>
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
+            <TableTotalsRow>
+              <TableCell colSpan={6} className="font-semibold">Total ({filteredTerms.length} search terms)</TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.impressions)} metric="impressions" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.clicks)} metric="clicks" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(searchTermsTotals.ctr)} metric="ctr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.adUnits)} metric="adUnits" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(searchTermsTotals.cvr)} metric="cvr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(searchTermsTotals.cpc)} metric="cpc" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(searchTermsTotals.adSpend)} metric="adSpend" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(searchTermsTotals.adSpend * 3.8)} metric="adSales" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={(3.8).toFixed(2)} metric="roas" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(26.3)} metric="acos" /></TableCell>
+            </TableTotalsRow>
           </TableHeader>
           <TableBody>
             {paginatedTerms.map((term) => (
               <TableRow key={term.id} className="group cursor-pointer hover:bg-muted/50 transition-colors">
-                <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted transition-colors">
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
                   <Checkbox checked={selectedRows.has(term.id)} onCheckedChange={() => toggleRow(term.id)} />
                 </TableCell>
-                <TableCell className="font-medium text-foreground sticky left-[40px] z-10 bg-background group-hover:bg-muted transition-colors">{term.searchTerm}</TableCell>
+                <TableCell className="font-medium text-foreground sticky left-[40px] z-10 bg-card group-hover:bg-muted transition-colors">{term.searchTerm}</TableCell>
                 <TableCell style={ps("keyword")} className={cn("text-foreground", pc("keyword"))}>{term.keyword}</TableCell>
                 <TableCell><Badge variant="outline" className={cn("text-xs uppercase", matchTypeColors[term.matchType])}>{term.matchType}</Badge></TableCell>
                 <TableCell style={ps("adGroupName")} className={cn("text-foreground", pc("adGroupName"))}>{term.adGroupName}</TableCell>
@@ -142,19 +154,6 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
                 <TableCell style={ps("acos")} className={cn("text-right", pc("acos"))}><NumCell formatted={formatPercent(26.3)} id={term.id} metric="acos" /></TableCell>
               </TableRow>
             ))}
-            <TableRow className="bg-muted font-medium hover:bg-muted">
-              <TableCell colSpan={6} className="font-semibold">Total ({filteredTerms.length} search terms)</TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.impressions)} metric="impressions" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.clicks)} metric="clicks" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(searchTermsTotals.ctr)} metric="ctr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.adUnits)} metric="adUnits" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(searchTermsTotals.cvr)} metric="cvr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(searchTermsTotals.cpc)} metric="cpc" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(searchTermsTotals.adSpend)} metric="adSpend" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(searchTermsTotals.adSpend * 3.8)} metric="adSales" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={(3.8).toFixed(2)} metric="roas" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(26.3)} metric="acos" /></TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

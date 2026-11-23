@@ -37,7 +37,11 @@ export function SortableTableHead({
   const isSorted = sortField === field;
 
   return (
-    <TableHead className={cn("group/sort select-none", className)} style={style}>
+    <TableHead
+      className={cn("group/sort select-none", isSorted && "text-primary", className)}
+      style={style}
+      aria-sort={isSorted ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}
+    >
       <div
         className={cn(
           "flex items-center gap-1.5",
@@ -130,7 +134,7 @@ export function usePinning(allFields: string[], fixedOffset: number = 0, columnW
     getPinnedStyle(field, pinnedColumns, allFields, fixedOffset, columnWidth);
   const pc = (field: string, isHeader: boolean = false): string => {
     if (!pinnedColumns.has(field)) return "";
-    return isHeader ? "bg-muted" : "bg-background group-hover:bg-muted transition-colors";
+    return isHeader ? "bg-card" : "bg-card group-hover:bg-muted transition-colors";
   };
   return { pinnedColumns, handlePinToggle, ps, pc };
 }

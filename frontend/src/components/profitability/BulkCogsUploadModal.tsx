@@ -286,7 +286,7 @@ function SelectedView({
               {file.name}
             </span>
           </div>
-          <span className="text-sm text-foreground text-right tabular-nums">
+          <span className="text-foreground text-right tabular-nums">
             {formatBytes(file.size)}
           </span>
         </div>

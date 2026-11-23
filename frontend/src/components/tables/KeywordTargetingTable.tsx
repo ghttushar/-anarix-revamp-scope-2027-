@@ -3,8 +3,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status/StatusBadge";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
@@ -64,7 +63,7 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
   const TotalCell = ({ value, metric }: { value: string; metric: string }) => (
     <div className="flex flex-col items-end">
       <span className="text-foreground">{value}</span>
-      {showDeltas && <DeltaBadge value={getDelta("total", metric)} />}
+      <DeltaBadge value={getDelta("total", metric)} />
     </div>
   );
 
@@ -75,9 +74,9 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
-              <TableHead className="w-24 sticky left-0 z-10 bg-muted">Status</TableHead>
-              <SortableTableHead field="keyword" {...sp} isFixed className="min-w-[200px] sticky left-[96px] z-10 bg-muted">Keyword</SortableTableHead>
+            <TableRow className="bg-card hover:bg-card">
+              <TableHead className="w-24 sticky left-0 z-10 bg-card">Status</TableHead>
+              <SortableTableHead field="keyword" {...sp} isFixed className="min-w-[200px] sticky left-[96px] z-10 bg-card">Keyword</SortableTableHead>
               <TableHead className="w-24">Match Type</TableHead>
               <SortableTableHead field="adGroupName" {...sp} className={cn("min-w-[150px]", pc("adGroupName", true))} style={ps("adGroupName")}>Ad Group</SortableTableHead>
               <SortableTableHead field="campaignName" {...sp} className={cn("min-w-[180px]", pc("campaignName", true))} style={ps("campaignName")}>Campaign</SortableTableHead>
@@ -93,12 +92,22 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
               <SortableTableHead field="cpc" {...sp} className={cn("text-right", pc("cpc", true))} style={ps("cpc")} align="right">CPC</SortableTableHead>
               <SortableTableHead field="adSpend" {...sp} className={cn("text-right", pc("adSpend", true))} style={ps("adSpend")} align="right">Ad Spend</SortableTableHead>
             </TableRow>
+            <TableTotalsRow>
+              <TableCell colSpan={9} className="font-semibold">Total ({filteredKeywords.length} keywords)</TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.impressions)} metric="impressions" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.clicks)} metric="clicks" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(keywordsTotals.ctr)} metric="ctr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.adUnits)} metric="adUnits" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(keywordsTotals.cvr)} metric="cvr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(keywordsTotals.cpc)} metric="cpc" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(keywordsTotals.adSpend)} metric="adSpend" /></TableCell>
+            </TableTotalsRow>
           </TableHeader>
           <TableBody>
             {paginatedKeywords.map((keyword) => (
               <TableRow key={keyword.id} className="group cursor-pointer hover:bg-muted/50 transition-colors">
-                <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted transition-colors"><StatusBadge status={keyword.status} /></TableCell>
-                <TableCell className="font-medium text-foreground sticky left-[96px] z-10 bg-background group-hover:bg-muted transition-colors">{keyword.keyword}</TableCell>
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={keyword.status} /></TableCell>
+                <TableCell className="font-medium text-foreground sticky left-[96px] z-10 bg-card group-hover:bg-muted transition-colors">{keyword.keyword}</TableCell>
                 <TableCell><Badge variant="outline" className={cn("text-xs uppercase", matchTypeColors[keyword.matchType])}>{keyword.matchType}</Badge></TableCell>
                 <TableCell style={ps("adGroupName")} className={cn("text-foreground", pc("adGroupName"))}>{keyword.adGroupName}</TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
@@ -122,16 +131,6 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
                 <TableCell style={ps("adSpend")} className={cn("text-right", pc("adSpend"))}><NumCell formatted={formatCurrency(keyword.adSpend)} id={keyword.id} metric="adSpend" /></TableCell>
               </TableRow>
             ))}
-            <TableRow className="bg-muted font-medium hover:bg-muted">
-              <TableCell colSpan={9} className="font-semibold">Total ({filteredKeywords.length} keywords)</TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.impressions)} metric="impressions" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.clicks)} metric="clicks" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(keywordsTotals.ctr)} metric="ctr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.adUnits)} metric="adUnits" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(keywordsTotals.cvr)} metric="cvr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(keywordsTotals.cpc)} metric="cpc" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(keywordsTotals.adSpend)} metric="adSpend" /></TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

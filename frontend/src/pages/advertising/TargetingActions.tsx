@@ -233,15 +233,15 @@ export default function TargetingActions() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted hover:bg-muted">
-                  <TableHead className="w-10 sticky left-0 z-10 bg-muted">
+                <TableRow className="bg-card hover:bg-card">
+                  <TableHead className="w-10 sticky left-0 z-10 bg-card">
                     <Checkbox
                       checked={allSelected ? true : someSelected ? "indeterminate" : false}
                       onCheckedChange={toggleAll}
                       aria-label="Select all rows"
                     />
                   </TableHead>
-                  <TableHead className="min-w-[200px] sticky left-10 z-10 bg-muted">Search Term</TableHead>
+                  <TableHead className="min-w-[200px] sticky left-10 z-10 bg-card">Search Term</TableHead>
                   <TableHead className="min-w-[160px]">Normalized Term</TableHead>
                   <TableHead className="min-w-[140px]">Source Campaign</TableHead>
                   <TableHead className="min-w-[130px]">Source AdGroup</TableHead>
@@ -268,10 +268,10 @@ export default function TargetingActions() {
                   const isArchived = archivedIds.has(action.id);
                   return (
                     <TableRow key={action.id} data-state={isSelected ? "selected" : undefined} className={cn("group data-[state=selected]:bg-primary/5")}>
-                      <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors">
+                      <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors">
                         <Checkbox checked={isSelected} onCheckedChange={() => toggleRow(action.id)} aria-label={`Select ${action.searchTerm}`} />
                       </TableCell>
-                      <TableCell className="sticky left-10 z-10 bg-background group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors">
+                      <TableCell className="sticky left-10 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors">
                         <div className="space-y-1">
                           <span className="font-medium text-sm text-foreground">{action.searchTerm}</span>
                           <Select defaultValue={action.termType}>

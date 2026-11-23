@@ -49,7 +49,7 @@ export function LogsTable({ rows, isLoading = false }: LogsTableProps) {
     <div className="np-app rounded-lg border border-border bg-card overflow-hidden">
       <Table>
         <TableHeader>
-          <tr className="bg-muted/30 hover:bg-muted/30">
+          <tr className="bg-card hover:bg-card">
             <SortableTableHead field="entity" isFixed className="min-w-[220px]" {...plain}>{head("Entity")}</SortableTableHead>
             <SortableTableHead field="entityType" className="min-w-[130px]" {...plain}>{head("Entity Type")}</SortableTableHead>
             <SortableTableHead field="service" className="min-w-[110px]" {...plain}>{head("Service")}</SortableTableHead>

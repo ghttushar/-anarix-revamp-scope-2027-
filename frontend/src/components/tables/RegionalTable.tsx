@@ -68,7 +68,7 @@ export function RegionalTable({ data, searchValue = "", showDeltas = false }: Re
     return (
       <>
         <TableRow key={region.id} className={cn("hover:bg-muted/30 group cursor-pointer transition-colors", isChild && "bg-muted/10")}>
-          <TableCell className={cn("sticky left-0 z-10 border-r border-border transition-colors", isChild ? "bg-muted group-hover:bg-muted" : "bg-background group-hover:bg-muted")}>
+          <TableCell className={cn("sticky left-0 z-10 border-r border-border transition-colors", isChild ? "bg-muted group-hover:bg-muted" : "bg-card group-hover:bg-muted")}>
             <div className={cn("flex items-center gap-2", isChild && "pl-8")}>
               {hasChildren ? (
                 <button onClick={() => toggleRow(region.id)} className="p-0.5 hover:bg-muted rounded">
@@ -98,8 +98,8 @@ export function RegionalTable({ data, searchValue = "", showDeltas = false }: Re
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted">
-              <SortableTableHead field="region" {...sp} isFixed className="sticky left-0 z-20 bg-muted min-w-[200px] border-r border-border">Region</SortableTableHead>
+            <TableRow className="bg-card">
+              <SortableTableHead field="region" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[200px] border-r border-border">Region</SortableTableHead>
               <SortableTableHead field="stocks" {...sp} className={cn("text-right", pc("stocks", true))} style={ps("stocks")} align="right">Stocks</SortableTableHead>
               <SortableTableHead field="orders" {...sp} className={cn("text-right", pc("orders", true))} style={ps("orders")} align="right">Orders</SortableTableHead>
               <SortableTableHead field="unitsSold" {...sp} className={cn("text-right", pc("unitsSold", true))} style={ps("unitsSold")} align="right">Units Sold</SortableTableHead>

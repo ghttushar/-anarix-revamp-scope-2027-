@@ -275,7 +275,7 @@ export default function HourlyData() {
                 <div className="rounded-lg border border-border bg-card overflow-auto">
                   <Table>
                     <TableHeader>
-                      <tr className="bg-muted/30 hover:bg-muted/30">
+                      <tr className="bg-card hover:bg-card">
                         <SortableTableHead field="name" isFixed className="min-w-[260px]" {...sp}>Campaign</SortableTableHead>
                         <SortableTableHead field="status" align="center" {...sp}>Status</SortableTableHead>
                         <SortableTableHead field="budget" align="right" {...sp} style={ps("budget")} className={cn(pc("budget", true))}>Budget</SortableTableHead>

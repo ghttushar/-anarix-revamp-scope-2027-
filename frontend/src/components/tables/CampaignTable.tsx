@@ -148,7 +148,7 @@ export function CampaignTable({
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-              <TableRow className="bg-muted">
+              <TableRow className="bg-card">
               {isEdit && onSelectionChange && (
                 <TableHead className="w-10">
                   <Checkbox
@@ -162,8 +162,8 @@ export function CampaignTable({
                 </TableHead>
               )}
               {isEdit && show("active") && <TableHead className="w-16">Active</TableHead>}
-              {show("status") && <TableHead className="w-28 sticky left-0 z-10 bg-muted">Status</TableHead>}
-              {show("name") && <TableHead className={cn("min-w-[220px] sticky z-10 bg-muted", isEdit ? "left-[64px]" : "left-[112px]")}>
+              {show("status") && <TableHead className="w-28 sticky left-0 z-10 bg-card">Status</TableHead>}
+              {show("name") && <TableHead className={cn("min-w-[220px] sticky z-10 bg-card", isEdit ? "left-[64px]" : "left-[112px]")}>
                 Campaign Name
               </TableHead>}
               {show("startDate") && <TableHead>Start Date</TableHead>}
@@ -179,6 +179,7 @@ export function CampaignTable({
               {show("ctr") && <TableHead className="text-right">CTR</TableHead>}
               {show("acos") && <TableHead className="text-right">ACOS</TableHead>}
             </TableRow>
+            <CampaignTableTotalRow campaigns={campaigns} showTotalBudget={showTotalBudget} viewMode={viewMode} />
           </TableHeader>
           <TableBody>
             {paginatedCampaigns.map((campaign) => (
@@ -208,8 +209,8 @@ export function CampaignTable({
                         <Switch checked={campaign.isActive} onCheckedChange={(checked) => onActiveToggle?.(campaign.id, checked)} disabled={campaign.status === "archived" || campaign.status === "completed"} />
                       </TableCell>
                     )}
-                    {show("status") && <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted transition-colors"><StatusBadge status={campaign.status} /></TableCell>}
-                    {show("name") && <TableCell className={cn("font-medium sticky z-10 bg-background group-hover:bg-muted transition-colors", isEdit ? "left-[64px]" : "left-[112px]")}>
+                    {show("status") && <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={campaign.status} /></TableCell>}
+                    {show("name") && <TableCell className={cn("font-medium sticky z-10 bg-card group-hover:bg-muted transition-colors", isEdit ? "left-[64px]" : "left-[112px]")}>
                       <div className="space-y-1 min-w-[200px]">
                         {isEdit ? (
                           <Input defaultValue={campaign.name} className="h-8 text-sm" onBlur={(e) => onCampaignUpdate?.(campaign.id, { name: e.target.value })} onClick={(e) => e.stopPropagation()} />
@@ -251,7 +252,7 @@ export function CampaignTable({
                             onChange={(date) => onCampaignUpdate?.(campaign.id, { startDate: date || "" })}
                           />
                         </span>
-                      ) : <span className="text-sm text-foreground whitespace-nowrap">{campaign.startDate}</span>}
+                      ) : <span className="text-foreground whitespace-nowrap">{campaign.startDate}</span>}
                     </TableCell>}
                     {show("endDate") && <TableCell>
                       {isEdit ? (
@@ -262,7 +263,7 @@ export function CampaignTable({
                             placeholder="No end date"
                           />
                         </span>
-                      ) : <span className="text-sm text-foreground whitespace-nowrap">{campaign.endDate || "—"}</span>}
+                      ) : <span className="text-foreground whitespace-nowrap">{campaign.endDate || "—"}</span>}
                     </TableCell>}
                     {show("biddingStrategy") && <TableCell>
                       {isEdit ? (
@@ -272,7 +273,7 @@ export function CampaignTable({
                             <SelectContent>{BIDDING_OPTIONS.map((b) => <SelectItem key={b} value={b} className="text-xs cursor-pointer">{b}</SelectItem>)}</SelectContent>
                           </Select>
                         </span>
-                      ) : <span className="text-sm text-foreground whitespace-nowrap">{campaign.biddingStrategy}</span>}
+                      ) : <span className="text-foreground whitespace-nowrap">{campaign.biddingStrategy}</span>}
                     </TableCell>}
                     {show("dailyBudget") && <TableCell className="text-right">
                       {isEdit ? (
@@ -338,7 +339,6 @@ export function CampaignTable({
                 {onRowClick && <TooltipContent side="top">Click to view campaign details</TooltipContent>}
               </Tooltip>
             ))}
-            <CampaignTableTotalRow campaigns={campaigns} showTotalBudget={showTotalBudget} viewMode={viewMode} />
           </TableBody>
         </Table>
       </div>

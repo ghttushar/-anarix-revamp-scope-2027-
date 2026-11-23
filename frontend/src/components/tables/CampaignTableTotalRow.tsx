@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from "@/components/ui/table";
+import { TableCell, TableTotalsRow } from "@/components/ui/table";
 import { Campaign } from "@/types/campaign";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
@@ -49,8 +49,8 @@ export function CampaignTableTotalRow({ campaigns, showTotalBudget = true, viewM
   const labelColSpan = isEdit ? 3 : 2;
 
   return (
-    <TableRow className="bg-muted/30 font-medium">
-      <TableCell colSpan={labelColSpan} className="text-foreground">Total ({campaigns.length} campaigns)</TableCell>
+    <TableTotalsRow>
+      <TableCell colSpan={labelColSpan}>Total ({campaigns.length} campaigns)</TableCell>
       {/* Start Date, End Date, Bidding Strategy — empty for totals */}
       <TableCell />
       <TableCell />
@@ -66,6 +66,6 @@ export function CampaignTableTotalRow({ campaigns, showTotalBudget = true, viewM
       <TableCell className="text-right"><TotalCell value={formatNumber(totals.clicks)} metric="clicks" /></TableCell>
       <TableCell className="text-right"><TotalCell value={formatPercent(derivedTotals.ctr)} metric="ctr" /></TableCell>
       <TableCell className="text-right"><TotalCell value={formatPercent(derivedTotals.acos)} metric="acos" /></TableCell>
-    </TableRow>
+    </TableTotalsRow>
   );
 }

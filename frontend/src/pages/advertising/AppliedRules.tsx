@@ -110,7 +110,7 @@ export default function AppliedRules() {
         <div className="rounded-lg border border-border">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableRow className="bg-card hover:bg-card">
                 <SortHeader label="Rule Name" field="name" />
                 <SortHeader label="Rule Type" field="ruleType" />
                 <SortHeader label="Entities Count" field="entitiesCount" />

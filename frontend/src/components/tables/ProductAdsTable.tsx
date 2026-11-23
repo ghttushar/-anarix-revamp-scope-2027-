@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status/StatusBadge";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
@@ -75,7 +74,7 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
   const TotalCell = ({ value, metric }: { value: string; metric: string }) => (
     <div className="flex flex-col items-end">
       <span className="text-foreground">{value}</span>
-      {showDeltas && <DeltaBadge value={getDelta("total", metric)} />}
+      <DeltaBadge value={getDelta("total", metric)} />
     </div>
   );
 
@@ -99,12 +98,12 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted hover:bg-muted">
-                <TableHead className="w-10 sticky left-0 z-10 bg-muted">
+              <TableRow className="bg-card hover:bg-card">
+                <TableHead className="w-10 sticky left-0 z-10 bg-card">
                   <Checkbox checked={selectedRows.size === paginatedAds.length && paginatedAds.length > 0} onCheckedChange={toggleAll} />
                 </TableHead>
-                <TableHead className="w-24 sticky left-[40px] z-10 bg-muted">Status</TableHead>
-                <SortableTableHead field="productName" {...sp} isFixed className="min-w-[300px] sticky left-[136px] z-10 bg-muted">Product Ad</SortableTableHead>
+                <TableHead className="w-24 sticky left-[40px] z-10 bg-card">Status</TableHead>
+                <SortableTableHead field="productName" {...sp} isFixed className="min-w-[300px] sticky left-[136px] z-10 bg-card">Product Ad</SortableTableHead>
                 <SortableTableHead field="adGroupName" {...sp} className={cn("min-w-[150px]", pc("adGroupName", true))} style={ps("adGroupName")}>Ad Group</SortableTableHead>
                 <SortableTableHead field="campaignName" {...sp} className={cn("min-w-[150px]", pc("campaignName", true))} style={ps("campaignName")}>Campaign</SortableTableHead>
                 <SortableTableHead field="impressions" {...sp} className={cn("text-right", pc("impressions", true))} style={ps("impressions")} align="right">Impressions</SortableTableHead>
@@ -118,15 +117,28 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
                 <SortableTableHead field="roas" {...sp} className={cn("text-right", pc("roas", true))} style={ps("roas")} align="right">ROAS</SortableTableHead>
                 <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
               </TableRow>
+              <TableTotalsRow>
+                <TableCell colSpan={5} className="font-semibold">Total ({filteredAds.length} product ads)</TableCell>
+                <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.impressions)} metric="impressions" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.clicks)} metric="clicks" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatPercent(productAdsTotals.ctr)} metric="ctr" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.adUnits)} metric="adUnits" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatPercent(productAdsTotals.cvr)} metric="cvr" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatCurrency(productAdsTotals.cpc)} metric="cpc" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatCurrency(productAdsTotals.adSpend)} metric="adSpend" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatCurrency(productAdsTotals.adSpend * 4.2)} metric="adSales" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={(4.2).toFixed(2)} metric="roas" /></TableCell>
+                <TableCell className="text-right"><TotalCell value={formatPercent(23.8)} metric="acos" /></TableCell>
+              </TableTotalsRow>
             </TableHeader>
             <TableBody>
               {paginatedAds.map((ad) => (
                 <TableRow key={ad.id} className="group cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => onRowClick?.(ad)}>
-                  <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted transition-colors">
+                  <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
                     <Checkbox checked={selectedRows.has(ad.id)} onCheckedChange={() => toggleRow(ad.id)} />
                   </TableCell>
-                  <TableCell className="sticky left-[40px] z-10 bg-background group-hover:bg-muted transition-colors"><StatusBadge status={ad.status} /></TableCell>
-                  <TableCell className="sticky left-[136px] z-10 bg-background group-hover:bg-muted transition-colors">
+                  <TableCell className="sticky left-[40px] z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={ad.status} /></TableCell>
+                  <TableCell className="sticky left-[136px] z-10 bg-card group-hover:bg-muted transition-colors">
                     <div className="flex items-center gap-3">
                       <img src={ad.productImage} alt={ad.productName} className="h-10 w-10 rounded-md object-cover" />
                       <div className="flex flex-col">
@@ -163,19 +175,6 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
                   <TableCell style={ps("acos")} className={cn("text-right", pc("acos"))}><NumCell formatted={formatPercent(23.8)} id={ad.id} metric="acos" /></TableCell>
                 </TableRow>
               ))}
-              <TableRow className="bg-muted font-medium hover:bg-muted">
-                <TableCell colSpan={5} className="font-semibold">Total ({filteredAds.length} product ads)</TableCell>
-                <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.impressions)} metric="impressions" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.clicks)} metric="clicks" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatPercent(productAdsTotals.ctr)} metric="ctr" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.adUnits)} metric="adUnits" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatPercent(productAdsTotals.cvr)} metric="cvr" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatCurrency(productAdsTotals.cpc)} metric="cpc" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatCurrency(productAdsTotals.adSpend)} metric="adSpend" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatCurrency(productAdsTotals.adSpend * 4.2)} metric="adSales" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={(4.2).toFixed(2)} metric="roas" /></TableCell>
-                <TableCell className="text-right"><TotalCell value={formatPercent(23.8)} metric="acos" /></TableCell>
-              </TableRow>
             </TableBody>
           </Table>
         </div>

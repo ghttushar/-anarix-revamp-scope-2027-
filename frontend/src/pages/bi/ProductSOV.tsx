@@ -50,7 +50,7 @@ export default function ProductSOV() {
           <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableRow className="bg-card hover:bg-card">
                 <TableHead className="min-w-[300px]">Product</TableHead>
                 <TableHead className="text-right">Avg Position</TableHead>
                 <TableHead className="text-right">Impressions</TableHead>

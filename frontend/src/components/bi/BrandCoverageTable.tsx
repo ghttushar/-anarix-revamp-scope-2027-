@@ -37,7 +37,7 @@ export function BrandCoverageTable({ brands, onViewTrend }: BrandCoverageTablePr
     <div className="rounded-lg border border-border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted">
+          <TableRow className="bg-card">
             <SortableTableHead field="id" {...sp} isFixed className="w-[60px]">SI No</SortableTableHead>
             <SortableTableHead field="name" {...sp} className={cn(pc("name", true))} style={ps("name")}>Brand</SortableTableHead>
             <SortableTableHead field="productCount" {...sp} className={cn("text-right", pc("productCount", true))} style={ps("productCount")} align="right">Product Count</SortableTableHead>

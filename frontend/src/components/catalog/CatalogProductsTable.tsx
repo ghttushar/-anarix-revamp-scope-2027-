@@ -78,8 +78,8 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
-              <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-10 bg-muted min-w-[350px]">Product Details</SortableTableHead>
+            <TableRow className="bg-card hover:bg-card">
+              <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-10 bg-card min-w-[350px]">Product Details</SortableTableHead>
               <SortableTableHead field="status" {...sp} className={cn(pc("status", true))} style={ps("status")}>Status</SortableTableHead>
               <SortableTableHead field="reviews" {...sp} className={cn(pc("reviews", true))} style={ps("reviews")}>Reviews</SortableTableHead>
               <SortableTableHead field="inventoryCount" {...sp} className={cn("text-right", pc("inventoryCount", true))} style={ps("inventoryCount")} align="right">Inventory</SortableTableHead>
@@ -99,7 +99,7 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
           <TableBody>
             {paginated.map((product) => (
               <TableRow key={product.id} className="hover:bg-muted/30 group">
-                <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted min-w-[350px] transition-colors">
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted min-w-[350px] transition-colors">
                   <div className="flex items-center gap-3">
                     <img src={product.image} alt={product.name} className="h-10 w-10 rounded-md border border-border object-cover" />
                     <div className="flex flex-col">

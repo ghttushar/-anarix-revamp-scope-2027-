@@ -3,8 +3,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status/StatusBadge";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
@@ -58,7 +57,7 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
   const TotalCell = ({ value, metric }: { value: string; metric: string }) => (
     <div className="flex flex-col items-end">
       <span className="text-foreground">{value}</span>
-      {showDeltas && <DeltaBadge value={getDelta("total", metric)} />}
+      <DeltaBadge value={getDelta("total", metric)} />
     </div>
   );
 
@@ -69,9 +68,9 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
-              <TableHead className="w-24 sticky left-0 z-10 bg-muted">Status</TableHead>
-              <SortableTableHead field="name" {...sp} isFixed className="min-w-[200px] sticky left-[96px] z-10 bg-muted">Ad Group</SortableTableHead>
+            <TableRow className="bg-card hover:bg-card">
+              <TableHead className="w-24 sticky left-0 z-10 bg-card">Status</TableHead>
+              <SortableTableHead field="name" {...sp} isFixed className="min-w-[200px] sticky left-[96px] z-10 bg-card">Ad Group</SortableTableHead>
               <SortableTableHead field="campaignName" {...sp} className={cn("min-w-[200px]", pc("campaignName", true))} style={ps("campaignName")}>Campaign</SortableTableHead>
               <TableHead className="text-center">Bid Auto</TableHead>
               <SortableTableHead field="minBid" {...sp} className={cn("text-right", pc("minBid", true))} style={ps("minBid")} align="right">Min Bid</SortableTableHead>
@@ -88,12 +87,26 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
               <SortableTableHead field="roas" {...sp} className={cn("text-right", pc("roas", true))} style={ps("roas")} align="right">ROAS</SortableTableHead>
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
+            <TableTotalsRow>
+              <TableCell colSpan={4} className="font-semibold">Total ({filteredGroups.length} ad groups)</TableCell>
+              <TableCell className="text-right" colSpan={3} />
+              <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.impressions)} metric="impressions" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.clicks)} metric="clicks" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(adGroupsTotals.ctr)} metric="ctr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.adUnits)} metric="adUnits" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(adGroupsTotals.cvr)} metric="cvr" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(adGroupsTotals.cpc)} metric="cpc" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(adGroupsTotals.adSpend)} metric="adSpend" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatCurrency(adGroupsTotals.adSales)} metric="adSales" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={adGroupsTotals.roas.toFixed(2)} metric="roas" /></TableCell>
+              <TableCell className="text-right"><TotalCell value={formatPercent(adGroupsTotals.acos)} metric="acos" /></TableCell>
+            </TableTotalsRow>
           </TableHeader>
           <TableBody>
             {paginatedGroups.map((group) => (
               <TableRow key={group.id} className="group cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => onRowClick?.(group)}>
-                <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted transition-colors"><StatusBadge status={group.status} /></TableCell>
-                <TableCell className="font-medium sticky left-[96px] z-10 bg-background group-hover:bg-muted transition-colors"><span className="text-primary hover:underline">{group.name}</span></TableCell>
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={group.status} /></TableCell>
+                <TableCell className="font-medium sticky left-[96px] z-10 bg-card group-hover:bg-muted transition-colors"><span className="text-primary hover:underline">{group.name}</span></TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className={cn("text-xs", group.campaignType === "auto" ? "border-primary/30 bg-primary/5 text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
@@ -118,20 +131,6 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
                 <TableCell style={ps("acos")} className={cn("text-right", pc("acos"))}><NumCell formatted={formatPercent(group.acos)} id={group.id} metric="acos" /></TableCell>
               </TableRow>
             ))}
-            <TableRow className="bg-muted font-medium hover:bg-muted">
-              <TableCell colSpan={4} className="font-semibold">Total ({filteredGroups.length} ad groups)</TableCell>
-              <TableCell className="text-right" colSpan={3} />
-              <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.impressions)} metric="impressions" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.clicks)} metric="clicks" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(adGroupsTotals.ctr)} metric="ctr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.adUnits)} metric="adUnits" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(adGroupsTotals.cvr)} metric="cvr" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(adGroupsTotals.cpc)} metric="cpc" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(adGroupsTotals.adSpend)} metric="adSpend" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatCurrency(adGroupsTotals.adSales)} metric="adSales" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={adGroupsTotals.roas.toFixed(2)} metric="roas" /></TableCell>
-              <TableCell className="text-right"><TotalCell value={formatPercent(adGroupsTotals.acos)} metric="acos" /></TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

@@ -47,7 +47,7 @@ export default function AMCCreatedAudiences() {
           <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableRow className="bg-card hover:bg-card">
                 <TableHead>Audience Name</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Size</TableHead>

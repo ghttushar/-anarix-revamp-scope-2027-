@@ -60,7 +60,7 @@ export function HistoryTable({ history, onRetry }: HistoryTableProps) {
     <div className="rounded-lg border border-border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted">
+          <TableRow className="bg-card">
             <TableHead className="w-[40px]"></TableHead>
             <SortableTableHead field="executedAt" {...sp} className={cn(pc("executedAt", true))} style={ps("executedAt")}>Execution Time</SortableTableHead>
             <SortableTableHead field="scheduleName" {...sp} className={cn(pc("scheduleName", true))} style={ps("scheduleName")}>Schedule</SortableTableHead>

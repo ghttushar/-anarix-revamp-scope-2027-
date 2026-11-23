@@ -42,7 +42,7 @@ export function KeywordTrackerTable({ keywords, onStatusChange, onDelete }: Keyw
     <div className="rounded-lg border border-border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted">
+          <TableRow className="bg-card">
             <SortableTableHead field="keyword" {...sp} className={cn(pc("keyword", true))} style={ps("keyword")}>Keyword</SortableTableHead>
             <SortableTableHead field="addedAt" {...sp} className={cn(pc("addedAt", true))} style={ps("addedAt")}>Added At</SortableTableHead>
             <SortableTableHead field="updatedAt" {...sp} className={cn(pc("updatedAt", true))} style={ps("updatedAt")}>Updated At</SortableTableHead>

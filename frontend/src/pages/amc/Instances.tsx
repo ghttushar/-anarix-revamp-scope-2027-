@@ -43,7 +43,7 @@ export default function AMCInstances() {
           <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableRow className="bg-card hover:bg-card">
                 <TableHead>Instance ID</TableHead>
                 <TableHead>Advertiser</TableHead>
                 <TableHead>Region</TableHead>

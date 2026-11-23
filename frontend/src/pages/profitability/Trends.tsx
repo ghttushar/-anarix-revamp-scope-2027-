@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { Info, TrendingUp, ChevronDown, X } from "lucide-react";
 import { toast } from "sonner";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -131,7 +131,7 @@ export default function ProfitabilityTrends() {
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
                   placeholder="Search products..."
-                  className="w-full h-8 px-2 text-xs rounded border border-border bg-background outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full h-8 px-2 text-xs rounded border border-border bg-card outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
               <div className="max-h-[280px] overflow-y-auto p-1">
@@ -174,7 +174,7 @@ export default function ProfitabilityTrends() {
                   <span className="max-w-[160px] truncate">{p.name}</span>
                   <button
                     onClick={() => toggleProduct(id)}
-                    className="rounded hover:bg-background/60 p-0.5"
+                    className="rounded hover:bg-card/60 p-0.5"
                     aria-label={`Remove ${p.name}`}
                   >
                     <X className="h-3 w-3" />
@@ -223,8 +223,8 @@ export default function ProfitabilityTrends() {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted">
-                    <TableHead className="sticky left-0 z-20 bg-muted min-w-[320px]">Product Details</TableHead>
+                  <TableRow className="bg-card">
+                    <TableHead className="sticky left-0 z-20 bg-card min-w-[320px]">Product Details</TableHead>
                     {columns.map((c) => (
                       <TableHead key={c} className="text-right min-w-[100px] whitespace-nowrap">
                         {c}
@@ -233,6 +233,25 @@ export default function ProfitabilityTrends() {
                     <TableHead className="text-right min-w-[120px] font-semibold whitespace-nowrap">Total</TableHead>
                     <TableHead className="text-center min-w-[90px]">More Info</TableHead>
                   </TableRow>
+                  <TableTotalsRow>
+                    <TableCell className="sticky left-0 z-10 bg-card">Total</TableCell>
+                    {columns.map((c, idx) => (
+                      <TableCell key={c} className="text-right whitespace-nowrap">
+                        {formatCurrency(
+                          filteredProducts.reduce((sum, p) => sum + valueForColumn(p, c, idx), 0)
+                        )}
+                      </TableCell>
+                    ))}
+                    <TableCell className="text-right whitespace-nowrap">
+                      {formatCurrency(
+                        filteredProducts.reduce(
+                          (sum, p) => sum + columns.reduce((s, c, idx) => s + valueForColumn(p, c, idx), 0),
+                          0
+                        )
+                      )}
+                    </TableCell>
+                    <TableCell />
+                  </TableTotalsRow>
                 </TableHeader>
                 <TableBody>
                   {paginatedProducts.map((product) => {
@@ -289,25 +308,6 @@ export default function ProfitabilityTrends() {
                       </TableRow>
                     );
                   })}
-                  <TableRow className="bg-muted font-medium">
-                    <TableCell className="sticky left-0 z-10 bg-muted">Total</TableCell>
-                    {columns.map((c, idx) => (
-                      <TableCell key={c} className="text-right whitespace-nowrap">
-                        {formatCurrency(
-                          filteredProducts.reduce((sum, p) => sum + valueForColumn(p, c, idx), 0)
-                        )}
-                      </TableCell>
-                    ))}
-                    <TableCell className="text-right whitespace-nowrap">
-                      {formatCurrency(
-                        filteredProducts.reduce(
-                          (sum, p) => sum + columns.reduce((s, c, idx) => s + valueForColumn(p, c, idx), 0),
-                          0
-                        )
-                      )}
-                    </TableCell>
-                    <TableCell />
-                  </TableRow>
                 </TableBody>
               </Table>
             </div>

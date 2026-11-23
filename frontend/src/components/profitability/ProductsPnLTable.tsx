@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { ExternalLink, TrendingUp, ChevronDown, ChevronRight } from "lucide-react";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { DeltaBadge } from "@/components/ui/delta-badge";
 import { getDelta } from "@/lib/utils/deltaGenerator";
 import { ProfitabilityProduct, ProfitabilityOrder } from "@/types/profitability";
@@ -86,7 +85,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
   const TotalCell = ({ value, metric }: { value: string; metric: string }) => (
     <div className="flex flex-col items-end">
       <span className="text-foreground">{value}</span>
-      {showDeltas && <DeltaBadge value={getDelta("total", metric)} />}
+      <DeltaBadge value={getDelta("total", metric)} />
     </div>
   );
 
@@ -147,13 +146,25 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted hover:bg-muted">
-                <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-20 bg-muted min-w-[280px] border-r border-border">Product / Category</SortableTableHead>
+              <TableRow className="bg-card hover:bg-card">
+                <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[280px] border-r border-border">Product / Category</SortableTableHead>
                 {cols.map((col) => (
                   <SortableTableHead key={col.id} field={col.id} {...sp} className={cn("text-right", pc(col.id, true))} style={ps(col.id)} align="right">{col.label}</SortableTableHead>
                 ))}
                 <TableHead data-info-col className="text-center w-[80px]">Info</TableHead>
               </TableRow>
+              <TableTotalsRow>
+                <TableCell className="sticky left-0 z-10 bg-card border-r border-border/20">Total ({products.length} products · {categories.length} categories)</TableCell>
+                {cols.map((col) => {
+                  const val = totals[col.id] || 0;
+                  return (
+                    <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
+                      <TotalCell value={col.isUnit ? formatNumber(val) : formatCurrency(val)} metric={col.id} />
+                    </TableCell>
+                  );
+                })}
+                <TableCell data-info-col />
+              </TableTotalsRow>
             </TableHeader>
             <TableBody>
               {paginatedCategories.map((cat) => {
@@ -263,18 +274,6 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                 );
               })}
 
-              <TableRow className="bg-muted font-medium hover:bg-muted">
-                <TableCell className="sticky left-0 z-10 bg-muted border-r border-border/20 font-semibold">Total ({products.length} products · {categories.length} categories)</TableCell>
-                {cols.map((col) => {
-                  const val = totals[col.id] || 0;
-                  return (
-                    <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
-                      <TotalCell value={col.isUnit ? formatNumber(val) : formatCurrency(val)} metric={col.id} />
-                    </TableCell>
-                  );
-                })}
-                <TableCell data-info-col />
-              </TableRow>
             </TableBody>
           </Table>
         </div>
@@ -317,13 +316,26 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
-              <SortableTableHead field="orderId" {...sp} isFixed className="sticky left-0 z-20 bg-muted min-w-[300px] border-r border-border">Order Details</SortableTableHead>
+            <TableRow className="bg-card hover:bg-card">
+              <SortableTableHead field="orderId" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[300px] border-r border-border">Order Details</SortableTableHead>
               {cols.map((col) => (
                 <SortableTableHead key={col.id} field={col.id} {...sp} className={cn("text-right", pc(col.id, true))} style={ps(col.id)} align="right">{col.label}</SortableTableHead>
               ))}
               <TableHead data-info-col className="text-center w-[80px]">Info</TableHead>
             </TableRow>
+            <TableTotalsRow>
+              <TableCell className="sticky left-0 z-10 bg-card border-r border-border/20">Total ({orders.length} orders)</TableCell>
+              {cols.map((col) => {
+                const val = (orderTotals as any)[col.id] || 0;
+                const colDef = ALL_COLUMNS.find((c) => c.id === col.id);
+                return (
+                  <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
+                    <TotalCell value={colDef?.isUnit ? formatNumber(val) : formatCurrency(val)} metric={col.id} />
+                  </TableCell>
+                );
+              })}
+              <TableCell data-info-col />
+            </TableTotalsRow>
           </TableHeader>
           <TableBody>
             {paginatedOrders.map((order) => {
@@ -414,19 +426,6 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
               );
             })}
 
-            <TableRow className="bg-muted font-medium hover:bg-muted">
-              <TableCell className="sticky left-0 z-10 bg-muted border-r border-border/20 font-semibold">Total ({orders.length} orders)</TableCell>
-              {cols.map((col) => {
-                const val = (orderTotals as any)[col.id] || 0;
-                const colDef = ALL_COLUMNS.find((c) => c.id === col.id);
-                return (
-                  <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
-                    <TotalCell value={colDef?.isUnit ? formatNumber(val) : formatCurrency(val)} metric={col.id} />
-                  </TableCell>
-                );
-              })}
-              <TableCell data-info-col />
-            </TableRow>
           </TableBody>
         </Table>
       </div>

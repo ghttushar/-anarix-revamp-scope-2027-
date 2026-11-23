@@ -136,7 +136,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
                 <div className="rounded-md border border-border overflow-hidden">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-muted/50">
+                      <TableRow className="bg-card">
                         <TableHead className="font-semibold">Campaign</TableHead>
                         <TableHead className="text-right font-semibold">Impr</TableHead>
                         <TableHead className="text-right font-semibold">Clicks</TableHead>

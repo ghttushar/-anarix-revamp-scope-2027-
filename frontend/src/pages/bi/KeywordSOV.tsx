@@ -59,7 +59,7 @@ export default function KeywordSOV() {
           <div className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableRow className="bg-card hover:bg-card">
                 <TableHead>Keyword</TableHead>
                 <TableHead className="text-right">Search Volume</TableHead>
                 <TableHead className="text-right">Organic SOV</TableHead>

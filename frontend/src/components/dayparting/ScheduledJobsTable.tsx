@@ -66,7 +66,7 @@ export function ScheduledJobsTable({ schedules, onPauseResume, onDelete }: Sched
     <div className="rounded-lg border border-border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted">
+          <TableRow className="bg-card">
             <SortableTableHead field="name" {...sp} className={cn(pc("name", true))} style={ps("name")}>Schedule Name</SortableTableHead>
             <SortableTableHead field="campaignNames" {...sp} className={cn(pc("campaignNames", true))} style={ps("campaignNames")}>Campaign(s)</SortableTableHead>
             <SortableTableHead field="actionType" {...sp} className={cn(pc("actionType", true))} style={ps("actionType")}>Action Type</SortableTableHead>

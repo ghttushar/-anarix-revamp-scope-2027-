@@ -103,9 +103,9 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted hover:bg-muted">
+            <TableRow className="bg-card hover:bg-card">
               {!hideSelection && (
-                <TableHead className="w-10 sticky left-0 z-10 bg-muted">
+                <TableHead className="w-10 sticky left-0 z-10 bg-card">
                   <Checkbox
                     checked={allOnPageSelected ? true : someOnPageSelected ? "indeterminate" : false}
                     onCheckedChange={toggleAllOnPage}
@@ -113,7 +113,7 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
                   />
                 </TableHead>
               )}
-              <SortableTableHead field="name" {...sp} isFixed className={cn("min-w-[250px] sticky z-10 bg-muted", hideSelection ? "left-0" : "left-10")}>Name</SortableTableHead>
+              <SortableTableHead field="name" {...sp} isFixed className={cn("min-w-[250px] sticky z-10 bg-card", hideSelection ? "left-0" : "left-10")}>Name</SortableTableHead>
               <SortableTableHead field="impactPercentage" {...sp} className={cn("w-28 text-center", pc("impactPercentage", true))} style={ps("impactPercentage")} align="center">Impact</SortableTableHead>
               <SortableTableHead field="impressions" {...sp} className={cn("min-w-[180px] text-right", pc("impressions", true))} style={ps("impressions")} align="right">Impressions</SortableTableHead>
               <SortableTableHead field="clicks" {...sp} className={cn("min-w-[150px] text-right", pc("clicks", true))} style={ps("clicks")} align="right">Clicks</SortableTableHead>
@@ -123,9 +123,9 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
               <SortableTableHead field="roas" {...sp} className={cn("min-w-[140px] text-right", pc("roas", true))} style={ps("roas")} align="right">ROAS</SortableTableHead>
               <SortableTableHead field="acos" {...sp} className={cn("min-w-[140px] text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
-            <TableRow className="bg-muted/50 hover:bg-muted/50 border-b border-border">
-              {!hideSelection && <TableHead className="sticky left-0 z-10 bg-muted/50 h-6 w-10" />}
-              <TableHead className={cn("sticky z-10 bg-muted/50 h-6", hideSelection ? "left-0" : "left-10")} />
+            <TableRow className="bg-card hover:bg-card border-b border-border">
+              {!hideSelection && <TableHead className="sticky left-0 z-10 bg-card h-6 w-10" />}
+              <TableHead className={cn("sticky z-10 bg-card h-6", hideSelection ? "left-0" : "left-10")} />
               <TableHead className="h-6" />
               {["impressions", "clicks", "ctr", "adSpend", "adSales", "roas", "acos"].map((field) => (
                 <TableHead key={field} className={cn("h-6 text-center", pc(field, true))} style={ps(field)}>
@@ -153,7 +153,7 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
                 >
                   {!hideSelection && (
                     <TableCell
-                      className="sticky left-0 z-10 bg-background group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors"
+                      className="sticky left-0 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <Checkbox
@@ -163,7 +163,7 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
                       />
                     </TableCell>
                   )}
-                  <TableCell className={cn("sticky z-10 bg-background group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors", hideSelection ? "left-0" : "left-10")}>
+                  <TableCell className={cn("sticky z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors", hideSelection ? "left-0" : "left-10")}>
                     <span className={cn("font-medium", onRowClick && "text-primary hover:underline")}>{item.name}</span>
                   </TableCell>
                   <TableCell style={ps("impactPercentage")} className={cn("text-center", pc("impactPercentage"))}>

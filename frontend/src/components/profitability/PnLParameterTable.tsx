@@ -126,14 +126,14 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableHead className="sticky top-0 left-0 z-20 bg-muted/50 min-w-[200px]">
+            <TableRow className="bg-card">
+              <TableHead className="sticky top-0 left-0 z-20 bg-card min-w-[200px]">
                 <div className="flex items-center gap-2">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
                         onClick={allExpanded ? collapseAll : expandAll}
-                        className="p-0.5 hover:bg-muted rounded cursor-pointer"
+                        className="p-0.5 hover:bg-card rounded cursor-pointer"
                       >
                         <ChevronsUpDown className="h-3.5 w-3.5" />
                       </button>
@@ -144,11 +144,11 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
                 </div>
               </TableHead>
               {weeks.map((week) => (
-                <TableHead key={week} className="sticky top-0 z-10 bg-muted/50 text-right min-w-[100px] text-xs">
+                <TableHead key={week} className="sticky top-0 z-10 bg-card text-right min-w-[100px] text-xs">
                   {week}
                 </TableHead>
               ))}
-              <TableHead className="sticky top-0 z-10 bg-muted/50 text-right min-w-[120px] font-semibold text-xs">Total</TableHead>
+              <TableHead className="sticky top-0 z-10 bg-card text-right min-w-[120px] font-semibold text-xs">Total</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
