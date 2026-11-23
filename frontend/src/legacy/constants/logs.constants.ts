@@ -34,10 +34,10 @@ export const LOG_SOURCE_LABELS: { [key: string]: string } = {
   campaign_manager: 'Anarix - Campaign Manager',
   campaign_creator: 'Anarix - Campaign Creator',
   rules: 'Anarix - Rules',
-  chatbot: 'Anarix - Jiva',
-  slack_bot_rules: 'Slack bot - Jiva - Anarix - Rules',
-  slack_bot_campaign_creator: 'Slack bot - Jiva - Anarix - Campaign Creator',
-  claude_rules: 'Claude - Jiva - Anarix - Rules',
+  chatbot: 'Anarix - Aan',
+  slack_bot_rules: 'Slack bot - Aan - Anarix - Rules',
+  slack_bot_campaign_creator: 'Slack bot - Aan - Anarix - Campaign Creator',
+  claude_rules: 'Claude - Aan - Anarix - Rules',
 };
 
 /** Shows sample rows while the change-log endpoint has nothing to return. */

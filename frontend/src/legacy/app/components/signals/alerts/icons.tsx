@@ -12,7 +12,7 @@ export function SparkleIcon({ size = 12, color = '#2235c4' }: IconProps) {
   );
 }
 
-/** One consistent "Jiva made this" pill — reused everywhere content is AI-generated instead of each surface inventing its own badge. */
+/** One consistent "Aan made this" pill — reused everywhere content is AI-generated instead of each surface inventing its own badge. */
 export function AiDraftBadge({ label = 'AI DRAFT', icon = true }: { label?: string; icon?: boolean }) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 7px', borderRadius: 4, background: '#eff1fd', font: '600 9px/1.5 Inter,sans-serif', color: '#2235c4', whiteSpace: 'nowrap' as const }}>

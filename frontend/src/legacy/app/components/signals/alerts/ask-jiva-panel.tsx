@@ -15,13 +15,13 @@ interface ChatMessage {
 interface Props {
   alert: PrototypeAlert;
   onClose: () => void;
-  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Jiva are all showing at once. */
+  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Aan are all showing at once. */
   /** Explicit pixel width from the drag-resize handle — supersedes the default fixed ~35%. */
   width?: number;
 }
 
 /**
- * Concept variation: chat with Jiva about one alert, occupying the exact footprint
+ * Concept variation: chat with Aan about one alert, occupying the exact footprint
  * of the alert list column it replaces (not a floating overlay on top of the page).
  */
 export function AskJivaPanel({ alert, onClose, width }: Props) {
@@ -29,7 +29,7 @@ export function AskJivaPanel({ alert, onClose, width }: Props) {
     {
       id: 'm0',
       from: 'jiva',
-      text: `Hi, I'm Jiva. I've read "${alert.title}" for ${alert.account} — ask me anything about why it happened, what it's worth, or what to do next.`,
+      text: `Hi, I'm Aan. I've read "${alert.title}" for ${alert.account} — ask me anything about why it happened, what it's worth, or what to do next.`,
     },
   ]);
   const [draft, setDraft] = useState('');
@@ -77,7 +77,7 @@ export function AskJivaPanel({ alert, onClose, width }: Props) {
       <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', alignItems: 'center', gap: 10, flex: 'none', background: 'linear-gradient(180deg, rgba(63, 79, 218, .05), transparent)' }}>
         <DiamondMascot size={26} />
         <div style={{ minWidth: 0 }}>
-          <div style={{ font: '700 13px/1.2 Inter,sans-serif', color: '#23232d' }}>Ask Jiva</div>
+          <div style={{ font: '700 13px/1.2 Inter,sans-serif', color: '#23232d' }}>Ask Aan</div>
           <div style={{ font: '400 10.5px/1.3 Inter,sans-serif', color: '#9a9fa8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>About: {alert.title}</div>
         </div>
         <span onClick={onClose} className={motion.pressable} style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 7, cursor: 'pointer', flex: 'none' }}

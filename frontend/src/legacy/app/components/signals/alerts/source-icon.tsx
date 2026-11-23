@@ -4,7 +4,7 @@ import { HoverTip } from './hover-tip';
 
 const LABELS: Record<AlertSource, string> = {
   anarix: 'Detected by Anarix',
-  jiva: 'Flagged by Jiva',
+  jiva: 'Flagged by Aan',
   meeting: 'Raised in a meeting',
   email: 'Reported by email',
   slack: 'Shared via Slack',
@@ -101,7 +101,7 @@ function GmailMark({ size }: { size: number }) {
   );
 }
 
-/** The three sources the Alerts row is allowed to show — everything else (Anarix/Jiva/Workspace) gets no source badge on the row. */
+/** The three sources the Alerts row is allowed to show — everything else (Anarix/Aan/Workspace) gets no source badge on the row. */
 export type RowSource = 'email' | 'slack' | 'meeting';
 
 export function toRowSource(origin: AlertSource): RowSource | null {

@@ -62,11 +62,11 @@ export interface WorkStationPreview {
 interface Props {
   onOpenAlert?: (id: string) => void;
   onOpenMeeting?: (id: string) => void;
-  /** Set by the global "Ask Jiva" header button — opens (or closes) this tab's list/detail/Jiva 3-column view regardless of local state, picking a task to anchor to if none is selected yet. */
+  /** Set by the global "Ask Aan" header button — opens (or closes) this tab's list/detail/Aan 3-column view regardless of local state, picking a task to anchor to if none is selected yet. */
   forceJivaOpen?: boolean;
   /** Forces a task selected (docking the detail panel) on mount — for the design-handoff preview, not used by the real app. */
   initialSelectedId?: string | null;
-  /** Forces the Ask Jiva panel open on mount — for the design-handoff preview, not used by the real app. */
+  /** Forces the Ask Aan panel open on mount — for the design-handoff preview, not used by the real app. */
   initialJivaOpen?: boolean;
   /** Forces the Priority filter popover open on mount — for the design-handoff preview, not used by the real app. */
   initialPriorityFilterOpen?: boolean;
@@ -113,7 +113,9 @@ export function WorkStation({
     // Reacts only to the global button's own toggles, not to every local task/selection change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forceJivaOpen]);
-  const listCol = useResizableColumn({ defaultWidth: 320, minWidth: 220, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH, initialCollapsed: preview?.listCollapsed });
+  const listCol = useResizableColumn({ defaultWidth: 320, minWidth: 260, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH, initialCollapsed: preview?.listCollapsed });
+  // Narrow list: New task drops to its + icon so the search field keeps room to type in.
+  const compactHeader = listCol.width < 300;
   const jivaCol = useResizableColumn({ defaultWidth: 340, minWidth: 260, maxWidth: 480, edge: 'left' });
   const [search, setSearch] = useState(preview?.search ?? '');
   const [personFilter, setPersonFilter] = useState(preview?.personFilter ?? '');
@@ -217,7 +219,7 @@ export function WorkStation({
 
   // The list column, shown docked or, while collapsed, in the hover peek.
   const listPanel = (
-      <div style={{ flex: `0 0 ${listCol.width}px`, minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'visible', position: 'relative' }}>
+      <div style={{ flex: `0 0 ${listCol.width}px`, minWidth: 0, minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'visible', position: 'relative' }}>
             <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', flexDirection: 'column', gap: 9, flex: 'none', position: 'relative' }}>
               <div style={{ display: 'flex', gap: 8, position: 'relative' }}>
                 <input
@@ -288,9 +290,11 @@ export function WorkStation({
                   <span
                     onClick={() => { setCreateOpen(true); setJivaOpen(false); setPriorityFilterOpen(false); }}
                     className={`${motion.pressable} ${motion.btnPrimary}`}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: 34, boxSizing: 'border-box' as const, padding: '0 14px', border: '1px solid transparent', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer', whiteSpace: 'nowrap' as const }}
+                    title={compactHeader ? 'New task' : undefined}
+                    aria-label="New task"
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: 34, boxSizing: 'border-box' as const, padding: compactHeader ? '0 11px' : '0 14px', border: '1px solid transparent', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer', whiteSpace: 'nowrap' as const }}
                   >
-                    <PlusIcon size={11} /> New task
+                    <PlusIcon size={11} />{!compactHeader && ' New task'}
                   </span>
                 </span>
               </div>

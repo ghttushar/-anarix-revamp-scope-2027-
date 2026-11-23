@@ -37,7 +37,7 @@ export function BoardViewIcon({ size = 14, color = '#6b6f78' }: { size?: number;
 const ORIGIN_LABEL: Record<TaskOrigin, string> = {
   alert: 'From an alert',
   meeting: 'From a meeting',
-  generative: 'Generative task — Jiva can draft this',
+  generative: 'Generative task — Aan can draft this',
   direct: 'Created directly',
 };
 
@@ -54,7 +54,7 @@ function AlertMark({ size, color }: { size: number; color: string }) {
 
 /**
  * Origin badge — a circular colour-coded disc exactly like the source badges on the
- * Alerts row (`SourceIcon`/`SourceBadge`), reusing their real marks (Jiva's sparkle,
+ * Alerts row (`SourceIcon`/`SourceBadge`), reusing their real marks (Aan's sparkle,
  * Google Meet's camera) instead of inventing a parallel icon language for Workstation.
  */
 export function OriginGlyph({ origin, size = 17 }: { origin: TaskOrigin; size?: number }) {

@@ -118,8 +118,12 @@ function PeriodRow({
     { label: ["Est. Payout"], value: [formatCurrency(s.estPayout)] },
     { label: [row.forecast ? "Est. Net Profit" : "Net Profit"], value: [formatCurrency(s.netProfit)] },
   ];
-  const headerTone = selected ? "bg-primary text-primary-foreground" : "bg-muted/70 text-foreground border-b border-border";
-  const hoverTone = selected ? "hover:bg-white/15" : "hover:bg-foreground/5";
+  // Calm tones: the selected row is a soft primary tint with an accent bar, not a solid fill; the others keep a white
+  // header on a bordered card so they stand off the page instead of fading into it.
+  const headerTone = selected
+    ? "bg-primary/[0.07] text-primary border-b border-primary/20"
+    : "bg-card text-foreground border-b border-border";
+  const hoverTone = selected ? "hover:bg-primary/10" : "hover:bg-muted hover:text-primary";
 
   return (
     <div
@@ -128,12 +132,14 @@ function PeriodRow({
       onClick={onSelect}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onSelect())}
       className={cn(
-        "rounded-lg border bg-card overflow-hidden cursor-pointer transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        selected ? "border-primary shadow-sm" : "border-border hover:shadow-sm",
+        "relative rounded-lg border bg-card overflow-hidden cursor-pointer transition-[box-shadow,border-color] outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        selected
+          ? "border-primary/40 shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.18)] before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-primary"
+          : "border-border shadow-[0_1px_2px_rgba(16,24,40,0.04)] hover:border-primary/25 hover:shadow-sm",
         row.forecast && !selected && "border-dashed"
       )}
     >
-      <div className={cn("grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 h-8 text-xs font-semibold", headerTone)}>
+      <div className={cn("grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 h-8 text-xs font-semibold transition-colors", headerTone)}>
         <span className="flex items-center gap-1.5 truncate">
           {row.forecast && <Sparkles className="h-3 w-3" />}
           {row.label}
@@ -141,10 +147,10 @@ function PeriodRow({
         {row.pick ? (
           <DatePick pick={row.pick} hoverTone={hoverTone}>
             <CalendarIcon className="h-3 w-3 opacity-80" />
-            <span className="font-medium">{row.range}</span>
+            <span className={cn("font-medium", !selected && "text-muted-foreground")}>{row.range}</span>
           </DatePick>
         ) : (
-          <span className="flex items-center gap-1.5 font-medium">
+          <span className={cn("flex items-center gap-1.5 font-medium", !selected && "text-muted-foreground")}>
             {row.forecast ? <Sparkles className="h-3 w-3 opacity-80" /> : <CalendarIcon className="h-3 w-3 opacity-80" />}
             {row.range}
           </span>
@@ -156,7 +162,7 @@ function PeriodRow({
               e.stopPropagation();
               onViewMore();
             }}
-            className={cn("flex items-center gap-1 rounded px-1.5 py-0.5 font-medium transition-colors", hoverTone)}
+            className={cn("flex items-center gap-1 rounded px-1.5 py-0.5 font-medium transition-colors", !selected && "text-muted-foreground", hoverTone)}
           >
             {expanded ? <ChevronsRight className="h-3.5 w-3.5" /> : <ChevronsDown className="h-3.5 w-3.5" />}
             View More
@@ -170,7 +176,7 @@ function PeriodRow({
             <Pair
               a={c.value[0]}
               b={c.value[1]}
-              className={cn("mt-1 text-[12px] font-semibold tabular-nums", selected ? "text-primary" : "text-foreground")}
+              className="mt-1 text-[12px] font-semibold tabular-nums text-foreground"
             />
           </div>
         ))}
@@ -240,15 +246,15 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
 
   return (
     <div className="rounded-lg border border-border bg-card overflow-hidden flex flex-col h-full min-h-[320px]">
-      <div className="flex items-center gap-2 bg-primary text-primary-foreground px-3 h-10 shrink-0">
-        <button type="button" onClick={onClose} className="rounded p-1 hover:bg-white/10 transition-colors" aria-label="Back to chart" title="Back to chart">
+      <div className="flex items-center gap-2 bg-primary/[0.07] text-primary border-b border-primary/20 px-3 h-10 shrink-0">
+        <button type="button" onClick={onClose} className="rounded p-1 hover:bg-primary/10 transition-colors" aria-label="Back to chart" title="Back to chart">
           <ChevronsRight className="h-4 w-4" />
         </button>
         <img src={getCountryFlagIcon("US")} alt="" className="h-4 w-6 rounded-[2px] object-cover" />
         <span className="flex-1 truncate text-sm font-semibold">
           {row.label} - {row.range}
         </span>
-        <button type="button" onClick={onClose} className="rounded p-1 hover:bg-white/10 transition-colors" aria-label="Close breakdown">
+        <button type="button" onClick={onClose} className="rounded p-1 hover:bg-primary/10 transition-colors" aria-label="Close breakdown">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -264,8 +270,8 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
               <span className="w-3.5 shrink-0 text-muted-foreground">
                 {g.children && (open[g.key] ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />)}
               </span>
-              <span className="flex-1 text-sm font-medium text-primary">{g.label}</span>
-              <span className="text-sm font-medium tabular-nums text-primary">{g.value}</span>
+              <span className="flex-1 text-sm font-medium text-foreground">{g.label}</span>
+              <span className="text-sm font-semibold tabular-nums text-foreground">{g.value}</span>
             </button>
             {g.children && open[g.key] && (
               <div className="pb-1">
@@ -281,12 +287,12 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
         ))}
       </div>
 
-      <div className="bg-secondary text-secondary-foreground px-3 py-2 shrink-0">
-        <p className="text-sm font-semibold mb-1">Calculated Metrics</p>
+      <div className="bg-muted/50 border-t border-border px-3 py-2 shrink-0">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Calculated Metrics</p>
         {calculated.map((c) => (
-          <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-white/15 first:border-t-0">
-            <span>{c.label}</span>
-            <span className="font-semibold tabular-nums">{c.value}</span>
+          <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-border/60 first:border-t-0">
+            <span className="text-muted-foreground">{c.label}</span>
+            <span className="font-semibold tabular-nums text-foreground">{c.value}</span>
           </div>
         ))}
       </div>

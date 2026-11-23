@@ -309,8 +309,8 @@ export function WorkStationDetailPanel({
                     <span style={{ width: 14, height: 14, borderRadius: '50%', border: optId === o.id ? '4px solid #3f4fda' : '1px solid #e1e3e8', flex: 'none', marginTop: 2, transition: 'border 140ms ease-out' }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, flexWrap: 'wrap' as const }}>
-                        <span style={{ font: '600 12px/1.4 Inter,sans-serif', color: '#23232d' }}>{o.isOther ? 'Ask Jiva' : o.label}</span>
-                        {o.recommended && <AiDraftBadge label="Jiva recommends" />}
+                        <span style={{ font: '600 12px/1.4 Inter,sans-serif', color: '#23232d' }}>{o.isOther ? 'Ask Aan' : o.label}</span>
+                        {o.recommended && <AiDraftBadge label="Aan recommends" />}
                       </span>
                       {(o.expected || o.confidence !== undefined) && (
                         <div style={{ font: '400 11px/1.4 Inter,sans-serif', color: '#9a9fa8', marginTop: 3 }}>
@@ -489,7 +489,7 @@ export function WorkStationDetailPanel({
               {activityOpen && <span style={{ position: 'absolute', left: 10.5, top: 6, bottom: 6, width: 1, background: '#e6e8ec' }} />}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 10 }}>
                 {activityEntries.map((l, i) => {
-                  const byJiva = l.by === 'Jiva';
+                  const byJiva = l.by === 'Aan';
                   return (
                     <div key={i} style={{ display: 'flex', gap: 10, position: 'relative' }}>
                       <span style={{ width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', zIndex: 1 }}>
@@ -550,7 +550,7 @@ export function WorkStationDetailPanel({
           </span>
         ) : (
           <span onClick={onOpenJiva} className={`${motion.pressable} ${motion.btnPrimary}`} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 14px', borderRadius: 7, font: '600 12px/1 Inter,sans-serif', color: '#ffffff', background: jivaOpen ? '#2235c4' : '#3f4fda', cursor: 'pointer', flex: 'none' }}>
-            <DiamondMascot size={13} /> Complete with Jiva
+            <DiamondMascot size={13} /> Complete with Aan
           </span>
         )}
         <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>

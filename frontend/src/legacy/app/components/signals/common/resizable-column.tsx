@@ -8,7 +8,7 @@ interface UseResizableColumnOptions {
   collapseBelow?: number;
   /** The collapsed rail's actual rendered width — lets a drag started from the *other* panel's border (e.g. Detail's left edge) while this column is already collapsed begin from where the border visually is, instead of jumping from whatever pre-collapse width is still stored. Required if `collapseBelow` is set and the column is meant to be re-expandable by dragging. */
   collapsedWidth?: number;
-  /** Which border of the column the handle sits on. 'right' (default) is for a column on the left side of the row (dragging right grows it, e.g. the List column). 'left' is for a column on the right side (dragging left grows it, e.g. the Jiva column) — same drag-left-to-widen-this-column feel either way, just mirrored. */
+  /** Which border of the column the handle sits on. 'right' (default) is for a column on the left side of the row (dragging right grows it, e.g. the List column). 'left' is for a column on the right side (dragging left grows it, e.g. the Aan column) — same drag-left-to-widen-this-column feel either way, just mirrored. */
   edge?: 'left' | 'right';
   /** Starts collapsed — for the design-handoff preview, not used by the real app. */
   initialCollapsed?: boolean;
@@ -101,7 +101,7 @@ export function useResizableColumn({ defaultWidth, minWidth, maxWidth, collapseB
  * top of its column's own border, so the border itself is what you grab. Place it as the last child
  * of a `position: relative` wrapper around the resizable column (not as a flex sibling); it takes up
  * no flex space of its own. `side` picks which border — 'right' for a column left of its neighbor
- * (e.g. List), 'left' for a column right of its neighbor (e.g. Jiva) — and should match the same
+ * (e.g. List), 'left' for a column right of its neighbor (e.g. Aan) — and should match the same
  * column's `useResizableColumn({ edge })`.
  */
 export function ResizeHandle({ dragHandleProps, active, side = 'right' }: { dragHandleProps: { onMouseDown: (e: React.MouseEvent) => void }; active: boolean; side?: 'left' | 'right' }) {

@@ -51,7 +51,7 @@ export const imageUrls = {
   amazonVendorCentralImg: `${ANARIX_UI_CDN_URL}/assets/images/logo/amazonVendorCentral.png`,
   headerLogo: `${ANARIX_UI_CDN_URL}/assets/images/logo/chat-header-logo.svg`,
   excelImg: `${ANARIX_UI_CDN_URL}/assets/images/logo/excel-logo.png`,
-  jivaIcon2: `${ANARIX_UI_CDN_URL}/assets/images/logo/JIVA 1.svg`,
+  jivaIcon2: `${ANARIX_UI_CDN_URL}/assets/images/logo/Aan 1.svg`,
   anarixLogoLarge: `${ANARIX_UI_CDN_URL}/assets/images/logo/logo-large.svg`,
   logo_name: `${ANARIX_UI_CDN_URL}/assets/images/logo/logo-name.svg`,
   anarixLogo: `${ANARIX_UI_CDN_URL}/assets/images/logo/logo.svg`,

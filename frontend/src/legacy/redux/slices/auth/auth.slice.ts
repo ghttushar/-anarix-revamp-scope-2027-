@@ -4,7 +4,7 @@ import type { IRootState } from '@legacy/redux/store';
 
 /**
  * The slice of anarix-ui's auth state the ported pages read: the advertising account picked in the page header's
- * Marketplace dropdown, and whether the Jiva chatbot is open (never, in this app — it has its own Aan panel).
+ * Marketplace dropdown, and whether the Aan chatbot is open (never, in this app — it has its own Aan panel).
  */
 interface IAuthState {
   isChatbotOpen: boolean;

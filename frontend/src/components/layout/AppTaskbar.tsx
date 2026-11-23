@@ -131,10 +131,6 @@ interface AppTaskbarProps {
 
 export function AppTaskbar({ showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, breadcrumbItems, dateRangeOverride, onDateRangeOverrideChange, hideUtilityCluster = false }: AppTaskbarProps) {
   const location = useLocation();
-  // Hide the app taskbar entirely on the Signals page.
-  if (location.pathname.startsWith("/signals")) {
-    return null;
-  }
   const { adType, setAdType, frequency, setFrequency, dateRange: ctxDateRange, setDateRange: setCtxDateRange } = useFilter();
   const dateRange = dateRangeOverride ?? ctxDateRange;
   const setDateRange = onDateRangeOverrideChange ?? setCtxDateRange;

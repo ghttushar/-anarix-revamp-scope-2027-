@@ -15,8 +15,8 @@ const AUTO_ADVANCE_MS = 7000;
 const SLIDE_COUNT = 2;
 
 /**
- * The Slack slide's illustration: a tiny Slack thread. A teammate asks @JIVA why profit fell, JIVA types, then replies
- * with a mini chart and an "Approve fix" chip that flips to Approved. JIVA's avatar wears a Slack badge, the way an app
+ * The Slack slide's illustration: a tiny Slack thread. A teammate asks @Aan why profit fell, Aan types, then replies
+ * with a mini chart and an "Approve fix" chip that flips to Approved. Aan's avatar wears a Slack badge, the way an app
  * shows up in a workspace, over a soft brand glow.
  */
 function SlackMessageVisual() {

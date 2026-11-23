@@ -87,7 +87,7 @@ export function ComposeMail({ alert, actionType, variant = 'overlay', onClose, o
       <div style={{ padding: '14px 20px', borderBottom: '1px solid #e6e8ec', display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
         {variant === 'inline' && <span onClick={onClose} className={motion.pressable} style={{ display: 'flex', cursor: 'pointer' }}><BackArrowIcon size={14} /></span>}
         <span style={{ font: '700 14px/1 Inter,sans-serif', color: '#23232d' }}>New message</span>
-        <AiDraftBadge label="DRAFTED BY JIVA" />
+        <AiDraftBadge label="DRAFTED BY Aan" />
         {variant === 'overlay' && <span onClick={onClose} className={motion.pressable} style={{ display: 'flex', marginLeft: 'auto', cursor: 'pointer', padding: '0 4px' }}><CloseIcon size={13} /></span>}
       </div>
 

@@ -33,7 +33,7 @@ interface DiamondMascotProps {
   rounded?: boolean;
 }
 
-/** The Jiva (Aan) chat mascot — a coral diamond that morphs shape with state and, when interactive, leans/looks toward the cursor. */
+/** The Aan (Aan) chat mascot — a coral diamond that morphs shape with state and, when interactive, leans/looks toward the cursor. */
 export function DiamondMascot({
   size = 24,
   className,

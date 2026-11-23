@@ -258,8 +258,8 @@ export const STRUCTURE_CATALOG: StructureDef[] = [
     granularity: 'Very High', productSeparation: true,
   },
   {
-    id: 'custom', number: 6, name: 'Custom', tagline: 'Describe it, Jiva builds it',
-    description: 'Describe your desired campaign structure in plain language and Jiva generates a proposed structure to review.',
+    id: 'custom', number: 6, name: 'Custom', tagline: 'Describe it, Aan builds it',
+    description: 'Describe your desired campaign structure in plain language and Aan generates a proposed structure to review.',
     useCase: 'Anything the five predefined structures don’t cover.',
     granularity: 'Custom', productSeparation: false,
   },
@@ -304,7 +304,7 @@ export const structureVariantFor = (marketplace: Marketplace | null | undefined,
 /**
  * The structures a plan can pick: Consolidated, Standard and Custom on both marketplaces, their campaigns shaped by the
  * Performance enhancer splits. (The numbered structures and their variations stay in the code for older plans and for
- * Jiva's custom proposals, which build from them.)
+ * Aan's custom proposals, which build from them.)
  */
 export const SPLIT_STRUCTURES: StructureId[] = ['consolidated', 'standard', 'custom'];
 export const usesSplits = (_marketplace?: Marketplace | null) => true;
@@ -545,7 +545,7 @@ export function accountCampaignLimits(marketplace: Marketplace): { limit: number
 /**
  * The Manual campaigns and ad groups for one set of products: Consolidated puts every type in one campaign; the others
  * make a campaign per keyword match type plus one for product targeting. The variation splits each campaign into ad
- * groups; none (a Jiva custom proposal) keeps one ad group per campaign.
+ * groups; none (an Aan custom proposal) keeps one ad group per campaign.
  */
 function manualShape(keyword: number, product: number, variant: StructureVariant | null | undefined, consolidated: boolean) {
   if (keyword + product === 0) return { campaigns: 0, adGroups: 0 };
@@ -792,7 +792,7 @@ export function generateCampaigns(
   strategies: TargetingStrategyId[],
   dailyBudget: number,
   autoTypes: AutoTypeId[] = ['close-match'],
-  /** How Manual campaigns split into ad groups. None (a Jiva custom proposal) keeps one ad group per campaign. */
+  /** How Manual campaigns split into ad groups. None (an Aan custom proposal) keeps one ad group per campaign. */
   variant: StructureVariant | null = null,
 ): CcCampaign[] {
   const hasAuto = strategies.includes('auto');

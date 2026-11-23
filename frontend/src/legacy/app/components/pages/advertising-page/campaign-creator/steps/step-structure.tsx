@@ -136,7 +136,7 @@ function UnavailablePanel({ total, available, alternatives, onPick, onJiva }: {
       <ul style={{ margin: '0 0 0 21px', padding: '0 0 0 16px', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {alternatives.map((a) => <li key={a.id}><TextButton onClick={() => onPick(a.id)}>{a.label}</TextButton></li>)}
         <li><span style={{ color: TEXT_MUTED }}>Reduce the number of selected products</span></li>
-        <li><TextButton onClick={onJiva}>Use Custom Structure with Jiva</TextButton></li>
+        <li><TextButton onClick={onJiva}>Use Custom Structure with Aan</TextButton></li>
       </ul>
     </div>
   );
@@ -200,7 +200,7 @@ function CompareTable({ activeId, estimateFor, limit, catalog, mode }: { activeI
   );
 }
 
-// ── Structure built from a list of campaigns (used for Jiva's custom structure, and for every structure's written view) ──
+// ── Structure built from a list of campaigns (used for Aan's custom structure, and for every structure's written view) ──
 
 const campaignLabel = (c: CcCampaign) => (c.kind === 'auto' ? c.targetingLabel.replace('Automatic', 'Auto') : c.targetingLabel);
 
@@ -386,7 +386,7 @@ export default function StepStructure({ draft, selectedProducts, campaignLimit, 
             // Custom is shown but locked; a structure over the limit stays pickable, as the splits change its count.
             const locked = isCustom && customLocked(draft.marketplace);
             const disabled = locked || (!amazon && !isCustom && !check.ok);
-            const meta = isCustom ? (locked ? 'AI prompt' : 'Built with Jiva') : '';
+            const meta = isCustom ? (locked ? 'AI prompt' : 'Built with Aan') : '';
             const open = showVariants && !isCustom && activeId === s.id;
             return (
               // Open, the card and its variations share one frame; the card stays its own radio inside it.
@@ -483,8 +483,8 @@ export default function StepStructure({ draft, selectedProducts, campaignLimit, 
             <>
               <StructureCard
                 view={view} onView={setView} legend
-                title={draft.customCampaigns ? `Jiva's proposal · ${draft.customCampaigns.length} campaigns` : undefined}
-                empty={draft.customCampaigns ? undefined : 'Ask Jiva to build a structure and it will appear here.'}
+                title={draft.customCampaigns ? `Aan's proposal · ${draft.customCampaigns.length} campaigns` : undefined}
+                empty={draft.customCampaigns ? undefined : 'Ask Aan to build a structure and it will appear here.'}
                 graphic={draft.customCampaigns ? <StructureMap structureId="custom" campaigns={draft.customCampaigns} products={selectedProducts} /> : null}
                 written={draft.customCampaigns ? <WrittenStructure campaigns={draft.customCampaigns} products={selectedProducts} /> : null}
                 count={catalog.length}
@@ -495,7 +495,7 @@ export default function StepStructure({ draft, selectedProducts, campaignLimit, 
                   type="button" className="ccd-btn ccd-primary" onClick={() => onJivaChange(true)} disabled={jivaOpen}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 8, border: 'none', background: jivaOpen ? '#e7eafb' : BRAND, color: jivaOpen ? '#b7bee9' : '#ffffff', font: `600 13px/1 ${FONT}`, cursor: jivaOpen ? 'not-allowed' : 'pointer' }}
                 >
-                  <SparkleGlyph size={12} color={jivaOpen ? '#b7bee9' : '#ffffff'} /> Ask Jiva
+                  <SparkleGlyph size={12} color={jivaOpen ? '#b7bee9' : '#ffffff'} /> Ask Aan
                 </button>
               </div>
             </>

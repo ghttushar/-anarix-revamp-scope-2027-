@@ -17,7 +17,7 @@ interface Props {
   onSave: (actionType: ActionType, note: string, dueDate: string, assignee: string) => void;
 }
 
-const ASSIGNEES = ['You', 'Jiva · AI', 'Mike Torres', 'Priya Nair'];
+const ASSIGNEES = ['You', 'Aan · AI', 'Mike Torres', 'Priya Nair'];
 
 export function ActionPicker({ alert, initialSearch, variant = 'overlay', onClose, onRequestEmail, onRequestImageGen, onSave }: Props) {
   const [search, setSearch] = useState(initialSearch ?? '');

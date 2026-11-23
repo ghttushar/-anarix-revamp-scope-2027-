@@ -56,7 +56,7 @@ function ProposalTree({ proposal, selectedProducts, grouped }: { proposal: CcCam
   );
 }
 
-/** Docked right-hand chat panel where Jiva proposes a custom campaign structure. */
+/** Docked right-hand chat panel where Aan proposes a custom campaign structure. */
 export default function JivaStructurePanel({ draft, selectedProducts, onChange, onClose }: {
   draft: CcDraft; selectedProducts: CcProduct[]; onChange: (patch: Partial<CcDraft>) => void; onClose: () => void;
 }) {
@@ -121,7 +121,7 @@ export default function JivaStructurePanel({ draft, selectedProducts, onChange, 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderBottom: `1px solid ${BORDER}` }}>
         <span style={{ width: 28, height: 28, borderRadius: 9, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><SparkleGlyph size={14} color="#ffffff" /></span>
         <div style={{ flex: 1 }}>
-          <div style={{ font: '700 13.5px/1.2 Inter,sans-serif', color: TEXT_PRIMARY }}>Ask Jiva</div>
+          <div style={{ font: '700 13.5px/1.2 Inter,sans-serif', color: TEXT_PRIMARY }}>Ask Aan</div>
           <div style={{ font: '400 11px/1.4 Inter,sans-serif', color: TEXT_FAINT }}>Custom campaign structure</div>
         </div>
         <button onClick={onClose} aria-label="Close" style={{ width: 28, height: 28, border: 'none', background: 'transparent', borderRadius: 7, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -150,7 +150,7 @@ export default function JivaStructurePanel({ draft, selectedProducts, onChange, 
 
         {proposal && (
           <JivaBubble>
-            <div style={{ font: '700 12px/1.4 Inter,sans-serif', color: TEXT_PRIMARY }}>Jiva's proposal</div>
+            <div style={{ font: '700 12px/1.4 Inter,sans-serif', color: TEXT_PRIMARY }}>Aan's proposal</div>
             <div style={{ font: '500 11.5px/1.4 Inter,sans-serif', color: TEXT_MUTED, marginBottom: 8 }}>
               Product-level campaign separation: <b style={{ fontWeight: 600, color: productScoped ? '#0c9a2d' : TEXT_PRIMARY }}>{productScoped ? 'Enabled' : 'Disabled'}</b>
             </div>
@@ -163,7 +163,7 @@ export default function JivaStructurePanel({ draft, selectedProducts, onChange, 
                 <button onClick={() => { onChange({ structureId: 'custom' }); onClose(); }} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: BRAND, color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer' }}>Accept structure</button>
               )}
               <button onClick={modify} style={{ ...ACTION_BTN, color: BRAND }}>Modify</button>
-              <button onClick={askAgain} style={{ ...ACTION_BTN, color: BRAND }}>Ask Jiva again</button>
+              <button onClick={askAgain} style={{ ...ACTION_BTN, color: BRAND }}>Ask Aan again</button>
               <button onClick={() => onChange({ customCampaigns: null, customPrompt: '', structureId: applied ? null : draft.structureId })} style={{ ...ACTION_BTN, color: TEXT_MUTED }}>Start over</button>
             </div>
           </JivaBubble>

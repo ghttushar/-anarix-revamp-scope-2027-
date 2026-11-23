@@ -22,7 +22,7 @@ const TIPS: { [column: string]: string } = {
   Changes: 'What was done to the item: a field updated, the item created or archived, or a rule or job executed. Where there is more to see, a View link opens it.',
   From: 'The value before the change.',
   To: 'The value after the change.',
-  Through: 'Where the change was made from: a page in Anarix, Jiva, or a connected tool such as Slack or Claude.',
+  Through: 'Where the change was made from: a page in Anarix, Aan, or a connected tool such as Slack or Claude.',
   User: 'The person or system that made the change.',
   'Date & Time': 'When the change was made, in your time zone. Select the header to sort.',
 };

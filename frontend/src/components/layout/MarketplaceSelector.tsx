@@ -22,28 +22,18 @@ const marketplaceOptions: MarketplaceOption[] = [
   { id: "tiktok", label: "TikTok", brandColor: "#000000", logo: "tiktok" },
 ];
 
-/**
- * Amazon and Walmart as the same filled brand circles Signals uses: big, bold and legible at sidebar size. They keep
- * their colours when not selected, just a little softer.
- */
+/** Amazon and Walmart as their bare marks: big and bold, in brand color only when selected (otherwise the muted text color). */
 function BrandBadge({ brand, selected }: { brand: "amazon" | "walmart"; selected: boolean }) {
-  const size = 22;
-  const icon = Math.round(size * 0.62);
-  return (
-    <span
-      className={cn("flex shrink-0 items-center justify-center rounded-full ring-1 ring-black/5 transition-opacity", !selected && "opacity-70")}
-      style={{ width: size, height: size, background: brand === "amazon" ? "#FF9900" : "#0071CE" }}
-    >
-      {brand === "amazon" ? (
-        <AmazonLogo size={icon} color="#FFFFFF" weight="bold" />
-      ) : (
-        <svg width={icon} height={icon} viewBox="0 0 16 16" fill="none" aria-hidden>
-          <g stroke="#FFC220" strokeWidth="2.1" strokeLinecap="round">
-            <path d="M8 1.2v4.6M8 10.2v4.6M2.3 4l4 2.3M9.7 9.7l4 2.3M2.3 12l4-2.3M9.7 6.3l4-2.3" />
-          </g>
-        </svg>
-      )}
-    </span>
+  const size = 20;
+  const color = selected ? (brand === "amazon" ? "#FF9900" : "#0071CE") : "currentColor";
+  return brand === "amazon" ? (
+    <AmazonLogo size={size} color={color} weight="bold" className="shrink-0" />
+  ) : (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden className="shrink-0">
+      <g stroke={color} strokeWidth="2.1" strokeLinecap="round">
+        <path d="M8 1.2v4.6M8 10.2v4.6M2.3 4l4 2.3M9.7 9.7l4 2.3M2.3 12l4-2.3M9.7 6.3l4-2.3" />
+      </g>
+    </svg>
   );
 }
 

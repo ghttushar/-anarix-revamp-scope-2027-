@@ -9,7 +9,7 @@ function Svg({ size = 20, className, children }: IconProps & { children: React.R
   return <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-hidden focusable="false" {...stroke}>{children}</svg>;
 }
 
-/** Signals: a diamond (the Jiva mark) at the centre of two broadcast arcs on each side — things being picked up for you. */
+/** Signals: a diamond (the Aan mark) at the centre of two broadcast arcs on each side — things being picked up for you. */
 export function SignalsIcon(props: IconProps) {
   return (
     <Svg {...props}>

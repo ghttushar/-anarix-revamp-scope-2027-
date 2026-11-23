@@ -25,7 +25,7 @@ interface Props {
   initialFilterOpen?: boolean;
   /** Forces the Yesterday group collapsed on mount — for the design-handoff preview, not used by the real app. */
   initialYesterdayCollapsed?: boolean;
-  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Jiva are all showing at once. */
+  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Aan are all showing at once. */
   /** Explicit pixel width from the drag-resize handle — supersedes the default fixed ~35%. */
   width?: number;
   /** A category to apply as the sole active filter — bump `nonce` to reapply the same category again (e.g. from the empty state's category cards). */
@@ -100,7 +100,7 @@ export function AlertListPanel({ selectedAlertId, alertStatusMap, actionedCounts
   };
 
   return (
-    <div style={{ flex: width ? `0 0 ${width}px` : '0 0 35%', maxWidth: width ? 'none' : '35%', minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'visible', position: 'relative' }}>
+    <div style={{ flex: width ? `0 0 ${width}px` : '0 0 35%', maxWidth: width ? 'none' : '35%', minWidth: 0, minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'visible', position: 'relative' }}>
       <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', flexDirection: 'column', gap: 9, flex: 'none', position: 'relative' }}>
         <div style={{ display: 'flex', gap: 8, position: 'relative' }}>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search alerts, ASINs, campaigns" className={motion.focusRing} style={{ flex: 1, minWidth: 0, padding: '9px 12px', border: '1px solid #e1e3e8', borderRadius: 7, font: '400 12px/1 Inter,sans-serif', color: '#3d424b', outline: 'none' }} />
@@ -136,7 +136,7 @@ export function AlertListPanel({ selectedAlertId, alertStatusMap, actionedCounts
               ))}
             </FilterSection>
             <FilterSection label="Source">
-              {['Anarix', 'Jiva', 'Meeting', 'Slack', 'Workspace', 'Email'].map((k) => (
+              {['Anarix', 'Aan', 'Meeting', 'Slack', 'Workspace', 'Email'].map((k) => (
                 <div key={k} onClick={() => toggleSource(k)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '4px 6px', margin: '0 -6px', borderRadius: 6 }}>
                   <span style={{ width: 13, height: 13, borderRadius: 3, border: '1.5px solid #d1d4da', background: sourceFilters[k] ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
                   <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{k}</span>

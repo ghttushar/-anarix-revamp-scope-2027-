@@ -207,7 +207,7 @@ export const PROTOTYPE_ALERTS: PrototypeAlert[] = [
       { id: 'self', name: 'Myself', role: 'You' },
       { id: 'rahul', name: 'Rahul Mehta', role: 'Catalog' },
       { id: 'ananya', name: 'Ananya Iyer', role: 'Advertising' },
-      { id: 'jiva', name: '✦ Jiva', role: 'AI' },
+      { id: 'jiva', name: '✦ Aan', role: 'AI' },
       { id: 'devesh', name: 'Devesh Rao', role: 'Ops' },
       { id: 'lena', name: 'Lena Fischer', role: 'Client' },
       { id: 'arjun', name: 'Arjun Verma', role: 'Advertising' },
@@ -263,7 +263,7 @@ export const PROTOTYPE_ALERTS: PrototypeAlert[] = [
       { id: 'self', name: 'Myself', role: 'You' },
       { id: 'rahul', name: 'Rahul Mehta', role: 'Catalog' },
       { id: 'ananya', name: 'Ananya Iyer', role: 'Advertising' },
-      { id: 'jiva', name: '✦ Jiva', role: 'AI' },
+      { id: 'jiva', name: '✦ Aan', role: 'AI' },
       { id: 'devesh', name: 'Devesh Rao', role: 'Ops' },
       { id: 'lena', name: 'Lena Fischer', role: 'Client' },
       { id: 'arjun', name: 'Arjun Verma', role: 'Advertising' },
@@ -1707,7 +1707,7 @@ export type TaskOrigin = 'alert' | 'meeting' | 'generative' | 'direct';
 export interface WorkstationLogEntry {
   time: string;
   text: string;
-  /** Who logged this — a person's display name, or 'Jiva' for an automatic update. */
+  /** Who logged this — a person's display name, or 'Aan' for an automatic update. */
   by: string;
 }
 
@@ -1748,56 +1748,56 @@ export const WORKSTATION_TASKS: WorkstationTask[] = [
     description: 'Priya signed off on the proposed bullet copy for the six hero ASINs during the QBR prep call. Publish it and confirm Amazon has re-indexed the listings before the next check-in.',
     priority: 'High', contextSources: ['meeting', 'email', 'slack'],
     assignee: 'You', assigneeId: 'self', createdBy: 'Priya Nair', due: '3 Nov', dueColor: '#cc2b2b', overdue: false, status: 'open', origin: 'meeting', meetingId: 'm2', meetingLabel: 'QBR preparation call',
-    logs: [{ time: '2 days ago', text: 'Created from QBR preparation call', by: 'Jiva' }, { time: '1 day ago', text: 'Priya confirmed sign-off over email', by: 'Priya Nair' }],
+    logs: [{ time: '2 days ago', text: 'Created from QBR preparation call', by: 'Aan' }, { time: '1 day ago', text: 'Priya confirmed sign-off over email', by: 'Priya Nair' }],
   },
   {
     id: 't2', text: 'Model Q4 stock cover at two scenarios for the hero range',
     description: "Wellbeing's stock cover sits below their usual comfort line. Build a base case and a conservative case for Q4 so the account team can commit inventory with confidence.",
     priority: 'Medium', contextSources: ['meeting', 'email'],
     assignee: 'You', assigneeId: 'self', createdBy: 'You', due: '7 Nov', overdue: false, status: 'in_progress', origin: 'meeting', meetingId: 'm2', meetingLabel: 'QBR preparation call',
-    logs: [{ time: '2 days ago', text: 'Created from QBR preparation call', by: 'Jiva' }, { time: 'Yesterday', text: 'Started the base-case model', by: 'You' }],
+    logs: [{ time: '2 days ago', text: 'Created from QBR preparation call', by: 'Aan' }, { time: 'Yesterday', text: 'Started the base-case model', by: 'You' }],
   },
   {
     id: 't3', text: 'Chase the Q4 promo calendar from Rahul before the 8 November lock',
     description: "Nutrabay's Q4 promo calendar is overdue. Without it the promo slots can't be locked in time for the 8 November deadline.",
     priority: 'High', contextSources: ['meeting'],
     assignee: 'You', assigneeId: 'self', createdBy: 'You', due: '25 Oct', dueColor: '#cc2b2b', overdue: true, status: 'in_progress', origin: 'meeting', meetingId: 'm1', meetingLabel: 'Weekly performance review',
-    logs: [{ time: '9 days ago', text: 'Created from Weekly performance review', by: 'Jiva' }, { time: '2 hours ago', text: 'You sent a reminder to Rahul', by: 'You' }],
+    logs: [{ time: '9 days ago', text: 'Created from Weekly performance review', by: 'Aan' }, { time: '2 hours ago', text: 'You sent a reminder to Rahul', by: 'You' }],
   },
   {
     id: 't4', text: 'Place inventory reorder for the three at-risk SKUs',
     description: 'Three SKUs were flagged as at-risk of stocking out. Reorder placed and verified against the units-sold trend over the following week.',
     priority: 'Medium',
     assignee: 'You', assigneeId: 'self', createdBy: 'You', due: '30 Oct', dueColor: '#2b9652', overdue: false, status: 'done', origin: 'alert', alertId: 'a3',
-    logs: [{ time: '3 days ago', text: 'Created from alert: Inventory reorder on three SKUs came back verified', by: 'Jiva' }, { time: '2 days ago', text: 'Reorder placed', by: 'Jiva' }, { time: 'Yesterday', text: 'Verified over 7 days on units sold', by: 'Jiva' }],
+    logs: [{ time: '3 days ago', text: 'Created from alert: Inventory reorder on three SKUs came back verified', by: 'Aan' }, { time: '2 days ago', text: 'Reorder placed', by: 'Aan' }, { time: 'Yesterday', text: 'Verified over 7 days on units sold', by: 'Aan' }],
   },
   {
     id: 't5', text: 'Send the October performance summary to Sneha',
     description: "Draft and send Sneha a short October wrap-up covering GMV, margin, and the content incident — she asked for this ahead of the board pack.",
     priority: 'Low',
     assignee: 'You', assigneeId: 'self', createdBy: 'You', due: '29 Oct', dueColor: '#2b9652', overdue: false, status: 'done', origin: 'generative',
-    logs: [{ time: '4 days ago', text: 'Created directly', by: 'You' }, { time: '3 days ago', text: 'Drafted with Jiva', by: 'Jiva' }, { time: '3 days ago', text: 'Sent to Sneha', by: 'You' }],
+    logs: [{ time: '4 days ago', text: 'Created directly', by: 'You' }, { time: '3 days ago', text: 'Drafted with Aan', by: 'Aan' }, { time: '3 days ago', text: 'Sent to Sneha', by: 'You' }],
   },
   {
     id: 't6', text: 'Draft replacement creative for the two suppressed Wellbeing ASINs',
     description: 'Both suppressed listings need a compliant white-background main image before they can be reinstated. Generate a draft for review.',
     priority: 'High',
     assignee: 'Mike Torres', assigneeId: 'mike', createdBy: 'You', due: '5 Nov', overdue: false, status: 'open', origin: 'generative',
-    logs: [{ time: '2 days ago', text: 'Created from alert: Two listings suppressed on image compliance', by: 'Jiva' }],
+    logs: [{ time: '2 days ago', text: 'Created from alert: Two listings suppressed on image compliance', by: 'Aan' }],
   },
   {
     id: 't7', text: 'Pull the competitor price benchmark for the Q4 planning deck',
     description: "Boldfit's Q4 planning call flagged the need for a competitor price benchmark on the hero range before the profitability discussion.",
     priority: 'Medium',
     assignee: 'Sarah Kim', assigneeId: 'sarah', createdBy: 'You', due: '4 Nov', dueColor: '#cc2b2b', overdue: false, status: 'open', origin: 'meeting', meetingId: 'm3', meetingLabel: 'Q4 planning and inventory commitments',
-    logs: [{ time: '1 day ago', text: 'Created from Q4 planning and inventory commitments', by: 'Jiva' }],
+    logs: [{ time: '1 day ago', text: 'Created from Q4 planning and inventory commitments', by: 'Aan' }],
   },
   {
     id: 't8', text: 'Confirm a pre-flight compliance check before the next creative push',
     description: 'Agreed at the QBR to add a compliance check before any future creative goes live, to stop the recurring suppression pattern. Needs an owner.',
     priority: 'Low',
     assignee: 'Unassigned', createdBy: 'You', due: '8 Nov', overdue: false, status: 'open', origin: 'meeting', meetingId: 'm2', meetingLabel: 'QBR preparation call',
-    logs: [{ time: '2 days ago', text: 'Created from QBR preparation call', by: 'Jiva' }],
+    logs: [{ time: '2 days ago', text: 'Created from QBR preparation call', by: 'Aan' }],
   },
   {
     id: 't9', text: 'Revert bullet points on the 14 flagged Nutrabay ASINs and confirm re-index',
@@ -1805,7 +1805,7 @@ export const WORKSTATION_TASKS: WorkstationTask[] = [
     priority: 'High',
     assignee: 'Mike Torres', assigneeId: 'mike', createdBy: 'You', due: 'Today', dueColor: '#cc2b2b', overdue: false, status: 'in_progress', origin: 'alert', alertId: 'a1',
     logs: [
-      { time: '3 hours ago', text: 'Created from alert: Net profit down 12% across 14 ASINs', by: 'Jiva' },
+      { time: '3 hours ago', text: 'Created from alert: Net profit down 12% across 14 ASINs', by: 'Aan' },
       { time: '3 hours ago', text: 'You assigned this alert to Mike Torres', by: 'You' },
       { time: '40 minutes ago', text: 'Started reverting bullet copy on the first 6 ASINs', by: 'Mike Torres' },
     ],
@@ -1816,7 +1816,7 @@ export const WORKSTATION_TASKS: WorkstationTask[] = [
     priority: 'Medium',
     assignee: 'Sarah Kim', assigneeId: 'sarah', createdBy: 'You', due: '2 Nov', overdue: false, status: 'open', origin: 'alert', alertId: 'a2',
     logs: [
-      { time: 'Yesterday', text: 'Created from alert: Bullet copy is under-performing on 6 hero ASINs', by: 'Jiva' },
+      { time: 'Yesterday', text: 'Created from alert: Bullet copy is under-performing on 6 hero ASINs', by: 'Aan' },
       { time: 'Yesterday', text: 'You assigned this alert to Sarah Kim', by: 'You' },
     ],
   },
@@ -1825,7 +1825,7 @@ export const WORKSTATION_TASKS: WorkstationTask[] = [
     description: 'An automation rule dropped its own daily budget cap overnight, tripling ad spend across 24 Walmart campaigns with no matching sales lift — about $128.4K at risk. Pausing the affected campaigns now stops further loss.',
     priority: 'High',
     assignee: 'You', assigneeId: 'self', createdBy: 'You', due: 'Today', dueColor: '#cc2b2b', overdue: false, status: 'open', origin: 'alert', alertId: 'a8',
-    logs: [{ time: '2 hours ago', text: 'Created from alert: Ad spend spike', by: 'Jiva' }],
+    logs: [{ time: '2 hours ago', text: 'Created from alert: Ad spend spike', by: 'Aan' }],
   },
 ];
 
@@ -2137,7 +2137,7 @@ export const BRIEF_MESSAGES: BriefMessage[] = [
   { id: 'msg4', channel: 'email', channelName: 'Email', sender: 'Sneha Kapoor · Boldfit', message: 'Attaching the draft calendar — need your sign-off before the lock.', time: 'Yesterday, 6:40 PM', unread: false },
 ];
 
-/** What Jiva did autonomously while the user was away — the "peak" payoff moment on the Brief page. */
+/** What Aan did autonomously while the user was away — the "peak" payoff moment on the Brief page. */
 export interface JivaActivityItem {
   id: string;
   label: string;
@@ -2148,7 +2148,7 @@ export interface JivaActivityItem {
   alertId?: string;
   /** Same category taxonomy as PrototypeAlert.category — lets "At risk" and "Verified gain" bifurcate the same way on the Brief page. */
   category: string;
-  /** 'done' = Jiva already acted autonomously, nothing pending. 'needs-review' = Jiva drafted/escalated something that's still waiting on you. */
+  /** 'done' = Aan already acted autonomously, nothing pending. 'needs-review' = Aan drafted/escalated something that's still waiting on you. */
   status: 'done' | 'needs-review';
 }
 

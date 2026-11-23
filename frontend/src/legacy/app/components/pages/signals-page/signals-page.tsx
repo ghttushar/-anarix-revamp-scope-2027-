@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { CaretDown, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { useSearchParams } from 'react-router-dom';
 import styles from './signals-page.module.scss';
@@ -30,7 +30,13 @@ export interface SignalsPagePreview {
   workStation?: Omit<React.ComponentProps<typeof WorkStation>, 'onOpenAlert' | 'onOpenMeeting' | 'forceJivaOpen'>;
 }
 
-export function SignalsPage({ initialTab = 'alerts', preview }: { initialTab?: SignalTabKey; preview?: SignalsPagePreview } = {}) {
+export function SignalsPage({ initialTab = 'alerts', preview, bar }: {
+  initialTab?: SignalTabKey;
+  preview?: SignalsPagePreview;
+  /** The host app's page level metric bar, drawn under the heading. It brings its own date range, so the header's
+   *  account filter and date range are left out when it is given. */
+  bar?: ReactNode;
+} = {}) {
   const [activeTab, setActiveTab] = useState<SignalTabKey>(initialTab);
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [selectedMeetingId, setSelectedMeetingId] = useState<string | null>(null);
@@ -63,13 +69,13 @@ export function SignalsPage({ initialTab = 'alerts', preview }: { initialTab?: S
   const [applyMeetingFilter, setApplyMeetingFilter] = useState<{ kind: 'day' | 'status' | 'clear'; value?: string; nonce: number } | null>(null);
 
   const selectedAlert = PROTOTYPE_ALERTS.find((a) => a.id === selectedAlertId) ?? null;
-  // The Ask Jiva variation is a one-alert concept demo, anchored to whichever alert leads today's list.
+  // The Ask Aan variation is a one-alert concept demo, anchored to whichever alert leads today's list.
   const firstAlertId = PROTOTYPE_ALERTS.find((a) => a.day === 'today')?.id ?? PROTOTYPE_ALERTS[0]?.id;
-  // The header's persistent Ask Jiva button has no alert/meeting of its own to anchor to — fall back to whichever one is selected, or today's first, or the very first.
+  // The header's persistent Ask Aan button has no alert/meeting of its own to anchor to — fall back to whichever one is selected, or today's first, or the very first.
   const globalJivaAlert = selectedAlert ?? PROTOTYPE_ALERTS.find((a) => a.id === firstAlertId) ?? PROTOTYPE_ALERTS[0];
   const globalJivaMeetingId = selectedMeetingId ?? MEETING_LIST.find((m) => m.isToday)?.id ?? MEETING_LIST[0]?.id ?? null;
 
-  // Column widths: List and Jiva are user-resizable (drag the handle on their shared border);
+  // Column widths: List and Aan are user-resizable (drag the handle on their shared border);
   // Detail always just fills whatever's left. Only the list/overview column collapses below a
   // minimum — dragged past that point it snaps into its own tab-specific collapsed rail instead
   // of clamping at an unreadable width.
@@ -77,7 +83,7 @@ export function SignalsPage({ initialTab = 'alerts', preview }: { initialTab?: S
   // much room; narrower and content clips/overlaps instead of wrapping cleanly (confirmed live).
   const alertsListCol = useResizableColumn({ defaultWidth: 320, minWidth: 260, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH });
   const alertsJivaCol = useResizableColumn({ defaultWidth: 340, minWidth: 260, maxWidth: 480, edge: 'left' });
-  const meetingsListCol = useResizableColumn({ defaultWidth: 320, minWidth: 220, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH });
+  const meetingsListCol = useResizableColumn({ defaultWidth: 320, minWidth: 260, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH });
   const meetingsJivaCol = useResizableColumn({ defaultWidth: 340, minWidth: 260, maxWidth: 480, edge: 'left' });
 
   const logAction = useCallback((item: LoggedActionItem) => {
@@ -403,10 +409,7 @@ export function SignalsPage({ initialTab = 'alerts', preview }: { initialTab?: S
     }
   };
 
-  return (
-    <div className={styles.signalsPage}>
-      <div className={styles.header}>
-        <span className={styles.headerTitle}>Signals</span>
+  const headerControls = (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ position: 'relative' }}>
             <button className={styles.dateRangeBtn} onClick={() => setAccountFilterOpen(!accountFilterOpen)}>
@@ -440,17 +443,16 @@ export function SignalsPage({ initialTab = 'alerts', preview }: { initialTab?: S
               />
             )}
           </span>
-          <span
-            onClick={() => { setAskJivaOpen(false); setMeetingAskJivaOpen(false); setGlobalJivaOpen((v) => !v); }}
-            className={`${motion.pressable} ${motion.btnPrimary}`}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 14px', borderRadius: 999, background: globalJivaOpen ? '#2235c4' : '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer', whiteSpace: 'nowrap' as const }}
-            title="See the list, detail and Jiva chat together on Alerts, Meetings and Work-station"
-          >
-            <DiamondMascot size={15} /> Ask Jiva
-          </span>
-          <div className={styles.avatarCircle} />
         </div>
+  );
+
+  return (
+    <div className={styles.signalsPage}>
+      <div className={styles.header}>
+        <span className={styles.headerTitle}>Signals</span>
+        {!bar && headerControls}
       </div>
+      {bar && <div className={`np-app ${styles.bar}`}>{bar}</div>}
 
       <nav className={styles.tabBar}>
         <div style={{ display: 'flex', gap: 22 }}>

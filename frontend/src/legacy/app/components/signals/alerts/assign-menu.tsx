@@ -5,7 +5,7 @@ import scrollStyles from './alerts-scroll.module.scss';
 import motion from './motion.module.scss';
 
 export const DEFAULT_ASSIGNEES: AssigneeOption[] = [
-  { id: 'jiva', name: 'Jiva', role: 'AI' },
+  { id: 'jiva', name: 'Aan', role: 'AI' },
   { id: 'mike', name: 'Mike Torres', role: 'Ops' },
   { id: 'sarah', name: 'Sarah Kim', role: 'Marketing' },
   { id: 'self', name: 'Myself', role: 'You' },
@@ -22,7 +22,7 @@ export function initials(name: string): string {
 
 /** `vivid` is the saturated-blue treatment used for the "currently assigned" avatar on the Alerts row; the default muted tone stays for the assign lists/popups. */
 export function Avatar({ name, size = 24, vivid = false }: { name: string; size?: number; vivid?: boolean }) {
-  const isJiva = name.includes('Jiva');
+  const isJiva = name.includes('Aan');
   const bg = isJiva ? '#eff1fd' : vivid ? '#2f52ed' : '#eceef1';
   const fg = isJiva ? '#2235c4' : vivid ? '#ffffff' : '#5c626e';
   return (

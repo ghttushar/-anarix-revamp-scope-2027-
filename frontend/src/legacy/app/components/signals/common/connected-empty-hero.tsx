@@ -80,7 +80,7 @@ function Particle({ x, y, size, kind, color, delay }: (typeof PARTICLES)[number]
   );
 }
 
-/** The shared glassmorphic, orbiting-icons hero used by Alerts, Meetings and Work-station's empty states — frosted tiles for Alerts, Meetings, Email and Workspace, orbiting a live, cursor-aware Jiva. */
+/** The shared glassmorphic, orbiting-icons hero used by Alerts, Meetings and Work-station's empty states — frosted tiles for Alerts, Meetings, Email and Workspace, orbiting a live, cursor-aware Aan. */
 function ConnectedHero() {
   return (
     <div style={{ position: 'relative', width: 460, height: 300, flex: 'none' }}>
@@ -107,7 +107,7 @@ function ConnectedHero() {
       <svg width="460" height="300" viewBox="0 0 460 300" style={{ position: 'absolute', inset: 0 }}>
         <ellipse className="weh-orbit-outer" cx={CENTER.x} cy={CENTER.y} rx={182} ry={108} fill="none" stroke="rgba(63, 79, 218, .14)" strokeWidth="1.2" strokeDasharray="1 7" />
         <ellipse className="weh-orbit-inner" cx={CENTER.x} cy={CENTER.y} rx={124} ry={70} fill="none" stroke="rgba(63, 79, 218, .2)" strokeWidth="1" strokeDasharray="2 5" />
-        {/* One shared ring linking all four tiles around Jiva, instead of four separate spokes converging on the center. */}
+        {/* One shared ring linking all four tiles around Aan, instead of four separate spokes converging on the center. */}
         <ellipse cx={CENTER.x} cy={CENTER.y} rx={182} ry={108} fill="none" stroke="rgba(63, 79, 218, .26)" strokeWidth="1.2" />
       </svg>
 

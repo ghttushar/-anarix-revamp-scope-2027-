@@ -142,7 +142,7 @@ export function AlertDetailPanel({ alert: sel, phase, execProgress, onExecuteIte
   const latest = applied[applied.length - 1];
   const actionLabel = pickedOption?.label ?? 'Execute';
 
-  // Ask Jiva and the approval gate don't act on items, so they skip the item picker.
+  // Ask Aan and the approval gate don't act on items, so they skip the item picker.
   const handleExecute = () => {
     if (pickedOption?.isOther) { onOpenAskJiva?.(); return; }
     if (pickedOption?.isMeetingAsk) { setActionPickerOpen(true); return; }
@@ -380,7 +380,7 @@ export function AlertDetailPanel({ alert: sel, phase, execProgress, onExecuteIte
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <SparkleIcon size={11} />
-              <span style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#9a9fa8' }}>Jiva's analysis</span>
+              <span style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#9a9fa8' }}>Aan's analysis</span>
             </div>
             <div className={motion.contentFadeIn} style={{ font: '400 13px/1.6 Inter,sans-serif', color: '#464646' }}>{sel.why}</div>
             <div className={motion.contentFadeIn} style={{ font: '400 13px/1.6 Inter,sans-serif', color: '#464646', marginTop: 4, animationDelay: '110ms', animationFillMode: 'backwards' }}>{sel.root}</div>
@@ -419,8 +419,8 @@ export function AlertDetailPanel({ alert: sel, phase, execProgress, onExecuteIte
                 <span style={{ width: 14, height: 14, borderRadius: '50%', border: optId === o.id ? '4px solid #3f4fda' : '1px solid #e1e3e8', flex: 'none', marginTop: 2, transition: 'border 140ms ease-out' }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, flexWrap: 'wrap' as const }}>
-                    <span style={{ font: '600 12px/1.4 Inter,sans-serif', color: '#23232d' }}>{o.isOther ? 'Ask Jiva' : o.label}</span>
-                    {o.recommended && <AiDraftBadge label="Jiva recommends" />}
+                    <span style={{ font: '600 12px/1.4 Inter,sans-serif', color: '#23232d' }}>{o.isOther ? 'Ask Aan' : o.label}</span>
+                    {o.recommended && <AiDraftBadge label="Aan recommends" />}
                   </span>
                   {(o.expected || o.confidence !== undefined) && (
                     <div style={{ font: '400 11px/1.4 Inter,sans-serif', color: '#9a9fa8', marginTop: 3 }}>

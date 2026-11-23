@@ -11,7 +11,7 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 
 /**
  * The page header strip from anarix-ui (`common/sub-header`): page title, its info tooltip and the header dropdowns.
- * In anarix-ui the strip also carried the Jiva button, notification bell and profile menu; in this app those live in
+ * In anarix-ui the strip also carried the Aan button, notification bell and profile menu; in this app those live in
  * the app's own shell, so only the page's part of the strip is kept. Pages set it through a context instead of Redux.
  */
 export interface ISubHeaderDataItem {

@@ -14,12 +14,12 @@ interface ChatMessage {
 interface Props {
   meetingId: string;
   onClose: () => void;
-  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Jiva are all showing at once. */
+  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Aan are all showing at once. */
   /** Explicit pixel width from the drag-resize handle — supersedes the default fixed ~35%. */
   width?: number;
 }
 
-/** Ask-Jiva-about-this-meeting variant — builds the client presentation through chat instead of a static deck screen; occupies the exact footprint of the meeting list column it replaces. */
+/** Ask-Aan-about-this-meeting variant — builds the client presentation through chat instead of a static deck screen; occupies the exact footprint of the meeting list column it replaces. */
 export function AskJivaMeetingPanel({ meetingId, onClose, width }: Props) {
   const meeting = MEETING_LIST.find((m) => m.id === meetingId)!;
   const detail = MEETING_DETAILS[meetingId];
@@ -28,7 +28,7 @@ export function AskJivaMeetingPanel({ meetingId, onClose, width }: Props) {
     {
       id: 'm0',
       from: 'jiva',
-      text: `Hi, I'm Jiva. Let's build the presentation for "${meeting.title}". I can pull in the positives, what to raise carefully, and the asks — just tell me what to focus on.`,
+      text: `Hi, I'm Aan. Let's build the presentation for "${meeting.title}". I can pull in the positives, what to raise carefully, and the asks — just tell me what to focus on.`,
     },
   ]);
   const [draft, setDraft] = useState('');
@@ -68,7 +68,7 @@ export function AskJivaMeetingPanel({ meetingId, onClose, width }: Props) {
       <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', alignItems: 'center', gap: 10, flex: 'none', background: 'linear-gradient(180deg, rgba(63, 79, 218, .05), transparent)' }}>
         <DiamondMascot size={26} />
         <div style={{ minWidth: 0 }}>
-          <div style={{ font: '700 13px/1.2 Inter,sans-serif', color: '#23232d' }}>Ask Jiva</div>
+          <div style={{ font: '700 13px/1.2 Inter,sans-serif', color: '#23232d' }}>Ask Aan</div>
           <div style={{ font: '400 10.5px/1.3 Inter,sans-serif', color: '#9a9fa8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>About: {meeting.title}</div>
         </div>
         <span onClick={onClose} className={motion.pressable} style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 7, cursor: 'pointer', flex: 'none' }}

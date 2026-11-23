@@ -14,14 +14,14 @@ interface ChatMessage {
 interface Props {
   task: WorkstationTask;
   onClose: () => void;
-  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Jiva are all showing at once. */
+  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Aan are all showing at once. */
   /** Explicit pixel width from the drag-resize handle — supersedes the default fixed ~35%. */
   width?: number;
   /** Starts with this text typed in the input — for the design-handoff preview, not used by the real app. */
   initialDraft?: string;
-  /** Starts with one question and Jiva's answer already in the thread — for the design-handoff preview, not used by the real app. */
+  /** Starts with one question and Aan's answer already in the thread — for the design-handoff preview, not used by the real app. */
   initialConversation?: boolean;
-  /** Starts with Jiva's typing indicator showing — for the design-handoff preview, not used by the real app. */
+  /** Starts with Aan's typing indicator showing — for the design-handoff preview, not used by the real app. */
   initialTyping?: boolean;
 }
 
@@ -31,7 +31,7 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
   done: 'Done',
 };
 
-/** Same chat-panel treatment as Alerts'/Meetings' Ask Jiva — occupies the list/board column it replaces, detail panel stays put alongside it. */
+/** Same chat-panel treatment as Alerts'/Meetings' Ask Aan — occupies the list/board column it replaces, detail panel stays put alongside it. */
 export function WorkStationAskJivaPanel({ task, onClose, width, initialDraft = '', initialConversation = false, initialTyping = false }: Props) {
   const reply = (question: string): string => {
     const q = question.toLowerCase();
@@ -54,7 +54,7 @@ export function WorkStationAskJivaPanel({ task, onClose, width, initialDraft = '
     {
       id: 'm0',
       from: 'jiva',
-      text: `Hi, I'm Jiva. I've read "${task.text}" — ask me anything about the context, what's blocking it, or how to move it forward.`,
+      text: `Hi, I'm Aan. I've read "${task.text}" — ask me anything about the context, what's blocking it, or how to move it forward.`,
     },
     ...(initialConversation ? [
       { id: 'u1', from: 'user' as const, text: 'What should I do next?' },
@@ -92,7 +92,7 @@ export function WorkStationAskJivaPanel({ task, onClose, width, initialDraft = '
       <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', alignItems: 'center', gap: 10, flex: 'none', background: 'linear-gradient(180deg, rgba(63, 79, 218, .05), transparent)' }}>
         <DiamondMascot size={26} />
         <div style={{ minWidth: 0 }}>
-          <div style={{ font: '700 13px/1.2 Inter,sans-serif', color: '#23232d' }}>Ask Jiva</div>
+          <div style={{ font: '700 13px/1.2 Inter,sans-serif', color: '#23232d' }}>Ask Aan</div>
           <div style={{ font: '400 10.5px/1.3 Inter,sans-serif', color: '#9a9fa8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>About: {task.text}</div>
         </div>
         <span onClick={onClose} className={motion.pressable} style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 7, cursor: 'pointer', flex: 'none' }}

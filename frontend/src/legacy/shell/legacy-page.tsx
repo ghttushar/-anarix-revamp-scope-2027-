@@ -12,15 +12,15 @@ import { LegacySubHeader, LegacySubHeaderProvider } from './legacy-sub-header';
  * where the toast queue, the header strip and the page sit stacked in the main column. Pages that use anarix-ui's
  * Redux state (Logs) get the small local store in legacy/redux.
  */
-export function LegacyPage({ children, subHeader = true }: { children: ReactNode; subHeader?: boolean }) {
+export function LegacyPage({ children, subHeader = true, fill = false }: { children: ReactNode; subHeader?: boolean; /** Exactly fill the parent's height (for pages sized with height: 100%). */ fill?: boolean }) {
   return (
     <Provider store={legacyStore}>
       <LegacyMuiTheme>
         <LegacySubHeaderProvider>
-          <div className="np-scope np-page">
+          <div className="np-scope np-page" style={fill ? { height: '100%' } : undefined}>
             <ToastMessageQueue />
             {subHeader && <LegacySubHeader />}
-            <div style={{ width: '100%', display: 'block' }}>{children}</div>
+            <div style={{ width: '100%', display: 'block', ...(fill ? { height: '100%' } : null) }}>{children}</div>
           </div>
         </LegacySubHeaderProvider>
       </LegacyMuiTheme>

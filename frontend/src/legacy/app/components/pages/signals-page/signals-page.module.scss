@@ -3,7 +3,7 @@
 
 .signalsPage {
   padding: $spacing-8;
-  height: 100vh;
+  height: 100%; // fills the space under the page level metric bar (was 100vh)
   display: flex;
   flex-direction: column;
 }
@@ -12,6 +12,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
+  margin-bottom: $spacing-8;
+}
+
+// The page level metric bar, between the heading and the tabs.
+.bar {
   flex-shrink: 0;
   margin-bottom: $spacing-8;
 }
