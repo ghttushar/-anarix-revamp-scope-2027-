@@ -50,6 +50,9 @@ interface DataTableToolbarProps {
   onDownload?: () => void;
   viewMode?: "view" | "edit";
   onViewModeChange?: (mode: "view" | "edit") => void;
+  /** Called by the leave-edit-mode dialog before switching back to view (commit or drop the edits). */
+  onEditSave?: () => void;
+  onEditDiscard?: () => void;
   showViewToggle?: boolean;
   filterFields?: string[];
   /** A segmented switch before the search (Products | Orders, State | Product). */
@@ -106,6 +109,8 @@ export function DataTableToolbar({
   onDownload,
   viewMode = "view",
   onViewModeChange,
+  onEditSave,
+  onEditDiscard,
   showViewToggle = false,
   filterFields = [],
   view,
@@ -176,11 +181,13 @@ export function DataTableToolbar({
 
   const handleEditSave = () => {
     setEditConfirmOpen(false);
+    onEditSave?.();
     onViewModeChange?.("view");
   };
 
   const handleEditDiscard = () => {
     setEditConfirmOpen(false);
+    onEditDiscard?.();
     onViewModeChange?.("view");
   };
 

@@ -24,11 +24,11 @@ import { useFilter } from "@/contexts/FilterContext";
 import { Campaign } from "@/types/campaign";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useActivePanel } from "@/contexts/ActivePanelContext";
 import { TagsProvider, useTags } from "@/contexts/TagsContext";
-import { CampaignBulkActionsBar } from "@/components/advertising/CampaignBulkActionsBar";
+import { CampaignBulkActions } from "@/components/advertising/CampaignBulkActionsBar";
 import { useCurrency } from "@/contexts/CurrencyContext";
 type TabValue = "campaigns" | "ad-groups" | "product-ads" | "keywords" | "product-targeting" | "search-terms" | "page-type" | "platform";
 
@@ -196,6 +196,9 @@ function CampaignManagerInner() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { commitDrafts, discardDrafts } = useTags();
+  // Leaving edit mode: Save changes (the toolbar's primary action) or the Edit toggle's Save / Discard dialog.
+  const saveEdits = () => { commitDrafts(); setSelectedIds(new Set()); toast.success("Changes saved"); };
+  const discardEdits = () => { discardDrafts(); setSelectedIds(new Set()); };
   const { formatCurrency } = useCurrency();
 
   const kpiItems = mockKPIData
@@ -326,21 +329,23 @@ function CampaignManagerInner() {
             sortField={sortField}
             sortDirection={sortDirection}
             onSortChange={(field, dir) => { setSortField(field); setSortDirection(dir); }}
-            primaryAction={{ label: "Create campaign", write: true, onClick: () => navigate("/advertising/campaign-creator") }}
+            onEditSave={saveEdits}
+            onEditDiscard={discardEdits}
+            selection={viewMode === "edit" && activeTab === "campaigns" ? {
+              count: selectedIds.size,
+              onClear: () => setSelectedIds(new Set()),
+              actions: (
+                <CampaignBulkActions
+                  selectedIds={Array.from(selectedIds)}
+                  onBulkUpdate={(updates) => selectedIds.forEach((id) => handleCampaignUpdate(id, updates))}
+                />
+              ),
+            } : undefined}
+            primaryAction={viewMode === "edit"
+              ? { label: "Save changes", icon: Check, write: true, onClick: () => { saveEdits(); setViewMode("view"); } }
+              : { label: "Create campaign", write: true, onClick: () => navigate("/advertising/campaign-creator") }}
           />
 
-          {viewMode === "edit" && activeTab === "campaigns" && (
-            <CampaignBulkActionsBar
-              selectedIds={Array.from(selectedIds)}
-              totalCount={campaigns.length}
-              onClearSelection={() => setSelectedIds(new Set())}
-              onCancel={() => { discardDrafts(); setSelectedIds(new Set()); setViewMode("view"); }}
-              onSave={() => { commitDrafts(); setSelectedIds(new Set()); toast.success("Changes saved"); }}
-              onBulkUpdate={(updates) => {
-                selectedIds.forEach((id) => handleCampaignUpdate(id, updates));
-              }}
-            />
-          )}
 
 
           {renderTable()}

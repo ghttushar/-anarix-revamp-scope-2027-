@@ -276,7 +276,7 @@ export function CampaignTable({
                     </TableCell>}
                     {show("dailyBudget") && <TableCell className="text-right">
                       {isEdit ? (
-                        <Input type="number" defaultValue={campaign.dailyBudget} className="h-8 text-xs w-[100px] text-right" onBlur={(e) => onCampaignUpdate?.(campaign.id, { dailyBudget: parseFloat(e.target.value) || 0 })} onClick={(e) => e.stopPropagation()} />
+                        <Input key={campaign.dailyBudget} type="number" defaultValue={campaign.dailyBudget} className="h-8 text-xs w-[100px] text-right" onBlur={(e) => onCampaignUpdate?.(campaign.id, { dailyBudget: parseFloat(e.target.value) || 0 })} onClick={(e) => e.stopPropagation()} />
                       ) : (
                         <div className="flex flex-col items-end">
                           <span className="text-foreground">{formatCurrency(campaign.dailyBudget)}</span>

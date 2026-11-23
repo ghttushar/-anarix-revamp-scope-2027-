@@ -7,43 +7,26 @@ import { TagPopover } from "./TagPopover";
 import { useTags } from "@/contexts/TagsContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { Campaign } from "@/types/campaign";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import {
-  CheckCircle2,
-  PauseCircle,
-  Tag as TagIcon,
-  Calendar as CalendarIcon,
-  DollarSign,
-  CircleDollarSign,
-  X,
-} from "lucide-react";
+import { CheckCircle2, PauseCircle, Tag as TagIcon, Calendar as CalendarIcon, DollarSign, CircleDollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { BarIconButton } from "@/components/bars";
 
-interface CampaignBulkActionsBarProps {
+interface CampaignBulkActionsProps {
   selectedIds: string[];
-  totalCount: number;
-  onClearSelection: () => void;
-  onCancel: () => void;
-  onSave: () => void;
   onBulkUpdate?: (updates: Partial<Campaign>) => void;
 }
 
-export function CampaignBulkActionsBar({
-  selectedIds,
-  totalCount,
-  onClearSelection,
-  onCancel,
-  onSave,
-  onBulkUpdate,
-}: CampaignBulkActionsBarProps) {
-  const { bulkToggleTag, getEffectiveTags, hasDrafts } = useTags();
+/**
+ * Campaign Manager's bulk edits, as icon actions for the table toolbar's selection slot (they show while campaigns
+ * are selected in edit mode): Activate, Pause, Tag, End date, Daily budget, Total budget. Each opens a small
+ * confirm or input panel. Saving the edits is the toolbar's primary action.
+ */
+export function CampaignBulkActions({ selectedIds, onBulkUpdate }: CampaignBulkActionsProps) {
+  const { bulkToggleTag, getEffectiveTags } = useTags();
   const { currencyConfig } = useCurrency();
-
-  const disabled = selectedIds.length === 0;
   const count = selectedIds.length;
 
-  // Per-action popover state
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [endDateOpen, setEndDateOpen] = useState(false);
   const [dailyBudget, setDailyBudget] = useState("");
@@ -74,217 +57,95 @@ export function CampaignBulkActionsBar({
     setEndDateOpen(false);
   };
 
-  const applyDailyBudget = () => {
-    const n = parseFloat(dailyBudget);
+  const applyBudget = (kind: "daily" | "total") => {
+    const raw = kind === "daily" ? dailyBudget : totalBudget;
+    const n = parseFloat(raw);
     if (!Number.isFinite(n) || n <= 0) {
-      toast.error("Enter a valid daily budget");
+      toast.error(`Enter a valid ${kind} budget`);
       return;
     }
-    onBulkUpdate?.({ dailyBudget: n });
-    toast.success(`Daily budget updated on ${count} campaign(s)`);
-    setDailyOpen(false);
-    setDailyBudget("");
+    onBulkUpdate?.(kind === "daily" ? { dailyBudget: n } : { totalBudget: n });
+    toast.success(`${kind === "daily" ? "Daily" : "Total"} budget updated on ${count} campaign(s)`);
+    if (kind === "daily") { setDailyOpen(false); setDailyBudget(""); } else { setTotalOpen(false); setTotalBudget(""); }
   };
 
-  const applyTotalBudget = () => {
-    const n = parseFloat(totalBudget);
-    if (!Number.isFinite(n) || n <= 0) {
-      toast.error("Enter a valid total budget");
-      return;
-    }
-    onBulkUpdate?.({ totalBudget: n });
-    toast.success(`Total budget updated on ${count} campaign(s)`);
-    setTotalOpen(false);
-    setTotalBudget("");
-  };
+  const confirm = (text: string, onCancel: () => void, onApply: () => void) => (
+    <PopoverContent className="w-56 space-y-2 p-3" align="start">
+      <p className="text-xs text-foreground">{text}</p>
+      <div className="flex justify-end gap-1">
+        <Button variant="ghost" size="xs" onClick={onCancel}>Cancel</Button>
+        <Button size="xs" onClick={onApply}>Apply</Button>
+      </div>
+    </PopoverContent>
+  );
 
-  const triggerClass = cn(
-    "h-7 gap-1 text-[11px] cursor-pointer",
+  const budget = (label: string, value: string, set: (v: string) => void, onCancel: () => void, onApply: () => void) => (
+    <PopoverContent className="w-56 space-y-2 p-3" align="start">
+      <label className="text-[11px] text-muted-foreground">{label}</label>
+      <div className="relative">
+        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyConfig.symbol}</span>
+        <Input type="number" min="0" step="0.01" value={value} onChange={(e) => set(e.target.value)} placeholder="0.00" className="h-8 pl-6 text-xs" autoFocus />
+      </div>
+      <div className="flex justify-end gap-1">
+        <Button variant="ghost" size="xs" onClick={onCancel}>Cancel</Button>
+        <Button size="xs" onClick={onApply}>Apply</Button>
+      </div>
+    </PopoverContent>
   );
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-3 py-1.5">
-      <div className="flex items-center gap-3">
-        <span className="text-xs font-medium text-foreground">
-          {count} of {totalCount} selected
-        </span>
-        {count > 0 && (
-          <button
-            onClick={onClearSelection}
-            className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
-          >
-            <X className="h-3 w-3" />
-            Clear
-          </button>
-        )}
-        {disabled && (
-          <span className="text-[11px] text-muted-foreground">
-            Select rows to enable bulk actions
-          </span>
-        )}
-      </div>
+    <>
+      <Popover open={activeOpen} onOpenChange={setActiveOpen}>
+        <PopoverTrigger asChild>
+          <BarIconButton icon={CheckCircle2} label="Activate" />
+        </PopoverTrigger>
+        {confirm(`Activate ${count} selected campaign(s)?`, () => setActiveOpen(false), () => applyActive(true))}
+      </Popover>
 
-      <div className="flex items-center gap-1">
-        <span className="text-[11px] text-muted-foreground mr-1">Bulk Actions:</span>
+      <Popover open={pauseOpen} onOpenChange={setPauseOpen}>
+        <PopoverTrigger asChild>
+          <BarIconButton icon={PauseCircle} label="Pause" />
+        </PopoverTrigger>
+        {confirm(`Pause ${count} selected campaign(s)?`, () => setPauseOpen(false), () => applyActive(false))}
+      </Popover>
 
-        {/* Active */}
-        <Popover open={activeOpen} onOpenChange={setActiveOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className={triggerClass} disabled={disabled}>
-              <CheckCircle2 className="h-3 w-3" />
-              Active
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-56 p-3 space-y-2" align="end">
-            <p className="text-xs text-foreground">
-              Activate {count} selected campaign(s)?
-            </p>
-            <div className="flex justify-end gap-1">
-              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setActiveOpen(false)}>Cancel</Button>
-              <Button size="sm" className="h-8 text-xs" onClick={() => applyActive(true)}>Apply</Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+      <TagPopover
+        title="Tag the selected campaigns"
+        selectedTags={sharedTags}
+        onToggle={(tag) => bulkToggleTag(selectedIds, tag)}
+        align="start"
+        trigger={<BarIconButton icon={TagIcon} label="Tag" />}
+      />
 
-        {/* Pause */}
-        <Popover open={pauseOpen} onOpenChange={setPauseOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className={triggerClass} disabled={disabled}>
-              <PauseCircle className="h-3 w-3" />
-              Pause
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-56 p-3 space-y-2" align="end">
-            <p className="text-xs text-foreground">
-              Pause {count} selected campaign(s)?
-            </p>
-            <div className="flex justify-end gap-1">
-              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setPauseOpen(false)}>Cancel</Button>
-              <Button size="sm" className="h-8 text-xs" onClick={() => applyActive(false)}>Apply</Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+      <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+        <PopoverTrigger asChild>
+          <BarIconButton icon={CalendarIcon} label="End date" />
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <div className="border-b border-border p-2">
+            <p className="px-1 text-[11px] text-muted-foreground">{endDate ? `End: ${format(endDate, "PPP")}` : "Pick end date"}</p>
+          </div>
+          <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus className="pointer-events-auto p-3" />
+          <div className="flex justify-end gap-1 border-t border-border p-2">
+            <Button variant="ghost" size="xs" onClick={() => setEndDateOpen(false)}>Cancel</Button>
+            <Button size="xs" onClick={applyEndDate} disabled={!endDate}>Apply</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
 
-        {/* Tag */}
-        <TagPopover
-          title="Tag the selected campaigns"
-          selectedTags={sharedTags}
-          onToggle={(tag) => bulkToggleTag(selectedIds, tag)}
-          align="end"
-          trigger={
-            <Button variant="ghost" size="sm" className={triggerClass} disabled={disabled}>
-              <TagIcon className="h-3 w-3" />
-              Tag
-            </Button>
-          }
-        />
+      <Popover open={dailyOpen} onOpenChange={setDailyOpen}>
+        <PopoverTrigger asChild>
+          <BarIconButton icon={DollarSign} label="Daily budget" />
+        </PopoverTrigger>
+        {budget("New daily budget", dailyBudget, setDailyBudget, () => setDailyOpen(false), () => applyBudget("daily"))}
+      </Popover>
 
-        {/* End Date */}
-        <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className={triggerClass} disabled={disabled}>
-              <CalendarIcon className="h-3 w-3" />
-              End Date
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <div className="p-2 border-b border-border">
-              <p className="text-[11px] text-muted-foreground px-1">
-                {endDate ? `End: ${format(endDate, "PPP")}` : "Pick end date"}
-              </p>
-            </div>
-            <Calendar
-              mode="single"
-              selected={endDate}
-              onSelect={setEndDate}
-              initialFocus
-              className="p-3 pointer-events-auto"
-            />
-            <div className="flex justify-end gap-1 p-2 border-t border-border">
-              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setEndDateOpen(false)}>Cancel</Button>
-              <Button size="sm" className="h-8 text-xs" onClick={applyEndDate} disabled={!endDate}>Apply</Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        {/* Daily Budget */}
-        <Popover open={dailyOpen} onOpenChange={setDailyOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className={triggerClass} disabled={disabled}>
-              <DollarSign className="h-3 w-3" />
-              Daily Budget
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-56 p-3 space-y-2" align="end">
-            <label className="text-[11px] text-muted-foreground">New daily budget</label>
-            <div className="relative">
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                {currencyConfig.symbol}
-              </span>
-              <Input
-                type="number"
-                min="0"
-                step="0.01"
-                value={dailyBudget}
-                onChange={(e) => setDailyBudget(e.target.value)}
-                placeholder="0.00"
-                className="h-8 text-xs pl-6"
-                autoFocus
-              />
-            </div>
-            <div className="flex justify-end gap-1">
-              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setDailyOpen(false)}>Cancel</Button>
-              <Button size="sm" className="h-8 text-xs" onClick={applyDailyBudget}>Apply</Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        {/* Total Budget */}
-        <Popover open={totalOpen} onOpenChange={setTotalOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className={triggerClass} disabled={disabled}>
-              <CircleDollarSign className="h-3 w-3" />
-              Total Budget
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-56 p-3 space-y-2" align="end">
-            <label className="text-[11px] text-muted-foreground">New total budget</label>
-            <div className="relative">
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                {currencyConfig.symbol}
-              </span>
-              <Input
-                type="number"
-                min="0"
-                step="0.01"
-                value={totalBudget}
-                onChange={(e) => setTotalBudget(e.target.value)}
-                placeholder="0.00"
-                className="h-8 text-xs pl-6"
-                autoFocus
-              />
-            </div>
-            <div className="flex justify-end gap-1">
-              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setTotalOpen(false)}>Cancel</Button>
-              <Button size="sm" className="h-8 text-xs" onClick={applyTotalBudget}>Apply</Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        <div className="h-4 w-px bg-border mx-1" />
-
-        <Button variant="ghost" size="sm" className="h-7 text-[11px] cursor-pointer" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          size="sm"
-          className="h-7 text-[11px] cursor-pointer"
-          onClick={onSave}
-          disabled={!hasDrafts && count === 0}
-        >
-          Save
-        </Button>
-      </div>
-    </div>
+      <Popover open={totalOpen} onOpenChange={setTotalOpen}>
+        <PopoverTrigger asChild>
+          <BarIconButton icon={CircleDollarSign} label="Total budget" />
+        </PopoverTrigger>
+        {budget("New total budget", totalBudget, setTotalBudget, () => setTotalOpen(false), () => applyBudget("total"))}
+      </Popover>
+    </>
   );
 }
