@@ -1,0 +1,106 @@
+.toastMessageQueueWrapper {
+  position: fixed;
+  bottom: calc(2 * var(--np-rem));
+  left: calc(4 * var(--np-rem));
+  z-index: 100000;
+
+  .messagesContainer {
+    position: relative;
+    width: calc(34.5 * var(--np-rem));
+    height: calc(10 * var(--np-rem));
+
+    &__closeButton {
+      transition: opacity 0.3s ease-in-out;
+      box-shadow: 0 calc(0.2 * var(--np-rem)) calc(0.6 * var(--np-rem)) 0 rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      cursor: pointer;
+      position: fixed;
+      top: calc(2 * var(--np-rem));
+      left: calc(-0.5 * var(--np-rem));
+      width: calc(1.7 * var(--np-rem));
+      height: calc(1.7 * var(--np-rem));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100000;
+
+      &:active {
+        background-color: #d4d4d4;
+        transition: background-color 0.2s ease-in-out;
+      }
+    }
+  }
+
+  .controlbar {
+    display: flex;
+    align-items: flex-end;
+    height: auto;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10001;
+    margin-bottom: calc(1.6 * var(--np-rem));
+  }
+
+  .messageCounter {
+    min-width: calc(2.5 * var(--np-rem));
+    height: auto;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    color: #464646;
+    border-radius: calc(0.2 * var(--np-rem));
+    gap: calc(0.4 * var(--np-rem));
+    padding: 0 calc(0.2 * var(--np-rem));
+    margin-bottom: calc(0.12 * var(--np-rem));
+    font-size: calc(0.8 * var(--np-rem));
+    box-shadow: 0 calc(0.2 * var(--np-rem)) calc(0.6 * var(--np-rem)) 0 rgba(0, 0, 0, 0.2);
+
+    &__icons {
+      display: flex;
+      align-items: center;
+      height: calc(1.4 * var(--np-rem));
+      padding: 0;
+    }
+  }
+
+  .controls {
+    display: flex;
+    gap: calc(0.5 * var(--np-rem));
+    color: #464646;
+
+    &__button {
+      display: flex;
+      align-items: center;
+      padding: calc(0.1 * var(--np-rem));
+      justify-content: center;
+      cursor: pointer;
+      height: calc(1.7 * var(--np-rem));
+      font-size: calc(0.8 * var(--np-rem));
+      min-width: calc(1.7 * var(--np-rem));
+      width: auto;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 calc(0.2 * var(--np-rem)) calc(0.6 * var(--np-rem)) 0 rgba(0, 0, 0, 0.2);
+      &:active {
+        background-color: #d4d4d4;
+        transition: background-color 0.3s ease-in-out;
+      }
+    }
+
+    .__closeAll {
+      border-radius: calc(0.8 * var(--np-rem));
+      height: calc(1.6 * var(--np-rem));
+      text-align: center;
+      margin-bottom: calc(0.05 * var(--np-rem));
+      font-size: calc(0.8 * var(--np-rem));
+      padding: calc(0.7 * var(--np-rem)) calc(0.6 * var(--np-rem)) calc(0.6 * var(--np-rem)) calc(0.6 * var(--np-rem));
+      border-radius: calc(0.8 * var(--np-rem));
+      cursor: pointer;
+      box-shadow: 0 calc(0.2 * var(--np-rem)) calc(0.6 * var(--np-rem)) 0 rgba(0, 0, 0, 0.2);
+
+      &:active {
+        background-color: #d4d4d4;
+      }
+    }
+  }
+}

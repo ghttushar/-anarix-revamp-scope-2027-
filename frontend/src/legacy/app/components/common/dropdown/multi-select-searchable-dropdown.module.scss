@@ -1,0 +1,24 @@
+@import '../../../../assets/styles/scrollbar.scss';
+.paperComponent {
+  display: flex;
+  gap: calc(0.4 * var(--np-rem));
+  padding: calc(0.4 * var(--np-rem));
+  max-height: calc(8 * var(--np-rem));
+  overflow: auto;
+  box-shadow: 0 0 calc(0.4 * var(--np-rem)) 0 rgba(0, 0, 0, 0.2) inset;
+  margin: calc(0.8 * var(--np-rem));
+  flex-wrap: wrap;
+  @include fancy-scrollbar();
+  .chipComponent {
+    width: auto;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    font-size: calc(0.9 * var(--np-rem));
+    background-color: #ebebeb;
+    padding: calc(0.4 * var(--np-rem));
+    border-radius: calc(1 * var(--np-rem));
+    align-items: center;
+    gap: calc(0.4 * var(--np-rem));
+  }
+}

@@ -5,6 +5,8 @@
  *
  *   node scripts/legacy-palette/palette.mjs map     writes map.json + map.html (old → new swatches) next to this file
  *   node scripts/legacy-palette/palette.mjs apply   rewrites the literals in frontend/src/legacy using map.json
+ *   node scripts/legacy-palette/palette.mjs apply <file> ...   only those files (relative to frontend/src/legacy), for
+ *     newly ported code; their new colors are added to map.json. Never re-run on files that were already recolored.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -152,11 +154,18 @@ ${order.filter((g) => groups[g]).map((g) => `<h2>${g} (${groups[g].length})</h2>
   console.log(`map.json + map.html: ${Object.keys(map).length} colors`);
 }
 
-function apply() {
+function apply(only) {
   const map = JSON.parse(fs.readFileSync(path.join(here, 'map.json'), 'utf8'));
-  const to = (hex) => map[hex]?.hex ?? mapColor(hex).hex;
+  // Colors not in the map yet (newly ported files) are mapped by the same rules and recorded in map.json.
+  let added = 0;
+  const to = (hex) => {
+    if (!map[hex]) { map[hex] = { ...mapColor(hex), uses: 0 }; added++; }
+    map[hex].uses = (map[hex].uses ?? 0) + 1;
+    return map[hex].hex;
+  };
+  const targets = only.length ? only.map((p) => path.resolve(LEGACY, p)).filter((f) => /\.(tsx?|s?css)$/.test(f)) : sourceFiles();
   let files = 0, edits = 0;
-  for (const f of sourceFiles()) {
+  for (const f of targets) {
     const t = fs.readFileSync(f, 'utf8');
     let n = 0;
     const out = t
@@ -177,10 +186,11 @@ function apply() {
       });
     if (n) { fs.writeFileSync(f, out); files++; edits += n; }
   }
-  console.log(`recolored ${edits} literals in ${files} files`);
+  if (only.length) fs.writeFileSync(path.join(here, 'map.json'), JSON.stringify(map, null, 1) + '\n');
+  console.log(`recolored ${edits} literals in ${files} files${only.length ? `, ${added} new colors added to map.json` : ''}`);
 }
 
 const cmd = process.argv[2];
 if (cmd === 'map') writeMap();
-else if (cmd === 'apply') apply();
-else console.log('usage: node scripts/legacy-palette/palette.mjs map|apply');
+else if (cmd === 'apply') apply(process.argv.slice(3));
+else console.log('usage: node scripts/legacy-palette/palette.mjs map | apply [file ...] (paths relative to frontend/src/legacy)');

@@ -2,8 +2,11 @@ import CustomBadge from '@legacy/app/components/common/custom-badge/custom-badge
 import Dropdown, { type IDropdownItem } from '@legacy/app/components/common/dropdown/dropdown';
 import InfoIcon from '@legacy/app/components/common/info-icon/info-icon';
 import styles from '@legacy/app/components/common/sub-header/sub-header.module.scss';
+import CustomDateRangePickerWrapper from '@legacy/app/components/shared/custom-daterange-picker/custom-date-range-picker-wrapper';
 import { DropdownLabelEnum } from '@legacy/enums/index.enums';
+import type { TimezoneEnum } from '@legacy/enums/timezone.enums';
 import { TooltipPlacement } from '@legacy/enums/tooltip-texts.enums';
+import type { IDateRange } from '@legacy/interfaces/serp.interface';
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
 /**
@@ -19,6 +22,10 @@ export interface ISubHeaderDataItem {
   prefixElement?: JSX.Element;
   flagElement?: JSX.Element;
   disabled?: boolean;
+  /** Date range items (label DATE_RANGE): the custom range and its setter. */
+  customDateRange?: IDateRange;
+  handleSetCustomDateRangeForModal?: (dateRange: IDateRange) => void;
+  timeZone?: TimezoneEnum;
 }
 
 export interface ISubHeaderProps {
@@ -27,6 +34,8 @@ export interface ISubHeaderProps {
   isDropdownRequired?: boolean;
   dropdownOptions: ISubHeaderDataItem[];
   goBackButton?: boolean;
+  defaultPreset?: IDropdownItem<string>;
+  selectedCustomDateRange?: IDateRange;
 }
 
 type SetSubHeader = (options: ISubHeaderProps) => void;
@@ -55,7 +64,7 @@ export function LegacySubHeader() {
   const ctx = useContext(SubHeaderContext);
   const options = ctx?.options;
   if (!options) return null;
-  const { title, titleTooltip, isDropdownRequired = false, dropdownOptions } = options;
+  const { title, titleTooltip, isDropdownRequired = false, dropdownOptions, defaultPreset, selectedCustomDateRange } = options;
 
   return (
     <div
@@ -86,7 +95,21 @@ export function LegacySubHeader() {
         <div className={styles.subHeaderFilter}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 'calc(0.8 * var(--np-rem))' }}>
             {isDropdownRequired
-              ? dropdownOptions.map((item, index) => (
+              ? dropdownOptions.map((item, index) =>
+                  item.label === DropdownLabelEnum.DATE_RANGE && item.handleSetCustomDateRangeForModal ? (
+                    <CustomDateRangePickerWrapper
+                      key={`${item.label}-${index}`}
+                      title={'Date Range'}
+                      handleDateChange={item.setSelectedItem}
+                      setCustomDateRange={item.handleSetCustomDateRangeForModal}
+                      rangeOptions={item.options}
+                      dropShadow={true}
+                      height="calc(3.2 * var(--np-rem))"
+                      defaultPreset={defaultPreset}
+                      selectedCustomDateRange={selectedCustomDateRange}
+                      timeZone={item.timeZone}
+                    />
+                  ) : (
                   <div key={`${item.label}-${index}`} data-test={`marketplace-header-${item.label}`} className={styles.singleDropdown}>
                     <Dropdown
                       label={getTitleCaseString(item.label)}
@@ -102,7 +125,8 @@ export function LegacySubHeader() {
                       disabled={item.disabled}
                     />
                   </div>
-                ))
+                  )
+                )
               : null}
           </div>
         </div>

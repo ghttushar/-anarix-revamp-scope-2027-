@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target, MousePointerClick, Package, Database, Search, BarChart3, Clock, CalendarClock, Settings, Users, ChevronDown, ChevronRight, FlaskConical, User, LogOut, PanelLeft, Link, LayoutDashboard, ShieldCheck, Plug, CreditCard, BellRing, Wand2,
+  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target, MousePointerClick, Package, Database, Search, BarChart3, Clock, CalendarClock, Settings, Users, ChevronDown, ChevronRight, FlaskConical, User, LogOut, PanelLeft, Link, LayoutDashboard, ShieldCheck, Plug, CreditCard, BellRing, Wand2, ScrollText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -366,6 +366,9 @@ export function AppSidebar() {
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/billing")}>
                     <CreditCard className="h-4 w-4" /><span>Billing</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/logs")}>
+                    <ScrollText className="h-4 w-4" /><span>Logs</span>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
                     <User className="h-4 w-4" /><span>Profile</span>
@@ -407,6 +410,9 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/billing")}>
                     <CreditCard className="h-4 w-4" /><span>Billing</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/logs")}>
+                    <ScrollText className="h-4 w-4" /><span>Logs</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">

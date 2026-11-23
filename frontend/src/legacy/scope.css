@@ -83,3 +83,13 @@
 :where(.np-scope) p {
   font-size: calc(0.9 * var(--np-rem));
 }
+
+/* Parts of a ported page drawn with this app's own components (the Logs table) keep this app's type and text
+   color instead of anarix-ui's. */
+:where(.np-scope) .np-app,
+:where(.np-scope) .np-app * {
+  font-family: var(--font-body) !important;
+}
+.np-scope .np-app {
+  color: hsl(var(--foreground));
+}

@@ -1,0 +1,44 @@
+@import '../../assets/styles/variables/variables.scss';
+
+.sub {
+  margin-top: calc(0.2 * var(--np-rem));
+  color: #9aa0ab;
+  font-size: calc(1.1 * var(--np-rem));
+}
+
+// The View link sits under the action text, and takes no room when there is none.
+.view {
+  margin-top: calc(0.2 * var(--np-rem));
+
+  &:empty {
+    display: none;
+  }
+}
+
+// From and To hold the same width, so a long name wraps inside it instead of widening the column.
+.value {
+  display: block;
+  width: calc(19 * var(--np-rem));
+  color: #1f1f27;
+  font-weight: 600;
+  overflow-wrap: break-word;
+}
+
+.name {
+  color: #1f1f27;
+  font-weight: 600;
+}
+
+// Date on the first line, time under it.
+.date {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: #1f1f27;
+}
+
+.time {
+  margin-top: calc(0.2 * var(--np-rem));
+  color: #9aa0ab;
+  font-size: calc(1.1 * var(--np-rem));
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,92 @@
+.toastContainer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: opacity 0.2s ease-in-out;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: auto;
+  margin-bottom: calc(0.6 * var(--np-rem));
+  box-shadow: 0 calc(0 * var(--np-rem)) calc(0.4 * var(--np-rem)) 0 rgba(0, 0, 0, 0.3);
+  border-top-width: calc(0.6 * var(--np-rem));
+  border-top-style: solid;
+  border-radius: calc(0.5 * var(--np-rem));
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  background-color: #ffffff;
+
+  &__wrapper {
+    border-radius: 0 calc(0.5 * var(--np-rem)) calc(0.5 * var(--np-rem));
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .toastMessageTitle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: calc(1.4 * var(--np-rem));
+    color: #464646;
+    font-weight: 700;
+    line-height: calc(1.2 * var(--np-rem));
+    min-width: calc(34.5 * var(--np-rem));
+    line-break: auto;
+  }
+
+  &__iconWrapper {
+    padding: calc(0.8 * var(--np-rem));
+  }
+
+  &__titleContent {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: calc(1 * var(--np-rem));
+    line-height: calc(1.4 * var(--np-rem));
+  }
+
+  &__counter {
+    display: flex;
+    justify-content: flex-end;
+    min-width: calc(2 * var(--np-rem));
+    min-height: calc(1 * var(--np-rem));
+    color: #959595;
+    font-size: calc(1 * var(--np-rem));
+    font-weight: 400;
+  }
+
+  &__description {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background-color: #f6f6f6;
+    padding: calc(1 * var(--np-rem));
+    font-size: calc(1.2 * var(--np-rem));
+    color: #949494;
+    width: calc(34.5 * var(--np-rem));
+    font-weight: 100;
+    line-height: calc(1.4 * var(--np-rem));
+    min-height: calc(4 * var(--np-rem));
+    word-wrap: break-word;
+    border-radius: 0 0 calc(0.5 * var(--np-rem)) calc(0.5 * var(--np-rem));
+
+    &:has(> .child:nth-child(2)) > .child:first-child {
+      flex: 0 0 80%;
+    }
+
+    &:has(> .child:nth-child(2)) > .child:last-child {
+      flex: 0 0 20%;
+    }
+
+    &__text {
+      flex: 0 0 100%;
+      align-self: center;
+    }
+  }
+}

@@ -36,6 +36,7 @@ const pages = [
   { name: "Day Parting", url: "/dayparting/hourly", icon: Clock, keywords: ["schedule", "time"] },
   { name: "Settings", url: "/settings/appearance", icon: Settings, keywords: ["preferences", "theme"] },
   { name: "Accounts", url: "/settings/accounts", icon: Settings, keywords: ["connect", "marketplace"] },
+  { name: "Logs", url: "/settings/logs", icon: Settings, keywords: ["change log", "history", "audit", "edits"] },
 ];
 
 const quickActions = [

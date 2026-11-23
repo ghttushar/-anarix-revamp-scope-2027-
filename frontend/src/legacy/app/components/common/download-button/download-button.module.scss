@@ -1,0 +1,42 @@
+@import '../../../../assets/styles/variables/variables.scss';
+
+.downloadContainer {
+  position: relative;
+
+  .optionsContainer {
+    position: absolute;
+    top: 10;
+    right: 0;
+    margin-top: calc(1 * var(--np-rem));
+    min-width: calc(17 * var(--np-rem));
+    background-color: $foreground-color;
+    border: 1px solid $stoke-color-1;
+    z-index: 10001;
+    box-shadow: 0 0 calc(0.8 * var(--np-rem)) rgba(0, 0, 0, 0.2);
+
+    .option {
+      width: 100%;
+      text-align: center;
+      padding: calc(1 * var(--np-rem));
+      height: auto;
+      cursor: pointer;
+      font-size: calc(1.1 * var(--np-rem));
+      font-weight: 400;
+
+      &:hover {
+        background-color: $hover-bg-color-1;
+        font-weight: 500;
+      }
+    }
+
+    .disabled-option {
+      cursor: not-allowed;
+      color: #a3a3a3;
+
+      &:hover {
+        background-color: $foreground-color;
+        font-weight: 400;
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+.container {
+  padding: calc(1 * var(--np-rem));
+  display: flex;
+  flex-direction: column;
+  gap: calc(1 * var(--np-rem));
+}

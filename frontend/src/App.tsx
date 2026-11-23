@@ -93,6 +93,7 @@ import ConnectWalmart from "./pages/settings/ConnectWalmart";
 import SettingsTeam from "./pages/settings/Team";
 import Integrations from "./pages/settings/Integrations";
 import Billing from "./pages/settings/Billing";
+import Logs from "./pages/settings/Logs";
 import ChangePlan from "./pages/settings/ChangePlan";
 import CancelPlan from "./pages/settings/CancelPlan";
 
@@ -240,6 +241,7 @@ function AppRoutes() {
       <Route path="/settings/billing/change-plan" element={<ChangePlan mode="change" />} />
       <Route path="/settings/billing/downgrade" element={<ChangePlan mode="downgrade" />} />
       <Route path="/settings/billing/cancel" element={<CancelPlan />} />
+      <Route path="/settings/logs" element={<Logs />} />
       <Route path="/settings/billing" element={<Billing />} />
       <Route path="/settings/billing/:tab" element={<Billing />} />
 

@@ -1,0 +1,141 @@
+@import '../../../../assets/styles/variables/variables.scss';
+@import '../../../../assets/styles/variables/common-new-ui/common-new-ui.module.scss';
+
+.input {
+  padding: calc(0.5 * var(--np-rem)) calc(1 * var(--np-rem));
+  font-size: calc(1.2 * var(--np-rem));
+  font-weight: 400;
+  color: inherit;
+  border: 1px solid #dadceb;
+  border-radius: calc(0.4 * var(--np-rem));
+  outline: none;
+  margin-top: calc(0.25 * var(--np-rem));
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: space-evenly;
+  gap: calc(1.2 * var(--np-rem));
+  height: calc(2.95 * var(--np-rem));
+  width: auto;
+  background-color: white;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid #464646;
+  }
+  &.active {
+    border: 1px solid #3f4fda;
+  }
+  &.disabled {
+    cursor: not-allowed;
+    color: $default-disabled-text-color;
+
+    &:hover {
+      border: 1px solid #ff8b8e;
+    }
+  }
+}
+
+.newInput {
+  padding: calc(0.5 * var(--np-rem)) calc(1 * var(--np-rem));
+  border: 0.5px solid $border-color-2;
+  border-radius: calc(0.8 * var(--np-rem));
+  outline: none;
+  margin-top: calc(0.25 * var(--np-rem));
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: space-between;
+  gap: calc(1.2 * var(--np-rem));
+  background-color: $foreground-color;
+  cursor: pointer;
+  margin-left: 1px;
+
+  &:hover {
+    @include hoverStyles(0.5px, solid);
+  }
+
+  &:focus,
+  &:active {
+    @include focusedActiveStyles();
+  }
+
+  &.active {
+    @include focusedActiveStyles(0.5px, solid);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    color: $default-disabled-text-color;
+
+    &:hover {
+      border: 1px solid $border-color-2;
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  margin-top: calc(0.5 * var(--np-rem));
+  justify-content: space-between;
+  margin-right: calc(0.5 * var(--np-rem));
+  width: auto;
+  .checkbox {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(1.2 * var(--np-rem));
+  }
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #3f4fda;
+  .navIcon {
+    width: calc(1.4 * var(--np-rem));
+    height: calc(1.4 * var(--np-rem));
+    cursor: pointer;
+    border-radius: calc(0.4 * var(--np-rem));
+    &:hover {
+      background-color: #f9f9f9;
+    }
+    &:active,
+    &:focus {
+      background-color: #eeeeee;
+      transition: all 0.2s ease-in-out;
+    }
+  }
+  .monthLabel {
+    font-size: calc(1.2 * var(--np-rem));
+    display: flex;
+    justify-content: end;
+    min-width: calc(7.5 * var(--np-rem));
+  }
+}
+
+.labelText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.newValueTextStyles {
+  font-weight: 400;
+  font-size: calc(1.2 * var(--np-rem));
+  color: $sub-text-1;
+  margin-left: calc(-0.4 * var(--np-rem));
+  transition: width 0.1s ease-in-out;
+}
+
+.newValueTextDisabledStyles {
+  color: $default-disabled-text-color;
+  cursor: not-allowed;
+}
+
+.noEndDateContainer {
+  width: 100%;
+}
