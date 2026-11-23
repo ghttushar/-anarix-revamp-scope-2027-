@@ -40,7 +40,7 @@ export function DashboardPage() {
   }, [widgets, addWidget]);
 
   const apply = (t: (typeof templates)[number]) => { setUndo({ label: `Switched to ${t.name}`, before: snapshot() }); applyTemplate(t); };
-  const blank = () => { if (widgets.length) setUndo({ label: 'Dashboard cleared', before: snapshot() }); clear(); };
+  const blank = () => { if (widgets.length) setUndo({ label: 'Glance cleared', before: snapshot() }); clear(); };
 
   return (
     <div className={styles.page}>

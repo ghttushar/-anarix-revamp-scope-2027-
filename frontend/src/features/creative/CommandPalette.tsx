@@ -21,7 +21,7 @@ export function useCommandPalette() {
 }
 
 const pages = [
-  { name: "Workspace Dashboard", url: "/workspace", icon: LayoutGrid, keywords: ["nuggets", "widgets", "home"] },
+  { name: "Glance", url: "/glance", icon: LayoutGrid, keywords: ["nuggets", "widgets", "home", "dashboard"] },
   { name: "Signals", url: "/signals", icon: BellRing, keywords: ["alerts", "meetings", "work-station", "tasks"] },
   { name: "Dashboard", url: "/profitability/dashboard", icon: LayoutDashboard, keywords: ["home", "overview"] },
   { name: "Trends", url: "/profitability/trends", icon: TrendingUp, keywords: ["analytics", "chart"] },

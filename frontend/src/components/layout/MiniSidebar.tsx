@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAan } from "@/components/aan";
 import { SidebarHoverPopup } from "./SidebarHoverPopup";
-import { navigationGroups } from "./AppSidebar";
+import { navigationGroups, standaloneItems } from "./AppSidebar";
 import { AnarixLogo } from "@/components/branding/AnarixLogo";
 
 export function MiniSidebar() {
@@ -52,6 +52,27 @@ export function MiniSidebar() {
 
       {/* Nav icons */}
       <div className="flex-1 overflow-auto py-2 space-y-1">
+        {standaloneItems.map(item => (
+          <div key={item.url} className="flex justify-center">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => handleNavClick(item.url)}
+                  className={cn(
+                    "flex items-center justify-center h-8 w-8 rounded-md transition-colors",
+                    currentPath.startsWith(item.url)
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{item.title}</TooltipContent>
+            </Tooltip>
+          </div>
+        ))}
+        <div className="mx-3 border-t border-border/30" />
         {filteredGroups.map(group => {
           const isGroupActive = group.items.some(item => currentPath.startsWith(item.url));
           return (

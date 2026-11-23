@@ -68,7 +68,7 @@ import AMCInstances from "./pages/amc/Instances";
 
 // Day Parting
 import HourlyData from "./pages/dayparting/HourlyData";
-import NuggetsDashboard from "./pages/workspace/NuggetsDashboard";
+import Glance from "./pages/glance/Glance";
 
 // Aan
 import AanWorkspacePage from "./pages/aan/Workspace";
@@ -154,9 +154,10 @@ function AppRoutes() {
       <Route path="/onboarding/connect" element={<ConnectAccounts />} />
 
       {/* Sandbox */}
-      <Route path="/workspace" element={<NuggetsDashboard />} />
-      <Route path="/workspace/:dashboardId" element={<NuggetsDashboard />} />
-      <Route path="/dashboard" element={<Navigate to="/workspace" replace />} />
+      <Route path="/glance" element={<Glance />} />
+      <Route path="/workspace" element={<Navigate to="/glance" replace />} />
+      <Route path="/workspace/*" element={<Navigate to="/glance" replace />} />
+      <Route path="/dashboard" element={<Navigate to="/glance" replace />} />
 
       {/* Profitability */}
       <Route path="/profitability/dashboard" element={<ProfitabilityDashboard />} />

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, ArrowLeft } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { CheckoutDialog, type CheckoutPlan } from "@/components/billing/CheckoutDialog";
 import { Button } from "@/components/ui/button";
 import { pricingMajors } from "@/data/pricingPlans";
 import { useTrial } from "@/contexts/TrialContext";
@@ -16,6 +18,7 @@ export default function ChangePlan({ mode }: { mode: "change" | "downgrade" }) {
   const navigate = useNavigate();
   const { setTrial } = useTrial();
   const downgrading = mode === "downgrade";
+  const [checkout, setCheckout] = useState<CheckoutPlan | null>(null);
 
   const options = pricingMajors.flatMap((m) =>
     m.sections.flatMap((s) =>
@@ -23,14 +26,20 @@ export default function ChangePlan({ mode }: { mode: "change" | "downgrade" }) {
     )
   );
 
-  const handlePick = (planName: string) => {
+  const finish = (message: string) => {
     setTrial("paid");
-    toast.success(downgrading ? `Downgraded to ${planName}` : `Switched to ${planName}`);
+    toast.success(message);
     navigate("/profitability/dashboard");
   };
 
+  // Downgrading confirms straight away; choosing a plan goes through the (dummy) checkout.
+  const handlePick = (plan: CheckoutPlan) => {
+    if (downgrading) finish(`Downgraded to ${plan.name}`);
+    else setCheckout(plan);
+  };
+
   return (
-    <AppLayout>
+    <AppLayout showWhenLapsed>
       <div className="max-w-4xl mx-auto px-6 py-10">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <button
@@ -64,7 +73,7 @@ export default function ChangePlan({ mode }: { mode: "change" | "downgrade" }) {
                     </li>
                   ))}
                 </ul>
-                <Button size="sm" variant="outline" className="w-full rounded-pill" onClick={() => handlePick(p.name)}>
+                <Button size="sm" variant="outline" className="w-full rounded-pill" onClick={() => handlePick(p)}>
                   {downgrading ? "Confirm Downgrade" : "Choose plan"}
                 </Button>
               </div>
@@ -72,6 +81,14 @@ export default function ChangePlan({ mode }: { mode: "change" | "downgrade" }) {
           </div>
         </motion.div>
       </div>
+      <CheckoutDialog
+        plan={checkout}
+        onClose={() => setCheckout(null)}
+        onPaid={(plan) => {
+          setCheckout(null);
+          finish(`Payment received — you're on ${plan.name}`);
+        }}
+      />
     </AppLayout>
   );
 }

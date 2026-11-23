@@ -42,7 +42,7 @@ export enum PageTitleEnum {
   INTEGRATIONS = 'Integrations',
   BILLING = 'Plans & Billing',
   ALERTS = 'Signals',
-  DASHBOARD = 'Dashboard',
+  DASHBOARD = 'Glance',
 }
 
 export enum DropdownLabelEnum {

@@ -20,7 +20,7 @@ export default function CancelPlan() {
   };
 
   return (
-    <AppLayout>
+    <AppLayout showWhenLapsed>
       <div className="max-w-2xl mx-auto px-6 py-10">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3 text-center">Before you go…</h1>

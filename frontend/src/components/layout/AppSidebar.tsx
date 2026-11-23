@@ -34,14 +34,13 @@ interface NavGroup {
   items: NavItem[];
 }
 
+/** Pages that stand on their own at the top of the nav, outside any group. */
+const standaloneItems: NavItem[] = [
+  { title: "Glance", url: "/glance", icon: LayoutGrid },
+  { title: "Signals", url: "/signals", icon: BellRing },
+];
+
 const navigationGroups: NavGroup[] = [{
-  label: "Workspace",
-  icon: LayoutGrid,
-  items: [
-    { title: "Dashboard", url: "/workspace", icon: LayoutGrid },
-    { title: "Signals", url: "/signals", icon: BellRing },
-  ]
-}, {
   label: "Profitability",
   icon: TrendingUp,
   items: [
@@ -100,7 +99,7 @@ const navigationGroups: NavGroup[] = [{
   ]
 }];
 
-export { navigationGroups };
+export { navigationGroups, standaloneItems };
 export type { NavItem, NavGroup };
 
 export function AppSidebar() {
@@ -203,6 +202,11 @@ export function AppSidebar() {
           )}
         </div>
 
+        {/* Marketplace Selector */}
+        <MarketplaceSelector />
+
+        <div className="mx-3 border-t border-border/30" />
+
         {/* Aan Button — slim pill */}
         <div className={cn("shrink-0", collapsed ? "px-1 py-2" : "px-3 py-2")}>
           {!collapsed ? (
@@ -231,8 +235,41 @@ export function AppSidebar() {
 
         <div className="mx-3 border-t border-border/30" />
 
-        {/* Marketplace Selector */}
-        <MarketplaceSelector />
+        {/* Standalone pages */}
+        <div className={cn("shrink-0 py-1", collapsed ? "px-1 space-y-1" : "")}>
+          {standaloneItems.map(item =>
+            !collapsed ? (
+              <NavLink
+                key={item.url}
+                to={item.url}
+                className={cn(
+                  "flex items-center gap-2.5 rounded-md mx-1 px-3 py-2 text-[13px] font-semibold transition-colors",
+                  isActive(item.url)
+                    ? "bg-primary/8 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
+                )}
+              >
+                <item.icon className="h-4 w-4 shrink-0" />
+                <span>{item.title}</span>
+              </NavLink>
+            ) : (
+              <Tooltip key={item.url}>
+                <TooltipTrigger asChild>
+                  <NavLink
+                    to={item.url}
+                    className={cn(
+                      "flex items-center justify-center rounded-md p-2 transition-colors",
+                      isActive(item.url) ? "bg-primary/10 text-primary" : "text-sidebar-foreground hover:bg-sidebar-accent"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </NavLink>
+                </TooltipTrigger>
+                <TooltipContent side="right">{item.title}</TooltipContent>
+              </Tooltip>
+            )
+          )}
+        </div>
 
         <div className="mx-3 border-t border-border/30" />
 

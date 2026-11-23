@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 
 const AanCopilotPanel = lazy(() => import("@/components/aan/AanCopilotPanel").then(m => ({ default: m.AanCopilotPanel })));
 
-function LayoutInner({ children, fullBleed = false }: { children: ReactNode; fullBleed?: boolean }) {
+function LayoutInner({ children, fullBleed = false, showWhenLapsed = false }: { children: ReactNode; fullBleed?: boolean; showWhenLapsed?: boolean }) {
   const { dataPanel, aiPanel, hasAnyPanel, closeDataPanel } = useActivePanel();
   const { open, setOpen } = useSidebar();
   const { trial } = useTrial();
   const { billingFlowEnabled } = useBillingFlow();
-  const showSyncOverlay = billingFlowEnabled && trial === "syncing";
-  const showExpiredOverlay = billingFlowEnabled && trial === "expired";
+  const showSyncOverlay = billingFlowEnabled && trial === "syncing" && !showWhenLapsed;
+  const showExpiredOverlay = billingFlowEnabled && trial === "expired" && !showWhenLapsed;
 
   const autoCollapsedRef = useRef(false);
   const prevHasPanelRef = useRef(hasAnyPanel);
@@ -117,12 +117,14 @@ interface AppLayoutProps {
   children: ReactNode;
   /** Drop the content padding so the page fills the content area edge to edge (the pages ported from anarix-ui). */
   fullBleed?: boolean;
+  /** Keep showing the page while the trial is syncing or expired (the billing pages, which are how you get out of it). */
+  showWhenLapsed?: boolean;
 }
 
-export function AppLayout({ children, fullBleed }: AppLayoutProps) {
+export function AppLayout({ children, fullBleed, showWhenLapsed }: AppLayoutProps) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <LayoutInner fullBleed={fullBleed}>{children}</LayoutInner>
+      <LayoutInner fullBleed={fullBleed} showWhenLapsed={showWhenLapsed}>{children}</LayoutInner>
     </SidebarProvider>
   );
 }
