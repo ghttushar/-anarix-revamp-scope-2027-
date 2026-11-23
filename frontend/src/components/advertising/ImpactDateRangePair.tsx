@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { BarChipTrigger } from "@/components/bars";
 import type { DateRange as RDDateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -33,9 +34,7 @@ function RangePill({
   };
 
   return (
-    <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-      <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">{label}</span>
-      <Popover
+    <Popover
         open={open}
         onOpenChange={(o) => {
           setOpen(o);
@@ -43,13 +42,7 @@ function RangePill({
         }}
       >
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 gap-1 text-sm font-normal px-1.5 cursor-pointer">
-            <CalendarIcon className="h-3 w-3" />
-            <span className="whitespace-nowrap">
-              {formatShort(range.from)} – {formatShort(range.to)}
-            </span>
-            <ChevronDown className="h-3 w-3" />
-          </Button>
+          <BarChipTrigger icon={<CalendarIcon />} label={label} value={`${formatShort(range.from)} – ${formatShort(range.to)}`} />
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
@@ -61,12 +54,11 @@ function RangePill({
             className={cn("p-3 pointer-events-auto")}
           />
           <div className="flex items-center justify-end gap-2 border-t border-border p-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs px-4" onClick={() => setOpen(false)}>
+            <Button variant="outline" size="xs" onClick={() => setOpen(false)}>
               Cancel
             </Button>
             <Button
-              size="sm"
-              className="h-8 text-xs px-4"
+              size="xs"
               disabled={!draft?.from || !draft?.to}
               onClick={apply}
             >
@@ -75,21 +67,20 @@ function RangePill({
           </div>
         </PopoverContent>
       </Popover>
-    </div>
   );
 }
 
 export function ImpactDateRangePair({ previous, impact, onChange }: ImpactDateRangePairProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <RangePill
-        label="Previous period"
+        label="Previous"
         range={previous}
         onApply={(r) => onChange(pairShift("previous", r))}
       />
-      <span className="text-xs font-medium text-muted-foreground">vs</span>
+      <span className="text-[11px] font-medium text-muted-foreground">vs</span>
       <RangePill
-        label="Impact period"
+        label="Impact"
         range={impact}
         onApply={(r) => onChange(pairShift("impact", r))}
       />

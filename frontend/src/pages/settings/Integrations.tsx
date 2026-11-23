@@ -79,14 +79,13 @@ export default function Integrations() {
   return (
     <AppLayout>
       <div className="space-y-6 w-full">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
-
         <div>
           <h1 className="text-2xl font-heading font-semibold text-foreground">Integrations</h1>
           <p className="text-sm text-muted-foreground">
             Connect your AI assistants, chat workspaces and alert channels to Anarix.
           </p>
         </div>
+        <AppTaskbar />
 
         <section className="space-y-3">
           <h2 className="text-sm font-medium text-foreground">Available integrations</h2>

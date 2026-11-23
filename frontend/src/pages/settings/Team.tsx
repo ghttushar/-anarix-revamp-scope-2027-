@@ -61,8 +61,8 @@ export default function Team() {
   return (
     <AppLayout>
       <div className="mx-auto max-w-4xl space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader title="Team" subtitle="Manage members and invitations" />
+        <AppTaskbar />
 
         <Tabs defaultValue="members">
           <TabsList>

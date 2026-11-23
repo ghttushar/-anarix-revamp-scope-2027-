@@ -65,7 +65,6 @@ export default function ImpactAdGroupDetail() {
         <AppTaskbar
           showRunButton
           onRun={() => toast.info("Analyzing impact comparison...")}
-          breadcrumbItems={breadcrumbItems}
         >
           <ImpactDateRangePair previous={previous} impact={impact} onChange={setRanges} />
           <ImpactMetricMultiSelect selected={selectedMetrics} onChange={setSelectedMetrics} />

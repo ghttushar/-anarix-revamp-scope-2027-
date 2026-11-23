@@ -64,7 +64,7 @@ export default function CatalogProducts() {
           title="Products Catalog"
           subtitle="Manage your product catalog and inventory"
         />
-        <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing catalog...")} breadcrumbItems={breadcrumbItems} />
+        <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing catalog...")} />
 
         <DataTableToolbar
           searchValue={searchQuery}

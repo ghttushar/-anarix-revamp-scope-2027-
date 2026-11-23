@@ -80,7 +80,7 @@ export default function Geographical() {
           title="Geographical Data"
           subtitle="Regional performance breakdown across markets"
         />
-        <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems} />
+        <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} />
 
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 h-full">

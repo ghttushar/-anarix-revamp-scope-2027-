@@ -144,7 +144,7 @@ export default function ProfitabilityDashboard() {
             subtitle="Track your profit metrics and financial performance"
           />
           <IntegrationsBanner />
-          <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems} />
+          <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} />
 
           <ProfitabilityPeriodBoard
             summaries={profitabilitySummaries}

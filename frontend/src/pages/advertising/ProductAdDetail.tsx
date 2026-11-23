@@ -58,17 +58,7 @@ export default function ProductAdDetail() {
           <PageHeader title="Advertising" />
 
 
-          <AppTaskbar showFrequency showDateRange breadcrumbItems={[
-            { label: "Advertising", href: "/advertising/campaigns" },
-            { label: adTypeLabel, href: "/advertising/campaigns" },
-            { label: campaignName, href: `/advertising/campaigns/${campaignId}` },
-            { label: adGroupName, href: `/advertising/campaigns/${campaignId}/${adGroupId}` },
-            { label: productAdName },
-          ]}>
-            <Button size="sm" className="gap-1.5 ml-2">
-              <Play className="h-3.5 w-3.5" />Run
-            </Button>
-          </AppTaskbar>
+          <AppTaskbar showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
 
           {productAd && (
             <div className="rounded-lg border border-border bg-card p-4">

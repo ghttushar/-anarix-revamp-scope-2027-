@@ -88,12 +88,11 @@ export default function AppliedRules() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
-
         <PageHeader
           title="Applied Rules"
           subtitle="Manage and monitor all active automation rules"
         />
+        <AppTaskbar />
 
         <div data-write-action className="flex items-center justify-end">
           <Button size="sm" onClick={() => navigate("/advertising/rules/agents")}>

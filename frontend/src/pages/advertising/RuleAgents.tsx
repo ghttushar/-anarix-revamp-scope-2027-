@@ -36,8 +36,6 @@ export default function RuleAgents() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
-
         <PageHeader
           title="Rule Agents"
           subtitle="Create automation rules from templates or with AI assistance"
@@ -50,6 +48,7 @@ export default function RuleAgents() {
             ) : undefined
           }
         />
+        <AppTaskbar />
 
         {/* AI Prompt Section */}
         <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">

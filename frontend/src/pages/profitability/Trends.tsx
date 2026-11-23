@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { BarChipTrigger } from "@/components/bars";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import { ScatterPlotChart } from "@/components/profitability/ScatterPlotChart";
 import { ProductTrendsModal } from "@/components/profitability/ProductTrendsModal";
@@ -108,51 +109,23 @@ export default function ProfitabilityTrends() {
 
         <AppTaskbar
           showDateRange
+          filters={[
+            { key: "metric", label: "Metric", value: selectedMetric, onChange: setSelectedMetric,
+              options: profitabilityMetrics.map((m) => ({ value: m, label: m })) },
+            { key: "frequency", label: "Frequency", value: frequency, onChange: (v) => setFrequency(v as Frequency), options: [
+              { value: "Daily", label: "Daily" },
+              { value: "Weekly", label: "Weekly" },
+              { value: "Monthly", label: "Monthly" },
+            ] },
+          ]}
           showRunButton
           onRun={() => toast.info("Refreshing data...")}
-          breadcrumbItems={breadcrumbItems}
         >
-          <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Metric</span>
-            <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-              <SelectTrigger className="h-8 w-[140px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {profitabilityMetrics.map((m) => (
-                  <SelectItem key={m} value={m} className="text-xs cursor-pointer">
-                    {m}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Frequency</span>
-            <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>
-              <SelectTrigger className="h-8 w-[110px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Daily" className="text-xs cursor-pointer">Daily</SelectItem>
-                <SelectItem value="Weekly" className="text-xs cursor-pointer">Weekly</SelectItem>
-                <SelectItem value="Monthly" className="text-xs cursor-pointer">Monthly</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Popover open={productPickerOpen} onOpenChange={setProductPickerOpen}>
+<Popover open={productPickerOpen} onOpenChange={setProductPickerOpen}>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
-                Products
-                {selectedIds.length > 0 && (
-                  <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">{selectedIds.length}</Badge>
-                )}
-                <ChevronDown className="h-3.5 w-3.5" />
-              </Button>
+              <BarChipTrigger label="Products" value={selectedIds.length > 0 ? `${selectedIds.length} selected` : "All"} />
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-[320px] p-0">
+            <PopoverContent align="start" className="w-[320px] p-0">
               <div className="p-2 border-b border-border">
                 <input
                   value={productSearch}

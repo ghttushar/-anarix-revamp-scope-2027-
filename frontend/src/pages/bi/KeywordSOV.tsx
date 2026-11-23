@@ -39,11 +39,11 @@ export default function KeywordSOV() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader
           title="Keyword Share of Voice"
           subtitle="Track SOV performance by keyword"
         />
+        <AppTaskbar />
 
         <SOVChart data={sovTrendData} title="Keyword SOV Trend" subtitle="Hourly breakdown" />
 

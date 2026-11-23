@@ -80,7 +80,6 @@ export default function AMCQueries() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <div className="flex items-center justify-between">
           <PageHeader
             title="Queries"
@@ -98,6 +97,7 @@ export default function AMCQueries() {
             </Button>
           </div>
         </div>
+        <AppTaskbar />
 
         {/* Tabs */}
         <div className="flex items-center gap-6 border-b border-border">

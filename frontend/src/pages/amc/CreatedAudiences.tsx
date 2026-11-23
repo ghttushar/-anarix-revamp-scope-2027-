@@ -34,8 +34,8 @@ export default function AMCCreatedAudiences() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader title="Created Audiences" subtitle="Audiences created for activation in DSP campaigns" />
+        <AppTaskbar />
 
         <div className="rounded-lg border border-border bg-card">
           <div className="border-b border-border p-4">

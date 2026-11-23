@@ -30,8 +30,8 @@ export default function AMCExecutedQueries() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader title="Executed Queries" subtitle="View query execution history and results" />
+        <AppTaskbar />
 
         <div className="rounded-lg border border-border bg-card">
           <div className="border-b border-border p-4">

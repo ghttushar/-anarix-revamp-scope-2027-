@@ -176,13 +176,12 @@ export default function Accounts() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
-
         {/* Header */}
         <div>
           <h1 className="text-2xl font-heading font-semibold text-foreground">Connected Accounts</h1>
           <p className="text-sm text-muted-foreground">Manage your marketplace connections and data sync settings</p>
         </div>
+        <AppTaskbar />
 
         {/* Account cards grid */}
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

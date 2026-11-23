@@ -56,7 +56,7 @@ export default function Billing() {
         <div className="flex flex-1 h-full min-h-0 min-w-0">
           <div className="flex-1 min-w-0 space-y-6">
             <PageHeader title="Billing" subtitle="Enable Billing Flow in Preferences to access this section." />
-            <AppTaskbar breadcrumbItems={breadcrumbItems} />
+            <AppTaskbar />
             <div className="rounded-lg border border-border bg-card p-12 text-center">
               <p className="text-sm text-muted-foreground mb-4">
                 The Billing Flow toggle is currently off. Turn it on to manage invoices, payment methods, and plans.

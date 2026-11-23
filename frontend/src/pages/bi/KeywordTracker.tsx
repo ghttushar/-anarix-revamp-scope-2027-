@@ -45,11 +45,11 @@ export default function KeywordTracker() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader
           title="Keyword Tracker"
           subtitle="Manage keywords for share of voice tracking"
         />
+        <AppTaskbar />
 
         <DataTableToolbar
           searchValue={searchQuery}

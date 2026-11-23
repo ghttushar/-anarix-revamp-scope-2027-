@@ -30,11 +30,11 @@ export default function ProductSOV() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader
           title="Product Share of Voice"
           subtitle="Track SOV performance by product"
         />
+        <AppTaskbar />
 
         <SOVChart data={sovTrendData} title="Product SOV Trend" subtitle="Hourly breakdown" />
 

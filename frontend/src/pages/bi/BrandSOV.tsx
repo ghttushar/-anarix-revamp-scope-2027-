@@ -32,45 +32,27 @@ export default function BrandSOV() {
           subtitle="Track brand visibility across search results"
         />
 
-        <AppTaskbar showRunButton onRun={() => toast.info("Running SOV analysis...")} breadcrumbItems={breadcrumbItems}>
-          <div className="relative min-w-[180px] max-w-[240px]">
+        <AppTaskbar
+          showDateRange
+          filters={[
+            { key: "position", label: "Position", value: position, onChange: setPosition, options: [
+              { value: "all", label: "All" },
+              { value: "1", label: "Position 1" },
+              { value: "1-3", label: "Top 3" },
+              { value: "1-10", label: "Top 10" },
+            ] },
+            { key: "frequency", label: "Frequency", value: frequency, onChange: setFrequency, options: [
+              { value: "hourly", label: "Hourly" },
+              { value: "daily", label: "Daily" },
+              { value: "weekly", label: "Weekly" },
+            ] },
+          ]}
+          showRunButton
+          onRun={() => toast.info("Running SOV analysis...")}
+        >
+          <div className="relative w-[200px]">
             <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search keyword..." value={keyword} onChange={(e) => setKeyword(e.target.value)} className="pl-8 h-8 text-xs" />
-          </div>
-          <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Date Range</span>
-            <Select value={dateRange} onValueChange={setDateRange}>
-              <SelectTrigger className="h-8 w-[120px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="today" className="text-xs">Today</SelectItem>
-                <SelectItem value="yesterday" className="text-xs">Yesterday</SelectItem>
-                <SelectItem value="7days" className="text-xs">Last 7 Days</SelectItem>
-                <SelectItem value="30days" className="text-xs">Last 30 Days</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Position</span>
-            <Select value={position} onValueChange={setPosition}>
-              <SelectTrigger className="h-8 w-[100px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">All</SelectItem>
-                <SelectItem value="1" className="text-xs">Position 1</SelectItem>
-                <SelectItem value="1-3" className="text-xs">Top 3</SelectItem>
-                <SelectItem value="1-10" className="text-xs">Top 10</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Frequency</span>
-            <Select value={frequency} onValueChange={setFrequency}>
-              <SelectTrigger className="h-8 w-[90px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="hourly" className="text-xs">Hourly</SelectItem>
-                <SelectItem value="daily" className="text-xs">Daily</SelectItem>
-                <SelectItem value="weekly" className="text-xs">Weekly</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input placeholder="Search keyword…" value={keyword} onChange={(e) => setKeyword(e.target.value)} className="h-8 border-0 bg-muted/50 pl-8 text-xs shadow-none focus-visible:ring-1" />
           </div>
         </AppTaskbar>
 

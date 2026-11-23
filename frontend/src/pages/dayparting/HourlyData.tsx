@@ -198,43 +198,29 @@ export default function HourlyData() {
             title="Day Parting"
             subtitle="Analyze hourly performance and manage campaign schedules"
           />
-          <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems}>
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Ad Type</span>
-              <Select value={adType} onValueChange={(v) => setAdType(v as any)}>
-                <SelectTrigger className="h-8 w-[130px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                  <SelectValue placeholder="Ad Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All" className="text-xs cursor-pointer">All Types</SelectItem>
-                  <SelectItem value="SP" className="text-xs cursor-pointer">Sponsored Products</SelectItem>
-                  <SelectItem value="SB" className="text-xs cursor-pointer">Sponsored Brands</SelectItem>
-                  <SelectItem value="SD" className="text-xs cursor-pointer">Sponsored Display</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Campaign</span>
-              <Select value={selectedCampaigns[0]} onValueChange={(v) => setSelectedCampaigns([v])}>
-                <SelectTrigger className="h-8 w-[200px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue placeholder="Select campaign" /></SelectTrigger>
-                <SelectContent>{dayPartingCampaigns.map((camp) => (<SelectItem key={camp.id} value={camp.id} className="text-xs">{camp.name}</SelectItem>))}</SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Metrics</span>
-              <Select value={metric} onValueChange={(v) => setMetric(v as MetricType)}>
-                <SelectTrigger className="h-8 w-[100px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="spend" className="text-xs">Spend</SelectItem>
-                  <SelectItem value="revenue" className="text-xs">Revenue</SelectItem>
-                  <SelectItem value="roas" className="text-xs">ROAS</SelectItem>
-                  <SelectItem value="acos" className="text-xs">ACOS</SelectItem>
-                  <SelectItem value="orders" className="text-xs">Orders</SelectItem>
-                  <SelectItem value="ctr" className="text-xs">CTR</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </AppTaskbar>
+          <AppTaskbar
+            showDateRange
+            filters={[
+              { key: "adType", label: "Ad type", value: adType, onChange: (v) => setAdType(v as typeof adType), options: [
+                { value: "All", label: "All types", short: "All" },
+                { value: "SP", label: "Sponsored Products", short: "SP" },
+                { value: "SB", label: "Sponsored Brands", short: "SB" },
+                { value: "SD", label: "Sponsored Display", short: "SD" },
+              ] },
+              { key: "campaign", label: "Campaign", value: selectedCampaigns[0], onChange: (v) => setSelectedCampaigns([v]),
+                options: dayPartingCampaigns.map((c) => ({ value: c.id, label: c.name })) },
+              { key: "metric", label: "Metric", value: metric, onChange: (v) => setMetric(v as MetricType), options: [
+                { value: "spend", label: "Spend" },
+                { value: "revenue", label: "Revenue" },
+                { value: "roas", label: "ROAS" },
+                { value: "acos", label: "ACOS" },
+                { value: "orders", label: "Orders" },
+                { value: "ctr", label: "CTR" },
+              ] },
+            ]}
+            showRunButton
+            onRun={() => toast.info("Refreshing data...")}
+          />
 
           <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); nav(v === "history" ? "/dayparting/history" : "/dayparting", { replace: true }); }}>
             <TabsList>

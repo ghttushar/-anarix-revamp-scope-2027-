@@ -1,23 +1,17 @@
 import { useState, useEffect, ReactNode } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { CalendarIcon, Play, Bell, Lightbulb, RefreshCw, Clock, Inbox } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { CalendarIcon, Play, Bell, Lightbulb, RefreshCw } from "lucide-react";
 import { AanGlyph } from "@/components/aan/AanGlyph";
 import { format, subDays, startOfWeek, endOfWeek, subWeeks, startOfMonth, endOfMonth, subMonths, startOfQuarter, endOfQuarter, subQuarters } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { useFilter } from "@/contexts/FilterContext";
 import { useVisualEffects } from "@/contexts/VisualEffectsContext";
-import { useActivePanel } from "@/contexts/ActivePanelContext";
 import { useMarketplace } from "@/contexts/MarketplaceContext";
 import { useAccounts } from "@/contexts/AccountContext";
 import { useAan } from "@/components/aan";
 import { useInsights } from "@/components/insights";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover, PopoverContent, PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -25,11 +19,7 @@ import { toast } from "sonner";
 import amazonLogo from "@/assets/amazon-logo.png";
 import walmartLogo from "@/assets/walmart-logo.png";
 import { useAanEvents } from "@/components/aan/autonomous/AanEventsContext";
-
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
+import { BarChip, BarChipTrigger, BarDivider, BarIconButton, type BarChipProps } from "@/components/bars";
 
 interface DatePreset {
   label: string;
@@ -112,47 +102,63 @@ function StatusDot({ status, className }: { status: "connected" | "syncing" | "e
   return <div className={cn("h-2 w-2 rounded-full", colors[status], className)} />;
 }
 
+/** A page-specific setting in the bar's variable slot, drawn as a BarChip. */
+export type BarFilter = BarChipProps<string> & { key: string };
+
+const AD_TYPE_OPTIONS = [
+  { value: "All", label: "All types", short: "All" },
+  { value: "SP", label: "Sponsored Products", short: "SP" },
+  { value: "SB", label: "Sponsored Brands", short: "SB" },
+  { value: "SD", label: "Sponsored Display", short: "SD" },
+  { value: "SV", label: "Sponsored Video", short: "SV" },
+];
+const FREQUENCY_OPTIONS = ["Daily", "Weekly", "Monthly"].map((f) => ({ value: f, label: f }));
+
 interface AppTaskbarProps {
+  /** Fixed slot 1: the app's date range picker (always first). */
+  showDateRange?: boolean;
+  /** Built-in settings, in the variable slot right after the date range. */
   showAdType?: boolean;
   showFrequency?: boolean;
-  showDateRange?: boolean;
+  /** Page-specific settings, as chips, after the built-in ones. */
+  filters?: BarFilter[];
+  /** Fixed last slot: the Run button. */
   showRunButton?: boolean;
   onRun?: () => void;
+  /** Escape hatch for a control that is not a plain select (a search box, the product picker). Drawn in the variable
+   *  slot after the filters; build it on BarChipTrigger so it matches the chips. */
   children?: ReactNode;
-  /** No longer shown (the page level metric bar has no breadcrumb); kept so pages that pass it still compile. */
-  breadcrumbItems?: BreadcrumbItem[];
-  /** Optional override — when provided, the taskbar date picker reads/writes
-   *  these instead of the global FilterContext (used by /alerts). */
+  /** When given, the date picker reads and writes these instead of the app's shared date range. */
   dateRangeOverride?: { from: Date; to: Date };
   onDateRangeOverrideChange?: (r: { from: Date; to: Date }) => void;
-  /** Hide the right-side utility cluster (Insights/Signals/Aan/Refresh) that appears when the FAI is off. */
-  hideUtilityCluster?: boolean;
 }
 
-export function AppTaskbar({ showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, breadcrumbItems, dateRangeOverride, onDateRangeOverrideChange, hideUtilityCluster = false }: AppTaskbarProps) {
-  const location = useLocation();
+/**
+ * The page level metric bar: one row under every page heading, with fixed zones so a control is always in the same
+ * place on every page.
+ *
+ *   [date range] [settings… (variable)]  ·········  [account · synced] [island-off utilities] | [Run]
+ *
+ * Only the middle slot changes from page to page. See components/bars/README.md.
+ */
+export function AppTaskbar({ showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, filters, dateRangeOverride, onDateRangeOverrideChange }: AppTaskbarProps) {
   const { adType, setAdType, frequency, setFrequency, dateRange: ctxDateRange, setDateRange: setCtxDateRange } = useFilter();
   const dateRange = dateRangeOverride ?? ctxDateRange;
   const setDateRange = onDateRangeOverrideChange ?? setCtxDateRange;
   const { effects } = useVisualEffects();
-  const { setDataPanel, hasAnyPanel } = useActivePanel();
   const { marketplace } = useMarketplace();
   const { currentAccount } = useAccounts();
   const { openPanel: openAan } = useAan();
   const { openPanel: openInsights } = useInsights();
-  const { pendingCount: aanPendingCount, criticalCount: aanCriticalCount } = useAanEvents();
+  const { pendingCount: aanPendingCount } = useAanEvents();
   const navigate = useNavigate();
   const islandOff = !effects.floatingIsland;
 
-
   const [draftRange, setDraftRange] = useState<{ from: Date; to: Date }>(dateRange);
-
   const [datePopoverOpen, setDatePopoverOpen] = useState(false);
 
   useEffect(() => {
-    if (datePopoverOpen) {
-      setDraftRange(dateRange);
-    }
+    if (datePopoverOpen) setDraftRange(dateRange);
   }, [datePopoverOpen]);
 
   const handleApplyDateRange = () => {
@@ -160,232 +166,149 @@ export function AppTaskbar({ showAdType = false, showFrequency = false, showDate
     setDatePopoverOpen(false);
   };
 
-  const handleCancelDateRange = () => {
-    setDatePopoverOpen(false);
-  };
-
-  const handlePresetClick = (preset: DatePreset) => {
-    const range = preset.getRange();
-    setDraftRange(range);
-  };
-
   const marketplaceLogo = MARKETPLACE_LOGOS[marketplace];
   const marketplaceColor = MARKETPLACE_COLORS[marketplace];
   const accountName = currentAccount?.merchantName || "No Account";
   const accountStatus = currentAccount?.status || "connected";
-  const lastSyncTime = currentAccount?.lastSync
-    ? format(new Date(currentAccount.lastSync), "MMM d, h:mm a")
-    : format(new Date(), "MMM d, h:mm a");
+  const syncedAt = currentAccount?.lastSync ? new Date(currentAccount.lastSync) : new Date();
 
   const renderMarketplaceLogo = () => {
-    if (marketplaceLogo) {
-      return <img src={marketplaceLogo} alt={marketplace} className="h-4 w-auto object-contain" />;
-    }
-    if (marketplace === "shopify") {
-      return <ShopifyIcon className="h-4 w-4" />;
-    }
-    if (marketplace === "tiktok") {
-      return <TikTokIcon className="h-4 w-4" />;
-    }
+    if (marketplaceLogo) return <img src={marketplaceLogo} alt={marketplace} className="h-3.5 w-auto object-contain" />;
+    if (marketplace === "shopify") return <ShopifyIcon className="h-3.5 w-3.5" />;
+    if (marketplace === "tiktok") return <TikTokIcon className="h-3.5 w-3.5" />;
     return null;
   };
 
-  const hasRow1 = true; // always show account/sync info
-  const hasRow2 = showAdType || showFrequency || showDateRange || showRunButton || !!children || (islandOff && !hideUtilityCluster);
-
   return (
-    <div data-app-taskbar data-tour-id="taskbar" className="flex flex-col rounded-lg border bg-card shrink-0 sticky top-0 z-30 border-primary">
-      {/* Row 1: Account + Sync, on the right */}
-      {hasRow1 && (
-        <div className={cn(
-          "flex items-center justify-between px-4 py-2",
-          hasRow2 && "border-b border-border/30"
-        )}>
-          <div className="flex items-center gap-2 min-w-0" />
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Marketplace + Account */}
-            <div className="flex items-center gap-1.5" style={{ color: marketplaceColor }}>
-              {renderMarketplaceLogo()}
-            </div>
-            <StatusDot status={accountStatus} className="h-1.5 w-1.5" />
-            <span className="taskbar-account-name text-xs font-medium text-foreground truncate max-w-[120px]">{accountName}</span>
-            <div className="h-3.5 w-px bg-border taskbar-account-name" />
-            {/* Last synced */}
-            <Clock className="h-3 w-3 text-muted-foreground taskbar-last-synced" />
-            <span className="taskbar-last-synced text-[11px] text-muted-foreground whitespace-nowrap">Last synced: {lastSyncTime}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Row 2: Filters/children left, island-off actions + bell right */}
-      {hasRow2 && (
-        <div className="flex items-center px-4 py-2 gap-3">
-          <div className="flex items-center gap-3 flex-1 min-w-0 flex-wrap">
-            {showAdType && (
-              <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-                <span className="taskbar-filter-label text-sm font-medium text-muted-foreground whitespace-nowrap">Ad Type</span>
-                <Select value={adType} onValueChange={(v) => setAdType(v as any)}>
-                  <SelectTrigger className="h-8 w-[110px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="All" className="text-xs cursor-pointer">All Types</SelectItem>
-                    <SelectItem value="SP" className="text-xs cursor-pointer">Sponsored Products</SelectItem>
-                    <SelectItem value="SB" className="text-xs cursor-pointer">Sponsored Brands</SelectItem>
-                    <SelectItem value="SD" className="text-xs cursor-pointer">Sponsored Display</SelectItem>
-                    <SelectItem value="SV" className="text-xs cursor-pointer">Sponsored Video</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {showFrequency && (
-              <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-                <span className="taskbar-filter-label text-sm font-medium text-muted-foreground whitespace-nowrap">Frequency</span>
-                <Select value={frequency} onValueChange={(v) => setFrequency(v as any)}>
-                  <SelectTrigger className="h-8 w-[90px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["Daily", "Weekly", "Monthly"].map((f) => (
-                      <SelectItem key={f} value={f} className="text-xs cursor-pointer">{f}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {showDateRange && (
-              <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-                <span className="taskbar-filter-label text-sm font-medium text-muted-foreground whitespace-nowrap">Date Range</span>
-                <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-sm font-normal px-1.5 cursor-pointer">
-                      <CalendarIcon className="h-3 w-3" />
-                      {format(dateRange.from, "MMM dd")} – {format(dateRange.to, "MMM dd, yyyy")}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start" side="bottom">
-                    <div className="flex">
-                      <div className="w-[200px] border-r border-border py-3 space-y-4 max-h-[420px] overflow-auto bg-muted/30">
-                        {DATE_PRESET_GROUPS.map((group) => (
-                          <div key={group.label}>
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-4 mb-1.5">{group.label}</p>
-                            <div className="space-y-0.5 px-2">
-                              {group.presets.map((preset) => {
-                                const presetRange = preset.getRange();
-                                const isSelected =
-                                  draftRange.from.toDateString() === presetRange.from.toDateString() &&
-                                  draftRange.to.toDateString() === presetRange.to.toDateString();
-                                return (
-                                  <button
-                                    key={preset.label}
-                                    onClick={() => handlePresetClick(preset)}
-                                    className={cn(
-                                      "w-full text-left text-xs px-3 py-2 rounded-md transition-colors cursor-pointer font-medium",
-                                      isSelected
-                                        ? "bg-primary/10 text-primary"
-                                        : "text-foreground hover:bg-muted"
-                                    )}
-                                  >
-                                    {preset.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex flex-col">
-                        <Calendar
-                          mode="range"
-                          selected={{ from: draftRange.from, to: draftRange.to }}
-                          onSelect={(range) => {
-                            if (range?.from && range?.to) {
-                              setDraftRange({ from: range.from, to: range.to });
-                            } else if (range?.from) {
-                              setDraftRange({ from: range.from, to: range.from });
-                            }
-                          }}
-                          numberOfMonths={2}
-                          className="p-4 pointer-events-auto"
-                        />
-                        <div className="flex items-center justify-between px-4 pb-3 border-t border-border pt-3">
-                          <p className="text-xs text-muted-foreground">
-                            {format(draftRange.from, "MMM dd, yyyy")} – {format(draftRange.to, "MMM dd, yyyy")}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm" className="h-8 text-xs px-4" onClick={handleCancelDateRange}>Cancel</Button>
-                            <Button size="sm" className="h-8 text-xs px-4" onClick={handleApplyDateRange}>Apply</Button>
-                          </div>
-                        </div>
+    <div
+      data-app-taskbar
+      data-tour-id="taskbar"
+      className="sticky top-0 z-30 flex min-h-12 shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-2 py-2 shadow-[0_1px_2px_rgba(16,24,40,0.04)]"
+    >
+      {/* Variable zone: the date range always first, then this page's settings. */}
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+        {showDateRange && (
+          <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
+            <PopoverTrigger asChild>
+              <BarChipTrigger
+                icon={<CalendarIcon />}
+                value={`${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`}
+                aria-label="Date range"
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start" side="bottom">
+              <div className="flex">
+                <div className="w-[200px] border-r border-border py-3 space-y-4 max-h-[420px] overflow-auto bg-muted/30">
+                  {DATE_PRESET_GROUPS.map((group) => (
+                    <div key={group.label}>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-4 mb-1.5">{group.label}</p>
+                      <div className="space-y-0.5 px-2">
+                        {group.presets.map((preset) => {
+                          const presetRange = preset.getRange();
+                          const isSelected =
+                            draftRange.from.toDateString() === presetRange.from.toDateString() &&
+                            draftRange.to.toDateString() === presetRange.to.toDateString();
+                          return (
+                            <button
+                              key={preset.label}
+                              onClick={() => setDraftRange(preset.getRange())}
+                              className={cn(
+                                "w-full text-left text-xs px-3 py-2 rounded-md transition-colors cursor-pointer font-medium",
+                                isSelected ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                              )}
+                            >
+                              {preset.label}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  ))}
+                </div>
+                <div className="flex flex-col">
+                  <Calendar
+                    mode="range"
+                    selected={{ from: draftRange.from, to: draftRange.to }}
+                    onSelect={(range) => {
+                      if (range?.from && range?.to) setDraftRange({ from: range.from, to: range.to });
+                      else if (range?.from) setDraftRange({ from: range.from, to: range.from });
+                    }}
+                    numberOfMonths={2}
+                    className="p-4 pointer-events-auto"
+                  />
+                  <div className="flex items-center justify-between px-4 pb-3 border-t border-border pt-3">
+                    <p className="text-xs text-muted-foreground">
+                      {format(draftRange.from, "MMM dd, yyyy")} – {format(draftRange.to, "MMM dd, yyyy")}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="xs" onClick={() => setDatePopoverOpen(false)}>Cancel</Button>
+                      <Button size="xs" onClick={handleApplyDateRange}>Apply</Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
+            </PopoverContent>
+          </Popover>
+        )}
+        {showAdType && <BarChip label="Ad type" value={adType} options={AD_TYPE_OPTIONS} onChange={(v) => setAdType(v as typeof adType)} />}
+        {showFrequency && <BarChip label="Frequency" value={frequency} options={FREQUENCY_OPTIONS} onChange={(v) => setFrequency(v as typeof frequency)} />}
+        {filters?.map(({ key, ...f }) => <BarChip key={key} {...(f as BarChipProps<string>)} />)}
+        {children}
+      </div>
 
-            {children}
-
-            {showRunButton && (
-              <Button size="sm" className="gap-1.5 h-8" onClick={onRun}>
-                <Play className="h-3.5 w-3.5" />Run
-              </Button>
-            )}
-          </div>
-
-          {/* Right: utility cluster — only when the Floating Action Island is off, to keep parity without duplication */}
-          {islandOff && !hideUtilityCluster && (
-            <div className="flex items-center gap-0.5 ml-auto shrink-0">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openInsights()}>
-                    <Lightbulb className="h-3.5 w-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Insights</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0 relative" onClick={() => navigate("/signals")}>
-                    <Bell className="h-3.5 w-3.5" />
-                    {aanPendingCount > 0 && (
-                      <span className={cn(
-                        "absolute -top-0.5 -right-0.5 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[9px] font-bold",
-                        aanCriticalCount > 0 ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
-                      )}>
-                        {aanPendingCount}
-                      </span>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Signals{aanPendingCount > 0 ? ` (${aanPendingCount})` : ""}</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openAan()}>
-                    <AanGlyph className="h-4 w-4 text-primary" staticEyes />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Ask Aan</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("Refreshing data...")}>
-                    <RefreshCw className="h-3.5 w-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Refresh</p></TooltipContent>
-              </Tooltip>
+      {/* Fixed zone: account and sync, then (island off) the utilities, then Run, always last. */}
+      <div className="flex shrink-0 items-center gap-1">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex h-8 cursor-default items-center gap-1.5 rounded-md px-2 text-xs">
+              <span className="flex items-center" style={{ color: marketplaceColor }}>{renderMarketplaceLogo()}</span>
+              <StatusDot status={accountStatus} className="h-1.5 w-1.5" />
+              <span className="taskbar-account-name max-w-[140px] truncate font-medium text-foreground">{accountName}</span>
+              <span className="taskbar-last-synced whitespace-nowrap text-muted-foreground">· {format(syncedAt, "h:mm a")}</span>
             </div>
-          )}
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs">
+            <p className="font-medium">{accountName}</p>
+            <p className="text-muted-foreground">Last synced {format(syncedAt, "MMM d, h:mm a")}</p>
+          </TooltipContent>
+        </Tooltip>
 
+        {islandOff && (
+          <>
+            <BarDivider />
+            <BarIconButton icon={Lightbulb} label="Insights" onClick={() => openInsights()} />
+            <BarIconButton
+              icon={Bell}
+              label="Signals"
+              hint={aanPendingCount > 0 ? `${aanPendingCount} pending` : undefined}
+              badge={aanPendingCount}
+              onClick={() => navigate("/signals")}
+            />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon-sm" aria-label="Ask Aan" onClick={() => openAan()}>
+                  <AanGlyph className="h-4 w-4 text-primary" staticEyes />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">Ask Aan</TooltipContent>
+            </Tooltip>
+            <BarIconButton icon={RefreshCw} label="Refresh" onClick={() => toast.info("Refreshing data...")} />
+          </>
+        )}
 
-        </div>
-      )}
+        {showRunButton && (
+          <>
+            <BarDivider />
+            <Button size="xs" className="gap-1.5" onClick={onRun} data-bar-run>
+              <Play />
+              Run
+            </Button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
+
+/** The page level metric bar (same component; the name the bars README uses). */
+export const PageBar = AppTaskbar;

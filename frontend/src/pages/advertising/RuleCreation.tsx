@@ -129,7 +129,6 @@ export default function RuleCreation() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <AppTaskbar breadcrumbItems={breadcrumbItems} />
         <PageHeader
           title={isEdit ? "Edit Rule" : "Create Rule"}
           subtitle={
@@ -148,6 +147,7 @@ export default function RuleCreation() {
             ) : undefined
           }
         />
+        <AppTaskbar />
 
         {step === "builder" ? (
           <>

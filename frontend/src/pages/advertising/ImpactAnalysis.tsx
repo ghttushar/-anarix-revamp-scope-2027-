@@ -93,7 +93,6 @@ export default function ImpactAnalysis() {
         <AppTaskbar
           showRunButton
           onRun={() => toast.info("Analyzing impact comparison...")}
-          breadcrumbItems={breadcrumbItems}
         >
           <ImpactDateRangePair
             previous={previous}

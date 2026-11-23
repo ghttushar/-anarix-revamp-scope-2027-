@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { BarChipTrigger } from "@/components/bars";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import { PnLParameterTable } from "@/components/profitability/PnLParameterTable";
 import { ProductsPnLTable } from "@/components/profitability/ProductsPnLTable";
@@ -148,37 +149,21 @@ export default function ProfitLoss() {
 
           <AppTaskbar
             showDateRange
+            filters={[
+              { key: "frequency", label: "Frequency", value: pnlFrequency, onChange: (v) => setPnlFrequency(v as Frequency), options: [
+              { value: "Daily", label: "Daily" },
+              { value: "Weekly", label: "Weekly" },
+              { value: "Monthly", label: "Monthly" },
+            ] },
+            ]}
             showRunButton
             onRun={() => toast.info("Refreshing data...")}
-            breadcrumbItems={breadcrumbItems}
           >
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Frequency</span>
-              <Select value={pnlFrequency} onValueChange={(v) => setPnlFrequency(v as Frequency)}>
-                <SelectTrigger className="h-8 w-[110px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Daily" className="text-xs cursor-pointer">Daily</SelectItem>
-                  <SelectItem value="Weekly" className="text-xs cursor-pointer">Weekly</SelectItem>
-                  <SelectItem value="Monthly" className="text-xs cursor-pointer">Monthly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Popover open={productPickerOpen} onOpenChange={setProductPickerOpen}>
+<Popover open={productPickerOpen} onOpenChange={setProductPickerOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
-                  Products
-                  {selectedProductIds.length > 0 && (
-                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
-                      {selectedProductIds.length}
-                    </Badge>
-                  )}
-                  <ChevronDown className="h-3.5 w-3.5" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-[320px] p-0">
+              <BarChipTrigger label="Products" value={selectedProductIds.length > 0 ? `${selectedProductIds.length} selected` : "All"} />
+            </PopoverTrigger>
+              <PopoverContent align="start" className="w-[320px] p-0">
                 <div className="p-2 border-b border-border">
                   <input
                     value={productSearch}

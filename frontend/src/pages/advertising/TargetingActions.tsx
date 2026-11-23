@@ -59,6 +59,8 @@ const breadcrumbItems = [
 ];
 
 export default function TargetingActions() {
+  const [actionType, setActionType] = useState("auto-manual");
+  const [priority, setPriority] = useState("high");
   const { isWalmart } = useMarketplace();
   const tabs = isWalmart ? WALMART_TABS : AMAZON_TABS;
   const defaultTab = (isWalmart ? "keyword-action" : "product-action") as AmazonTab | WalmartTab;
@@ -151,33 +153,23 @@ export default function TargetingActions() {
           title="Targeting Actions"
           subtitle="Convert search terms into keyword targets across your campaigns"
         />
-        <AppTaskbar showDateRange breadcrumbItems={breadcrumbItems}>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Action Type</span>
-              <Select defaultValue="auto-manual">
-                <SelectTrigger className="h-8 w-[140px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto-manual" className="text-xs">Auto to Manual</SelectItem>
-                  <SelectItem value="manual-manual" className="text-xs">Manual to Manual</SelectItem>
-                  <SelectItem value="new-keywords" className="text-xs">New Keywords</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Priority</span>
-              <Select defaultValue="high">
-                <SelectTrigger className="h-8 w-[80px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="high" className="text-xs">High</SelectItem>
-                  <SelectItem value="medium" className="text-xs">Medium</SelectItem>
-                  <SelectItem value="low" className="text-xs">Low</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <Button size="sm" className="gap-1.5 h-8" onClick={handleFetchKeywords}>Fetch</Button>
-        </AppTaskbar>
+        <AppTaskbar
+          showDateRange
+          filters={[
+            { key: "action", label: "Action", value: actionType, onChange: setActionType, options: [
+              { value: "auto-manual", label: "Auto to Manual" },
+              { value: "manual-manual", label: "Manual to Manual" },
+              { value: "new-keywords", label: "New Keywords" },
+            ] },
+            { key: "priority", label: "Priority", value: priority, onChange: setPriority, options: [
+              { value: "high", label: "High" },
+              { value: "medium", label: "Medium" },
+              { value: "low", label: "Low" },
+            ] },
+          ]}
+          showRunButton
+          onRun={handleFetchKeywords}
+        />
 
         <UnderlineTabs tabs={tabs} value={activeTab} onChange={(v) => setActiveTab(v as any)} />
 

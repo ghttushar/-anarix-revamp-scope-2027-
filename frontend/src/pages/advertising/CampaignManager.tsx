@@ -280,23 +280,7 @@ function CampaignManagerInner() {
             subtitle="Manage and optimize your advertising campaigns"
           />
           <IntegrationsBanner />
-          <AppTaskbar showFrequency showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems}>
-            <div className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2.5 py-1">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Ad Type</span>
-              <Select value={adType} onValueChange={(v) => setAdType(v as any)}>
-                <SelectTrigger className="h-8 w-[130px] text-sm border-0 bg-transparent shadow-none px-1.5 cursor-pointer">
-                  <SelectValue placeholder="Ad Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All" className="text-xs cursor-pointer">All Types</SelectItem>
-                  <SelectItem value="SP" className="text-xs cursor-pointer">Sponsored Products</SelectItem>
-                  <SelectItem value="SB" className="text-xs cursor-pointer">Sponsored Brands</SelectItem>
-                  <SelectItem value="SD" className="text-xs cursor-pointer">Sponsored Display</SelectItem>
-                  <SelectItem value="SV" className="text-xs cursor-pointer">Sponsored Video</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </AppTaskbar>
+          <AppTaskbar showDateRange showAdType showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
 
           <InlineKPIStrip items={kpiItems} availableMetrics={AVAILABLE_METRICS} onMetricChange={handleKPISwap} />
           <PerformanceChart

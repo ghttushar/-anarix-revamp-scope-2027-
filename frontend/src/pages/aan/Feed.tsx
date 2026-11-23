@@ -37,9 +37,6 @@ export default function AanFeedPage() {
 
   return (
     <AppLayout>
-      <AppTaskbar
-        breadcrumbItems={[{ label: "Aan", href: "/aan" }, { label: "Feed" }]}
-      />
       <div className="p-6 max-w-[900px] mx-auto">
         <header className="mb-6 flex items-start gap-4">
           <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
@@ -57,6 +54,7 @@ export default function AanFeedPage() {
             </div>
           </div>
         </header>
+        <div className="mb-6"><AppTaskbar /></div>
 
         {/* Timeline (full-width) */}
         <div className="bg-card rounded-lg border border-border">
