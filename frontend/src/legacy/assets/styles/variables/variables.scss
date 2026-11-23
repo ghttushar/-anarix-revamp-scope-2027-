@@ -1,0 +1,127 @@
+/* Color */
+$main-text: #23232d;
+$sub-text: #474747;
+$sub-text-1: #464646;
+$sub-text-2: #676f7e;
+$sub-text-3: #7c7c7c;
+$sub-text-4: #9a9a9a;
+$sub-text-5: #969696;
+$no-focus-text-1: #919396;
+$disable-text: #a3a3a3;
+$default-disabled-text-color: rgba(0, 0, 0, 0.38);
+$chat-user-text: #ededed;
+$primary-color: #3f4fda;
+$secondary-color: #fa6972;
+$black-text: #000000;
+$primary-color-dropzone: #f0f1ff;
+$alt-primary-color: #e4e7ff;
+$border-color-1: #8b8b8b;
+$border-color-2: #acacac;
+$border-color-3: #d2d5da;
+$border-color-4: #e1e3e8;
+$border-color-5: #d1d1d1;
+
+$button-background-1: #f5f6ff;
+$primary-color-variant-1: #5559da;
+$primary-color-variant-2: #0116cc;
+$primary-color-variant-3: #4f5ee5;
+$primary-color-variant-4: #0218d5;
+$primary-color-tint-1: rgba(63, 79, 218, 0.02);
+$link-color-1: #395efa;
+$link-color-2: #1644f9;
+
+$stoke-color-1: #dadceb;
+
+$text-button-color: #0047ff;
+$disable-color: #d9d9d9;
+$positive-color: #28b365;
+$alert-color: #f9b432;
+$error-color: #ff050b;
+$warning-text-color: #ffbe38;
+$warning-bg-color: #fcfcfc;
+
+$up-trend-color: #009a48;
+$no-change-trend-color: #919191;
+
+$foreground-color: #ffffff;
+$background-color: #f5f6f8;
+$background-color-2: #f5f6f7;
+$background-color-3: #f3f4f6;
+$background-color-4: #ebebeb;
+$background-color-5: #fbfbfb;
+$background-color-6: #f0f0f0;
+$background-color-7: #f7f8f9;
+$background-color-8: #f2f2f2;
+$background-color-9: #f1f1f1;
+$tooltip-bg-color: #303030;
+$tooltip-text-color: #bcbcbc;
+$icon-background-color: #f6f6f7;
+$info-background-color: #fcfcfc;
+$info-primary-color: #3859ff;
+
+$hover-bg-color-2: #f8f8f8;
+$hover-bg-color-3: #d3d3d3;
+
+$toast-success-color: #eafff4;
+$toast-alert-color: #f4f5f6;
+
+$table-grid-color: #dbdce9;
+
+$positive-percentage: #08d973;
+$negative-percentage: #ff050b;
+
+$status-initiated-background-color: #fff8e8;
+$status-initiated-text-color: #ff9900;
+$hover-bg-color-1: rgba(228, 231, 255, 0.5);
+
+$table-group-subHeader-color: #8b8b8b;
+$table-selected-row-background-color-old: #eff0fe;
+$table-selected-row-background-color-new: #f5f5f5;
+$shadow-color-1: #00000026;
+$shadow-color-2: #00000040;
+$shadow-color-3: rgba(0, 0, 0, 0.05);
+
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d2d5da;
+$gray-350: #cbd0e1;
+$gray-400: #9da3ae;
+$gray-500: #6b7280;
+$gray-600: #4e5460;
+$gray-700: #3d424b;
+$gray-800: #1f2437;
+$gray-900: #111527;
+
+/* Font Family */
+$font-family: 'Inter', sans-serif;
+
+/* Spacing Grid */
+$spacing-0: calc(0 * var(--np-rem));
+$spacing-2: calc(0.2 * var(--np-rem));
+$spacing-4: calc(0.4 * var(--np-rem));
+$spacing-8: calc(0.8 * var(--np-rem));
+$spacing-10: calc(1 * var(--np-rem));
+$spacing-12: calc(1.2 * var(--np-rem));
+$spacing-16: calc(1.6 * var(--np-rem));
+$spacing-20: calc(2 * var(--np-rem));
+$spacing-40: calc(4 * var(--np-rem));
+
+/* Font Size */
+$font-size-9: calc(0.9 * var(--np-rem));
+$font-size-10: calc(1 * var(--np-rem));
+$font-size-12: calc(1.2 * var(--np-rem));
+$font-size-14: calc(1.4 * var(--np-rem));
+$font-size-16: 1.6em;
+$font-size-18: calc(1.8 * var(--np-rem));
+$font-size-20: calc(2 * var(--np-rem));
+$font-size-24: calc(2.4 * var(--np-rem));
+
+/* Font Weight */
+$font-weight-400: 400;
+$font-weight-500: 500;
+$font-weight-600: 600;
+$font-weight-700: 700;
+
+/* Main Header Height */
+$header-height: calc(5.3 * var(--np-rem));

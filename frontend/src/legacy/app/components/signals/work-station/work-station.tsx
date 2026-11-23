@@ -1,0 +1,389 @@
+import { useEffect, useState } from 'react';
+import {
+  WORKSTATION_TASKS,
+  type WorkstationTask, type TaskStatus, type TaskPriority, type AssigneeOption,
+} from '@legacy/constants/signals/prototype-data';
+import { DEFAULT_ASSIGNEES } from '../alerts/assign-menu';
+import { PlusIcon } from '../alerts/icons';
+import { WorkStationListView, type GroupKey } from './work-station-list-view';
+import { WorkStationDetailPanel } from './work-station-detail-panel';
+import { WorkStationAskJivaPanel } from './work-station-ask-jiva-panel';
+import { WorkStationNewTaskPanel } from './work-station-new-task-panel';
+import { CollapsedPeek, PEEK_SLIVER_WIDTH } from '../common/collapsed-peek';
+import { PRIORITY_COLOR, STATUS_COLOR } from './work-station-icons';
+import { ConnectedEmptyHero } from '../common/connected-empty-hero';
+import { ResizeHandle, useResizableColumn } from '../common/resizable-column';
+import scrollStyles from '../alerts/alerts-scroll.module.scss';
+import motion from '../alerts/motion.module.scss';
+
+function assigneeNameFor(id: string): string {
+  const a = DEFAULT_ASSIGNEES.find((d) => d.id === id);
+  return id === 'self' ? 'You' : a?.name ?? id;
+}
+
+const NEXT_STATUS: Record<TaskStatus, TaskStatus> = { open: 'in_progress', in_progress: 'done', done: 'open' };
+
+const PRIORITY_FILTER_COLOR: Record<string, string> = {
+  ...PRIORITY_COLOR, Generative: '#2235c4', Overdue: '#cc2b2b',
+};
+
+/** Category filters the empty-state cards apply — kept separate from priority/person filters since they're mutually exclusive facets. */
+const QUICK_FILTER_LABEL = {
+  'to-me': 'Assigned to me', 'by-me': 'Assigned by me', unassigned: 'Unassigned',
+  overdue: 'Overdue', in_progress: 'In progress', done: 'Done',
+} as const;
+
+/** Everything the design-handoff preview can force on mount so each state renders as its own static frame — never set by the real app. */
+export interface WorkStationPreview {
+  /** Extra tasks placed ahead of the prototype data (e.g. a directly-created one). */
+  extraTasks?: WorkstationTask[];
+  listCollapsed?: boolean;
+  /** Tasks already opened (their title drops from bold to medium weight). */
+  readTaskIds?: string[];
+  quickFilter?: keyof typeof QUICK_FILTER_LABEL;
+  search?: string;
+  priorityFilters?: string[];
+  personFilter?: string;
+  rowMenu?: { id: string; mode: 'main' | 'share' };
+  remindedName?: string;
+  newTask?: { title?: string; description?: string; assigneeId?: string; priority?: 'High' | 'Medium' | 'Low'; due?: string };
+  newTaskMenu?: 'assignee' | 'priority' | 'due';
+  detailShareOpen?: boolean;
+  detailEditing?: 'title' | 'description';
+  alertState?: 'executed' | 'dismissed';
+  alertToast?: string;
+  itemsModalOpen?: boolean;
+  commentDraft?: string;
+  jivaDraft?: string;
+  jivaConversation?: boolean;
+  jivaTyping?: boolean;
+}
+
+interface Props {
+  onOpenAlert?: (id: string) => void;
+  onOpenMeeting?: (id: string) => void;
+  /** Set by the global "Ask Jiva" header button — opens (or closes) this tab's list/detail/Jiva 3-column view regardless of local state, picking a task to anchor to if none is selected yet. */
+  forceJivaOpen?: boolean;
+  /** Forces a task selected (docking the detail panel) on mount — for the design-handoff preview, not used by the real app. */
+  initialSelectedId?: string | null;
+  /** Forces the Ask Jiva panel open on mount — for the design-handoff preview, not used by the real app. */
+  initialJivaOpen?: boolean;
+  /** Forces the Priority filter popover open on mount — for the design-handoff preview, not used by the real app. */
+  initialPriorityFilterOpen?: boolean;
+  /** Forces the New task popover open on mount — for the design-handoff preview, not used by the real app. */
+  initialCreateOpen?: boolean;
+  /** Forces the detail panel's Context section expanded on mount — for the design-handoff preview, not used by the real app. */
+  initialDetailContextOpen?: boolean;
+  /** Forces the detail panel's Activity section expanded on mount — for the design-handoff preview, not used by the real app. */
+  initialDetailActivityOpen?: boolean;
+  /** Forces the detail panel's Activity comment composer open on mount — for the design-handoff preview, not used by the real app. */
+  initialDetailCommentComposerOpen?: boolean;
+  /** Forces one of the detail panel's field dropdowns (Assignee/Status/Priority/Due) open on mount — for the design-handoff preview, not used by the real app. */
+  initialDetailFieldOpen?: 'assignee' | 'status' | 'priority' | 'due';
+  /** Which list group tab starts expanded — for the design-handoff preview, not used by the real app. */
+  initialActiveGroup?: GroupKey;
+  /** Forces any other state on mount — for the design-handoff preview, not used by the real app. */
+  preview?: WorkStationPreview;
+}
+
+export function WorkStation({
+  onOpenAlert, onOpenMeeting, forceJivaOpen = false, initialSelectedId = null, initialJivaOpen = false, initialPriorityFilterOpen = false,
+  initialCreateOpen = false, initialDetailContextOpen = false, initialDetailActivityOpen = false,
+  initialDetailCommentComposerOpen = false, initialDetailFieldOpen, initialActiveGroup = 'to-me', preview,
+}: Props) {
+  const [tasks, setTasks] = useState<WorkstationTask[]>(() => [...(preview?.extraTasks ?? []), ...WORKSTATION_TASKS]);
+  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
+  const [jivaOpen, setJivaOpen] = useState(initialJivaOpen);
+  const [readTaskIds, setReadTaskIds] = useState<Set<string>>(new Set([...(initialSelectedId ? [initialSelectedId] : []), ...(preview?.readTaskIds ?? [])]));
+  const markTaskRead = (id: string | null) => {
+    if (!id) return;
+    setReadTaskIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  };
+
+  useEffect(() => {
+    setJivaOpen(forceJivaOpen);
+    if (forceJivaOpen) {
+      setCreateOpen(false);
+      setSelectedId((cur) => {
+        const next = cur ?? tasks.find((t) => t.assignee === 'You')?.id ?? tasks[0]?.id ?? null;
+        markTaskRead(next);
+        return next;
+      });
+    }
+    // Reacts only to the global button's own toggles, not to every local task/selection change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forceJivaOpen]);
+  const listCol = useResizableColumn({ defaultWidth: 320, minWidth: 220, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH, initialCollapsed: preview?.listCollapsed });
+  const jivaCol = useResizableColumn({ defaultWidth: 340, minWidth: 260, maxWidth: 480, edge: 'left' });
+  const [search, setSearch] = useState(preview?.search ?? '');
+  const [personFilter, setPersonFilter] = useState(preview?.personFilter ?? '');
+  const [priorityFilterOpen, setPriorityFilterOpen] = useState(initialPriorityFilterOpen);
+  const [priorityFilters, setPriorityFilters] = useState<Record<string, boolean>>(() => Object.fromEntries((preview?.priorityFilters ?? []).map((k) => [k, true])));
+  const [categoryQuickFilter, setCategoryQuickFilter] = useState<keyof typeof QUICK_FILTER_LABEL | null>(preview?.quickFilter ?? null);
+  const [createOpen, setCreateOpen] = useState(initialCreateOpen);
+  const [newTitle, setNewTitle] = useState(preview?.newTask?.title ?? '');
+  const [newDescription, setNewDescription] = useState(preview?.newTask?.description ?? '');
+  const [newAssigneeId, setNewAssigneeId] = useState(preview?.newTask?.assigneeId ?? 'self');
+  const [newPriority, setNewPriority] = useState<'High' | 'Medium' | 'Low'>(preview?.newTask?.priority ?? 'Medium');
+  const [newDue, setNewDue] = useState(preview?.newTask?.due ?? '');
+  const selectTask = (id: string) => { setSelectedId(id); setJivaOpen(false); setCreateOpen(false); markTaskRead(id); };
+
+  const setStatus = (id: string, status: TaskStatus) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status } : t)));
+  const cycleStatus = (id: string) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status: NEXT_STATUS[t.status] } : t)));
+  const setPriority = (id: string, priority: TaskPriority) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, priority } : t)));
+  const setDue = (id: string, due: string) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, due, overdue: false, dueColor: undefined } : t)));
+  const setText = (id: string, text: string) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, text } : t)));
+  const setDescription = (id: string, description: string) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, description } : t)));
+  const togglePriorityFilter = (k: string) => setPriorityFilters((p) => ({ ...p, [k]: !p[k] }));
+
+  const [remindedName, setRemindedName] = useState<string | null>(preview?.remindedName ?? null);
+  const remindAssignee = (id: string) => {
+    const target = tasks.find((t) => t.id === id);
+    if (!target) return;
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, logs: [...t.logs, { time: 'Just now', text: `You sent a reminder to ${t.assignee}`, by: 'You' }] } : t)));
+    setRemindedName(target.assignee);
+    setTimeout(() => setRemindedName((cur) => (cur === target.assignee ? null : cur)), 2600);
+  };
+
+  const resetNewTask = () => {
+    setNewTitle('');
+    setNewDescription('');
+    setNewAssigneeId('self');
+    setNewPriority('Medium');
+    setNewDue('');
+  };
+  const cancelCreate = () => { setCreateOpen(false); resetNewTask(); };
+
+  const createTask = () => {
+    const title = newTitle.trim();
+    if (!title) return;
+    const id = `t${Date.now()}`;
+    const task: WorkstationTask = {
+      id, text: title, description: newDescription.trim() || title,
+      priority: newPriority,
+      assignee: newAssigneeId === 'unassigned' ? 'Unassigned' : assigneeNameFor(newAssigneeId),
+      assigneeId: newAssigneeId === 'unassigned' ? undefined : newAssigneeId,
+      createdBy: 'You', due: newDue.trim() || 'No due date', overdue: false,
+      status: 'open', origin: 'direct',
+      logs: [{ time: 'Just now', text: 'Created directly', by: 'You' }],
+    };
+    setTasks((prev) => [task, ...prev]);
+    selectTask(id);
+    resetNewTask();
+  };
+
+  const reassign = (id: string, a: AssigneeOption) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, assignee: a.id === 'self' ? 'You' : a.name, assigneeId: a.id } : t)));
+  };
+
+  const activePriorityFilters = Object.keys(priorityFilters).filter((k) => priorityFilters[k]);
+  const q = search.trim().toLowerCase();
+  const matches = (t: WorkstationTask) => {
+    if (activePriorityFilters.length) {
+      const isMatch = activePriorityFilters.some((k) => (k === 'Overdue' ? t.overdue : k === 'Generative' ? t.origin === 'generative' : t.priority === k));
+      if (!isMatch) return false;
+    }
+    if (personFilter === 'unassigned') {
+      if (t.assignee !== 'Unassigned') return false;
+    } else if (personFilter) {
+      if (t.assignee !== assigneeNameFor(personFilter)) return false;
+    }
+    if (categoryQuickFilter) {
+      const isMatch =
+        categoryQuickFilter === 'to-me' ? t.assignee === 'You' :
+        categoryQuickFilter === 'by-me' ? (t.createdBy === 'You' && t.assignee !== 'You' && t.assignee !== 'Unassigned') :
+        categoryQuickFilter === 'unassigned' ? t.assignee === 'Unassigned' :
+        categoryQuickFilter === 'overdue' ? !!t.overdue :
+        categoryQuickFilter === 'in_progress' ? t.status === 'in_progress' :
+        t.status === 'done';
+      if (!isMatch) return false;
+    }
+    if (q && !(t.text + ' ' + t.assignee).toLowerCase().includes(q)) return false;
+    return true;
+  };
+
+  const assignedToMe = tasks.filter((t) => t.assignee === 'You').filter(matches);
+  const unassignedTasks = tasks.filter((t) => t.assignee === 'Unassigned').filter(matches);
+  const assignedByMe = tasks.filter((t) => t.createdBy === 'You' && t.assignee !== 'You' && t.assignee !== 'Unassigned').filter(matches);
+  const overdueTasks = tasks.filter((t) => t.overdue);
+  const inProgressTasks = tasks.filter((t) => t.status === 'in_progress');
+  const doneTasks = tasks.filter((t) => t.status === 'done');
+  // Unfiltered totals for the empty-state cards — independent of categoryQuickFilter so clicking one card doesn't shrink the others' counts.
+  const totalToMe = tasks.filter((t) => t.assignee === 'You').length;
+  const totalByMe = tasks.filter((t) => t.createdBy === 'You' && t.assignee !== 'You' && t.assignee !== 'Unassigned').length;
+  const totalUnassigned = tasks.filter((t) => t.assignee === 'Unassigned').length;
+
+  const selectedTask = tasks.find((t) => t.id === selectedId) ?? null;
+
+  // The list column, shown docked or, while collapsed, in the hover peek.
+  const listPanel = (
+      <div style={{ flex: `0 0 ${listCol.width}px`, minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'visible', position: 'relative' }}>
+            <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', flexDirection: 'column', gap: 9, flex: 'none', position: 'relative' }}>
+              <div style={{ display: 'flex', gap: 8, position: 'relative' }}>
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search tasks"
+                  className={motion.focusRing}
+                  style={{ flex: 1, minWidth: 0, height: 34, boxSizing: 'border-box' as const, padding: '0 12px', border: '1px solid #e1e3e8', borderRadius: 7, font: '400 12px/1 Inter,sans-serif', color: '#3d424b', outline: 'none' }}
+                />
+          <span style={{ position: 'relative', flex: 'none' }}>
+            <span
+              onClick={() => { setPriorityFilterOpen((v) => !v); setCreateOpen(false); }}
+              className={motion.pressable}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: 34, boxSizing: 'border-box' as const, padding: '0 16px', border: `1px solid ${priorityFilterOpen ? '#3f4fda' : '#e1e3e8'}`, borderRadius: 7, font: '500 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', background: priorityFilterOpen ? '#f7f8fe' : '#ffffff', whiteSpace: 'nowrap' as const, transition: 'background 140ms ease-out, border-color 140ms ease-out' }}
+              onMouseEnter={(e) => { if (!priorityFilterOpen) e.currentTarget.style.background = '#fbfbfc'; }}
+              onMouseLeave={(e) => { if (!priorityFilterOpen) e.currentTarget.style.background = '#ffffff'; }}
+            >
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M1 3h14M4 8h8M6.5 13h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+              Filter{activePriorityFilters.length + (personFilter ? 1 : 0) ? ` (${activePriorityFilters.length + (personFilter ? 1 : 0)})` : ''}
+            </span>
+            {priorityFilterOpen && (
+              <div className={motion.popInTop} style={{ position: 'absolute', left: 0, top: 40, width: 200, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, boxShadow: '0 12px 28px rgba(20, 22, 33, .16)', padding: 10, zIndex: 60 }} onClick={(e) => e.stopPropagation()}>
+                <div style={{ font: '600 9px/1 Inter,sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9a9fa8', padding: '0 8px 4px' }}>Priority</div>
+                {(['High', 'Medium', 'Low'] as const).map((k) => (
+                  <div key={k} onClick={() => togglePriorityFilter(k)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '6px 8px', borderRadius: 6 }}>
+                    <span style={{ width: 13, height: 13, borderRadius: 3, border: `1.5px solid ${priorityFilters[k] ? PRIORITY_FILTER_COLOR[k] : '#d1d4da'}`, background: priorityFilters[k] ? PRIORITY_FILTER_COLOR[k] : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                    <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{k}</span>
+                  </div>
+                ))}
+                <div style={{ height: 1, background: '#f1f2f4', margin: '6px 0' }} />
+                <div style={{ font: '600 9px/1 Inter,sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9a9fa8', padding: '0 8px 4px' }}>Origin</div>
+                {(['Generative', 'Overdue'] as const).map((k) => (
+                  <div key={k} onClick={() => togglePriorityFilter(k)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '6px 8px', borderRadius: 6 }}>
+                    <span style={{ width: 13, height: 13, borderRadius: 3, border: `1.5px solid ${priorityFilters[k] ? PRIORITY_FILTER_COLOR[k] : '#d1d4da'}`, background: priorityFilters[k] ? PRIORITY_FILTER_COLOR[k] : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                    <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{k}</span>
+                  </div>
+                ))}
+                <div style={{ height: 1, background: '#f1f2f4', margin: '6px 0' }} />
+                <div style={{ font: '600 9px/1 Inter,sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9a9fa8', padding: '0 8px 4px' }}>Assigned to</div>
+                <div onClick={() => setPersonFilter('')} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '6px 8px', borderRadius: 6 }}>
+                  <span style={{ width: 13, height: 13, borderRadius: 3, border: `1.5px solid ${personFilter === '' ? '#3f4fda' : '#d1d4da'}`, background: personFilter === '' ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                  <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>Everyone</span>
+                </div>
+                {DEFAULT_ASSIGNEES.map((a) => (
+                  <div key={a.id} onClick={() => setPersonFilter(a.id)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '6px 8px', borderRadius: 6 }}>
+                    <span style={{ width: 13, height: 13, borderRadius: 3, border: `1.5px solid ${personFilter === a.id ? '#3f4fda' : '#d1d4da'}`, background: personFilter === a.id ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                    <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{a.id === 'self' ? 'Me' : a.name}</span>
+                  </div>
+                ))}
+                <div onClick={() => setPersonFilter('unassigned')} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '6px 8px', borderRadius: 6 }}>
+                  <span style={{ width: 13, height: 13, borderRadius: 3, border: `1.5px solid ${personFilter === 'unassigned' ? '#3f4fda' : '#d1d4da'}`, background: personFilter === 'unassigned' ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                  <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>Unassigned</span>
+                </div>
+                {(activePriorityFilters.length > 0 || personFilter) && (
+                  <span
+                    onClick={() => { setPriorityFilters({}); setPersonFilter(''); setCategoryQuickFilter(null); }}
+                    className={motion.pressable}
+                    style={{ display: 'block', textAlign: 'center' as const, marginTop: 6, padding: 7, borderRadius: 6, border: '1px solid #e1e3e8', font: '600 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}
+                  >
+                    Clear
+                  </span>
+                )}
+              </div>
+            )}
+          </span>
+
+                <span style={{ position: 'relative', flex: 'none' }}>
+                  <span
+                    onClick={() => { setCreateOpen(true); setJivaOpen(false); setPriorityFilterOpen(false); }}
+                    className={`${motion.pressable} ${motion.btnPrimary}`}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: 34, boxSizing: 'border-box' as const, padding: '0 14px', border: '1px solid transparent', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer', whiteSpace: 'nowrap' as const }}
+                  >
+                    <PlusIcon size={11} /> New task
+                  </span>
+                </span>
+              </div>
+              {categoryQuickFilter && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 6px 4px 10px', borderRadius: 999, background: '#f7f8fe', border: '1px solid #d8ddfa', font: '600 11px/1 Inter,sans-serif', color: '#2235c4' }}>
+                    {QUICK_FILTER_LABEL[categoryQuickFilter]}
+                    <span onClick={() => setCategoryQuickFilter(null)} className={motion.pressable} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, borderRadius: '50%', cursor: 'pointer', color: '#2235c4' }}>
+                      <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+                    </span>
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className={scrollStyles.sleekScroll} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+              <WorkStationListView assignedToMe={assignedToMe} unassigned={unassignedTasks} assignedByMe={assignedByMe} selectedId={selectedId} readTaskIds={readTaskIds} onSelect={selectTask} onCycleStatus={cycleStatus} onRemind={remindAssignee} initialActiveGroup={initialActiveGroup} initialRowMenu={preview?.rowMenu} />
+            </div>
+          </div>
+  );
+
+  return (
+    <div style={{ height: '100%', display: 'flex', gap: 16, position: 'relative' }}>
+      {listCol.collapsed ? <CollapsedPeek col={listCol}>{listPanel}</CollapsedPeek> : listPanel}
+
+          <div style={{ position: 'relative' as const, display: 'flex', flex: 1, minWidth: 0, height: '100%' }}>
+          {createOpen ? (
+            <WorkStationNewTaskPanel
+              title={newTitle} description={newDescription} assigneeId={newAssigneeId} priority={newPriority} due={newDue}
+              onTitle={setNewTitle} onDescription={setNewDescription} onAssignee={setNewAssigneeId} onPriority={setNewPriority} onDue={setNewDue}
+              onCancel={cancelCreate} onCreate={createTask} initialMenu={preview?.newTaskMenu}
+            />
+          ) : selectedTask ? (
+            <WorkStationDetailPanel
+              key={selectedTask.id}
+              task={selectedTask}
+              onClose={() => { setSelectedId(null); setJivaOpen(false); }}
+              onReassign={(a) => reassign(selectedTask.id, a)}
+              onSetStatus={(s) => setStatus(selectedTask.id, s)}
+              onSetPriority={(p) => setPriority(selectedTask.id, p)}
+              onSetDue={(d) => setDue(selectedTask.id, d)}
+              onSetText={(t) => setText(selectedTask.id, t)}
+              onSetDescription={(d) => setDescription(selectedTask.id, d)}
+              onOpenAlert={onOpenAlert}
+              onOpenMeeting={onOpenMeeting}
+              onOpenJiva={() => setJivaOpen((v) => !v)}
+              jivaOpen={jivaOpen}
+              onRemind={() => remindAssignee(selectedTask.id)}
+              initialContextOpen={initialDetailContextOpen}
+              initialActivityOpen={initialDetailActivityOpen}
+              initialCommentComposerOpen={initialDetailCommentComposerOpen}
+              initialAssignMenuOpen={initialDetailFieldOpen === 'assignee'}
+              initialStatusMenuOpen={initialDetailFieldOpen === 'status'}
+              initialPriorityMenuOpen={initialDetailFieldOpen === 'priority'}
+              initialDueMenuOpen={initialDetailFieldOpen === 'due'}
+              initialShareOpen={preview?.detailShareOpen}
+              initialEditing={preview?.detailEditing}
+              initialAlertState={preview?.alertState}
+              initialAlertToast={preview?.alertToast}
+              initialItemsModalOpen={preview?.itemsModalOpen}
+              initialCommentDraft={preview?.commentDraft}
+            />
+          ) : (
+            <div style={{ flex: 1, minWidth: 0, minHeight: 0, height: '100%', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'hidden' }}>
+              <ConnectedEmptyHero
+                subtitle="Every alert, meeting and message that touches your accounts, pulled into one work-station."
+                categories={[
+                  { key: 'to-me', label: 'Assigned to me', count: totalToMe, unit: 'tasks', color: '#3f4fda', onClick: () => setCategoryQuickFilter('to-me') },
+                  { key: 'by-me', label: 'Assigned by me', count: totalByMe, unit: 'tasks', color: '#5c6f9e', onClick: () => setCategoryQuickFilter('by-me') },
+                  { key: 'unassigned', label: 'Unassigned', count: totalUnassigned, unit: 'tasks', color: '#cb8b1c', onClick: () => setCategoryQuickFilter('unassigned') },
+                  { key: 'overdue', label: 'Overdue', count: overdueTasks.length, unit: 'tasks', color: '#cc2b2b', onClick: () => setCategoryQuickFilter('overdue') },
+                  { key: 'in-progress', label: 'In progress', count: inProgressTasks.length, unit: 'tasks', color: STATUS_COLOR.in_progress, onClick: () => setCategoryQuickFilter('in_progress') },
+                  { key: 'done', label: 'Done', count: doneTasks.length, unit: 'tasks', color: STATUS_COLOR.done, onClick: () => setCategoryQuickFilter('done') },
+                ]}
+              />
+            </div>
+          )}
+          <ResizeHandle dragHandleProps={listCol.dragHandleProps} active={listCol.dragging} side="left" />
+          </div>
+
+          {jivaOpen && selectedTask && !createOpen && (
+            <div style={{ position: 'relative' as const, display: 'flex', flex: `0 0 ${jivaCol.width}px`, height: '100%' }}>
+              <ResizeHandle dragHandleProps={jivaCol.dragHandleProps} active={jivaCol.dragging} side="left" />
+              <WorkStationAskJivaPanel task={selectedTask} onClose={() => setJivaOpen(false)} width={jivaCol.width} initialDraft={preview?.jivaDraft} initialConversation={preview?.jivaConversation} initialTyping={preview?.jivaTyping} />
+            </div>
+          )}
+
+      {remindedName && (
+        <div className={motion.toastIn} style={{ position: 'absolute', right: 20, bottom: 20, padding: '12px 16px', borderRadius: 9, background: '#23232d', color: '#ffffff', font: '500 12px/1.4 Inter,sans-serif', boxShadow: '0 12px 28px rgba(20, 22, 33, .28)', zIndex: 250, display: 'flex', alignItems: 'center', gap: 9 }}>
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4.5" stroke="#7af0a1" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          Reminder sent to {remindedName}
+        </div>
+      )}
+    </div>
+  );
+}

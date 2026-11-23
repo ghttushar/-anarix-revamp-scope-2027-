@@ -1,0 +1,478 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { CaretDown, CaretLeft, CaretRight } from '@phosphor-icons/react';
+import { useSearchParams } from 'react-router-dom';
+import styles from './signals-page.module.scss';
+import { SIGNAL_TABS, type SignalTabKey } from '@legacy/constants/signals/tabs.constants';
+import { SIGNAL_TAB_ICONS } from '../../signals/common/signals-icons';
+import SignalsBrief from '../../signals/brief/signals-brief';
+import { AlertListPanel } from '../../signals/alerts/alert-list-panel';
+import { AlertDetailPanel } from '../../signals/alerts/alert-detail-panel';
+import { AskJivaPanel } from '../../signals/alerts/ask-jiva-panel';
+import { pendingItems, type ItemBatch } from '../../signals/alerts/item-batches';
+import { MeetingListPanel } from '../../signals/meetings/meeting-list-panel';
+import { MeetingDetailPanel } from '../../signals/meetings/meeting-detail-panel';
+import { MeetingMOM } from '../../signals/meetings/meeting-mom';
+import { AskJivaMeetingPanel } from '../../signals/meetings/ask-jiva-meeting-panel';
+import { WorkStation } from '../../signals/work-station/work-station';
+import { CalendarPopover } from '../../signals/common/calendar-popover';
+import { AccountFilterDropdown } from '../../signals/common/account-filter-dropdown';
+import { CollapsedPeek, PEEK_SLIVER_WIDTH } from '../../signals/common/collapsed-peek';
+import { ResizeHandle, useResizableColumn } from '../../signals/common/resizable-column';
+import { PROTOTYPE_ALERTS, COMPLETED_MEETINGS, MEETING_LIST, type LoggedActionItem, type MpBrand, type AlertStatus } from '@legacy/constants/signals/prototype-data';
+import DiamondMascot from '../../common/diamond-mascot/diamond-mascot';
+import motion from '../../signals/alerts/motion.module.scss';
+
+/** Props the design-handoff preview can force on mount — never set by the real app. */
+export interface SignalsPagePreview {
+  accountFilterOpen?: boolean;
+  calendarOpen?: boolean;
+  globalJivaOpen?: boolean;
+  workStation?: Omit<React.ComponentProps<typeof WorkStation>, 'onOpenAlert' | 'onOpenMeeting' | 'forceJivaOpen'>;
+}
+
+export function SignalsPage({ initialTab = 'alerts', preview }: { initialTab?: SignalTabKey; preview?: SignalsPagePreview } = {}) {
+  const [activeTab, setActiveTab] = useState<SignalTabKey>(initialTab);
+  const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
+  const [selectedMeetingId, setSelectedMeetingId] = useState<string | null>(null);
+  const [meetingAskJivaOpen, setMeetingAskJivaOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(preview?.calendarOpen ?? false);
+  const [rangeLabel, setRangeLabel] = useState('Today · 1 Nov');
+  const [accountFilterOpen, setAccountFilterOpen] = useState(preview?.accountFilterOpen ?? false);
+  const [filterMarketplaces, setFilterMarketplaces] = useState<MpBrand[]>([]);
+  const [filterCountries, setFilterCountries] = useState<string[]>([]);
+  const [filterBrands, setFilterBrands] = useState<string[]>([]);
+  const [alertPhase, setAlertPhase] = useState<'view' | 'executing' | 'report' | 'genReview'>('view');
+  const [execProgress, setExecProgress] = useState(0);
+  const [itemsModalOpen, setItemsModalOpen] = useState(false);
+  // An alert's items can be actioned in batches: some ASINs with one action, the rest with another. A batch on only some
+  // of the pending items runs on the same screen (inlineRun) and leaves the alert open; the batch that covers the last
+  // pending items runs the full Execute flow and resolves the alert.
+  const [itemLog, setItemLog] = useState<Record<string, ItemBatch[]>>({});
+  const [inlineRun, setInlineRun] = useState<{ alertId: string; batch: ItemBatch; progress: number } | null>(null);
+  const inlineTimerRef = useRef<number | null>(null);
+  const [loggedActions, setLoggedActions] = useState<LoggedActionItem[]>([]);
+  // Today's list opens with a representative mix of states instead of every card looking identical —
+  // 2nd card (a2) already read, 3rd (a3) in progress, 4th (a5) resolved, 5th (a6) explicitly needs
+  // attention (the plain/default badge, not in progress).
+  const [alertStatusMap, setAlertStatusMap] = useState<Record<string, AlertStatus>>({ a3: 'in_progress', a5: 'resolved', a6: 'needs_attention' });
+  const [readAlertIds, setReadAlertIds] = useState<Set<string>>(new Set(['a2']));
+  const [filteredAlertIds, setFilteredAlertIds] = useState<string[]>(() => PROTOTYPE_ALERTS.map((a) => a.id));
+  const [askJivaOpen, setAskJivaOpen] = useState(false);
+  const [globalJivaOpen, setGlobalJivaOpen] = useState(preview?.globalJivaOpen ?? false);
+  const [applyCategoryFilter, setApplyCategoryFilter] = useState<{ category: string; nonce: number } | null>(null);
+  const [applyMeetingFilter, setApplyMeetingFilter] = useState<{ kind: 'day' | 'status' | 'clear'; value?: string; nonce: number } | null>(null);
+
+  const selectedAlert = PROTOTYPE_ALERTS.find((a) => a.id === selectedAlertId) ?? null;
+  // The Ask Jiva variation is a one-alert concept demo, anchored to whichever alert leads today's list.
+  const firstAlertId = PROTOTYPE_ALERTS.find((a) => a.day === 'today')?.id ?? PROTOTYPE_ALERTS[0]?.id;
+  // The header's persistent Ask Jiva button has no alert/meeting of its own to anchor to — fall back to whichever one is selected, or today's first, or the very first.
+  const globalJivaAlert = selectedAlert ?? PROTOTYPE_ALERTS.find((a) => a.id === firstAlertId) ?? PROTOTYPE_ALERTS[0];
+  const globalJivaMeetingId = selectedMeetingId ?? MEETING_LIST.find((m) => m.isToday)?.id ?? MEETING_LIST[0]?.id ?? null;
+
+  // Column widths: List and Jiva are user-resizable (drag the handle on their shared border);
+  // Detail always just fills whatever's left. Only the list/overview column collapses below a
+  // minimum — dragged past that point it snaps into its own tab-specific collapsed rail instead
+  // of clamping at an unreadable width.
+  // minWidth is 260, not a round 220 — alert cards' badge row and detail lines genuinely need that
+  // much room; narrower and content clips/overlaps instead of wrapping cleanly (confirmed live).
+  const alertsListCol = useResizableColumn({ defaultWidth: 320, minWidth: 260, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH });
+  const alertsJivaCol = useResizableColumn({ defaultWidth: 340, minWidth: 260, maxWidth: 480, edge: 'left' });
+  const meetingsListCol = useResizableColumn({ defaultWidth: 320, minWidth: 220, maxWidth: 480, collapseBelow: 160, collapsedWidth: PEEK_SLIVER_WIDTH });
+  const meetingsJivaCol = useResizableColumn({ defaultWidth: 340, minWidth: 260, maxWidth: 480, edge: 'left' });
+
+  const logAction = useCallback((item: LoggedActionItem) => {
+    setLoggedActions((prev) => [item, ...prev]);
+  }, []);
+
+  const markResolved = useCallback((id: string | null) => {
+    if (!id) return;
+    setAlertStatusMap((prev) => (prev[id] === 'resolved' ? prev : { ...prev, [id]: 'resolved' }));
+  }, []);
+
+  const markInProgress = useCallback((id: string | null) => {
+    if (!id) return;
+    setAlertStatusMap((prev) => (prev[id] === 'in_progress' ? prev : { ...prev, [id]: 'in_progress' }));
+  }, []);
+
+  const markAlertRead = useCallback((id: string | null) => {
+    if (!id) return;
+    setReadAlertIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  }, []);
+
+  const toggleFilterMarketplace = useCallback((m: MpBrand) => {
+    setFilterMarketplaces((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]));
+  }, []);
+  const toggleFilterCountry = useCallback((c: string) => {
+    setFilterCountries((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+  }, []);
+  const toggleFilterBrand = useCallback((b: string) => {
+    setFilterBrands((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
+  }, []);
+  const clearAccountFilters = useCallback(() => {
+    setFilterMarketplaces([]);
+    setFilterCountries([]);
+    setFilterBrands([]);
+    setAccountFilterOpen(false);
+  }, []);
+
+  const accountFilterCount = filterMarketplaces.length + filterCountries.length + filterBrands.length;
+  const accountFilterLabel = accountFilterCount === 0 ? 'All accounts' : `${accountFilterCount} selected`;
+
+  const goTab = useCallback((tab: SignalTabKey) => {
+    setActiveTab(tab);
+    setSelectedAlertId(null);
+    setSelectedMeetingId(null);
+    setMeetingAskJivaOpen(false);
+    setAlertPhase('view');
+    setAskJivaOpen(false);
+  }, []);
+
+  // Links can open a tab directly (?tab=meetings), from the dashboard or from a Brief nugget. The parameter is read once
+  // and cleared, so the tabs stay in charge afterwards.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const linkedTab = searchParams.get('tab');
+  useEffect(() => {
+    if (!linkedTab) return;
+    if (SIGNAL_TABS.some((t) => t.key === linkedTab)) goTab(linkedTab as SignalTabKey);
+    setSearchParams((p) => { p.delete('tab'); return p; }, { replace: true });
+  }, [linkedTab, goTab, setSearchParams]);
+
+  const openAlert = useCallback((id: string) => {
+    setActiveTab('alerts');
+    setSelectedAlertId(id);
+    setAlertPhase('view');
+    setAskJivaOpen(false);
+    markAlertRead(id);
+  }, [markAlertRead]);
+
+  const openMeeting = useCallback((id: string) => {
+    setSelectedMeetingId(id);
+    setMeetingAskJivaOpen(false);
+  }, []);
+
+  const executeTimerRef = useRef<number | null>(null);
+
+  const handleExecute = useCallback((keys: string[], label: string) => {
+    const alert = PROTOTYPE_ALERTS.find((a) => a.id === selectedAlertId);
+    if (!alert || !selectedAlertId) return;
+    const id = selectedAlertId;
+    const batch: ItemBatch = { id: `b-${Date.now()}`, label, keys };
+    const pendingCount = pendingItems(alert, itemLog[id]).length;
+    markInProgress(id);
+    if (keys.length < pendingCount) {
+      // Some items only: run here, then leave the rest open for a different action.
+      if (inlineTimerRef.current !== null) window.clearInterval(inlineTimerRef.current);
+      // Back to the alert (from a generated draft's review, say), where the run shows.
+      setAlertPhase('view');
+      setInlineRun({ alertId: id, batch, progress: 0 });
+      const t = window.setInterval(() => {
+        setInlineRun((run) => {
+          if (!run || run.batch.id !== batch.id) { window.clearInterval(t); return run; }
+          const progress = Math.min(100, run.progress + 20);
+          if (progress < 100) return { ...run, progress };
+          window.clearInterval(t);
+          inlineTimerRef.current = null;
+          setItemLog((prev) => ({ ...prev, [id]: [...(prev[id] ?? []), batch] }));
+          return null;
+        });
+      }, 650);
+      inlineTimerRef.current = t;
+      return;
+    }
+    setItemLog((prev) => ({ ...prev, [id]: [...(prev[id] ?? []), batch] }));
+    setAlertPhase('executing');
+    setExecProgress(0);
+    const timer = window.setInterval(() => {
+      setExecProgress((prev) => {
+        const next = Math.min(100, prev + 20);
+        if (next >= 100) {
+          window.clearInterval(timer);
+          executeTimerRef.current = null;
+          markResolved(id);
+        }
+        return next;
+      });
+    }, 650);
+    executeTimerRef.current = timer;
+  }, [selectedAlertId, itemLog, markInProgress, markResolved]);
+
+  /** Takes back one batch on an alert (or stops the one still running). With nothing actioned left, the alert reopens. */
+  const handleUndoBatch = useCallback((alertId: string, batchId: string) => {
+    if (inlineRun && inlineRun.batch.id === batchId) {
+      if (inlineTimerRef.current !== null) { window.clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
+      setInlineRun(null);
+    }
+    const left = (itemLog[alertId] ?? []).filter((b) => b.id !== batchId);
+    setItemLog((prev) => ({ ...prev, [alertId]: left }));
+    if (left.length === 0) {
+      setAlertStatusMap((prev) => {
+        if (!(alertId in prev)) return prev;
+        const next = { ...prev };
+        delete next[alertId];
+        return next;
+      });
+    }
+  }, [inlineRun, itemLog]);
+
+  /** Dismiss: items still pending are logged as dismissed, so the record shows what happened to every ASIN. */
+  const handleDismiss = useCallback(() => {
+    const alert = PROTOTYPE_ALERTS.find((a) => a.id === selectedAlertId);
+    if (!alert || !selectedAlertId) return;
+    const id = selectedAlertId;
+    const rest = pendingItems(alert, itemLog[id]);
+    if ((itemLog[id] ?? []).length > 0 && rest.length > 0) {
+      setItemLog((prev) => ({ ...prev, [id]: [...(prev[id] ?? []), { id: `b-${Date.now()}`, label: 'Dismissed', keys: rest.map((it) => it.sku), dismissed: true }] }));
+    }
+    markResolved(id);
+  }, [selectedAlertId, itemLog, markResolved]);
+
+  const handleUndoExecute = useCallback(() => {
+    if (executeTimerRef.current !== null) {
+      window.clearInterval(executeTimerRef.current);
+      executeTimerRef.current = null;
+    }
+    setAlertPhase('view');
+    setExecProgress(0);
+    // The batch that was running comes back off the log; earlier batches stay.
+    const left = selectedAlertId ? (itemLog[selectedAlertId] ?? []).slice(0, -1) : [];
+    if (selectedAlertId) setItemLog((prev) => ({ ...prev, [selectedAlertId]: left }));
+    setAlertStatusMap((prev) => {
+      if (!selectedAlertId || !(selectedAlertId in prev)) return prev;
+      const next = { ...prev };
+      if (left.length > 0) next[selectedAlertId] = 'in_progress';
+      else delete next[selectedAlertId];
+      return next;
+    });
+  }, [selectedAlertId, itemLog]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (calendarOpen) setCalendarOpen(false);
+        else if (selectedAlertId) setSelectedAlertId(null);
+        else if (selectedMeetingId) {
+          setSelectedMeetingId(null);
+          setMeetingAskJivaOpen(false);
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [calendarOpen, selectedAlertId, selectedMeetingId]);
+
+  // "7 of 14 actioned" on list rows for alerts worked through in batches.
+  const actionedCounts: Record<string, number> = Object.fromEntries(Object.entries(itemLog)
+    .map(([id, batches]) => [id, batches.filter((b) => !b.dismissed).reduce((n, b) => n + b.keys.length, 0)] as const)
+    .filter(([, n]) => n > 0));
+
+  const renderAlerts = () => {
+    const detailPanel = (
+      <AlertDetailPanel
+        alert={selectedAlert}
+        phase={alertPhase}
+        execProgress={execProgress}
+        onExecuteItems={handleExecute}
+        batches={selectedAlertId ? itemLog[selectedAlertId] ?? [] : []}
+        inlineRun={inlineRun && inlineRun.alertId === selectedAlertId ? { batch: inlineRun.batch, progress: inlineRun.progress } : null}
+        onUndoBatch={(batchId) => selectedAlertId && handleUndoBatch(selectedAlertId, batchId)}
+        onViewReport={() => setAlertPhase('report')}
+        onBackToAlerts={() => setAlertPhase('view')}
+        onGenReview={() => setAlertPhase('genReview')}
+        onOpenItems={() => setItemsModalOpen(true)}
+        itemsModalOpen={itemsModalOpen}
+        onCloseItems={() => setItemsModalOpen(false)}
+        onLogAction={logAction}
+        onDismiss={handleDismiss}
+        onUndoExecute={handleUndoExecute}
+        isFirstAlert={!!selectedAlertId && selectedAlertId === firstAlertId}
+        onOpenAskJiva={() => { setAskJivaOpen(true); setGlobalJivaOpen(false); }}
+        onFilterCategory={(category) => setApplyCategoryFilter({ category, nonce: Date.now() })}
+        onBack={() => setSelectedAlertId(null)}
+      />
+    );
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+        <div style={{ display: 'flex', gap: 16, flex: 1, minHeight: 0 }}>
+          {askJivaOpen && selectedAlert ? (
+            <>
+              {detailPanel}
+              <AskJivaPanel alert={selectedAlert} onClose={() => setAskJivaOpen(false)} />
+            </>
+          ) : (
+            <>
+              {alertsListCol.collapsed ? (
+                <CollapsedPeek col={alertsListCol}>
+                  <AlertListPanel
+                    selectedAlertId={selectedAlertId}
+                    alertStatusMap={alertStatusMap}
+                    actionedCounts={actionedCounts}
+                    readAlertIds={readAlertIds}
+                    onSelectAlert={(id) => { setSelectedAlertId(id); setAlertPhase('view'); setAskJivaOpen(false); markAlertRead(id); }}
+                    onOpenItemsForAlert={(id) => { setSelectedAlertId(id); setAlertPhase('view'); setItemsModalOpen(true); markAlertRead(id); }}
+                    onFilteredChange={setFilteredAlertIds}
+                    applyCategoryFilter={applyCategoryFilter}
+                    width={alertsListCol.width}
+                  />
+                </CollapsedPeek>
+              ) : (
+                <AlertListPanel
+                  selectedAlertId={selectedAlertId}
+                  alertStatusMap={alertStatusMap}
+                  actionedCounts={actionedCounts}
+                  readAlertIds={readAlertIds}
+                  onSelectAlert={(id) => { setSelectedAlertId(id); setAlertPhase('view'); setAskJivaOpen(false); markAlertRead(id); }}
+                  onOpenItemsForAlert={(id) => { setSelectedAlertId(id); setAlertPhase('view'); setItemsModalOpen(true); markAlertRead(id); }}
+                  onFilteredChange={setFilteredAlertIds}
+                  applyCategoryFilter={applyCategoryFilter}
+                  width={alertsListCol.width}
+                />
+              )}
+              <div style={{ position: 'relative' as const, display: 'flex', flex: 1, minWidth: 0, height: '100%' }}>
+                {detailPanel}
+                <ResizeHandle dragHandleProps={alertsListCol.dragHandleProps} active={alertsListCol.dragging} side="left" />
+              </div>
+              {globalJivaOpen && (
+                <div style={{ position: 'relative' as const, display: 'flex', flex: `0 0 ${alertsJivaCol.width}px`, height: '100%' }}>
+                  <ResizeHandle dragHandleProps={alertsJivaCol.dragHandleProps} active={alertsJivaCol.dragging} side="left" />
+                  <AskJivaPanel key={globalJivaAlert.id} alert={globalJivaAlert} onClose={() => setGlobalJivaOpen(false)} width={alertsJivaCol.width} />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderMeetings = () => {
+    const isCompleted = selectedMeetingId ? COMPLETED_MEETINGS.some((m) => m.id === selectedMeetingId) : false;
+
+    const detailPanel = isCompleted ? (
+      <MeetingMOM meetingId={selectedMeetingId} onGoWorkstation={() => goTab('workstation')} onBack={() => setSelectedMeetingId(null)} />
+    ) : (
+      <MeetingDetailPanel meetingId={selectedMeetingId} onCreatePresentation={() => { setMeetingAskJivaOpen(true); setGlobalJivaOpen(false); }} onFilterCategory={(f) => setApplyMeetingFilter({ ...f, nonce: Date.now() })} onOpenMeeting={openMeeting} onBack={() => setSelectedMeetingId(null)} />
+    );
+
+    return (
+      <div style={{ display: 'flex', gap: 16, height: '100%' }}>
+        {meetingAskJivaOpen && selectedMeetingId && !isCompleted ? (
+          <>
+            {detailPanel}
+            <AskJivaMeetingPanel meetingId={selectedMeetingId} onClose={() => setMeetingAskJivaOpen(false)} />
+          </>
+        ) : (
+          <>
+            {meetingsListCol.collapsed ? (
+              <CollapsedPeek col={meetingsListCol}>
+                <MeetingListPanel selectedMeetingId={selectedMeetingId} onSelectMeeting={openMeeting} applyFilter={applyMeetingFilter} width={meetingsListCol.width} />
+              </CollapsedPeek>
+            ) : (
+              <MeetingListPanel selectedMeetingId={selectedMeetingId} onSelectMeeting={openMeeting} applyFilter={applyMeetingFilter} width={meetingsListCol.width} />
+            )}
+            <div style={{ position: 'relative' as const, display: 'flex', flex: 1, minWidth: 0, height: '100%' }}>
+              {detailPanel}
+              <ResizeHandle dragHandleProps={meetingsListCol.dragHandleProps} active={meetingsListCol.dragging} side="left" />
+            </div>
+            {globalJivaOpen && !isCompleted && globalJivaMeetingId && (
+              <div style={{ position: 'relative' as const, display: 'flex', flex: `0 0 ${meetingsJivaCol.width}px`, height: '100%' }}>
+                <ResizeHandle dragHandleProps={meetingsJivaCol.dragHandleProps} active={meetingsJivaCol.dragging} side="left" />
+                <AskJivaMeetingPanel key={globalJivaMeetingId} meetingId={globalJivaMeetingId} onClose={() => setGlobalJivaOpen(false)} width={meetingsJivaCol.width} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
+
+  const tabContent = () => {
+    switch (activeTab) {
+      case 'brief': return <SignalsBrief />;
+      case 'alerts': return renderAlerts();
+      case 'meetings': return renderMeetings();
+      case 'workstation':
+        return (
+          <WorkStation
+            {...preview?.workStation}
+            onOpenAlert={openAlert}
+            onOpenMeeting={(id) => { setActiveTab('meetings'); setSelectedMeetingId(id); setMeetingAskJivaOpen(false); }}
+            forceJivaOpen={globalJivaOpen}
+          />
+        );
+    }
+  };
+
+  return (
+    <div className={styles.signalsPage}>
+      <div className={styles.header}>
+        <span className={styles.headerTitle}>Signals</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ position: 'relative' }}>
+            <button className={styles.dateRangeBtn} onClick={() => setAccountFilterOpen(!accountFilterOpen)}>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12l-4.5 5.5V13l-3-1.5V8.5L2 3z" stroke="#2235c4" strokeWidth="1.4" strokeLinejoin="round" /></svg>
+              {accountFilterLabel}
+              <CaretDown size={9} color="#2235c4" weight="bold" />
+            </button>
+            {accountFilterOpen && (
+              <AccountFilterDropdown
+                marketplaces={filterMarketplaces}
+                countries={filterCountries}
+                brands={filterBrands}
+                onToggleMarketplace={toggleFilterMarketplace}
+                onToggleCountry={toggleFilterCountry}
+                onToggleBrand={toggleFilterBrand}
+                onAll={clearAccountFilters}
+              />
+            )}
+          </span>
+          <span style={{ position: 'relative' }}>
+            <button className={styles.dateRangeBtn} onClick={() => setCalendarOpen(!calendarOpen)}>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10.5" rx="1.5" stroke="#2235c4" strokeWidth="1.4" /><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="#2235c4" strokeWidth="1.4" strokeLinecap="round" /></svg>
+              {rangeLabel}
+              <CaretDown size={9} color="#2235c4" weight="bold" />
+            </button>
+            {calendarOpen && (
+              <CalendarPopover
+                onToday={() => { setRangeLabel('Today · 1 Nov'); setCalendarOpen(false); }}
+                onThisWeek={() => { setRangeLabel('This week · 26 Oct – 1 Nov'); setCalendarOpen(false); }}
+                onClose={() => setCalendarOpen(false)}
+              />
+            )}
+          </span>
+          <span
+            onClick={() => { setAskJivaOpen(false); setMeetingAskJivaOpen(false); setGlobalJivaOpen((v) => !v); }}
+            className={`${motion.pressable} ${motion.btnPrimary}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 14px', borderRadius: 999, background: globalJivaOpen ? '#2235c4' : '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer', whiteSpace: 'nowrap' as const }}
+            title="See the list, detail and Jiva chat together on Alerts, Meetings and Work-station"
+          >
+            <DiamondMascot size={15} /> Ask Jiva
+          </span>
+          <div className={styles.avatarCircle} />
+        </div>
+      </div>
+
+      <nav className={styles.tabBar}>
+        <div style={{ display: 'flex', gap: 22 }}>
+          {SIGNAL_TABS.map((t) => (
+            <button
+              key={t.key}
+              className={`${styles.tab} ${activeTab === t.key ? styles.tabActive : ''}`}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={() => goTab(t.key)}
+            >
+              {(() => { const Icon = SIGNAL_TAB_ICONS[t.key]; return <Icon size={15} />; })()}
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <div className={styles.content}>
+        <div className={styles.tabContent}>
+          {tabContent()}
+        </div>
+      </div>
+    </div>
+  );
+}

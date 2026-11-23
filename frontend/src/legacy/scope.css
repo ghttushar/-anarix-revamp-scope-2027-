@@ -1,0 +1,85 @@
+/*
+ * Pages ported from anarix-ui (Campaign Creator, Dashboard, Signals).
+ *
+ * They keep anarix-ui's layout, sizes and type exactly; only their colors follow this app's palette. This file
+ * recreates the global rules those pages were built against, scoped to `.np-scope` (the page root and the portal
+ * root for menus and dialogs, see shell/legacy-portal.ts) so nothing here touches the rest of the app.
+ *
+ * Every selector that stands in for an anarix-ui global is wrapped in :where() so it keeps the zero/element
+ * specificity it had there, and the pages' own class rules still win over it.
+ */
+
+/* anarix-ui sizes everything in rem against an 11px root that steps down on narrower screens. The ported styles use
+   calc(N * var(--np-rem)) instead of Nrem, so they render at the same pixel size inside this app's 18px root. */
+:root {
+  --np-rem: 11px;
+}
+@media screen and (max-width: 1450px) {
+  :root {
+    --np-rem: 10px;
+  }
+}
+@media screen and (max-width: 1350px) {
+  :root {
+    --np-rem: 9px;
+  }
+}
+@media screen and (max-width: 1250px) {
+  :root {
+    --np-rem: 7px;
+  }
+}
+
+/* What <body> gave the pages in anarix-ui: the root font size, its text color, and its background. */
+.np-scope {
+  font-size: var(--np-rem);
+  line-height: 1.5;
+  color: #09090c;
+  color-scheme: light;
+}
+.np-page {
+  min-height: 100%;
+  background-color: #f5f6f8;
+}
+.np-portal-root {
+  position: static;
+}
+
+/* anarix-ui styles.scss: `* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter' !important }` */
+:where(.np-scope),
+:where(.np-scope) * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif !important;
+  /* This app sets scrollbar-color on the page, and it inherits. While it is set, Chrome ignores every
+     ::-webkit-scrollbar rule, so the pages' own scrollbars would fall back to the browser default. */
+  scrollbar-color: auto;
+  scrollbar-width: auto;
+}
+
+/* anarix-ui app.module.scss: global heading and paragraph sizes. Tailwind's preflight (in both apps) sets
+   headings to inherit their weight; this app's own heading font and weight are switched off for this scope in
+   index.css. */
+:where(.np-scope) h1 {
+  font-size: calc(2.4 * var(--np-rem));
+}
+:where(.np-scope) h2 {
+  font-size: calc(2 * var(--np-rem));
+}
+:where(.np-scope) h3 {
+  font-size: calc(1.8 * var(--np-rem));
+}
+:where(.np-scope) h4 {
+  font-size: 1.6em;
+}
+:where(.np-scope) h5 {
+  font-size: calc(1.2 * var(--np-rem));
+}
+:where(.np-scope) h6 {
+  font-size: calc(1 * var(--np-rem));
+  color: #009a48;
+}
+:where(.np-scope) p {
+  font-size: calc(0.9 * var(--np-rem));
+}

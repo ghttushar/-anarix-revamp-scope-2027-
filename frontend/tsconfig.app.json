@@ -19,6 +19,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@legacy/*": [
+        "./src/legacy/*"
       ]
     },
     "skipLibCheck": true,

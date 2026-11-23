@@ -1,0 +1,4434 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&display=swap');
+@import '../../../assets/styles/variables/variables.scss';
+
+// Dashboard. A cool grey canvas, white widgets with one shared anatomy, and the brand purple ($primary-color)
+// only on things you act on. Hierarchy comes from type and spacing; colour is kept for meaning (risk, gain).
+//
+// Radius scale (kept everywhere): containers 12px (widgets, cards, modal panes 16px), controls 8px, small controls 7px,
+// tags 6px. Sizes are in px on purpose: the app's root font-size makes calc(1 * var(--np-rem)) about 10px.
+
+$ink: #1f1f27;
+$body: #3c414a;
+$muted: #5f6572;
+$faint: #858b96;
+$line: #e4e6eb;
+$hair: #eff0f3;
+$canvas: #f5f6f7;
+$rail: #f8f8f9;
+$hover: #f3f4f6;
+$tint: #f0f2fe;
+$tint-line: #d8ddfa;
+$risk: #bf2a29;
+$risk-soft: #fdeceb;
+$risk-bar: #db5b58;
+$gain: #13913b;
+$gain-soft: #e7f9eb;
+$gain-bar: #46b468;
+$display: 'Inter Tight', Inter, sans-serif;
+$ease: cubic-bezier(0.22, 0.8, 0.3, 1);
+
+// ── Page ─────────────────────────────────────────────────────────────────────────────────────
+
+.page {
+  position: relative;
+  min-height: calc(100dvh - 64px);
+  padding: 20px 28px 72px;
+  background: $canvas;
+  font-family: Inter, sans-serif;
+  color: $ink;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+// Hello: a tear-off calendar page for today beside the greeting, then the part of the day and a live clock.
+.hello {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  perspective: 600px;
+}
+
+.cal {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  width: 62px;
+  overflow: hidden;
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 0 #eaecef, 0 8px 18px -14px rgba(24, 24, 31, 0.35);
+  transform-origin: top center;
+}
+
+.calMonth {
+  align-self: stretch;
+  padding: 4px 0 3px;
+  background: $primary-color;
+  color: #ffffff;
+  font: 600 10.5px/1.2 Inter, sans-serif;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.calDay {
+  padding-top: 5px;
+  color: $ink;
+  font: 700 26px/1 $display;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.calWeek {
+  padding: 3px 0 7px;
+  color: $muted;
+  font: 500 11.5px/1.2 Inter, sans-serif;
+}
+
+.helloText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.greeting {
+  margin: 0;
+  color: $ink;
+  font: 600 25px/1.2 $display;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+.greetWord,
+.greetName {
+  display: inline-block;
+}
+
+// The name is the only coloured word in the line.
+.greetName {
+  color: $primary-color;
+}
+
+.helloMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  color: $muted;
+  font-size: 13px;
+}
+
+.helloDate {
+  padding-left: 14px;
+  border-left: 1px solid #d7dae0;
+}
+
+.clock {
+  display: inline-flex;
+  align-items: center;
+  color: $ink;
+  font: 600 13px/1 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+
+  // The colon ticks with the seconds.
+  i {
+    font-style: normal;
+    animation: tick 1s steps(1, end) infinite;
+  }
+
+  small {
+    margin-left: 3px;
+    color: $muted;
+    font-size: 11px;
+    font-weight: 600;
+  }
+}
+
+.clockIcon {
+  margin-right: 6px;
+  color: #da9c11;
+}
+
+@keyframes tick {
+  50% { opacity: 0.25; }
+}
+
+.helloDate {
+  color: $muted;
+}
+
+.headActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+
+
+// ── Buttons ──────────────────────────────────────────────────────────────────────────────────
+
+%btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font: 600 13px/1 Inter, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, transform 120ms ease-out;
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.btnPrimary {
+  @extend %btn;
+  border: 1px solid $primary-color;
+  background: $primary-color;
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    border-color: #2336cb;
+    background: #2336cb;
+  }
+
+  &:disabled {
+    border-color: #e9ecfc;
+    background: #e9ecfc;
+    color: #a8b1e3;
+  }
+}
+
+.btnGhost {
+  @extend %btn;
+  border: 1px solid #dee1e6;
+  background: #ffffff;
+  color: $ink;
+
+  &:hover:not(:disabled) {
+    border-color: #cbced4;
+    background: #fafbfc;
+  }
+}
+
+.btnDone {
+  height: 32px;
+}
+
+%btnSmall {
+  @extend %btn;
+  gap: 5px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 7px;
+  font-size: 12.5px;
+}
+
+.btnSmall {
+  @extend %btnSmall;
+  border: 1px solid $tint-line;
+  background: $tint;
+  color: $primary-color;
+
+  &:disabled {
+    border-color: #e8ebf8;
+    background: #f4f5fd;
+    color: #b2bae3;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $primary-color;
+    background: $primary-color;
+    color: #ffffff;
+  }
+}
+
+.btnSmallGhost {
+  @extend %btnSmall;
+  border: 1px solid #dee1e6;
+  background: #ffffff;
+  color: $ink;
+
+  &:hover {
+    border-color: #cbced4;
+  }
+}
+
+.btnSmallDanger {
+  @extend %btnSmall;
+  border: 1px solid #f6ccca;
+  background: #ffffff;
+  color: $risk;
+
+  &:hover {
+    background: $risk-soft;
+  }
+}
+
+.textBtn,
+.textBtnMuted {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 600 12.5px/1.4 Inter, sans-serif;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:disabled {
+    color: #c4c8cf;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+}
+
+.textBtn {
+  color: $primary-color;
+}
+
+.textBtnMuted {
+  color: $muted;
+}
+
+.iconBtn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: $faint;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    background: $hover;
+    color: $ink;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+// ── Grid ─────────────────────────────────────────────────────────────────────────────────────
+
+.gridWrap {
+  position: relative;
+}
+
+.grid {
+  position: relative;
+  z-index: 1;
+}
+
+.guides {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--dash-cols), 1fr);
+  gap: 16px;
+  pointer-events: none;
+  animation: fadeIn 200ms ease-out both;
+
+  span {
+    border-radius: 8px;
+    background: rgba(24, 24, 31, 0.035);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.gridMoving {
+  :global(.react-grid-item) {
+    transition: transform 180ms $ease;
+  }
+
+  :global(.react-grid-item.react-draggable-dragging),
+  :global(.react-grid-item.resizing) {
+    z-index: 5;
+    transition: none;
+  }
+
+  :global(.react-grid-item.react-draggable-dragging) .widget {
+    box-shadow: 0 28px 50px -28px rgba(24, 24, 31, 0.42);
+  }
+
+  :global(.react-grid-placeholder) {
+    border: 1.5px dashed #a3a9b4;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+    transition-duration: 120ms;
+  }
+}
+
+// A corner mark, drawn with two borders.
+.resizeHandle {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  z-index: 3;
+  width: 12px !important;
+  height: 12px !important;
+  border-right: 2px solid #a3a9b4;
+  border-bottom: 2px solid #a3a9b4;
+  border-radius: 0 0 4px 0;
+  background: none !important;
+  cursor: se-resize;
+  transform: none !important;
+  opacity: 0;
+  transition: border-color 150ms ease-out, opacity 140ms ease-out;
+
+  &::after {
+    display: none;
+  }
+
+  &:hover {
+    border-color: $ink;
+  }
+}
+
+:global(.react-grid-item):hover > .resizeHandle,
+:global(.react-grid-item.resizing) > .resizeHandle {
+  opacity: 1;
+}
+
+// ── Widget ───────────────────────────────────────────────────────────────────────────────────
+
+// A soft, layered shadow gives each nugget a little depth on the canvas; hover deepens it a touch.
+.widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid $line;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(16, 20, 40, 0.04), 0 8px 24px -16px rgba(16, 20, 40, 0.14);
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+
+  &:hover {
+    border-color: #d9dce3;
+    box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05), 0 12px 28px -16px rgba(16, 20, 40, 0.2);
+  }
+}
+
+.widgetHead {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 10px 0 16px;
+}
+
+// The nugget's glyph, on a neutral tile beside its title.
+.widgetIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-top: 1px;
+  border-radius: 8px;
+  background: #f4f5f6;
+  color: $muted;
+}
+
+
+
+
+
+// The drag handle sits in the card's top-left corner, left of the icon tile, and appears on hover.
+.grip {
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 20px;
+  border-radius: 4px;
+  color: #a3a9b4;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 140ms ease-out, background-color 140ms ease-out, color 140ms ease-out;
+
+  &:hover {
+    background: $hover;
+    color: $ink;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.widget:hover .grip,
+.widget:focus-within .grip,
+:global(.react-draggable-dragging) .grip {
+  opacity: 1;
+}
+
+.widgetHeading {
+  flex: 1;
+  min-width: 0;
+}
+
+.widgetTitle {
+  overflow: hidden;
+  margin: 0;
+  color: $ink;
+  font: 600 14px/1.4 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.widgetScope {
+  overflow: hidden;
+  margin: 1px 0 0;
+  color: $faint;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.widgetActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+.widgetBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: 14px 16px 16px;
+}
+
+// ── Controls ─────────────────────────────────────────────────────────────────────────────────
+
+.selectChip,
+.selectPlain,
+.selectField {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  font: 500 12.5px/1 Inter, sans-serif;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  svg {
+    flex: none;
+    color: $faint;
+    transition: transform 160ms ease-out;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+.selectChip {
+  height: 28px;
+  margin-right: 2px;
+  padding: 0 8px 0 10px;
+  border: 1px solid $line;
+  border-radius: 7px;
+  background: #ffffff;
+  color: $ink;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    border-color: #cbced4;
+  }
+}
+
+.selectPlain {
+  padding: 4px 7px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: $muted;
+
+  &:hover {
+    background: $hover;
+    color: $ink;
+  }
+}
+
+.selectField {
+  justify-content: space-between;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $ink;
+  font-size: 13px;
+
+  &[aria-expanded='true'] {
+    border-color: $primary-color;
+  }
+}
+
+.caretOpen {
+  transform: rotate(180deg);
+}
+
+.floating {
+  position: fixed;
+  z-index: 1500;
+  padding: 6px;
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 16px 36px -16px rgba(24, 24, 31, 0.3);
+  font-family: Inter, sans-serif;
+  animation: floatIn 140ms ease-out both;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menuGroupLabel {
+  padding: 8px 10px 4px;
+  color: $faint;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.menuNote {
+  padding: 6px 10px 8px;
+  color: $faint;
+  font-size: 12.5px;
+}
+
+.menuList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: $ink;
+  font: 500 13px/1.3 Inter, sans-serif;
+  text-align: left;
+  cursor: pointer;
+
+  span {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  svg {
+    flex: none;
+    color: $muted;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: $hover;
+    outline: none;
+  }
+
+  &[aria-selected='true'] {
+    color: $primary-color;
+    font-weight: 600;
+
+    svg {
+      color: $primary-color;
+    }
+  }
+}
+
+.menuDanger,
+.menuDanger svg {
+  color: $risk !important;
+}
+
+.menuSep {
+  height: 1px;
+  margin: 4px 6px;
+  background: $hair;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: #f0f1f3;
+}
+
+.segment {
+  padding: 6px 11px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: $muted;
+  font: 500 12.5px/1 Inter, sans-serif;
+  cursor: pointer;
+
+  &[aria-checked='true'] {
+    background: #ffffff;
+    color: $ink;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(24, 24, 31, 0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+.toggle {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #d5d7dc;
+  cursor: pointer;
+  transition: background-color 160ms ease-out;
+
+  i {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(24, 24, 31, 0.2);
+    transition: transform 160ms $ease;
+  }
+
+  &[aria-checked='true'] {
+    background: $primary-color;
+
+    i {
+      transform: translateX(14px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 5px 10px;
+  border: 1px solid $line;
+  border-radius: 7px;
+  background: #ffffff;
+  color: $body;
+  font: 500 12.5px/1.2 Inter, sans-serif;
+  cursor: pointer;
+  transition: background-color 140ms ease-out, border-color 140ms ease-out, color 140ms ease-out;
+
+  &:hover {
+    border-color: #cbced4;
+  }
+
+  &[aria-pressed='true'] {
+    border-color: $tint-line;
+    background: $tint;
+    color: $primary-color;
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+.customize {
+  padding: 10px 8px 4px;
+}
+
+.customizeHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+
+  strong {
+    font: 600 14px/1.3 Inter, sans-serif;
+  }
+
+  span {
+    color: $faint;
+    font-size: 12px;
+  }
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .fieldLabel {
+    margin: 0;
+  }
+}
+
+.fieldLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: $body;
+  font: 500 12.5px/1.35 Inter, sans-serif;
+}
+
+.customizeFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 2px 4px;
+  border-top: 1px solid $hair;
+}
+
+// ── Value widgets ────────────────────────────────────────────────────────────────────────────
+
+.kpi {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.kpiFigure {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.kpiValue {
+  color: $ink;
+  font: 600 40px/1 $display;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiDelta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font: 600 12px/1 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+
+  span {
+    margin-left: 3px;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+}
+
+.deltaBad {
+  background: $risk-soft;
+  color: $risk;
+}
+
+.deltaGood {
+  background: $gain-soft;
+  color: $gain;
+}
+
+.kpiCaption {
+  margin: 8px 0 0;
+  color: $muted;
+  font-size: 12.5px;
+}
+
+.split {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.splitRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 36px;
+  grid-template-areas: 'name value share' 'bar bar bar';
+  align-items: baseline;
+  gap: 6px 10px;
+}
+
+.splitName {
+  grid-area: name;
+  overflow: hidden;
+  color: $body;
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.splitValue {
+  grid-area: value;
+  color: $ink;
+  font: 600 12.5px/1.3 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.splitShare {
+  grid-area: share;
+  color: $faint;
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+// A bar on a grey track, so even a 1% share reads as part of a whole.
+.splitBar {
+  grid-area: bar;
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #f0f1f4;
+
+  i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    transform-origin: left center;
+    transition: transform 320ms $ease;
+  }
+}
+
+.kpiRisk .splitBar i {
+  background: $risk-bar;
+}
+
+.kpiGain .splitBar i {
+  background: $gain-bar;
+}
+
+// ── Lists (messages, while you were away) ────────────────────────────────────────────────────
+
+.empty {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  padding: 20px;
+  color: $faint;
+  font-size: 13px;
+  text-align: center;
+}
+
+.scrollArea {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.msgList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: -6px -8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.msg {
+  border-radius: 10px;
+  transition: background-color 160ms ease-out;
+}
+
+.msgOpen {
+  background: $rail;
+}
+
+.msgHead {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 12px;
+  align-items: start;
+  gap: 11px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font-family: Inter, sans-serif;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: $hover;
+  }
+
+  .msgOpen &:hover {
+    background: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: -2px;
+  }
+}
+
+// The sender's initials, with the channel as a small badge on its corner.
+.msgAvatar {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #eff0f3;
+  color: $body;
+  font: 600 11px/1 $display;
+  letter-spacing: 0.02em;
+}
+
+.msgChannel {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+  background: #ffffff;
+  color: $muted;
+  box-shadow: 0 0 0 1px $line;
+}
+
+.msgText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.msgTop {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.msgSender {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: $ink;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.msgTime {
+  flex: none;
+  color: $faint;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.msgSubject {
+  overflow: hidden;
+  color: $muted;
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Unread reads heavier, in ink. No marker.
+.msgUnread {
+  color: $ink;
+  font-weight: 600;
+}
+
+.msgCaret {
+  margin-top: 9px;
+  color: $faint;
+}
+
+.msgBodyWrap {
+  overflow: hidden;
+}
+
+.msgBody {
+  padding: 0 14px 14px 49px;
+
+  p {
+    margin: 8px 0 0;
+    color: $body;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+}
+
+.msgFrom {
+  color: $faint;
+  font-size: 12px;
+}
+
+.msgFiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid $line;
+    border-radius: 8px;
+    background: #ffffff;
+    color: $body;
+    font-size: 12px;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    small {
+      color: $faint;
+      font-size: 11px;
+    }
+  }
+}
+
+.msgActions {
+  display: flex;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.listMore {
+  width: 100%;
+  padding: 9px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: $primary-color;
+  font: 600 12.5px/1 Inter, sans-serif;
+  cursor: pointer;
+
+  &:hover {
+    background: $hover;
+  }
+}
+
+.away {
+  margin: -6px -8px 0;
+}
+
+.awayGroup + .awayGroup {
+  margin-top: 4px;
+}
+
+.awayGroupLabel {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 8px 4px;
+  background: #ffffff;
+  color: $ink;
+  font: 600 12px/1.3 Inter, sans-serif;
+
+  span {
+    color: $faint;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.awayList {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 64px;
+    width: 1px;
+    background: $line;
+  }
+}
+
+.awayRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 18px;
+  width: 100%;
+  padding: 8px 10px 8px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font-family: Inter, sans-serif;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: $hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: -2px;
+  }
+}
+
+.awayTime {
+  position: relative;
+  padding-top: 1px;
+  color: $faint;
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+
+  // Where this alert meets the rail.
+  &::after {
+    content: '';
+    position: absolute;
+    top: 9px;
+    right: -13px;
+    width: 9px;
+    height: 1px;
+    background: #a3a9b4;
+  }
+}
+
+.awayText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.awayTitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  color: $ink;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.awayMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  color: $faint;
+  font-size: 11.5px;
+}
+
+.awayHigh {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: $risk-soft;
+  color: $risk;
+  font-weight: 600;
+}
+
+.awayValue {
+  padding-top: 1px;
+  font: 600 12.5px/1.3 Inter, sans-serif;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.valueRisk {
+  color: $risk;
+}
+
+.valueGain {
+  color: $gain;
+}
+
+// Add widget on an empty dashboard: it eases in, then a light passes across it every few seconds.
+.btnInvite {
+  position: relative;
+  overflow: hidden;
+  animation: inviteIn 520ms cubic-bezier(0.22, 1, 0.36, 1) 350ms both;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.4) 50%, transparent 75%);
+    transform: translateX(-110%);
+    animation: inviteSheen 3.2s ease-in-out 1.1s infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes inviteIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes inviteSheen {
+  0% { transform: translateX(-110%); }
+  35%,
+  100% { transform: translateX(110%); }
+}
+
+// ── Widget library ───────────────────────────────────────────────────────────────────────────
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(20, 20, 26, 0.36);
+  backdrop-filter: blur(4px);
+
+  @media (prefers-reduced-transparency: reduce) {
+    background: rgba(20, 20, 26, 0.52);
+    backdrop-filter: none;
+  }
+}
+
+.library {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  width: min(1120px, 100%);
+  height: min(780px, 100%);
+  overflow: hidden;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 40px 80px -40px rgba(20, 20, 26, 0.5);
+  font-family: Inter, sans-serif;
+  color: $ink;
+  outline: none;
+
+  @media (max-width: 760px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  border-right: 1px solid $line;
+  background: $rail;
+
+  @media (max-width: 760px) {
+    padding: 14px;
+    border-right: 0;
+    border-bottom: 1px solid $line;
+  }
+}
+
+.railTitle {
+  margin: 0 6px 14px;
+  font: 600 15px/1.3 Inter, sans-serif;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 11px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $faint;
+  transition: border-color 150ms ease-out;
+
+  &:focus-within {
+    border-color: $primary-color;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: $ink;
+    font: 400 13px/1 Inter, sans-serif;
+  }
+}
+
+.railNav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+
+  @media (max-width: 760px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.railLabel {
+  padding: 16px 10px 6px;
+  color: $faint;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+
+  @media (max-width: 760px) {
+    display: none;
+  }
+}
+
+// An icon, the name, and the count as a pill. The open one is a white row with a hairline ring.
+.railItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: $body;
+  font: 500 13.5px/1 Inter, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease-out, color 140ms ease-out;
+
+  svg {
+    flex: none;
+    color: $muted;
+  }
+
+  span {
+    flex: 1;
+  }
+
+  em {
+    min-width: 22px;
+    padding: 3px 7px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: #edeef1;
+    color: $muted;
+    font: 600 11.5px/1 Inter, sans-serif;
+    font-style: normal;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &:hover {
+    background: #edeef1;
+
+    em {
+      background: #e2e5ea;
+    }
+  }
+
+  &[aria-current='page'] {
+    background: #ffffff;
+    color: $ink;
+    font-weight: 600;
+    box-shadow: 0 0 0 1px $line;
+
+    svg {
+      color: $ink;
+    }
+
+    em {
+      border-color: $line;
+      background: #ffffff;
+      color: $ink;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: -2px;
+  }
+}
+
+.libMain {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.libHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 20px 16px 26px;
+
+  h3 {
+    margin: 0;
+    font: 600 18px/1.25 Inter, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: $muted;
+    font-size: 13px;
+  }
+}
+
+.libHeadActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.libScroll {
+  padding: 4px 26px 28px;
+}
+
+.libEmpty {
+  padding: 40px 0;
+  color: $muted;
+  font-size: 13.5px;
+}
+
+.libSection + .libSection {
+  margin-top: 30px;
+}
+
+.libSectionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 0 12px;
+  font: 600 13px/1.3 Inter, sans-serif;
+
+  span {
+    color: $faint;
+    font-weight: 500;
+  }
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+  transition: border-color 150ms ease-out;
+
+  &:hover {
+    border-color: #d0d3d8;
+  }
+}
+
+// The nugget drawn as a simple skeleton on a tinted panel. Hovering the card lifts the drawing a touch.
+.cardArt {
+  position: relative;
+  border-bottom: 1px solid $hair;
+  background: linear-gradient(180deg, #f7f8f9 0%, $canvas 100%);
+}
+
+.artSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.artLift {
+  transition: transform 320ms $ease;
+}
+
+.card:hover .artLift {
+  transform: translateY(-2px);
+}
+
+.artCard {
+  fill: #ffffff;
+  stroke: $line;
+  stroke-width: 1;
+  filter: drop-shadow(0 6px 10px rgba(16, 20, 40, 0.06));
+}
+
+.artIcon {
+  fill: #eff0f3;
+}
+
+.artLine {
+  fill: #e1e4e9;
+}
+
+.artLineDark {
+  fill: #c4c8cf;
+}
+
+.artFigure {
+  fill: #bbbfc7;
+}
+
+.artChip {
+  fill: #ffffff;
+  stroke: #e0e2e7;
+  stroke-width: 1;
+}
+
+.artTrack {
+  fill: #f0f1f4;
+}
+
+.artRisk {
+  fill: $risk-bar;
+}
+
+.artGain {
+  fill: $gain-bar;
+}
+
+.artRiskSoft {
+  fill: $risk-soft;
+}
+
+.artGainSoft {
+  fill: $gain-soft;
+}
+
+.artRiskSoftLine {
+  fill: #f2aaa8;
+}
+
+.artGainSoftLine {
+  fill: #9edcb0;
+}
+
+.artAvatar {
+  fill: #edeef1;
+}
+
+.artNode {
+  fill: #ffffff;
+  stroke: #cbced4;
+  stroke-width: 1.2;
+}
+
+.artHairStroke {
+  stroke: #edeef1;
+  stroke-width: 1;
+}
+
+.artStrip {
+  fill: #ffffff;
+  stroke: #e0e2e7;
+  stroke-width: 1;
+}
+
+.artLetterA {
+  fill: #e3e6fb;
+}
+
+.artLetterB {
+  fill: #edeef1;
+}
+
+.artBrand {
+  fill: none;
+  stroke: #606eda;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.artBrandFill {
+  fill: #b3bbf1;
+}
+
+// Each nugget's drawing sits on its own faint tint, so the cards tell apart at a glance.
+.cardArt.artTintRisk { background: linear-gradient(180deg, #f6f7f8 0%, #f8e9e8 100%); }
+.cardArt.artTintGain { background: linear-gradient(180deg, #f4f5f6 0%, #e6f6ea 100%); }
+.cardArt.artTintMail { background: linear-gradient(180deg, #f5f6f7 0%, #eaecf5 100%); }
+.cardArt.artTintAway { background: linear-gradient(180deg, #faf7ef 0%, #f5f0e2 100%); }
+.cardArt.artTintRule { background: linear-gradient(180deg, #f3f4fe 0%, #e7e9fc 100%); }
+.cardArt.artTintCompare { background: linear-gradient(180deg, #f4f5f6 0%, #e6ebf5 100%); }
+.cardArt.artTintRank { background: linear-gradient(180deg, #f5f6fc 0%, #ebebf3 100%); }
+.cardArt.artTintHealth { background: linear-gradient(180deg, #f4f5f6 0%, #e7f3ea 100%); }
+.cardArt.artTintPoor { background: linear-gradient(180deg, #f5f6f8 0%, #f7eee4 100%); }
+.cardArt.artTintOpportunity { background: linear-gradient(180deg, #eff9f4 0%, #e3f4ec 100%); }
+.cardArt.artTintKeywords { background: linear-gradient(180deg, #f5f6f8 0%, #e9edf9 100%); }
+
+.artRiskRing,
+.artRiskRing2,
+.artRiskRing3 {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.artRiskRing { stroke: $risk-bar; }
+.artRiskRing2 { stroke: #ec9390; }
+.artRiskRing3 { stroke: #f6c4c2; }
+
+.artGainArea { fill: rgba(70, 180, 104, 0.14); }
+
+.artGainLine {
+  fill: none;
+  stroke: $gain-bar;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.artGainDot {
+  fill: #ffffff;
+  stroke: $gain-bar;
+  stroke-width: 2;
+}
+
+.artAvatarDark { fill: #d6d9e0; }
+
+// The unread count on the stack of messages.
+.artBadge { fill: #606eda; }
+
+.artClockFace {
+  fill: #f7f8f9;
+  stroke: #e0e2e7;
+  stroke-width: 1;
+}
+
+.artClockHand {
+  fill: none;
+  stroke: #9aa0ab;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.artBrandArea { fill: rgba(96, 110, 218, 0.12); }
+.artLetterBlue { fill: #dbe2f1; }
+.artBarA { fill: #8893e4; }
+.artBarB { fill: #7a92c4; }
+.artRankFirst { fill: #e7eafc; }
+.artRankChip { fill: #f1f2f5; }
+.artRankTrack { fill: #f0f1f4; }
+.artRankBar { fill: #606eda; }
+.artRankBarSoft { fill: #b3baed; }
+.artHealthBar { fill: #46b468; }
+.artHealthMid { fill: #edb430; }
+.artHealthLow { fill: #db5b58; }
+.artPoorFirst { fill: #fadedd; }
+.artPoorBar { fill: #db5b58; }
+.artPoorBarSoft { fill: #ecaba9; }
+.artTile { fill: #f7f8f9; }
+.artOppFigure { fill: #46b468; }
+.artArrow { fill: none; stroke: #9aa0ab; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.artDash {
+  fill: none;
+  stroke: #b5b9c2;
+  stroke-width: 1.4;
+  stroke-dasharray: 3 3;
+  stroke-linecap: round;
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 14px 14px;
+
+  p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    margin: 0;
+    color: $muted;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+}
+
+.cardTitle {
+  color: $ink;
+  font: 600 13.5px/1.3 Inter, sans-serif;
+}
+
+// Pinned to the bottom, so every card's button sits on the same line.
+.cardAdd {
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
+}
+
+.cardBody p {
+  margin-bottom: 10px;
+}
+
+// "On dashboard": a small pill in the drawing's corner, and "Current" on templates.
+.cardOn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  color: $primary-color;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cardArt .cardOn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  border: 1px solid $line;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.libFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px 12px 26px;
+  border-top: 1px solid $hair;
+  background: #ffffff;
+  color: $body;
+  font-size: 13px;
+}
+
+// Templates
+
+.tplView {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tplSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// A ready-made template: the nugget card's anatomy, with a miniature of the dashboard as its drawing. Each block is
+// one nugget at its place and size, showing its own drawing on a white card.
+.tplPresetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tplArt {
+  height: 176px;
+  padding: 14px 16px;
+}
+
+.tplBoard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.tplBlock {
+  position: absolute;
+  padding: 3px;
+
+  > i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(16, 20, 40, 0.05), 0 1px 2px rgba(16, 20, 40, 0.06);
+    transition: transform 320ms $ease, box-shadow 320ms $ease;
+  }
+}
+
+.card:hover .tplBlock > i {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(16, 20, 40, 0.06), 0 4px 10px -4px rgba(16, 20, 40, 0.14);
+}
+
+.artSvgFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tplPreset .cardBody p {
+  margin-bottom: 0;
+}
+
+.tplTeam {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  color: $faint;
+  font: 500 12px/1.3 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tplTeamIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #f4f5f6;
+  color: $body;
+}
+
+.tplCount {
+  margin-bottom: 10px;
+  color: $faint;
+  font: 400 12px/1.3 Inter, sans-serif;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d8dbe2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $ink;
+  font: 400 13px/1 Inter, sans-serif;
+  outline: none;
+
+  &::placeholder {
+    color: #7d838e;
+  }
+
+  &:focus {
+    border-color: $primary-color;
+  }
+
+  &:disabled {
+    background: #f5f6f7;
+    cursor: not-allowed;
+  }
+}
+
+.formNote {
+  margin: 0;
+  color: $risk;
+  font-size: 12px;
+}
+
+
+.tplGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tplCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+// A template's layout: each widget as a labelled block at its real place and size.
+.thumb {
+  position: relative;
+  height: 132px;
+  margin: 12px 12px 0;
+  border-radius: 8px;
+  background: $canvas;
+
+  span {
+    position: absolute;
+    padding: 3px;
+  }
+
+  i {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    padding: 5px 6px;
+    border: 1px solid #dfe1e6;
+    border-radius: 5px;
+    background: #ffffff;
+    color: $muted;
+    font: 500 10px/1.2 Inter, sans-serif;
+    font-style: normal;
+  }
+}
+
+.thumbBlank {
+  border: 1.5px dashed #d5d7dc;
+  background: #ffffff;
+}
+
+.tplInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 14px 4px;
+
+  strong {
+    overflow: hidden;
+    font: 600 14px/1.3 Inter, sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > span {
+    color: $faint;
+    font-size: 12px;
+  }
+}
+
+// A template's name reads as text; hovering shows it can be renamed, and clicking turns it into a field in place.
+.tplName {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: -3px -6px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: $ink;
+  font: 600 14px/1.3 Inter, sans-serif;
+  text-align: left;
+  cursor: text;
+  transition: background-color 140ms ease-out;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  svg {
+    flex: none;
+    color: $faint;
+    opacity: 0;
+    transition: opacity 140ms ease-out;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: $hover;
+    outline: none;
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
+.tplNameInput {
+  width: calc(100% + 12px);
+  height: 28px;
+  margin: -4px -6px;
+  padding: 0 6px;
+  border: 1px solid $primary-color;
+  border-radius: 6px;
+  background: #ffffff;
+  color: $ink;
+  font: 600 14px/1.3 Inter, sans-serif;
+  outline: none;
+}
+
+.tplNameInvalid {
+  border-color: $risk;
+}
+
+// A just-saved template: its border starts in the brand colour and settles back to the normal hairline.
+.tplCardNew {
+  animation: tplNew 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tplNew {
+  from { border-color: $primary-color; }
+  to { border-color: $line; }
+}
+
+.tplActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 14px;
+
+  .iconBtn {
+    margin-left: auto;
+  }
+}
+
+.tplHint {
+  margin: -8px 0 0;
+  color: $muted;
+  font-size: 13px;
+}
+
+// ── Undo ─────────────────────────────────────────────────────────────────────────────────────
+
+.undo {
+  position: fixed;
+  right: 0;
+  bottom: 24px;
+  left: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: max-content;
+  margin: 0 auto;
+  padding: 8px 8px 8px 16px;
+  border-radius: 10px;
+  background: $ink;
+  color: #ffffff;
+  font: 500 13px/1.3 Inter, sans-serif;
+  box-shadow: 0 16px 36px -18px rgba(24, 24, 31, 0.5);
+
+  button {
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: none;
+    color: #c9d0fa;
+    font: 600 13px/1 Inter, sans-serif;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// ── Rules comparison nuggets ─────────────────────────────────────────────────────────────────
+// Two sides picked inside the nugget, a row of metrics and a view switch, then the view itself.
+// Sides are told apart by a lettered tag and the series colour on charts; nothing else carries colour.
+
+.rc {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  container-type: inline-size;
+}
+
+// Every control on one bordered strip: the two sides on the left, a divider, then metrics, view and dates.
+.rcStrip {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  min-width: 0;
+  padding: 4px;
+  border: 1px solid $line;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.rcSides {
+  display: flex;
+  flex: 1 1 320px;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rcDrops {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 2px;
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid $hair;
+}
+
+.rcVs {
+  flex: none;
+  padding: 0 4px;
+  color: $faint;
+  font: 500 11.5px/1 Inter, sans-serif;
+}
+
+.rcSide,
+.rcDrop {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: $ink;
+  cursor: pointer;
+  transition: background-color 140ms ease-out, color 140ms ease-out;
+
+  &:hover:not(:disabled),
+  &[aria-expanded='true'] {
+    background: $hover;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+// A side: a small label line over the picked name, so what is compared reads at a glance.
+.rcSide {
+  flex: 1 1 0;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 10px;
+  text-align: left;
+
+  &[aria-expanded='true'] .rcCaret {
+    color: $ink;
+  }
+}
+
+.rcSideLines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.rcSideLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: $faint;
+  font: 600 10.5px/1 Inter, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rcDrop {
+  height: 36px;
+  padding: 0 9px;
+  color: $body;
+  font: 500 13px/1 Inter, sans-serif;
+
+  svg:first-child {
+    color: $muted;
+  }
+}
+
+.rcLetter {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--c) 14%, #ffffff);
+  color: color-mix(in srgb, var(--c) 85%, #000000);
+  font: 700 10px/1 $display;
+  letter-spacing: 0;
+}
+
+.rcSideName {
+  overflow: hidden;
+  color: $ink;
+  font: 600 14px/1.15 $display;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rcCaret {
+  flex: none;
+  color: $faint;
+  transition: transform 160ms $ease;
+}
+
+.rcPanelHead {
+  padding: 10px 12px 0;
+  color: $faint;
+  font: 500 11.5px/1.3 Inter, sans-serif;
+}
+
+// Dropdown options with a checkbox or an icon.
+.rcOption {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: $ink;
+  font: 500 13px/1.2 Inter, sans-serif;
+  text-align: left;
+  cursor: pointer;
+
+  > span:not(.rcCheck) {
+    flex: 1;
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: 0;
+    background: $hover;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: default;
+  }
+}
+
+.rcOptionIcon {
+  flex: none;
+  color: $muted;
+}
+
+.rcOptionRule {
+  height: 1px;
+  margin: 4px 6px;
+  background: $hair;
+}
+
+.rcCheck {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #c5c8cf;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #ffffff;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out;
+
+  &[data-on='true'] {
+    border-color: $primary-color;
+    background: $primary-color;
+  }
+}
+
+.rcView {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+// Picker popover
+
+.rcPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+
+.rcPickerTabs .segmented {
+  display: flex;
+
+  .segment {
+    flex: 1;
+    padding: 6px 4px;
+    font-size: 12px;
+  }
+}
+
+.rcSearch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  color: $faint;
+
+  &:focus-within {
+    border-color: $primary-color;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: $ink;
+    font: 400 13px/1 Inter, sans-serif;
+  }
+}
+
+.rcPickList {
+  max-height: 264px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.rcPickEmpty {
+  padding: 14px 8px;
+  color: $faint;
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.rcPickItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    outline: 0;
+    background: $hover;
+  }
+
+  &[aria-selected='true'] strong {
+    color: $primary-color;
+  }
+}
+
+.rcPickCopy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  strong {
+    overflow: hidden;
+    color: $ink;
+    font: 600 13px/1.3 Inter, sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    overflow: hidden;
+    color: $faint;
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.rcPickTag {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: $hair;
+  color: $muted;
+  font: 600 10.5px/1.4 Inter, sans-serif;
+  font-style: normal;
+}
+
+.rcPickTick {
+  flex: none;
+  color: $primary-color;
+}
+
+// Shared pieces
+
+.rcDelta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 21px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font: 600 12px/1 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rcDeltaFlat {
+  background: $hair;
+  color: $body;
+}
+
+// The quiet delta drops the fill and keeps the colour, for tables and small charts.
+.rcDeltaQuiet {
+  height: auto;
+  padding: 0;
+  background: none;
+}
+
+.rcLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  color: $muted;
+  font-size: 12px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+  }
+}
+
+.rcTip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+  padding: 9px 11px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px -12px rgba(24, 24, 31, 0.3);
+  font: 400 12px/1.3 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    color: $ink;
+    font-weight: 600;
+  }
+
+  span {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    color: $ink;
+  }
+
+  em {
+    font-style: normal;
+    font-weight: 600;
+  }
+}
+
+// Line
+
+.rcLine {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.rcStats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 6px 26px;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  span {
+    color: $faint;
+    font-size: 11.5px;
+  }
+
+  strong {
+    color: $ink;
+    font: 600 24px/1.05 $display;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+}
+
+.rcStatMuted {
+  color: $muted !important;
+}
+
+.rcChart {
+  position: relative;
+  flex: 1;
+  min-height: 90px;
+
+  > div {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.rcMultiples {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  grid-auto-rows: minmax(104px, 1fr);
+  gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.rcMultiple {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 9px 10px 6px;
+  border-radius: 9px;
+  background: $rail;
+}
+
+.rcMultipleHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  color: $muted;
+  font: 500 12px/1.3 Inter, sans-serif;
+}
+
+.rcMultipleFigures {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    color: $ink;
+    font: 600 17px/1.15 $display;
+  }
+
+  span {
+    color: $faint;
+    font-size: 11.5px;
+  }
+}
+
+.rcSpark {
+  flex: 1;
+  min-height: 34px;
+}
+
+// Bars
+
+.rcBars {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-height: 120px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.rcBarGroup {
+  display: flex;
+  flex: 1 0 64px;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 132px;
+  min-width: 0;
+}
+
+.rcBarCols {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  min-height: 0;
+  padding: 0 4px;
+  border-bottom: 1px solid $line;
+}
+
+.rcBarCol {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+
+  span {
+    max-width: 100%;
+    overflow: hidden;
+    color: $body;
+    font: 600 11px/1 Inter, sans-serif;
+    font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  i {
+    width: 100%;
+    max-width: 30px;
+    height: calc((100% - 16px) * var(--h));
+    border-radius: 5px 5px 2px 2px;
+    background: var(--c);
+    transform-origin: bottom;
+    animation: rcGrow 420ms $ease both;
+  }
+}
+
+// The baseline bar is hatched, matching the dashed baseline line.
+.rcBarHatch {
+  background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 45%, #ffffff) 3px 6px) !important;
+}
+
+.rcBarLabel {
+  overflow: hidden;
+  color: $muted;
+  font: 500 11.5px/1.2 Inter, sans-serif;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes rcGrow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+// Table
+
+.rcTableWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.rcTable {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 13px/1.3 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+
+  th,
+  td {
+    padding: 9px 10px;
+    border-bottom: 1px solid $hair;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 0;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    color: $faint;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+
+  tbody th {
+    color: $ink;
+    font-weight: 500;
+  }
+
+  tbody td {
+    color: $ink;
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+.rcWinGood {
+  color: $gain !important;
+  font-weight: 600;
+}
+
+.rcWinBad {
+  color: $risk !important;
+  font-weight: 600;
+}
+
+.rcWinPlain {
+  font-weight: 600;
+}
+
+.rcWinEven {
+  color: $faint !important;
+}
+
+// Tiles
+
+.rcTiles {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-auto-rows: min-content;
+  gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.rcTile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px 12px 11px;
+  border-radius: 10px;
+  background: $rail;
+}
+
+.rcTileLabel {
+  color: $muted;
+  font: 500 12px/1.2 Inter, sans-serif;
+}
+
+.rcTileValue {
+  color: $ink;
+  font: 600 22px/1.05 $display;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.rcTileFoot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 7px;
+
+  > span:last-child {
+    color: $faint;
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Change per metric
+
+.rcLiftAxis {
+  display: grid;
+  grid-template-columns: 96px 1fr 1fr 56px;
+  color: $faint;
+  font-size: 11px;
+
+  span:first-child {
+    grid-column: 2;
+    padding-right: 8px;
+    text-align: right;
+  }
+
+  span:last-child {
+    grid-column: 3;
+    padding-left: 8px;
+  }
+}
+
+.rcLift {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.rcLiftRow {
+  display: grid;
+  grid-template-columns: 96px 1fr 56px;
+  align-items: center;
+  min-height: 28px;
+}
+
+.rcLiftName {
+  overflow: hidden;
+  color: $body;
+  font: 500 12.5px/1.2 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rcLiftTrack {
+  position: relative;
+  height: 14px;
+
+  // The zero line.
+  &::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    bottom: -7px;
+    left: 50%;
+    width: 1px;
+    background: $line;
+  }
+
+  i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: calc(50% * var(--w));
+    border-radius: 3px;
+    animation: rcGrowX 420ms $ease both;
+  }
+}
+
+.rcLiftGood {
+  background: $gain-bar;
+}
+
+.rcLiftBad {
+  background: $risk-bar;
+}
+
+.rcLiftA {
+  background: var(--a);
+}
+
+.rcLiftB {
+  background: var(--b);
+}
+
+.rcLiftValue {
+  color: $ink;
+  font: 600 12.5px/1 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+@keyframes rcGrowX {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+// Narrow nuggets: the sides take the first line and the dropdowns sit under them, split by a hairline.
+@container (max-width: 560px) {
+  .rcSides {
+    flex-basis: 100%;
+  }
+
+  .rcDrops {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    margin: 4px 0 0;
+    padding: 4px 0 0;
+    border-top: 1px solid $hair;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding: 16px 16px 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guides,
+  .floating,
+  .btnInvite,
+  .btnInvite::after,
+  .clock i,
+  .tplCardNew,
+  .rcBarCol i,
+  .rcLiftTrack i {
+    animation: none;
+  }
+
+  .gridMoving :global(.react-grid-item),
+  .splitBar i,
+  .artLift {
+    transition: none;
+  }
+}
+
+// ── Campaign Manager: top performers ────────────────────────────────────────────────────────
+// A ranked list on one metric. The rank, the name with its ID under it, then the value, right-aligned.
+
+.tpTable {
+  table-layout: fixed;
+
+  th,
+  td {
+    vertical-align: middle;
+  }
+}
+
+.tpRank {
+  width: 34px;
+  color: $faint !important;
+  font: 600 12px/1 $display;
+  font-variant-numeric: tabular-nums;
+}
+
+.tpWho {
+  min-width: 0;
+}
+
+.tpName {
+  display: block;
+  overflow: hidden;
+  color: $ink;
+  font: 600 13px/1.3 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tpMeta {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: $faint;
+  font: 400 11.5px/1.3 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tpId {
+  font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+.tpNum {
+  width: 132px;
+  color: $ink;
+  font: 600 13px/1.2 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+// Bars: the same rows, each name over a bar scaled to the top value.
+
+.tpBarsHead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid $hair;
+  background: #ffffff;
+  color: $faint;
+  font: 500 11.5px/1.3 Inter, sans-serif;
+}
+
+.tpBars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tpBar {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid $hair;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .tpNum {
+    width: auto;
+    min-width: 72px;
+  }
+}
+
+.tpBarCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tpBarName {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+
+  .tpName {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .tpId {
+    flex: none;
+    color: $faint;
+  }
+}
+
+.tpBarTrack {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #f0f1f4;
+
+  i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    background: $primary-color;
+    opacity: 0.78;
+    transform-origin: left center;
+    transition: transform 320ms $ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tpBarTrack i {
+    transition: none;
+  }
+}
+
+// ── Campaign Manager: item health ───────────────────────────────────────────────────────────
+// One health bar for all the items (or the picked ones), a search to pick items, then a row per picked item that
+// opens to its details. The band colours the bar and its word only: green healthy, amber attention, red critical.
+
+$attention: #a67608;
+$attention-bar: #edb430;
+
+.ih {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ihTotal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid $line;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.ihTotalTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ihScore {
+  color: $ink;
+  font: 650 26px/1 $display;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+
+  small {
+    margin-left: 2px;
+    color: $faint;
+    font: 500 13px/1 Inter, sans-serif;
+    letter-spacing: 0;
+  }
+}
+
+.ihBand {
+  font: 600 12.5px/1 Inter, sans-serif;
+
+  &.ihHealthy { color: $gain; }
+  &.ihAttention { color: $attention; }
+  &.ihCritical { color: $risk; }
+}
+
+.ihBar {
+  display: block;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #f0f1f4;
+
+  i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    transform-origin: left center;
+    transition: transform 320ms $ease;
+  }
+
+  &.ihHealthy i { background: $gain-bar; }
+  &.ihAttention i { background: $attention-bar; }
+  &.ihCritical i { background: $risk-bar; }
+}
+
+.ihBarSmall {
+  width: 56px;
+  height: 5px;
+}
+
+.ihCaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 0;
+  color: $faint;
+  font: 400 12px/1.4 Inter, sans-serif;
+
+  span:first-child {
+    color: $body;
+    font-weight: 500;
+  }
+}
+
+.ihSearch {
+  flex: none;
+  height: 36px;
+  background: #ffffff;
+}
+
+.ihResults {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.ihResultCopy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  strong {
+    overflow: hidden;
+    color: $ink;
+    font: 500 13px/1.25 Inter, sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: $faint;
+    font: 400 11px/1.2 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+}
+
+.ihResultScore {
+  flex: none !important;
+  color: $muted;
+  font: 600 12px/1 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.ihClear {
+  margin-left: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $muted;
+  font: 500 12px/1 Inter, sans-serif;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { color: $ink; text-decoration: underline; }
+}
+
+.ihList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid $line;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.ihItem + .ihItem {
+  border-top: 1px solid $hair;
+}
+
+.ihItemHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease-out;
+
+  &:hover { background: $rail; }
+
+  &:focus-visible { outline: 2px solid $primary-color; outline-offset: -2px; }
+}
+
+.ihItemCopy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ihItemName {
+  overflow: hidden;
+  color: $ink;
+  font: 600 13px/1.3 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ihItemId {
+  color: $faint;
+  font: 400 11px/1.2 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+
+.ihItemScore {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+
+  strong {
+    min-width: 22px;
+    color: $ink;
+    font: 600 13px/1 Inter, sans-serif;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+}
+
+.ihCaret {
+  flex: none;
+  color: $faint;
+  transition: transform 180ms $ease;
+}
+
+.ihDetails {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 2px 12px 14px;
+}
+
+.ihDetail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 12px;
+  font: 400 12.5px/1.4 Inter, sans-serif;
+
+  dt { color: $muted; }
+
+  dd {
+    margin: 0;
+    color: $ink;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+}
+
+.ihNo { color: $risk; }
+
+.ihAlerts {
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid $hair;
+
+  dd {
+    font-weight: 400;
+    text-align: left;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+.ihAlert {
+  color: $ink;
+  font: 500 12.5px/1.35 Inter, sans-serif;
+  text-decoration: none;
+
+  &:hover { color: $primary-color; text-decoration: underline; }
+}
+
+.ihAlertMeta,
+.ihNone {
+  color: $faint;
+  font: 400 11.5px/1.3 Inter, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ihBar i,
+  .ihCaret,
+  .ihItemHead {
+    transition: none;
+  }
+}
+
+// Top performers' control strip: the same anatomy as the Rule nuggets. Two pickers on the left (what is ranked, and
+// on which metric), a divider, then how many, the view and the dates. A hairline sits between the two pickers.
+.tpSides {
+  flex-basis: 220px;
+}
+
+.tpSep {
+  flex: none;
+  width: 1px;
+  height: 28px;
+  background: $hair;
+}
+
+// Its controls are narrower than the Rule nuggets', so the strip keeps to one row down to 548px before stacking.
+@container (min-width: 548px) and (max-width: 560px) {
+  .rcStrip .tpSides {
+    flex-basis: 220px;
+  }
+
+  .rcStrip .tpDrops {
+    flex: none;
+    justify-content: flex-start;
+    margin: 0 0 0 4px;
+    padding: 0 0 0 8px;
+    border-top: 0;
+    border-left: 1px solid $hair;
+  }
+}
+
+// ── Scrollbars ──────────────────────────────────────────────────────────────────────────────
+// One sleek scrollbar for every scrolling area inside a nugget and in its popovers: a thin rounded thumb that darkens
+// on hover, no track and no arrows. Firefox, which has no custom scrollbar parts, gets its thin standard bar instead.
+
+$scroll-thumb: rgba(31, 31, 39, 0.16);
+$scroll-thumb-hover: rgba(31, 31, 39, 0.34);
+
+.widget,
+.floating {
+  &,
+  * {
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-button {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    // A 2px clear border keeps the visible thumb at 4px while the grab area stays 8px.
+    &::-webkit-scrollbar-thumb {
+      border: 2px solid transparent;
+      border-radius: 8px;
+      background: $scroll-thumb;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: $scroll-thumb-hover;
+    }
+  }
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .widget,
+  .widget *,
+  .floating,
+  .floating * {
+    scrollbar-width: thin;
+    scrollbar-color: $scroll-thumb transparent;
+  }
+}
+
+// Poor keywords: the same rows as Top performers. The ranked figure leads; the other one is quieter, and the bars
+// take the risk colour.
+.pkOther {
+  color: $muted !important;
+  font-weight: 500 !important;
+}
+
+.pkBar i {
+  background: $risk-bar;
+  opacity: 1;
+}
+
+.pkValues {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+
+  small {
+    color: $faint;
+    font: 400 11.5px/1.2 Inter, sans-serif;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+
+// ── Empty dashboard ─────────────────────────────────────────────────────────────────────────
+// A drawing of a board waiting for its first nuggets, a fun fact or pun, and Add nugget in the middle of the page.
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: calc(100dvh - 260px);
+  padding: 24px 16px 48px;
+  text-align: center;
+}
+
+.emptyArt {
+  display: block;
+  width: min(420px, 100%);
+  height: auto;
+}
+
+.emptyBoard {
+  fill: #ffffff;
+  stroke: $line;
+  stroke-width: 1;
+}
+
+.emptySlot {
+  fill: $canvas;
+  stroke: #d9dce3;
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.emptyRingTrack {
+  fill: none;
+  stroke: #f0f1f4;
+  stroke-width: 6;
+}
+
+.emptyRing {
+  fill: none;
+  stroke: #606eda;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.emptyCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 46ch;
+}
+
+.emptyFactLabel {
+  color: $faint;
+  font: 600 11px/1 Inter, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.emptyFact {
+  margin: 0;
+  color: $muted;
+  font: 400 15px/1.55 Inter, sans-serif;
+  text-wrap: balance;
+}
+
+.emptyActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.emptyAdd {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 14px;
+  // Its block already rises in; a held CSS transform here would also fight the glide up to the header.
+  animation: none;
+}
+
+.emptyLink {
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  color: $muted;
+  font: 500 13px/1.3 Inter, sans-serif;
+  cursor: pointer;
+
+  &:hover {
+    color: $ink;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+// ── Campaign Manager: new opportunities ─────────────────────────────────────────────────────
+// Three consolidated figures on one strip, then the items worth advertising, and a link to start.
+
+.op {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.opStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid $line;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.opStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+
+  & + & {
+    border-left: 1px solid $hair;
+  }
+
+  dt {
+    color: $faint;
+    font: 600 11px/1.2 Inter, sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+    overflow: hidden;
+    color: $ink;
+    font: 650 22px/1.1 $display;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    overflow: hidden;
+    color: $faint;
+    font: 400 11.5px/1.3 Inter, sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.opList {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.opRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 2px;
+  border-bottom: 1px solid $hair;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.opWho {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.opName {
+  overflow: hidden;
+  color: $ink;
+  font: 600 13px/1.3 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opId {
+  color: $faint;
+  font: 400 11px/1.2 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+
+.opFigures {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    color: $ink;
+    font: 600 13px/1.2 Inter, sans-serif;
+  }
+
+  small {
+    color: $faint;
+    font: 400 11.5px/1.2 Inter, sans-serif;
+  }
+}
+
+.opEmpty {
+  margin: 0;
+  padding: 24px 0;
+  color: $faint;
+  font: 400 13px/1.5 Inter, sans-serif;
+  text-align: center;
+}
+
+.opLink {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  color: $primary-color;
+  font: 600 13px/1 Inter, sans-serif;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+// ── Campaign Manager: add new keywords ──────────────────────────────────────────────────────
+// Two routes side by side, each with the same four figures, then one View more for both.
+
+.nk {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  container-type: inline-size;
+}
+
+.nkRoutes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+}
+
+@container (max-width: 420px) {
+  .nkRoutes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nkRoute {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid $line;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.nkRouteHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: $ink;
+  font: 650 15px/1.2 $display;
+
+  svg {
+    color: $faint;
+  }
+}
+
+.nkHint {
+  min-height: 34px;
+  margin: 0;
+  color: $faint;
+  font: 400 12px/1.4 Inter, sans-serif;
+}
+
+.nkStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+  margin: 4px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid $hair;
+}
+
+.nkStat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+
+  dt {
+    color: $faint;
+    font: 600 11px/1.2 Inter, sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+    color: $ink;
+    font: 650 20px/1.1 $display;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ── Insight nuggets ─────────────────────────────────────────────────────────────────────────
+// The newer nuggets share one body: a strip of figures, shares as labelled bars, an hour-by-day grid and a ranked list,
+// in any mix, with the link to the page it comes from pinned at the bottom. Colour only carries meaning: good, bad and
+// a warning, plus one quiet series palette for shares.
+
+$warn: #ad790c;
+$warn-bar: #edb430;
+
+.in {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  container-type: inline-size;
+
+  > .opLink {
+    margin-top: auto;
+  }
+}
+
+.inGood { color: $gain; }
+.inBad { color: $risk; }
+.inWarn { color: $warn; }
+
+// Shares: one labelled bar per part, so nothing depends on matching a colour to a legend.
+.inSplit {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.inSplitLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: $body;
+  font: 500 12.5px/1.3 Inter, sans-serif;
+
+  b {
+    color: $ink;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.inSplitBar {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: $hair;
+
+  i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--seg, #bbbfc7);
+    transform-origin: left;
+    transition: transform 420ms $ease;
+  }
+}
+
+.inSegA { --seg: #7289d5; }
+.inSegB { --seg: #6f86b8; }
+.inSegC { --seg: #4cb579; }
+.inSegD { --seg: #e9b43a; }
+.inSegN { --seg: #bbbfc7; }
+.inSegGood { --seg: #{$gain-bar}; }
+.inSegBad { --seg: #{$risk-bar}; }
+.inSegWarn { --seg: #{$warn-bar}; }
+
+// Hour by weekday. Paused hours are hatched rather than coloured, so they read as "off", not as "low".
+.inHeatWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.inHeat {
+  width: 100%;
+  min-width: 360px;
+  border-collapse: separate;
+  border-spacing: 3px;
+  table-layout: fixed;
+
+  th {
+    color: $faint;
+    font: 500 10.5px/1 Inter, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    padding-bottom: 2px;
+    text-align: center;
+  }
+
+  thead th:first-child,
+  tbody th {
+    width: 30px;
+    text-align: left;
+  }
+
+  td {
+    padding: 0;
+
+    i {
+      display: block;
+      height: 24px;
+      border-radius: 4px;
+      background: $gain-bar;
+    }
+  }
+}
+
+.inHeatOff i {
+  background: repeating-linear-gradient(135deg, #edeef1 0 3px, #f8f8f9 3px 6px) !important;
+}
+
+.inHeatLegend {
+  margin: 0;
+  color: $faint;
+  font: 400 11.5px/1.4 Inter, sans-serif;
+}
+
+// The ranked list: the head stays put while the rows scroll.
+.inList {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 72px;
+
+  ul {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+}
+
+.inHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px 6px;
+  border-bottom: 1px solid $hair;
+  color: $faint;
+  font: 600 11px/1.2 Inter, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.inRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 2px;
+  border-bottom: 1px solid $hair;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.inWho {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.inName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: $ink;
+  font: 600 13px/1.3 Inter, sans-serif;
+
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.inTag {
+  flex: none;
+  max-width: 50%;
+  overflow: hidden;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #f1f2f5;
+  color: $muted;
+  font: 600 10.5px/1.3 Inter, sans-serif;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inMeta {
+  overflow: hidden;
+  color: $faint;
+  font: 400 11.5px/1.35 Inter, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inBar {
+  display: block;
+  height: 4px;
+  margin-top: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: $hair;
+
+  i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #acb1bb;
+    transform-origin: left;
+    transition: transform 420ms $ease;
+  }
+
+  &.inGood i { background: $gain-bar; }
+  &.inBad i { background: $risk-bar; }
+  &.inWarn i { background: $warn-bar; }
+}
+
+.inFigures {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  max-width: 45%;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+
+  strong {
+    color: $ink;
+    font: 600 13px/1.2 Inter, sans-serif;
+    white-space: nowrap;
+
+    &.inGood { color: $gain; }
+    &.inBad { color: $risk; }
+    &.inWarn { color: $warn; }
+  }
+
+  small {
+    color: $faint;
+    font: 400 11.5px/1.2 Inter, sans-serif;
+    white-space: nowrap;
+  }
+}
+
+.in .opStat dd {
+  font-size: 20px;
+
+  &.inGood { color: $gain; }
+  &.inBad { color: $risk; }
+  &.inWarn { color: $warn; }
+}
+
+@container (max-width: 380px) {
+  .in .opStat {
+    padding: 10px 10px;
+  }
+
+  .in .opStat dd {
+    font-size: 17px;
+  }
+}
+
+// ── Library: the New tag, the info button and the tooltip ───────────────────────────────────
+
+.newTag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  padding: 3px 6px;
+  border: 1px solid $tint-line;
+  border-radius: 6px;
+  background: $tint;
+  color: $primary-color;
+  font: 600 10.5px/1 Inter, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.cardArt .cardNew {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ffffff;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardInfo {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin: -3px -6px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: $faint;
+  cursor: help;
+  transition: background-color 140ms ease-out, color 140ms ease-out;
+
+  &:hover {
+    background: $hover;
+    color: $ink;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+.tip {
+  position: fixed;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(320px, calc(100vw - 24px));
+  padding: 14px 16px 15px;
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 14px 36px rgba(16, 20, 40, 0.14), 0 2px 6px rgba(16, 20, 40, 0.06);
+  pointer-events: none;
+  animation: tipIn 160ms $ease both;
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  h5 {
+    margin: 0;
+    color: $faint;
+    font: 600 10.5px/1.2 Inter, sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0;
+    color: $body;
+    font: 400 12.5px/1.5 Inter, sans-serif;
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.tipHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  strong {
+    color: $ink;
+    font: 600 14px/1.3 Inter, sans-serif;
+  }
+}
+
+.tip .tipMeta {
+  margin-top: -6px;
+  color: $faint;
+  font-size: 11.5px;
+}
+
+@keyframes tipIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+// ── Library drawings for the newer nuggets ──────────────────────────────────────────────────
+// Each area has a faint tint for the card and one colour for the drawing's marks.
+
+.artGenAccent { fill: var(--art-accent, #606eda); }
+.artGenSoft { fill: var(--art-soft, #cdd2f3); }
+.artGenNode { fill: var(--art-accent, #606eda); }
+.artGaugeTrack { fill: none; stroke: #f0f1f4; stroke-width: 9; stroke-linecap: round; }
+.artGaugeFill { fill: none; stroke: var(--art-accent, #606eda); stroke-width: 9; stroke-linecap: round; }
+.artHeatOff { fill: #edeef1; }
+
+.artAreaSignals { --art-accent: #6f7ba8; --art-soft: #cfd4e6; }
+.artAreaRules { --art-accent: #606eda; --art-soft: #cdd2f3; }
+.artAreaAds { --art-accent: #7289d5; --art-soft: #d1daf6; }
+.artAreaCatalog { --art-accent: #5f73b0; --art-soft: #cbd2e8; }
+.artAreaInventory { --art-accent: #37b674; --art-soft: #bcead1; }
+.artAreaPricing { --art-accent: #e19e1a; --art-soft: #f7e0ad; }
+.artAreaProfit { --art-accent: #46b468; --art-soft: #bee9cb; }
+.artAreaMarket { --art-accent: #6d71b8; --art-soft: #d3d4ee; }
+.artAreaReviews { --art-accent: #ce6977; --art-soft: #f1cbd0; }
+.artAreaHealth { --art-accent: #61ad47; --art-soft: #c9ebbb; }
+
+.cardArt.artAreaSignals { background: linear-gradient(180deg, #f5f6f7 0%, #eaecf5 100%); }
+.cardArt.artAreaRules { background: linear-gradient(180deg, #f3f4fe 0%, #e7e9fc 100%); }
+.cardArt.artAreaAds { background: linear-gradient(180deg, #f4f7fd 0%, #ebebf5 100%); }
+.cardArt.artAreaCatalog { background: linear-gradient(180deg, #f4f5f7 0%, #e8ebf5 100%); }
+.cardArt.artAreaInventory { background: linear-gradient(180deg, #eef9f3 0%, #e0f4e9 100%); }
+.cardArt.artAreaPricing { background: linear-gradient(180deg, #fdf8ec 0%, #f9f0da 100%); }
+.cardArt.artAreaProfit { background: linear-gradient(180deg, #f4f5f6 0%, #e4f6e8 100%); }
+.cardArt.artAreaMarket { background: linear-gradient(180deg, #f6f7f8 0%, #eaeaf5 100%); }
+.cardArt.artAreaReviews { background: linear-gradient(180deg, #f6f7f9 0%, #f6e8e9 100%); }
+.cardArt.artAreaHealth { background: linear-gradient(180deg, #f1fbee 0%, #e6f6df 100%); }

@@ -1,0 +1,1329 @@
+// @ts-nocheck -- ported verbatim from the source repo, which uses looser TS settings
+// Smart Campaign Creation — domain types, mock data and pure recommendation/generation logic.
+// Scope: Amazon + Walmart Sponsored Products (V1). Built from the "Smart Campaign Creation —
+// Sponsored Products" requirements doc — see each section's comment for the matching spec section.
+
+export type Marketplace = 'amazon' | 'walmart';
+export type AdType = 'sponsored-products';
+
+export interface MarketplaceCapability {
+  label: string;
+  adTypes: { id: AdType; label: string; available: boolean }[];
+  targetingStrategies: TargetingStrategyId[];
+  minDailyBudget: number;
+  maxTargetAcos: number;
+  campaignLimit: number;
+}
+
+export type TargetingStrategyId =
+  | 'auto'
+  | 'exact'
+  | 'phrase'
+  | 'broad'
+  | 'product'
+  | 'asin-expanded'
+  | 'competitor'
+  | 'brand'
+  | 'category';
+
+/**
+ * The Manual targeting the Targeting page offers. 'brand' and 'competitor' stay in the type so older plans still read,
+ * but they are now strategies (see MANUAL_STRATEGY_CATALOG), not targeting types.
+ */
+export const MANUAL_TARGETING_IDS: TargetingStrategyId[] = [
+  'broad', 'phrase', 'exact', 'product', 'asin-expanded', 'category',
+];
+
+/** Who the Manual campaigns aim at. Optional, and a tag only: it doesn't change which campaigns are made. */
+export type ManualStrategyId = 'branded' | 'competitor' | 'generic';
+/** Descriptions from the spec (v9, section 4.4), with each platform's limits written in. */
+export const MANUAL_STRATEGY_CATALOG: { id: ManualStrategyId; label: string; hint: string; walmartHint: string }[] = [
+  { id: 'branded', label: 'Branded', hint: 'Defends your own brand terms. Works best with Exact. Product targets: ASIN Exact (own ASINs).', walmartHint: 'Defends your own brand terms. Runs as Exact match only.' },
+  { id: 'competitor', label: 'Competitor', hint: 'Targets competitor brands and products. Works best with Exact, then Phrase. Product targets: competitor ASINs or categories.', walmartHint: 'Targets competitor brand terms. Runs as Exact match only.' },
+  { id: 'generic', label: 'Generic', hint: 'Reaches new shoppers with non-brand category terms. Product targets: ASIN Expanded or Category.', walmartHint: 'Reaches new shoppers with non-brand category terms. Any selected match type.' },
+];
+
+export interface TargetingStrategyDef {
+  id: TargetingStrategyId;
+  label: string;
+  description: string;
+}
+
+export const TARGETING_STRATEGY_CATALOG: Record<TargetingStrategyId, TargetingStrategyDef> = {
+  auto: { id: 'auto', label: 'Automatic', description: 'The marketplace automatically discovers relevant search terms and products.' },
+  exact: { id: 'exact', label: 'Exact', description: 'Targets highly specific search queries.' },
+  phrase: { id: 'phrase', label: 'Phrase', description: 'Targets search queries containing the selected phrase.' },
+  broad: { id: 'broad', label: 'Broad', description: 'Targets broader variations of the selected keyword.' },
+  product: { id: 'product', label: 'ASIN Exact', description: 'Targets the exact product pages you pick.' },
+  'asin-expanded': { id: 'asin-expanded', label: 'ASIN Expanded', description: 'Targets the products you pick and ones like them.' },
+  competitor: { id: 'competitor', label: 'Competitor Targeting', description: 'Targets competitor products and brands.' },
+  brand: { id: 'brand', label: 'Brand Targeting', description: 'Targets searches associated with your brand.' },
+  category: { id: 'category', label: 'Category', description: 'Targets products within relevant categories.' },
+};
+
+// Section 13 — Amazon vs Walmart share the same UX; capabilities differ per marketplace.
+export const MARKETPLACE_CAPABILITY: Record<Marketplace, MarketplaceCapability> = {
+  amazon: {
+    label: 'Amazon',
+    adTypes: [
+      { id: 'sponsored-products', label: 'Sponsored Products', available: true },
+    ],
+    targetingStrategies: ['auto', 'exact', 'phrase', 'broad', 'product', 'asin-expanded', 'competitor', 'brand', 'category'],
+    minDailyBudget: 10,
+    maxTargetAcos: 90,
+    campaignLimit: 1000,
+  },
+  walmart: {
+    label: 'Walmart',
+    adTypes: [
+      { id: 'sponsored-products', label: 'Sponsored Products', available: true },
+    ],
+    targetingStrategies: ['auto', 'exact', 'phrase', 'broad', 'competitor', 'brand'],  // No product targeting on Walmart.
+    minDailyBudget: 15,
+    maxTargetAcos: 75,
+    campaignLimit: 500,
+  },
+};
+
+// ── Products (Section 4) ──────────────────────────────────────────────────────────────────────
+
+/** A child ASIN (variation) that rolls up under a parent product. */
+export interface CcChildProduct {
+  id: string;
+  title: string;
+  asin: string;
+  sku: string;
+  inventory: number;
+  adSpend: number;
+  adSales: number;
+  acos: number;
+}
+
+export interface CcProduct {
+  id: string;
+  title: string;
+  asin: string;
+  sku: string;
+  brand: string;
+  category: string;
+  eligible: boolean;
+  ineligibleReason?: string;
+  inventory: number;
+  sales: number;
+  adSpend: number;
+  adSales: number;
+  acos: number;
+  hasExistingCampaign: boolean;
+  thumbnailColor: string;
+  children?: CcChildProduct[];
+  /** Set on a child product that has been flattened into a selectable product. */
+  parentTitle?: string;
+}
+
+const AMAZON_PRODUCTS: CcProduct[] = [
+  { id: 'a-1', title: 'Whey Protein Isolate 1kg — Chocolate', asin: 'B08XK2QW9L', sku: 'NB-WPI-CHOC-1KG', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 842, sales: 128400, adSpend: 8900, adSales: 41200, acos: 21.6, hasExistingCampaign: true, thumbnailColor: '#3f4fda',
+    children: [
+      { id: 'a-1-1', title: 'Whey Protein Isolate 500g — Chocolate', asin: 'B08XK2QW01', sku: 'NB-WPI-CHOC-500G', inventory: 320, adSpend: 2100, adSales: 8400, acos: 25.0 },
+      { id: 'a-1-2', title: 'Whey Protein Isolate 2kg — Chocolate', asin: 'B08XK2QW02', sku: 'NB-WPI-CHOC-2KG', inventory: 190, adSpend: 3400, adSales: 14900, acos: 22.8 },
+      { id: 'a-1-3', title: 'Whey Protein Isolate 3kg — Chocolate', asin: 'B08XK2QW03', sku: 'NB-WPI-CHOC-3KG', inventory: 130, adSpend: 1900, adSales: 9100, acos: 20.9 },
+      { id: 'a-1-4', title: 'Whey Protein Isolate Sample Pack 6×30g — Chocolate', asin: 'B08XK2QW04', sku: 'NB-WPI-CHOC-SMP6', inventory: 560, adSpend: 1500, adSales: 5200, acos: 28.8 },
+    ],
+  },
+  { id: 'a-2', title: 'Whey Protein Isolate 1kg — Vanilla', asin: 'B07QW9LMN2', sku: 'NB-WPI-VAN-1KG', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 613, sales: 96200, adSpend: 6100, adSales: 29800, acos: 20.5, hasExistingCampaign: true, thumbnailColor: '#2f52ed' },
+  { id: 'a-3', title: 'BCAA 250g — Watermelon', asin: 'B08LMN4RT8', sku: 'NB-BCAA-WM-250', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 1204, sales: 54300, adSpend: 3200, adSales: 11900, acos: 26.9, hasExistingCampaign: false, thumbnailColor: '#2b9652' },
+  { id: 'a-4', title: 'Creatine Monohydrate 300g', asin: 'B06TY7HJ3K', sku: 'NB-CRT-300', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 95, sales: 38700, adSpend: 2100, adSales: 9400, acos: 22.3, hasExistingCampaign: false, thumbnailColor: '#cb8b1c' },
+  { id: 'a-5', title: 'Resistance Bands Set — 5 Levels', asin: 'B09RK3PX77', sku: 'BF-RBS-5LV', brand: 'Boldfit', category: 'Fitness Equipment', eligible: true, inventory: 341, sales: 61800, adSpend: 4300, adSales: 18200, acos: 23.6, hasExistingCampaign: true, thumbnailColor: '#cc2b2b' },
+  { id: 'a-6', title: 'Adjustable Dumbbell Set 20kg', asin: 'B08WZ2QF41', sku: 'BF-ADJ-20KG', brand: 'Boldfit', category: 'Fitness Equipment', eligible: true, inventory: 58, sales: 142300, adSpend: 11200, adSales: 52100, acos: 21.5, hasExistingCampaign: true, thumbnailColor: '#2f52ed' },
+  { id: 'a-7', title: 'Yoga Mat — Extra Thick 10mm', asin: 'B07PL9QK63', sku: 'BF-YM-10MM', brand: 'Boldfit', category: 'Fitness Equipment', eligible: false, ineligibleReason: 'Out of stock', inventory: 0, sales: 28400, adSpend: 1800, adSales: 6200, acos: 29.0, hasExistingCampaign: false, thumbnailColor: '#3f4fda' },
+  { id: 'a-8', title: 'Multivitamin Gummies 60ct', asin: 'B09XH4RT22', sku: 'WN-MVG-60', brand: 'Wellbeing Nutrition', category: 'Vitamins & Supplements', eligible: true, inventory: 720, sales: 45900, adSpend: 2700, adSales: 10300, acos: 26.2, hasExistingCampaign: false, thumbnailColor: '#2b9652' },
+  { id: 'a-9', title: 'Plant Protein 900g — Chocolate', asin: 'B08QX7RW19', sku: 'WN-PP-CHOC-900', brand: 'Wellbeing Nutrition', category: 'Sports Nutrition', eligible: true, inventory: 410, sales: 71200, adSpend: 5400, adSales: 22600, acos: 23.9, hasExistingCampaign: true, thumbnailColor: '#cb8b1c' },
+  { id: 'a-10', title: 'Melatonin Gummies — Night Sleep', asin: 'B07RT8QL45', sku: 'WN-MLT-NS', brand: 'Wellbeing Nutrition', category: 'Vitamins & Supplements', eligible: false, ineligibleReason: 'Not advertising eligible', inventory: 230, sales: 19800, adSpend: 0, adSales: 0, acos: 0, hasExistingCampaign: false, thumbnailColor: '#cc2b2b' },
+  { id: 'a-11', title: 'Omega-3 Fish Oil 90 Softgels', asin: 'B08KX2QN87', sku: 'WN-OM3-90', brand: 'Wellbeing Nutrition', category: 'Vitamins & Supplements', eligible: true, inventory: 980, sales: 33600, adSpend: 1900, adSales: 7800, acos: 24.4, hasExistingCampaign: false, thumbnailColor: '#2f52ed' },
+  { id: 'a-12', title: 'Pre-Workout 300g — Blue Razz', asin: 'B09LMN8QP3', sku: 'NB-PWO-BR-300', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 187, sales: 58900, adSpend: 4800, adSales: 16200, acos: 29.6, hasExistingCampaign: true, thumbnailColor: '#3f4fda' },
+];
+
+const WALMART_PRODUCTS: CcProduct[] = [
+  { id: 'w-1', title: 'Whey Protein Isolate 2lb — Chocolate', asin: '9W2K4QX1', sku: 'NB-WI-WM-CHOC', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 410, sales: 41200, adSpend: 2600, adSales: 10400, acos: 25.0, hasExistingCampaign: true, thumbnailColor: '#3f4fda' },
+  { id: 'w-2', title: 'BCAA Powder 250g', asin: '8K3LMN77', sku: 'NB-BCAA-WM', brand: 'Nutrabay', category: 'Sports Nutrition', eligible: true, inventory: 290, sales: 22800, adSpend: 1400, adSales: 5200, acos: 26.9, hasExistingCampaign: false, thumbnailColor: '#2b9652' },
+  { id: 'w-3', title: 'Resistance Bands Set', asin: '7RT9QP42', sku: 'BF-RBS-WM', brand: 'Boldfit', category: 'Fitness Equipment', eligible: true, inventory: 165, sales: 18600, adSpend: 1100, adSales: 3900, acos: 28.2, hasExistingCampaign: false, thumbnailColor: '#cc2b2b' },
+  { id: 'w-4', title: 'Adjustable Dumbbell Set', asin: '6QX8RT19', sku: 'BF-ADJ-WM', brand: 'Boldfit', category: 'Fitness Equipment', eligible: false, ineligibleReason: 'Out of stock', inventory: 0, sales: 51200, adSpend: 0, adSales: 0, acos: 0, hasExistingCampaign: false, thumbnailColor: '#2f52ed' },
+  { id: 'w-5', title: 'Multivitamin Gummies 60ct', asin: '5LMN3QK8', sku: 'WN-MVG-WM', brand: 'Wellbeing Nutrition', category: 'Vitamins & Supplements', eligible: true, inventory: 530, sales: 15900, adSpend: 900, adSales: 3100, acos: 29.0, hasExistingCampaign: false, thumbnailColor: '#cb8b1c' },
+  { id: 'w-6', title: 'Plant Protein 2lb — Chocolate', asin: '4RT7QX56', sku: 'WN-PP-WM-CHOC', brand: 'Wellbeing Nutrition', category: 'Sports Nutrition', eligible: true, inventory: 240, sales: 26400, adSpend: 1800, adSales: 6900, acos: 26.1, hasExistingCampaign: true, thumbnailColor: '#2b9652' },
+];
+
+/** Parents followed by their children, each child as a standalone selectable product that inherits the parent's attributes. */
+export function flattenProducts(products: CcProduct[]): CcProduct[] {
+  return products.flatMap((p) => [
+    p,
+    ...(p.children ?? []).map((k): CcProduct => ({
+      id: k.id, title: k.title, asin: k.asin, sku: k.sku, brand: p.brand, category: p.category, eligible: p.eligible,
+      inventory: k.inventory, sales: Math.round(k.adSales * 3.1), adSpend: k.adSpend, adSales: k.adSales, acos: k.acos,
+      hasExistingCampaign: p.hasExistingCampaign, thumbnailColor: p.thumbnailColor, parentTitle: p.title,
+    })),
+  ]);
+}
+
+export function productsFor(marketplace: Marketplace): CcProduct[] {
+  return marketplace === 'amazon' ? AMAZON_PRODUCTS : WALMART_PRODUCTS;
+}
+
+// ── Budget recommendation (Section 5) ────────────────────────────────────────────────────────
+
+/** Scales recent daily ad spend up 15% to leave room for the new campaigns alongside it. */
+export function recommendedBudget(products: CcProduct[]): number {
+  if (products.length === 0) return 50;
+  const recentDailySpend = products.reduce((sum, p) => sum + p.adSpend, 0) / 30;
+  const base = Math.max(10, Math.round(recentDailySpend * 1.15));
+  return Math.min(2000, Math.round(base / 5) * 5);
+}
+
+// ── Grouping (Section 4.4) ────────────────────────────────────────────────────────────────────
+
+export type GroupingMode = 'split-by-campaign' | 'split-by-ad-group';
+
+export function recommendGroupingMode(products: CcProduct[], dailyBudget: number): GroupingMode {
+  if (products.length <= 1) return 'split-by-campaign';
+  const perProductBudget = dailyBudget / products.length;
+  return perProductBudget >= 15 ? 'split-by-campaign' : 'split-by-ad-group';
+}
+
+// ── Targeting strategy recommendation (Section 6) ────────────────────────────────────────────
+
+export function recommendTargetingStrategies(products: CcProduct[], marketplace: Marketplace): TargetingStrategyId[] {
+  const supported = MARKETPLACE_CAPABILITY[marketplace].targetingStrategies;
+  const hasHistory = products.some((p) => p.adSpend > 0);
+  const base: TargetingStrategyId[] = ['auto', 'exact', 'phrase'];
+  const withBroad: TargetingStrategyId[] = hasHistory ? base : [...base, 'broad'];
+  return withBroad.filter((s) => supported.includes(s));
+}
+
+// ── Campaign structures (Section 7) ───────────────────────────────────────────────────────────
+
+export type StructureId =
+  | 'consolidated'
+  | 'targeting-type'
+  | 'product-targeting'
+  | 'product-single-auto'
+  | 'product-multi-auto'
+  /** Amazon: more campaigns than Consolidated, shaped by the Performance enhancer splits. */
+  | 'standard'
+  | 'custom';
+
+export interface StructureDef {
+  id: StructureId;
+  number: number;
+  name: string;
+  tagline: string;
+  description: string;
+  useCase: string;
+  granularity: 'Low' | 'Medium' | 'High' | 'Very High' | 'Custom';
+  productSeparation: boolean;
+}
+
+export const STRUCTURE_CATALOG: StructureDef[] = [
+  {
+    id: 'consolidated', number: 1, name: 'Consolidated', tagline: '1 Auto campaign and 1 Manual campaign',
+    description: 'One Auto campaign with one ad group, and one Manual campaign, both for all products.',
+    useCase: 'Fewer campaigns, simplified management, consolidated budgets.',
+    granularity: 'Low', productSeparation: false,
+  },
+  {
+    id: 'standard', number: 2, name: 'Standard', tagline: 'More campaigns, shaped by the splits below',
+    description: 'Campaigns and ad groups split the way the Performance enhancer says.',
+    useCase: 'Separate budgets and bids by match type, targeting type or strategy.',
+    granularity: 'High', productSeparation: false,
+  },
+  {
+    id: 'targeting-type', number: 2, name: 'Targeting-Type', tagline: '1 Auto + a Manual per match type, and one for products',
+    description: 'One Auto campaign, plus a Manual campaign for each keyword match type and one for product targeting, all products.',
+    useCase: 'Manage keyword match types and product targeting independently, without splitting by product.',
+    granularity: 'Medium', productSeparation: false,
+  },
+  {
+    id: 'product-targeting', number: 3, name: 'Shared Auto + Product Manual', tagline: '1 shared Auto + Manual per product',
+    description: 'One Auto campaign shared by every product, with an ad group per product, and each product’s own Manual campaigns as in Targeting-Type.',
+    useCase: 'Product-level Manual control while Auto stays in one campaign.',
+    granularity: 'High', productSeparation: true,
+  },
+  {
+    id: 'product-single-auto', number: 4, name: 'Product Auto + Product Manual', tagline: 'Per product: 1 Auto + Manual as in Targeting-Type',
+    description: 'Each product gets its own Auto campaign with one ad group, and its own Manual campaigns as in Targeting-Type.',
+    useCase: 'Full product-level budget control, performance reporting and bid management.',
+    granularity: 'High', productSeparation: true,
+  },
+  {
+    id: 'product-multi-auto', number: 5, name: 'Product Multi-Auto + Product Manual', tagline: 'Per product: an Auto per Auto type + Manual',
+    description: 'Each product gets one Auto campaign per selected Auto type (one ad group each), and its own Manual campaigns as in Targeting-Type.',
+    useCase: 'Users who need maximum campaign-level control and granular optimization.',
+    granularity: 'Very High', productSeparation: true,
+  },
+  {
+    id: 'custom', number: 6, name: 'Custom', tagline: 'Describe it, Jiva builds it',
+    description: 'Describe your desired campaign structure in plain language and Jiva generates a proposed structure to review.',
+    useCase: 'Anything the five predefined structures don’t cover.',
+    granularity: 'Custom', productSeparation: false,
+  },
+];
+
+/**
+ * How a structure's Manual campaigns split into ad groups. On Amazon, Consolidated lists them as a, b, c = Match type,
+ * Targeting, Strategy, and the per-type structures (2–5) as Match type, Strategy, Targeting. Walmart has keyword
+ * targeting only, so Targeting only isn't offered there.
+ */
+export type StructureVariant = 'match' | 'targeting' | 'strategy';
+type VariantDef = { id: StructureVariant; label: string; hint: string };
+export const STRUCTURE_VARIANTS: Record<'consolidated' | 'split' | 'walmartConsolidated' | 'walmartSplit', VariantDef[]> = {
+  consolidated: [
+    { id: 'match', label: 'Match type only', hint: 'An ad group per match type in the Manual campaign' },
+    { id: 'targeting', label: 'Targeting only', hint: 'Keyword targets in one ad group, product targets in another' },
+    { id: 'strategy', label: 'Strategy only', hint: 'Branded, Competitor and Generic ad groups' },
+  ],
+  split: [
+    { id: 'match', label: 'Match type only', hint: 'The product campaign splits into its match types; keyword campaigns keep one ad group' },
+    { id: 'strategy', label: 'Strategy only', hint: 'Branded, Competitor and Generic ad groups in every Manual campaign' },
+    { id: 'targeting', label: 'Targeting only', hint: 'One ad group per campaign; keyword and product targeting are already apart' },
+  ],
+  walmartConsolidated: [
+    { id: 'match', label: 'Match type only', hint: 'An ad group per match type in the Manual campaign' },
+    { id: 'strategy', label: 'Strategy only', hint: 'Branded, Competitor and Generic ad groups' },
+  ],
+  walmartSplit: [
+    { id: 'match', label: 'Match type only', hint: 'Each match-type campaign has one ad group' },
+    { id: 'strategy', label: 'Strategy only', hint: 'Branded, Competitor and Generic ad groups in every Manual campaign' },
+  ],
+};
+export const variantsFor = (id: StructureId, marketplace?: Marketplace | null): VariantDef[] => {
+  const consolidated = id === 'consolidated';
+  if (marketplace === 'walmart') return STRUCTURE_VARIANTS[consolidated ? 'walmartConsolidated' : 'walmartSplit'];
+  return STRUCTURE_VARIANTS[consolidated ? 'consolidated' : 'split'];
+};
+/** The variation a plan's campaigns are built with, Match type by default; Walmart, which doesn't offer Targeting only, falls back to it. */
+export const structureVariantFor = (marketplace: Marketplace | null | undefined, variant: StructureVariant | undefined): StructureVariant =>
+  (marketplace === 'walmart' && variant === 'targeting' ? 'match' : variant ?? 'match');
+
+/**
+ * The structures a plan can pick: Consolidated, Standard and Custom on both marketplaces, their campaigns shaped by the
+ * Performance enhancer splits. (The numbered structures and their variations stay in the code for older plans and for
+ * Jiva's custom proposals, which build from them.)
+ */
+export const SPLIT_STRUCTURES: StructureId[] = ['consolidated', 'standard', 'custom'];
+export const usesSplits = (_marketplace?: Marketplace | null) => true;
+export const structuresFor = (mode: CampaignMode, marketplace: Marketplace | null | undefined): StructureId[] =>
+  usesSplits(marketplace) ? SPLIT_STRUCTURES : MODE_STRUCTURES[mode].filter((id) => id !== 'product-multi-auto' && id !== 'standard');
+/** Custom (an AI prompt) is shown but can't be picked in this iteration. */
+export const customLocked = (_marketplace?: Marketplace | null) => true;
+
+// ── Performance enhancer splits (Amazon and Walmart) ──────────────────────────────────────────
+
+/** What a Manual split divides by: match types (MT), targeting types (TT: keyword vs product; Amazon only) or strategy types (ST). */
+export type SplitBy = 'match' | 'targeting' | 'strategy';
+export const SPLIT_BY_LABEL: Record<SplitBy, string> = { match: 'Match types', targeting: 'Targeting types', strategy: 'Strategy types' };
+
+/** The Performance enhancer as the user set it. What applies can be narrower: see `splitOptions`. */
+export interface StructureSplits {
+  /** Yes: the whole structure is made once per product (item). No: every ad group holds all the group's products. */
+  products: boolean;
+  /** Standard only. */
+  manualCampaigns: SplitBy;
+  manualAdGroups: SplitBy;
+  /** No: one Auto campaign with one ad group for every ticked Auto match type (Walmart: Auto option). */
+  autoByMatch: boolean;
+  /** When split by match type: an ad group per type in one campaign, or (Standard only) a campaign per type. */
+  autoSplit: 'adGroups' | 'campaigns';
+}
+export const DEFAULT_SPLITS: StructureSplits = { products: false, manualCampaigns: 'match', manualAdGroups: 'match', autoByMatch: false, autoSplit: 'adGroups' };
+/** Each marketplace's guide: products (Amazon) or items (Walmart) one ad group can hold. */
+export const MAX_PRODUCTS_PER_AD_GROUP: Record<Marketplace, number> = { amazon: 1000, walmart: 2000 };
+/** Walmart: at most 1,000 keyword and match-type combinations in one ad group. */
+export const MAX_KEYWORD_COMBOS_PER_AD_GROUP = 1000;
+/** Walmart's Auto options. They act as its Auto match types; both are optional. */
+export const WALMART_AUTO_OPTIONS: { key: keyof ExpandedTargeting; label: string }[] = [
+  { key: 'brandTerms', label: 'Brand Term Targeting' },
+  { key: 'complementary', label: 'Complementary Product Targeting' },
+];
+
+export interface SplitOption { id: SplitBy; label: string; disabled: boolean; reason?: string }
+export interface EffectiveSplits {
+  products: boolean;
+  /** Null in Consolidated, which keeps one Manual campaign. */
+  manualCampaigns: SplitBy | null;
+  manualAdGroups: SplitBy;
+  autoByMatch: boolean;
+  /** Null when Auto isn't split by match type. */
+  autoSplit: 'adGroups' | 'campaigns' | null;
+}
+export type SplitSource = {
+  structureId: StructureId | null; targetingStrategies: TargetingStrategyId[]; manualStrategies?: ManualStrategyId[]; autoTypes: AutoTypeId[];
+  splits?: StructureSplits; expandedTargeting?: ExpandedTargeting; marketplace?: Marketplace | null;
+};
+
+/** The Auto match types a plan splits by: Amazon's ticked Auto types, or Walmart's ticked Auto options. */
+export function autoMatchTypes(s: SplitSource): { key: string; label: string }[] {
+  if (s.marketplace === 'walmart') return WALMART_AUTO_OPTIONS.filter((o) => s.expandedTargeting?.[o.key]).map((o) => ({ key: o.key, label: o.label }));
+  return (s.autoTypes.length ? s.autoTypes : (['close-match'] as AutoTypeId[])).map((id) => ({ key: id, label: AUTO_TYPE_CATALOG.find((a) => a.id === id)?.label ?? id }));
+}
+
+/**
+ * The split options a plan can use and the splits that apply (Tables 3 and 4). Strategy types appear only once a
+ * strategy is ticked. Keyword and product targets never share an ad group, so splitting ad groups by strategy is off
+ * when campaigns are already split by strategy, and in Consolidated when both keyword and product targets are ticked.
+ * Walmart has keyword targeting only, so it never offers Targeting types, and its Auto splits only once an Auto option
+ * is ticked. A pick that can't apply falls back to match types; nothing here changes what's ticked on Targeting.
+ */
+export function splitOptions(s: SplitSource): { campaigns: SplitOption[]; adGroups: SplitOption[]; effective: EffectiveSplits } {
+  const standard = s.structureId === 'standard';
+  const walmart = s.marketplace === 'walmart';
+  const want = { ...DEFAULT_SPLITS, ...s.splits };
+  const { keyword, product } = splitManualTypes(s.targetingStrategies);
+  const hasStrategy = (s.manualStrategies ?? []).length > 0;
+  const opt = (id: SplitBy, disabled: boolean, reason?: string): SplitOption => ({ id, label: SPLIT_BY_LABEL[id], disabled, reason: disabled ? reason : undefined });
+  const offInConsolidated = 'Consolidated keeps one Manual campaign';
+  const campaigns = [
+    opt('match', !standard, offInConsolidated),
+    ...(walmart ? [] : [opt('targeting', !standard, offInConsolidated)]),
+    ...(hasStrategy ? [opt('strategy', !standard, offInConsolidated)] : []),
+  ];
+  const campaign: SplitBy | null = !standard ? null : campaigns.some((o) => o.id === want.manualCampaigns) ? want.manualCampaigns : 'match';
+  const adGroups = [
+    opt('match', false),
+    // Table 3: a match-type campaign is already one subcategory, so splitting it by targeting type makes no sense.
+    ...(walmart ? [] : [opt('targeting', campaign === 'match', 'Each campaign already holds one match type')]),
+    ...(hasStrategy ? [opt('strategy', campaign === 'strategy' || (!standard && keyword.length > 0 && product.length > 0),
+      campaign === 'strategy' ? 'Campaigns are already split by strategy' : 'Keyword and product targets can’t share an ad group')] : []),
+  ];
+  const adGroup = adGroups.some((o) => o.id === want.manualAdGroups && !o.disabled) ? want.manualAdGroups : 'match';
+  // Walmart's Auto splits by its ticked Auto options, so with none ticked there's nothing to split.
+  const autoByMatch = want.autoByMatch && (!walmart || autoMatchTypes(s).length > 0);
+  return {
+    campaigns, adGroups,
+    effective: {
+      products: want.products, manualCampaigns: campaign, manualAdGroups: adGroup, autoByMatch,
+      autoSplit: !autoByMatch ? null : want.autoSplit === 'campaigns' && standard ? 'campaigns' : 'adGroups',
+    },
+  };
+}
+
+/** The Manual targeting in the Targeting page's order: Broad, Phrase, Exact, then ASIN Exact, ASIN Expanded, Category. */
+const MANUAL_ORDER: TargetingStrategyId[] = ['broad', 'phrase', 'exact', 'brand', 'competitor', 'product', 'asin-expanded', 'category'];
+type AgPlan = { key: string; name: string; types: TargetingStrategyId[] };
+/** `expandedTargeting`: a Walmart Auto campaign made for one Auto option keeps it and opts out of the other. */
+type CampaignPlan = { key: string; kind: 'auto' | 'manual'; label: string; adGroups: AgPlan[]; expandedTargeting?: ExpandedTargeting };
+
+/** One copy of a structure: its Auto and Manual campaigns and their ad groups, before products are put in. */
+function splitShape(s: SplitSource): CampaignPlan[] {
+  const eff = splitOptions(s).effective;
+  const label = (t: TargetingStrategyId) => TARGETING_STRATEGY_CATALOG[t].label;
+  const manual = MANUAL_ORDER.filter((t) => s.targetingStrategies.includes(t));
+  const strategies = MANUAL_STRATEGY_CATALOG.filter((x) => (s.manualStrategies ?? []).includes(x.id));
+  const plans: CampaignPlan[] = [];
+
+  if (s.targetingStrategies.includes('auto')) {
+    // Walmart's Auto options are campaign settings, so its ad groups split by them only to organise items and reporting.
+    const types = autoMatchTypes(s);
+    const perType = (t: { key: string; label: string }): AgPlan => ({ key: t.key, name: `${t.label} Ad Group`, types: [] });
+    // Walmart sends explicit option values on every Auto campaign (an unticked option is its opt-out). A campaign split
+    // out for one option keeps only that one; every campaign still runs the base automatic targeting, so they overlap.
+    const walmartOptions = (only?: string): ExpandedTargeting | undefined => (s.marketplace !== 'walmart' ? undefined : only
+      ? { brandTerms: only === 'brandTerms', complementary: only === 'complementary' }
+      : { brandTerms: Boolean(s.expandedTargeting?.brandTerms), complementary: Boolean(s.expandedTargeting?.complementary) });
+    if (eff.autoSplit === 'campaigns') types.forEach((t) => plans.push({ key: `auto-${t.key}`, kind: 'auto', label: `Automatic · ${t.label}`, adGroups: [perType(t)], expandedTargeting: walmartOptions(t.key) }));
+    else plans.push({ key: 'auto', kind: 'auto', label: 'Automatic', adGroups: eff.autoSplit === 'adGroups' ? types.map(perType) : [{ key: 'all', name: 'Auto Ad Group', types: [] }], expandedTargeting: walmartOptions() });
+  }
+
+  if (manual.length) {
+    const byTargeting = (types: TargetingStrategyId[]) => {
+      const split = splitManualTypes(types);
+      return [
+        ...(split.keyword.length ? [{ key: 'kt', label: 'Keyword targeting', types: split.keyword }] : []),
+        ...(split.product.length ? [{ key: 'pt', label: 'Product targeting', types: split.product }] : []),
+      ];
+    };
+    const buckets = eff.manualCampaigns === null ? [{ key: 'manual', label: manual.map(label).join(' + '), types: manual }]
+      : eff.manualCampaigns === 'match' ? manual.map((t) => ({ key: t, label: label(t), types: [t] }))
+      : eff.manualCampaigns === 'targeting' ? byTargeting(manual)
+      : strategies.map((x) => ({ key: x.id, label: x.label, types: manual }));
+    buckets.forEach((b) => {
+      // A strategy ad group in a split campaign carries the campaign's name first, as Table 3 and examples A4/A6 name
+      // them ("Exact - Branded", "KT - Branded"); match-type and targeting-type ad groups keep their own (A5, A7, A8).
+      const named = (part: string) => `${eff.manualCampaigns !== null && eff.manualAdGroups === 'strategy' ? `${b.label} - ` : ''}${part} Ad Group`;
+      const adGroups: AgPlan[] = eff.manualAdGroups === 'match' ? b.types.map((t) => ({ key: t, name: named(label(t)), types: [t] }))
+        : eff.manualAdGroups === 'targeting' ? byTargeting(b.types).map((x) => ({ key: x.key, name: named(x.label), types: x.types }))
+        : strategies.map((x) => ({ key: x.id, name: named(x.label), types: b.types }));
+      plans.push({ key: `m-${b.key}`, kind: 'manual', label: b.label, adGroups });
+    });
+  }
+  return plans;
+}
+
+/** Campaign and ad group counts for a split plan: one structure, or one per product when products are split. */
+export function splitCounts(s: SplitSource, productCount: number): StructureCounts {
+  const shape = splitShape(s);
+  const times = splitOptions(s).effective.products ? Math.max(productCount, 0) : 1;
+  const autoCampaigns = shape.filter((c) => c.kind === 'auto').length * times;
+  const manualCampaigns = shape.filter((c) => c.kind === 'manual').length * times;
+  const adGroups = shape.reduce((n, c) => n + c.adGroups.length, 0) * times;
+  const targets = shape.reduce((n, c) => n + c.adGroups.reduce((m, g) => m + Math.max(g.types.length, 1), 0), 0) * times;
+  return { autoCampaigns, manualCampaigns, totalCampaigns: autoCampaigns + manualCampaigns, adGroups, targets };
+}
+
+/** Why the plan can't be made as split, or null: without Split products, one ad group holds every product, up to the marketplace's cap. */
+export function splitProductsIssue(s: SplitSource, productCount: number): string | null {
+  const walmart = s.marketplace === 'walmart';
+  const max = MAX_PRODUCTS_PER_AD_GROUP[walmart ? 'walmart' : 'amazon'];
+  if (s.structureId === 'custom' || splitOptions(s).effective.products || productCount <= max) return null;
+  const noun = walmart ? 'items' : 'products';
+  return `An ad group can hold at most ${max.toLocaleString()} ${noun}, and this group has ${productCount.toLocaleString()}. Turn on Split ${noun}, or split them into smaller groups.`;
+}
+
+/**
+ * Section 4.3 combination notes: shown in the structure preview, never hiding anything, for ad groups or campaigns that
+ * pair Branded or Competitor with Phrase or Broad. Only when the plan actually splits by strategy; keyword selection
+ * decides later whether such keywords stay.
+ */
+export function combinationNotes(s: SplitSource): { id: string; text: string }[] {
+  const eff = splitOptions(s).effective;
+  if (eff.manualCampaigns !== 'strategy' && eff.manualAdGroups !== 'strategy') return [];
+  const loose = (['phrase', 'broad'] as TargetingStrategyId[]).filter((t) => s.targetingStrategies.includes(t)).map((t) => TARGETING_STRATEGY_CATALOG[t].label);
+  if (!loose.length) return [];
+  const picked = (id: ManualStrategyId) => (s.manualStrategies ?? []).includes(id);
+  const types = loose.join(' or ');
+  if (s.marketplace === 'walmart') {
+    return [
+      ...(picked('branded') ? [{ id: 'W1', text: `Branded with ${types}: probably not kept. Walmart runs brand terms in Manual as Exact only (the own-brand part is unconfirmed).` }] : []),
+      ...(picked('competitor') ? [{ id: 'W2', text: `Competitor with ${types}: not expected. Brand term targeting works only on Exact keywords.` }] : []),
+    ];
+  }
+  const which = [picked('branded') && 'Branded', picked('competitor') && 'Competitor'].filter(Boolean) as string[];
+  return which.length ? [{ id: 'A4', text: `${which.join(' or ')} with ${types}: allowed. Exact is advised for Branded, and Exact then Phrase for Competitor.` }] : [];
+}
+
+/**
+ * Walmart: why the keywords don't fit, or null. An ad group takes the keywords of its match type (or all of them when
+ * it holds several), and can hold at most 1,000 keyword and match-type combinations.
+ */
+export function keywordComboIssue(s: SplitSource & { keywordTargets?: { match: string; enabled: boolean }[] }): string | null {
+  if (s.marketplace !== 'walmart' || !s.structureId || s.structureId === 'custom') return null;
+  const entries = (s.keywordTargets ?? []).filter((k) => k.enabled);
+  if (entries.length <= MAX_KEYWORD_COMBOS_PER_AD_GROUP) return null;
+  const most = Math.max(0, ...splitShape(s).filter((c) => c.kind === 'manual').flatMap((c) => c.adGroups).map((g) => entries.filter((k) => g.types.includes(k.match as TargetingStrategyId)).length));
+  if (most <= MAX_KEYWORD_COMBOS_PER_AD_GROUP) return null;
+  return `One ad group would hold ${most.toLocaleString()} keyword and match-type combinations; Walmart allows ${MAX_KEYWORD_COMBOS_PER_AD_GROUP.toLocaleString()}. Remove some keywords, or split ad groups by match type on Structure.`;
+}
+
+const KEYWORD_TYPE_IDS: TargetingStrategyId[] = ['broad', 'phrase', 'exact', 'brand', 'competitor'];
+/** The Manual targeting split into keyword and product kinds, in the order the Targeting page lists them. */
+export function splitManualTypes(strategies: TargetingStrategyId[]): { keyword: TargetingStrategyId[]; product: TargetingStrategyId[] } {
+  const manual = strategies.filter((s) => s !== 'auto');
+  return { keyword: manual.filter((s) => KEYWORD_TYPE_IDS.includes(s)), product: manual.filter((s) => !KEYWORD_TYPE_IDS.includes(s)) };
+}
+
+export interface StructureCounts {
+  autoCampaigns: number;
+  manualCampaigns: number;
+  totalCampaigns: number;
+  adGroups: number;
+  targets: number;
+}
+
+// Auto targeting sub-types — Structure 5 creates one Auto campaign per selected type, per product (§7.2).
+export type AutoTypeId = 'close-match' | 'loose-match' | 'substitutes' | 'complements';
+export const AUTO_TYPE_CATALOG: { id: AutoTypeId; label: string; description: string }[] = [
+  { id: 'close-match', label: 'Close match', description: 'Shoppers searching terms closely related to your product.' },
+  { id: 'loose-match', label: 'Loose match', description: 'Shoppers searching terms loosely related to your product.' },
+  { id: 'substitutes', label: 'Substitutes', description: 'Shoppers viewing detail pages of similar products.' },
+  { id: 'complements', label: 'Complements', description: 'Shoppers viewing detail pages of complementary products.' },
+];
+
+// Section 7.6 — account-level campaign limits. `used` is mock data for what the account already has live.
+export const ACCOUNT_CAMPAIGNS_USED: Record<Marketplace, number> = { amazon: 880, walmart: 410 };
+export function accountCampaignLimits(marketplace: Marketplace): { limit: number; used: number; available: number } {
+  const limit = MARKETPLACE_CAPABILITY[marketplace].campaignLimit;
+  const used = ACCOUNT_CAMPAIGNS_USED[marketplace];
+  return { limit, used, available: Math.max(limit - used, 0) };
+}
+
+/**
+ * The Manual campaigns and ad groups for one set of products: Consolidated puts every type in one campaign; the others
+ * make a campaign per keyword match type plus one for product targeting. The variation splits each campaign into ad
+ * groups; none (a Jiva custom proposal) keeps one ad group per campaign.
+ */
+function manualShape(keyword: number, product: number, variant: StructureVariant | null | undefined, consolidated: boolean) {
+  if (keyword + product === 0) return { campaigns: 0, adGroups: 0 };
+  // Without a variation every type keeps a campaign of its own, as before.
+  const campaigns = consolidated ? 1 : variant == null ? keyword + product : keyword + (product > 0 ? 1 : 0);
+  if (variant === 'strategy') return { campaigns, adGroups: campaigns * MANUAL_STRATEGY_CATALOG.length };
+  if (variant === 'match') return { campaigns, adGroups: keyword + product };
+  if (variant === 'targeting' && consolidated) return { campaigns, adGroups: Number(keyword > 0) + Number(product > 0) };
+  return { campaigns, adGroups: campaigns };
+}
+
+/**
+ * Section 7.4 — Campaign Count Calculation. `manual` is the Manual targeting split into keyword and product types; a
+ * plain number counts them all as keyword types.
+ */
+export function structureCounts(
+  structureId: StructureId,
+  productCount: number,
+  hasAuto: boolean,
+  manual: number | { keyword: number; product: number },
+  autoTypesCount = 1,
+  variant: StructureVariant | null = null,
+): StructureCounts {
+  const p = Math.max(productCount, 0);
+  const { keyword, product } = typeof manual === 'number' ? { keyword: Math.max(manual, 0), product: 0 } : manual;
+  const m = keyword + product;
+  const auto = hasAuto ? 1 : 0;
+  const make = (autoCampaigns: number, autoAdGroups: number, perProduct: boolean, targets: number): StructureCounts => {
+    const shape = manualShape(keyword, product, variant, structureId === 'consolidated');
+    const times = perProduct ? p : 1;
+    const manualCampaigns = shape.campaigns * times;
+    return { autoCampaigns, manualCampaigns, totalCampaigns: autoCampaigns + manualCampaigns, adGroups: autoAdGroups + shape.adGroups * times, targets };
+  };
+
+  switch (structureId) {
+    case 'consolidated':
+    case 'targeting-type':
+      return make(auto, auto, false, m + auto);
+    // One Auto shared by every product, with an ad group per product (without a variation, an Auto per product).
+    case 'product-targeting':
+      return make(variant == null ? auto * p : auto, auto * p, true, (m + auto) * p);
+    case 'product-single-auto':
+      return make(auto * p, auto * p, true, (m + auto) * p);
+    case 'product-multi-auto': {
+      // One Auto campaign per selected Auto type, per product (spec §7.2, Structure 5).
+      const types = Math.max(autoTypesCount, 1);
+      return make(auto * p * types, auto * p * types, true, (auto * types + m) * p);
+    }
+    case 'custom':
+    default:
+      return { autoCampaigns: 0, manualCampaigns: 0, totalCampaigns: 0, adGroups: 0, targets: 0 };
+  }
+}
+
+export interface StructureRecommendation {
+  structureId: StructureId;
+  reason: string;
+}
+
+/** Section 7.5 — Structure Recommendation. */
+export function recommendStructure(
+  productCount: number,
+  manualTypesCount: number,
+  dailyBudget: number,
+  campaignLimit: number,
+): StructureRecommendation {
+  const perProductBudget = dailyBudget / Math.max(productCount, 1);
+  if (productCount <= 1) {
+    return { structureId: 'targeting-type', reason: 'A single product with multiple targeting types is best served by keeping each type in its own campaign.' };
+  }
+  const productTargetingTotal = structureCounts('product-targeting', productCount, true, manualTypesCount).totalCampaigns;
+  if (productTargetingTotal > campaignLimit * 0.8) {
+    return { structureId: 'targeting-type', reason: `You selected ${manualTypesCount + 1} targeting types across ${productCount} products. This structure keeps targeting types separate while avoiding a large number of product-level campaigns.` };
+  }
+  if (perProductBudget < 15) {
+    return { structureId: 'consolidated', reason: 'Your daily budget is tight relative to the number of selected products — consolidating into fewer campaigns keeps each one adequately funded.' };
+  }
+  return { structureId: 'product-targeting', reason: `Your budget comfortably supports one campaign per product and targeting type (${productTargetingTotal} campaigns), giving you full product-level control.` };
+}
+
+export function validateCampaignLimit(count: number, limit: number): { ok: boolean; message?: string } {
+  if (count <= limit) return { ok: true };
+  return { ok: false, message: `This structure will create ${count.toLocaleString()} campaigns, but only ${limit.toLocaleString()} are available for this account.` };
+}
+
+// ── Campaign generation (feeds the Preview step) ─────────────────────────────────────────────
+
+// Section 8.6 — where a targeting item came from.
+export type TargetSource = 'Platform recommendation' | 'Anarix recommendation' | 'Custom input' | 'Keyword list' | 'Labels / tags';
+export const TARGET_SOURCES: TargetSource[] = ['Platform recommendation', 'Anarix recommendation', 'Custom input', 'Keyword list', 'Labels / tags'];
+
+export interface CcTarget {
+  id: string;
+  label: string;
+  matchType: TargetingStrategyId;
+  bid: number;
+  source: TargetSource;
+}
+
+/** Section 8.5 — negative keyword / negative product target on an ad group. */
+export type NegativeMatch = 'negative-phrase' | 'negative-exact';
+
+export interface CcNegative {
+  id: string;
+  text: string;
+  kind: 'keyword' | 'product';
+  /** Only negative keywords have a match type; a missing one reads as Negative exact. */
+  matchType?: NegativeMatch;
+}
+
+export interface CcAdGroup {
+  id: string;
+  name: string;
+  productIds: string[];
+  targets: CcTarget[];
+  negatives: CcNegative[];
+}
+
+/** Amazon's three strategies, and Walmart's two. Each marketplace offers only its own, first one the default. */
+export type BiddingStrategy = 'Fixed bids' | 'Dynamic bids - down only' | 'Dynamic bids - up and down' | 'Fixed' | 'Dynamic';
+export const BIDDING_STRATEGIES: Record<Marketplace, BiddingStrategy[]> = {
+  amazon: ['Dynamic bids - down only', 'Dynamic bids - up and down', 'Fixed bids'],
+  walmart: ['Fixed', 'Dynamic'],
+};
+export const DEFAULT_BIDDING: Record<Marketplace, BiddingStrategy> = { amazon: 'Dynamic bids - down only', walmart: 'Fixed' };
+
+/** Percent change to the bid per placement; null means no adjustment. */
+export interface PlacementAdjust { top: number | null; product: number | null; rest: number | null }
+
+export interface CcCampaign {
+  id: string;
+  name: string;
+  kind: 'auto' | 'manual';
+  targetingLabel: string;
+  productIds: string[];
+  adGroups: CcAdGroup[];
+  dailyBudget: number;
+  budgetAllocationPct: number;
+  biddingStrategy?: BiddingStrategy;
+  placement?: PlacementAdjust;
+  /** Section 16 — a product in this campaign already has a live campaign. */
+  possibleDuplicate?: boolean;
+  /** The product group this campaign was built for, when the plan has groups. */
+  groupName?: string;
+  /** Walmart: an Auto campaign split by Auto option keeps its own option and opts out of the other. */
+  expandedTargeting?: ExpandedTargeting;
+}
+
+// ── Rules (Section 8.7) — existing account Rules that new campaigns can be assigned to ──────────
+
+export type RuleType = 'Budget' | 'Placement' | 'Inventory' | 'Bid' | 'Performance' | 'Pause / Enable';
+export type RuleScope = 'Campaign' | 'Ad group' | 'Account';
+
+export interface CcRule {
+  id: string;
+  name: string;
+  type: RuleType;
+  status: 'Active' | 'Inactive';
+  description: string;
+  conditions: string;
+  actions: string;
+  scope: RuleScope;
+  adType: 'Sponsored Products' | 'Sponsored Brands';
+  marketplaces: Marketplace[];
+  /** Campaigns that already use this Rule. */
+  assignedCampaigns: number;
+}
+
+export const RULE_TYPES: RuleType[] = ['Budget', 'Placement', 'Inventory', 'Bid', 'Performance', 'Pause / Enable'];
+
+export const MOCK_RULES: CcRule[] = [
+  { id: 'r-budget', name: 'Budget Allocation — High Performers', type: 'Budget', status: 'Active', description: 'Automatically reallocates budget toward campaigns meeting the defined performance conditions.', conditions: 'ACOS below target for 7 days and spend above 80% of budget', actions: 'Raise daily budget by 15%, up to 2× the original', scope: 'Campaign', adType: 'Sponsored Products', marketplaces: ['amazon', 'walmart'], assignedCampaigns: 24 },
+  { id: 'r-placement', name: 'Placement Optimization', type: 'Placement', status: 'Active', description: 'Optimizes placement performance by adjusting top-of-search bid modifiers.', conditions: 'Top-of-search ACOS differs from campaign ACOS by more than 10 points', actions: 'Adjust placement modifier by ±10%', scope: 'Campaign', adType: 'Sponsored Products', marketplaces: ['amazon'], assignedCampaigns: 31 },
+  { id: 'r-inventory', name: 'Inventory Protection', type: 'Inventory', status: 'Active', description: 'Controls campaigns based on inventory so you stop paying for clicks you cannot fulfil.', conditions: 'Available inventory drops below 14 days of cover', actions: 'Pause the campaign and re-enable once restocked', scope: 'Campaign', adType: 'Sponsored Products', marketplaces: ['amazon', 'walmart'], assignedCampaigns: 12 },
+  { id: 'r-bid', name: 'Low ACOS Bid Optimization', type: 'Bid', status: 'Active', description: 'Raises bids on targets that convert efficiently and trims bids on the rest.', conditions: 'Target ACOS under 20% with at least 10 clicks', actions: 'Increase bid by 8%, capped at $3.00', scope: 'Ad group', adType: 'Sponsored Products', marketplaces: ['amazon', 'walmart'], assignedCampaigns: 18 },
+  { id: 'r-monitor', name: 'Campaign Performance Monitor', type: 'Performance', status: 'Active', description: 'Monitors campaign performance and notifies you when something drifts.', conditions: 'ACOS above 35% or spend with zero orders for 5 days', actions: 'Send an alert to the campaign owner', scope: 'Campaign', adType: 'Sponsored Products', marketplaces: ['amazon', 'walmart'], assignedCampaigns: 40 },
+  { id: 'r-pause', name: 'Weekend Pause Schedule', type: 'Pause / Enable', status: 'Inactive', description: 'Pauses campaigns on weekends and re-enables them on Monday morning.', conditions: 'Every Saturday 00:00', actions: 'Pause campaigns, re-enable Monday 06:00', scope: 'Campaign', adType: 'Sponsored Products', marketplaces: ['amazon'], assignedCampaigns: 0 },
+  { id: 'r-sb-placement', name: 'Brand Placement Boost', type: 'Placement', status: 'Active', description: 'Boosts placement bids on branded campaigns.', conditions: 'Brand share of voice below 60%', actions: 'Raise placement modifier by 20%', scope: 'Campaign', adType: 'Sponsored Brands', marketplaces: ['amazon'], assignedCampaigns: 9 },
+  { id: 'r-wm-budget', name: 'Walmart Daily Budget Pacing', type: 'Budget', status: 'Active', description: 'Paces daily spend across the day for Walmart campaigns.', conditions: 'Budget exhausted before 3 PM', actions: 'Spread the remaining budget evenly', scope: 'Campaign', adType: 'Sponsored Products', marketplaces: ['walmart'], assignedCampaigns: 6 },
+];
+
+/** Read-only schedule details shown in the Rules table of the Preview step. */
+export interface RuleSchedule { created: string; runFrom: string; runTo: string; frequency: string; lastRun: string; nextTrigger: string }
+
+export const RULE_SCHEDULE: Record<string, RuleSchedule> = {
+  'r-budget': { created: '14/03/2026', runFrom: '14/03/2026', runTo: '14/03/2027', frequency: 'Daily', lastRun: '07/10/2026', nextTrigger: '08/10/2026 | 06:00' },
+  'r-placement': { created: '02/02/2026', runFrom: '02/02/2026', runTo: '02/02/2027', frequency: 'Weekly', lastRun: '05/10/2026', nextTrigger: '12/10/2026 | 09:30' },
+  'r-inventory': { created: '21/01/2026', runFrom: '21/01/2026', runTo: '21/01/2027', frequency: 'Every 6 hours', lastRun: '08/10/2026', nextTrigger: '08/10/2026 | 18:00' },
+  'r-bid': { created: '09/04/2026', runFrom: '09/04/2026', runTo: '09/10/2026', frequency: 'Daily', lastRun: '07/10/2026', nextTrigger: '08/10/2026 | 07:15' },
+  'r-monitor': { created: '30/05/2026', runFrom: '30/05/2026', runTo: '30/05/2027', frequency: 'Daily', lastRun: '07/10/2026', nextTrigger: '08/10/2026 | 08:00' },
+  'r-pause': { created: '11/06/2026', runFrom: '11/06/2026', runTo: '11/12/2026', frequency: 'Weekly', lastRun: '03/10/2026', nextTrigger: '-' },
+  'r-sb-placement': { created: '18/03/2026', runFrom: '18/03/2026', runTo: '18/03/2027', frequency: 'Weekly', lastRun: '05/10/2026', nextTrigger: '12/10/2026 | 10:00' },
+  'r-wm-budget': { created: '27/07/2026', runFrom: '27/07/2026', runTo: '27/07/2027', frequency: 'Hourly', lastRun: '08/10/2026', nextTrigger: '08/10/2026 | 15:00' },
+};
+
+/** Why a Rule can't be assigned to the generated campaigns, or null when it's compatible. */
+export function ruleIncompatibility(rule: CcRule, marketplace: Marketplace): string | null {
+  if (rule.adType !== 'Sponsored Products') return `This Rule is configured for ${rule.adType} and cannot be assigned to Sponsored Products.`;
+  if (!rule.marketplaces.includes(marketplace)) return `This Rule only applies to ${rule.marketplaces.map((m) => MARKETPLACE_CAPABILITY[m].label).join(' and ')} campaigns.`;
+  if (rule.status === 'Inactive') return 'This Rule is inactive. Turn it on from Rules before assigning campaigns to it.';
+  return null;
+}
+
+/** Existing Rules worth highlighting for this set of products — never creates or edits one. */
+export function recommendedRules(products: CcProduct[]): { ruleId: string; reason: string }[] {
+  const out: { ruleId: string; reason: string }[] = [];
+  if (products.some((p) => p.inventory < 200)) out.push({ ruleId: 'r-inventory', reason: 'Some of your selected products have limited inventory, and this Rule is commonly used with them.' });
+  if (products.length > 1) out.push({ ruleId: 'r-budget', reason: 'With several products competing for one budget, this Rule moves spend toward the campaigns that perform.' });
+  return out;
+}
+
+const KEYWORD_SEEDS: Record<string, string[]> = {
+  'Sports Nutrition': ['whey protein isolate', 'protein powder chocolate', 'bcaa supplement', 'creatine monohydrate', 'pre workout powder'],
+  'Fitness Equipment': ['resistance bands set', 'adjustable dumbbells', 'yoga mat non slip', 'home gym equipment'],
+  'Vitamins & Supplements': ['multivitamin gummies', 'omega 3 fish oil', 'melatonin sleep aid'],
+};
+
+function keywordsFor(product: CcProduct, count: number): string[] {
+  const pool = KEYWORD_SEEDS[product.category] ?? ['best seller', 'top rated', 'daily essential'];
+  return Array.from({ length: count }, (_, i) => pool[i % pool.length]);
+}
+
+function bidFor(product: CcProduct): number {
+  const base = product.acos > 0 ? Math.max(0.35, 12 / product.acos) : 0.75;
+  return Math.round(base * 100) / 100;
+}
+
+function manualTarget(product: CcProduct, matchType: TargetingStrategyId, idx: number): CcTarget {
+  // ASIN Expanded is read like ASIN Exact for now: same kind of target, until it gets targets of its own.
+  const label = matchType === 'product' || matchType === 'asin-expanded'
+    ? `${product.asin} — competitor ASINs`
+    : matchType === 'competitor' ? `${product.brand} competitors`
+    : matchType === 'brand' ? `${product.brand} branded terms`
+    : matchType === 'category' ? product.category
+    : keywordsFor(product, 3)[idx % 3];
+  return { id: `t-${product.id}-${matchType}-${idx}`, label, matchType, bid: bidFor(product), source: idx % 2 === 0 ? 'Anarix recommendation' : 'Platform recommendation' };
+}
+
+/** Builds the real campaign/ad-group/target tree for the chosen structure — this is what the
+ * Preview step and the (simulated) creation step both render and submit. */
+export function generateCampaigns(
+  structureId: StructureId,
+  products: CcProduct[],
+  strategies: TargetingStrategyId[],
+  dailyBudget: number,
+  autoTypes: AutoTypeId[] = ['close-match'],
+  /** How Manual campaigns split into ad groups. None (a Jiva custom proposal) keeps one ad group per campaign. */
+  variant: StructureVariant | null = null,
+): CcCampaign[] {
+  const hasAuto = strategies.includes('auto');
+  const manualTypes = strategies.filter((s) => s !== 'auto');
+  if (products.length === 0 || (!hasAuto && manualTypes.length === 0)) return [];
+  const { keyword: keywordTypes, product: productTypes } = splitManualTypes(strategies);
+
+  const campaigns: CcCampaign[] = [];
+  const push = (c: Omit<CcCampaign, 'budgetAllocationPct'>) => campaigns.push({ ...c, budgetAllocationPct: 0 });
+
+  const seedNegatives = (idPrefix: string): CcNegative[] => [{ id: `${idPrefix}-neg-1`, text: 'free sample', kind: 'keyword', matchType: 'negative-exact' }];
+  const autoAdGroup = (products: CcProduct[], idPrefix: string, name = 'Auto Ad Group'): CcAdGroup => ({
+    id: `${idPrefix}-ag`, name, productIds: products.map((p) => p.id), targets: [], negatives: seedNegatives(idPrefix),
+  });
+  const adGroup = (products: CcProduct[], types: TargetingStrategyId[], idPrefix: string, name = 'Manual Ad Group'): CcAdGroup => ({
+    id: `${idPrefix}-ag`, name, productIds: products.map((p) => p.id),
+    targets: types.flatMap((t) => products.flatMap((p, i) => [{ ...manualTarget(p, t, i), id: `${idPrefix}-${manualTarget(p, t, i).id}` }])),
+    negatives: seedNegatives(idPrefix),
+  });
+  const label = (t: TargetingStrategyId) => TARGETING_STRATEGY_CATALOG[t].label;
+  /** A Manual campaign's ad groups, split the way the structure's variation says. */
+  const manualAdGroups = (products: CcProduct[], types: TargetingStrategyId[], idPrefix: string, consolidated: boolean): CcAdGroup[] => {
+    if (variant === 'strategy') return MANUAL_STRATEGY_CATALOG.map((s) => adGroup(products, types, `${idPrefix}-${s.id}`, `${s.label} Ad Group`));
+    if (variant === 'match') return types.map((t) => adGroup(products, [t], `${idPrefix}-${t}`, `${label(t)} Ad Group`));
+    if (variant === 'targeting' && consolidated) {
+      const { keyword, product } = splitManualTypes(types);
+      return [
+        ...(keyword.length ? [adGroup(products, keyword, `${idPrefix}-kt`, 'Keyword Targeting Ad Group')] : []),
+        ...(product.length ? [adGroup(products, product, `${idPrefix}-pt`, 'Product Targeting Ad Group')] : []),
+      ];
+    }
+    return [adGroup(products, types, idPrefix)];
+  };
+  /**
+   * The Manual campaigns of Targeting-Type, for all products or one: a campaign per keyword match type, and one for
+   * product targeting. Without a variation, every type keeps its own campaign as before.
+   */
+  const splitManual = (scope: CcProduct[], idPrefix: string, namePrefix: string) => {
+    const productIds = scope.map((p) => p.id);
+    const perType = variant == null ? manualTypes : keywordTypes;
+    perType.forEach((t) => push({ id: `${idPrefix}-${t}`, name: `${namePrefix} — ${label(t)}`, kind: 'manual', targetingLabel: label(t), productIds, adGroups: manualAdGroups(scope, [t], `${idPrefix}-${t}`, false), dailyBudget: 0 }));
+    if (variant != null && productTypes.length) {
+      push({ id: `${idPrefix}-pt`, name: `${namePrefix} — Product targeting`, kind: 'manual', targetingLabel: 'Product targeting', productIds, adGroups: manualAdGroups(scope, productTypes, `${idPrefix}-pt`, false), dailyBudget: 0 });
+    }
+  };
+  const autoTypeLabel = (id: AutoTypeId) => AUTO_TYPE_CATALOG.find((a) => a.id === id)?.label ?? id;
+  const allIds = products.map((p) => p.id);
+
+  if (structureId === 'consolidated') {
+    if (hasAuto) push({ id: 'c-auto', name: 'Auto Campaign', kind: 'auto', targetingLabel: 'Automatic', productIds: allIds, adGroups: [autoAdGroup(products, 'c-auto')], dailyBudget: 0 });
+    if (manualTypes.length) push({ id: 'c-manual', name: 'Manual Campaign', kind: 'manual', targetingLabel: manualTypes.map(label).join(' + '), productIds: allIds, adGroups: manualAdGroups(products, manualTypes, 'c-manual', true), dailyBudget: 0 });
+  } else if (structureId === 'targeting-type') {
+    if (hasAuto) push({ id: 'c-auto', name: 'Auto Campaign', kind: 'auto', targetingLabel: 'Automatic', productIds: allIds, adGroups: [autoAdGroup(products, 'c-auto')], dailyBudget: 0 });
+    splitManual(products, 'c-manual', 'Manual Campaign');
+  } else if (structureId === 'product-targeting' || structureId === 'product-single-auto' || structureId === 'product-multi-auto') {
+    // Structure 3 (Amazon): one Auto campaign shared by every product, with an ad group per product.
+    const sharedAuto = structureId === 'product-targeting' && variant != null;
+    if (hasAuto && sharedAuto) {
+      push({ id: 'c-auto', name: 'Auto Campaign', kind: 'auto', targetingLabel: 'Automatic', productIds: allIds, adGroups: products.map((p) => autoAdGroup([p], `c-auto-${p.id}`, `Auto Ad Group — ${p.sku ?? p.asin}`)), dailyBudget: 0 });
+    }
+    products.forEach((product) => {
+      if (hasAuto && structureId === 'product-multi-auto') {
+        (autoTypes.length ? autoTypes : ['close-match' as AutoTypeId]).forEach((at) => {
+          push({ id: `c-${product.id}-auto-${at}`, name: `${product.title} — Auto (${autoTypeLabel(at)})`, kind: 'auto', targetingLabel: `Automatic · ${autoTypeLabel(at)}`, productIds: [product.id], adGroups: [autoAdGroup([product], `c-${product.id}-auto-${at}`, `Auto Ad Group — ${autoTypeLabel(at)}`)], dailyBudget: 0 });
+        });
+      } else if (hasAuto && !sharedAuto) push({ id: `c-${product.id}-auto`, name: `${product.title} — Auto`, kind: 'auto', targetingLabel: 'Automatic', productIds: [product.id], adGroups: [autoAdGroup([product], `c-${product.id}-auto`)], dailyBudget: 0 });
+      splitManual([product], `c-${product.id}`, product.title);
+    });
+  }
+
+  return finishCampaigns(campaigns, products, dailyBudget);
+}
+
+/** Flags possible duplicates and spreads the daily budget evenly across the campaigns. */
+function finishCampaigns(campaigns: CcCampaign[], products: CcProduct[], dailyBudget: number): CcCampaign[] {
+  campaigns.forEach((c) => { c.possibleDuplicate = c.productIds.some((id) => products.find((p) => p.id === id)?.hasExistingCampaign); });
+
+  // Even budget split across campaigns, rounded to the cent, remainder on the first campaign.
+  const share = campaigns.length ? Math.floor((dailyBudget / campaigns.length) * 100) / 100 : 0;
+  let allocated = 0;
+  campaigns.forEach((c, i) => {
+    c.dailyBudget = i === campaigns.length - 1 ? Math.round((dailyBudget - allocated) * 100) / 100 : share;
+    allocated += c.dailyBudget;
+    c.budgetAllocationPct = dailyBudget > 0 ? Math.round((c.dailyBudget / dailyBudget) * 1000) / 10 : 0;
+  });
+
+  return campaigns;
+}
+
+/**
+ * The campaigns for one set of products: Consolidated or Standard, shaped by the Performance enhancer splits. With
+ * Split products the whole structure is made once per product; without it every ad group holds all the products.
+ */
+export function generateSplitCampaigns(s: SplitSource, products: CcProduct[], dailyBudget: number): CcCampaign[] {
+  const shape = splitShape(s);
+  if (products.length === 0 || shape.length === 0) return [];
+  const perProduct = splitOptions(s).effective.products;
+  const consolidated = s.structureId !== 'standard';
+  const campaigns: CcCampaign[] = [];
+  const seedNegatives = (idPrefix: string): CcNegative[] => [{ id: `${idPrefix}-neg-1`, text: 'free sample', kind: 'keyword', matchType: 'negative-exact' }];
+  (perProduct ? products.map((p) => [p]) : [products]).forEach((scope) => {
+    const one = perProduct ? scope[0] : null;
+    const scopeKey = one ? `c-${one.id}` : 'c';
+    const productIds = scope.map((p) => p.id);
+    shape.forEach((plan) => {
+      const id = `${scopeKey}-${plan.key}`;
+      const base = plan.kind === 'auto' ? 'Auto Campaign' : 'Manual Campaign';
+      const suffix = plan.kind === 'auto' ? plan.label.split(' · ')[1] : consolidated ? undefined : plan.label;
+      const name = [one?.title, one ? base.replace(' Campaign', '') : base, suffix].filter(Boolean).join(' — ');
+      campaigns.push({
+        id, name, kind: plan.kind, targetingLabel: plan.label, productIds, dailyBudget: 0, budgetAllocationPct: 0,
+        ...(plan.expandedTargeting ? { expandedTargeting: plan.expandedTargeting } : {}),
+        adGroups: plan.adGroups.map((g) => ({
+          id: `${id}-${g.key}-ag`, name: g.name, productIds,
+          targets: g.types.flatMap((t) => scope.map((p, i) => { const tg = manualTarget(p, t, i); return { ...tg, id: `${id}-${g.key}-${tg.id}` }; })),
+          negatives: seedNegatives(`${id}-${g.key}`),
+        })),
+      });
+    });
+  });
+  return finishCampaigns(campaigns, products, dailyBudget);
+}
+
+/** A plan's settings, as a product group or the shared draft keeps them. */
+type PlanSettings = SplitSource & { dailyBudget: number; customCampaigns?: CcCampaign[] | null; structureVariant?: StructureVariant };
+
+/** The campaigns a plan's structure makes for its products, on either marketplace. */
+export function campaignsForPlan(s: PlanSettings, products: CcProduct[], marketplace: Marketplace | null | undefined): CcCampaign[] {
+  if (!s.structureId) return [];
+  if (s.structureId === 'custom') return s.customCampaigns ?? [];
+  if (usesSplits(marketplace)) return generateSplitCampaigns({ ...s, marketplace }, products, s.dailyBudget);
+  return generateCampaigns(s.structureId, products, s.targetingStrategies, s.dailyBudget, s.autoTypes, structureVariantFor(marketplace, s.structureVariant));
+}
+
+/** How many campaigns and ad groups a plan's structure makes, on either marketplace. */
+export function countsForPlan(s: PlanSettings, productCount: number, marketplace: Marketplace | null | undefined): StructureCounts {
+  if (s.structureId === 'custom') {
+    const custom = s.customCampaigns ?? [];
+    return { autoCampaigns: custom.filter((c) => c.kind === 'auto').length, manualCampaigns: custom.filter((c) => c.kind === 'manual').length, totalCampaigns: custom.length, adGroups: totalAdGroups(custom), targets: totalTargets(custom) };
+  }
+  if (!s.structureId) return { autoCampaigns: 0, manualCampaigns: 0, totalCampaigns: 0, adGroups: 0, targets: 0 };
+  if (usesSplits(marketplace)) return splitCounts({ ...s, marketplace }, productCount);
+  const { keyword, product } = splitManualTypes(s.targetingStrategies);
+  return structureCounts(s.structureId, productCount, s.targetingStrategies.includes('auto'), { keyword: keyword.length, product: product.length }, s.autoTypes.length, structureVariantFor(marketplace, s.structureVariant));
+}
+
+export function totalAdGroups(campaigns: CcCampaign[]): number {
+  return campaigns.reduce((sum, c) => sum + c.adGroups.length, 0);
+}
+
+export function totalTargets(campaigns: CcCampaign[]): number {
+  return campaigns.reduce((sum, c) => sum + c.adGroups.reduce((s, ag) => s + ag.targets.length, 0), 0);
+}
+
+// ── Draft state ───────────────────────────────────────────────────────────────────────────────
+
+export type CcStepId = 'entry' | 'activity' | 'products' | 'keywords' | 'objectives' | 'targeting' | 'structure' | 'preview' | 'creating' | 'result';
+
+export const STEP_ORDER: CcStepId[] = ['entry', 'activity', 'products', 'targeting', 'structure', 'objectives', 'keywords', 'preview', 'creating', 'result'];
+
+/** A keyword the person adds on the Keywords step. It is applied to every manual campaign. */
+export type KeywordMatch = 'broad' | 'phrase' | 'exact';
+export interface KeywordEntry { id: string; text: string; match: KeywordMatch; bid: number; enabled: boolean }
+
+/** A negative keyword added on the Keywords step. It is applied to every campaign that can take it, on the ad group. */
+export interface NegativeKeywordEntry { id: string; text: string; match: NegativeMatch; enabled: boolean }
+
+/** Amazon only: a product target (an ASIN or a category) added on the Keywords step, for product targeting campaigns. */
+export type ProductTargetMatch = 'product' | 'category';
+export interface ProductTargetEntry { id: string; text: string; match: ProductTargetMatch; bid: number; enabled: boolean }
+
+/** Amazon only: an ASIN the campaigns should not show on. No match type and no bid. */
+export interface NegativeProductEntry { id: string; text: string; enabled: boolean }
+
+export const PRODUCT_TARGET_LIMIT = 1000;
+export const NEGATIVE_PRODUCT_LIMIT = 10000;
+export const ASIN_PATTERN = /^[A-Z0-9]{10}$/i;
+
+export const KEYWORD_LIMIT = 1000;
+export const NEGATIVE_KEYWORD_LIMIT = 10000;
+export const MIN_KEYWORD_BID = 0.02;
+
+const KEYWORD_STRATEGIES: TargetingStrategyId[] = ['exact', 'phrase', 'broad', 'brand', 'competitor'];
+const PRODUCT_STRATEGIES: TargetingStrategyId[] = ['product', 'asin-expanded', 'category'];
+
+/**
+ * What the Keywords step allows for a plan (or group), from its marketplace, its targeting and its bidding:
+ * - Keywords are required by Manual campaigns (on Amazon, by keyword targeting), not applicable to Automatic ones, and
+ *   not used by Amazon product targeting.
+ * - Product targets (Amazon only) are required by product targeting, and not used otherwise.
+ * - Negative keywords are optional, except on Walmart Automatic campaigns with Dynamic bidding, which can't take them.
+ *   Negative product targets (Amazon only) are always optional.
+ * A note is kept only where it says something the status doesn't: what is required, or why a list is locked.
+ */
+export interface KeywordRules {
+  keywords: 'required' | 'not-applicable' | 'not-used';
+  /** Why keywords aren't used, for the page shown when nothing on the step applies. Null when they're required. */
+  keywordNote: string | null;
+  /** Null on Walmart, which has no product targets on this step. */
+  products: 'required' | 'not-used' | null;
+  productNote: string | null;
+  negatives: 'available' | 'manual-only' | 'unavailable';
+  negativeNote: string | null;
+  /** Null on Walmart. */
+  negativeProducts: 'available' | null;
+  /** The keyword match types, in the order the marketplace lists them. */
+  keywordMatches: KeywordMatch[];
+}
+
+export function keywordRules(s: Pick<CcDraft, 'targetingStrategies' | 'biddingStrategy'>, marketplace: Marketplace | null): KeywordRules {
+  const strategies = s.targetingStrategies ?? [];
+  const hasAuto = strategies.includes('auto');
+  const hasManual = strategies.some((t) => t !== 'auto');
+  const keywordTargeting = strategies.some((t) => KEYWORD_STRATEGIES.includes(t));
+  const productTargeting = strategies.some((t) => PRODUCT_STRATEGIES.includes(t));
+  if (marketplace === 'walmart') {
+    const dynamicAuto = hasAuto && s.biddingStrategy === 'Dynamic';
+    return {
+      keywords: hasManual ? 'required' : 'not-applicable',
+      keywordNote: hasManual
+        ? null
+        : 'Not applicable to Automatic campaigns. Walmart picks the keywords; bids are set per item.',
+      products: null,
+      productNote: null,
+      negatives: !dynamicAuto ? 'available' : hasManual ? 'manual-only' : 'unavailable',
+      negativeNote: !dynamicAuto
+        ? null
+        : hasManual
+          ? "For the Manual campaigns only: Automatic campaigns with Dynamic bidding can't take them. Switch to Fixed bidding on Objectives to use them on Automatic too."
+          : 'Not available for Automatic campaigns with Dynamic bidding. Switch to Fixed bidding on Objectives to use them.',
+      negativeProducts: null,
+      keywordMatches: ['exact', 'phrase', 'broad'],
+    };
+  }
+  return {
+    keywords: keywordTargeting ? 'required' : hasManual ? 'not-used' : 'not-applicable',
+    keywordNote: keywordTargeting
+      ? null
+      : hasManual
+        ? 'Not used for product targeting. Its targets are products, with at least one product or category target.'
+        : 'Not applicable to Automatic campaigns. Amazon picks the keywords across four targeting groups: close, loose, substitutes and complements.',
+    products: productTargeting ? 'required' : 'not-used',
+    productNote: null,
+    negatives: 'available',
+    negativeNote: null,
+    negativeProducts: 'available',
+    keywordMatches: ['broad', 'phrase', 'exact'],
+  };
+}
+
+/** Whether the Keywords page can't be left yet: a list the plan requires has nothing switched on. */
+export function keywordsBlocked(
+  s: Pick<CcDraft, 'targetingStrategies' | 'biddingStrategy' | 'keywordTargets' | 'productTargets'>
+    & Partial<Pick<CcDraft, 'structureId' | 'splits' | 'manualStrategies' | 'expandedTargeting' | 'autoTypes'>>,
+  marketplace: Marketplace | null,
+) {
+  const rules = keywordRules(s, marketplace);
+  return (rules.keywords === 'required' && !s.keywordTargets.some((k) => k.enabled))
+    || (rules.products === 'required' && !(s.productTargets ?? []).some((p) => p.enabled))
+    // Walmart: no ad group may hold more than 1,000 keyword and match-type combinations.
+    || Boolean(keywordComboIssue({ ...s, structureId: s.structureId ?? null, autoTypes: s.autoTypes ?? [], marketplace }));
+}
+
+/** Objectives beyond Target ACOS and Daily budget — all optional. */
+export type ExtraObjectiveId = 'roas' | 'maxCpc' | 'cvr' | 'monthlyCap';
+export type ExtraObjectives = Record<ExtraObjectiveId, number | null>;
+export const NO_EXTRA_OBJECTIVES: ExtraObjectives = { roas: null, maxCpc: null, cvr: null, monthlyCap: null };
+
+/** How campaign and ad group names are built (edited in the Naming settings popup on Preview). */
+export interface NamingSettings {
+  /** Adds the Anarix prefix and AI identifier to campaign names. */
+  tagStatus: boolean;
+  /** The campaign name's parts in order; 'anarix' is the tag prefix, placed wherever the user drags it. */
+  campaignTokens: ('anarix' | 'parentAsin' | 'campaignType' | 'adType' | 'biddingStrategy' | 'targetType')[];
+  adGroupTokens: ('adGroupText' | 'targetType')[];
+}
+
+export const DEFAULT_NAMING: NamingSettings = {
+  tagStatus: true,
+  campaignTokens: ['anarix', 'parentAsin', 'campaignType', 'targetType'],
+  adGroupTokens: ['adGroupText', 'targetType'],
+};
+
+/** Where the ads may show (Walmart). Every placement starts on; only plans with Manual campaigns can switch them off. */
+export interface PlacementInclusion { searchInGrid: boolean; buyBox: boolean; searchCarousel: boolean; itemCarousel: boolean }
+export const ALL_PLACEMENTS: PlacementInclusion = { searchInGrid: true, buyBox: true, searchCarousel: true, itemCarousel: true };
+
+// ── Walmart-only objectives ──────────────────────────────────────────────────────────────────
+
+/** Walmart budgets: a daily budget, a total for the campaign's life, or both. Amazon is daily only. */
+export type BudgetType = 'daily' | 'total' | 'both';
+/** Walmart's extra Auto reach, on top of the Auto campaign's own targeting. */
+export interface ExpandedTargeting { brandTerms: boolean; complementary: boolean }
+/** Walmart bid multipliers in percent, 0 meaning none. Placement sets differ for Auto and Manual campaigns. */
+export interface BidMultipliers {
+  auto: { buyBox: number; searchInGrid: number; homePage: number; stockUp: number };
+  manual: { buyBox: number; searchInGrid: number };
+  platform: { desktop: number; app: number; mobile: number };
+}
+export const NO_BID_MULTIPLIERS: BidMultipliers = {
+  auto: { buyBox: 0, searchInGrid: 0, homePage: 0, stockUp: 0 },
+  manual: { buyBox: 0, searchInGrid: 0 },
+  platform: { desktop: 0, app: 0, mobile: 0 },
+};
+
+/**
+ * Whether the Targeting page can't be left yet: nothing is picked, Auto is on with no Auto type picked, or the Manual
+ * campaign is switched on with no Manual targeting picked.
+ */
+export function targetingBlocked(s: Pick<CcDraft, 'targetingStrategies' | 'autoTypes'> & Partial<Pick<CcDraft, 'manualOn'>>, marketplace?: Marketplace | null) {
+  const manualPicked = s.targetingStrategies.some((t) => t !== 'auto');
+  // Walmart has no Auto targeting types to pick (its Auto row holds Expanded targeting instead), so only Amazon needs one.
+  return s.targetingStrategies.length === 0
+    || (s.targetingStrategies.includes('auto') && marketplace !== 'walmart' && s.autoTypes.length === 0)
+    || (Boolean(s.manualOn) && !manualPicked);
+}
+
+/**
+ * Whether the Objectives page can't be left yet: a budget the campaigns use is missing (Amazon always uses the daily
+ * one; Walmart the daily, the total, or both), a total below the daily budget, or an end date before the start.
+ */
+export function objectivesBlocked(
+  s: Pick<CcDraft, 'dailyBudget' | 'totalBudget' | 'budgetType' | 'startDate' | 'endDate'>, marketplace: Marketplace | null,
+): boolean {
+  const walmart = marketplace === 'walmart';
+  const usesDaily = !walmart || s.budgetType !== 'total';
+  const usesTotal = walmart && s.budgetType !== 'daily';
+  if (usesDaily && s.dailyBudget <= 0) return true;
+  if (usesTotal && !(s.totalBudget && s.totalBudget > 0)) return true;
+  if (usesDaily && usesTotal && (s.totalBudget ?? 0) < s.dailyBudget) return true;
+  return Boolean(s.endDate && s.endDate < s.startDate);
+}
+
+/** The budget in a few words for the summaries: the daily one, or the total when a Walmart plan has only a total. */
+export function budgetSummary(d: Pick<CcDraft, 'marketplace' | 'budgetType' | 'dailyBudget' | 'totalBudget'>): string {
+  return d.marketplace === 'walmart' && d.budgetType === 'total' ? `${formatCurrency(d.totalBudget ?? 0)} total` : `${formatCurrency(d.dailyBudget)} / day`;
+}
+
+/** The objective defaults that differ by marketplace, applied whenever the marketplace is chosen. */
+export function objectiveDefaults(marketplace: Marketplace): Pick<CcDraft, 'biddingStrategy' | 'placementInclusion'> {
+  return {
+    biddingStrategy: DEFAULT_BIDDING[marketplace],
+    placementInclusion: { searchInGrid: true, buyBox: true, searchCarousel: true, itemCarousel: true },
+  };
+}
+
+/** Today as yyyy-mm-dd in the viewer's own calendar. */
+export function todayIso(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Which campaigns to create, chosen right after the ad format: Auto only, Manual only, or both. */
+export type CampaignMode = 'auto' | 'manual' | 'both';
+
+export const CAMPAIGN_MODES: { id: CampaignMode; label: string; description: string }[] = [
+  { id: 'auto', label: 'Auto', description: 'Amazon finds the shoppers and search terms for you. Quickest to set up.' },
+  { id: 'manual', label: 'Manual', description: 'You choose the keywords and products to target, with full control of bids.' },
+  { id: 'both', label: 'Auto and manual', description: 'Run both side by side: Auto to discover, Manual to scale what works.' },
+];
+
+/** The structures that make sense for each campaign type. Auto-only drops the ones that only split Manual campaigns, and the other way round. */
+export const MODE_STRUCTURES: Record<CampaignMode, StructureId[]> = {
+  auto: ['consolidated', 'standard', 'product-single-auto', 'product-multi-auto', 'custom'],
+  manual: ['consolidated', 'standard', 'targeting-type', 'product-targeting', 'custom'],
+  both: ['consolidated', 'standard', 'targeting-type', 'product-targeting', 'product-single-auto', 'product-multi-auto', 'custom'],
+};
+
+/** A structure's one-line description, worded for the campaign type. */
+export function structureTagline(def: StructureDef, mode: CampaignMode): string {
+  if (mode === 'auto') {
+    if (def.id === 'consolidated') return 'One Auto campaign for everything';
+    if (def.id === 'product-single-auto') return 'One Auto campaign per product';
+    if (def.id === 'product-multi-auto') return 'Auto campaigns per product and Auto type';
+  }
+  if (mode === 'manual') {
+    if (def.id === 'consolidated') return 'One Manual campaign for everything';
+    if (def.id === 'targeting-type') return 'A Manual per match type, and one for products';
+    if (def.id === 'product-targeting') return 'Manual campaigns per product, as in Targeting-Type';
+  }
+  return def.tagline;
+}
+
+/** Keeps only the targeting a campaign type can use: just Auto, everything but Auto, or all of it. */
+export function strategiesForMode(list: TargetingStrategyId[], mode: CampaignMode): TargetingStrategyId[] {
+  if (mode === 'auto') return ['auto'];
+  if (mode === 'manual') return list.filter((s) => s !== 'auto');
+  return list;
+}
+
+/**
+ * Switches the draft to a campaign type: targeting keeps only what the type can use, a structure that no longer
+ * fits is cleared, and a custom structure built for the old type is dropped. Applies to every product group too.
+ */
+export function applyCampaignMode(draft: CcDraft, mode: CampaignMode): Partial<CcDraft> {
+  const changed = draft.campaignMode !== mode;
+  type Fitted = Pick<CcDraft, 'targetingStrategies' | 'structureId' | 'customCampaigns' | 'customPrompt' | 'manualOn' | 'manualStrategies'>;
+  const fit = <T extends Pick<CcDraft, 'targetingStrategies' | 'structureId' | 'customCampaigns' | 'customPrompt'> & Partial<Pick<CcDraft, 'manualOn' | 'manualStrategies'>>>(s: T): Fitted => ({
+    // Untouched targeting stays empty, so Targeting can fill in its recommendation for the type.
+    targetingStrategies: s.targetingStrategies.length === 0 ? [] : strategiesForMode(s.targetingStrategies, mode),
+    // Auto alone has no Manual campaign: its switch goes off and its strategies go with it.
+    manualOn: mode === 'auto' ? false : Boolean(s.manualOn),
+    manualStrategies: mode === 'auto' ? [] : s.manualStrategies ?? [],
+    structureId: s.structureId && MODE_STRUCTURES[mode].includes(s.structureId) && !(changed && s.structureId === 'custom') ? s.structureId : null,
+    customCampaigns: changed ? null : s.customCampaigns,
+    customPrompt: changed ? '' : s.customPrompt,
+  });
+  return {
+    campaignMode: mode,
+    ...fit(draft),
+    productGroups: draft.productGroups.map((g) => ({ ...g, settings: { ...g.settings, ...fit(g.settings) } })),
+    generatedCampaigns: changed ? null : draft.generatedCampaigns,
+    generatedKey: changed ? null : draft.generatedKey,
+  };
+}
+
+export interface CcDraft {
+  marketplace: Marketplace | null;
+  adType: AdType | null;
+  campaignMode: CampaignMode;
+  productIds: string[];
+  groupingMode: GroupingMode;
+  targetAcos: number | null;
+  dailyBudget: number;
+  extraObjectives: ExtraObjectives;
+  targetingStrategies: TargetingStrategyId[];
+  /** Auto targeting types — drives how many Auto campaigns Structure 5 creates per product. */
+  autoTypes: AutoTypeId[];
+  /** The Manual campaign switch on Targeting. Its targeting and strategies can only be picked while it's on. */
+  manualOn: boolean;
+  /** Optional tags for the Manual campaigns; they don't change which campaigns are made. */
+  manualStrategies: ManualStrategyId[];
+  structureId: StructureId | null;
+  /** How the chosen structure splits its Manual campaigns into ad groups (Amazon). Resets when the structure changes. */
+  structureVariant: StructureVariant;
+  /** Amazon: the Performance enhancer under the structure. */
+  splits: StructureSplits;
+  customPrompt: string;
+  customCampaigns: CcCampaign[] | null;
+  /** Snapshot taken when the Preview step is reached — lets the user edit per-campaign budget
+   * allocation there without it being recomputed (and the edits lost) on every render. */
+  generatedCampaigns: CcCampaign[] | null;
+  /** What `generatedCampaigns` was built from. While it still matches, coming back to Preview keeps the user's edits. */
+  generatedKey: string | null;
+  /** Existing Rules to assign the new campaigns to (§8.7). Smart Creation never creates or edits a Rule. */
+  /** Which of the new campaigns are attached to which existing Rule (rule id to campaign ids). */
+  ruleAssignments: Record<string, string[]>;
+  naming: NamingSettings;
+  /** Campaign dates, yyyy-mm-dd. An empty end date means the campaigns run until they are stopped. */
+  startDate: string;
+  endDate: string;
+  /** Applied to every new campaign; each can still be changed in the Preview table. */
+  biddingStrategy: BiddingStrategy;
+  placementAdjust: PlacementAdjust;
+  placementInclusion: PlacementInclusion;
+  /** Whether the total budget is one figure for the campaigns together, or divided across them. */
+  totalBudgetMode: 'total' | 'division';
+  /** Walmart only: which budgets the campaigns have, the total one, and whether unspent daily budget carries over. */
+  budgetType: BudgetType;
+  totalBudget: number | null;
+  budgetRollover: boolean;
+  /** Walmart only, for Auto campaigns. */
+  expandedTargeting: ExpandedTargeting;
+  /** Walmart only; optional, all 0% until set. */
+  bidMultipliers: BidMultipliers;
+  /** Added on the Keywords step; optional. */
+  keywordTargets: KeywordEntry[];
+  negativeKeywords: NegativeKeywordEntry[];
+  /** Amazon only, for product targeting. */
+  productTargets: ProductTargetEntry[];
+  negativeProducts: NegativeProductEntry[];
+  /** Groups made on the Products step. Each keeps its own keywords, objectives, targeting and structure. */
+  productGroups: ProductGroup[];
+}
+
+/** The settings a product group keeps for itself; products outside every group use the draft's own. */
+export const GROUP_FIELDS = [
+  'keywordTargets', 'negativeKeywords', 'productTargets', 'negativeProducts', 'targetAcos', 'dailyBudget', 'extraObjectives', 'startDate', 'endDate',
+  'biddingStrategy', 'placementAdjust', 'placementInclusion', 'totalBudgetMode',
+  'budgetType', 'totalBudget', 'budgetRollover', 'expandedTargeting', 'bidMultipliers',
+  'targetingStrategies', 'autoTypes', 'manualOn', 'manualStrategies', 'structureId', 'structureVariant', 'splits', 'customPrompt', 'customCampaigns',
+] as const;
+export type GroupField = (typeof GROUP_FIELDS)[number];
+export type GroupSettings = Pick<CcDraft, GroupField>;
+
+export interface ProductGroup {
+  id: string;
+  name: string;
+  productIds: string[];
+  settings: GroupSettings;
+}
+
+export const EMPTY_DRAFT: CcDraft = {
+  marketplace: 'amazon',
+  adType: null,
+  campaignMode: 'both',
+  productIds: [],
+  groupingMode: 'split-by-campaign',
+  targetAcos: null,
+  dailyBudget: 50,
+  extraObjectives: NO_EXTRA_OBJECTIVES,
+  targetingStrategies: [],
+  autoTypes: [],
+  manualOn: false,
+  manualStrategies: [],
+  structureId: null,
+  structureVariant: 'match',
+  splits: DEFAULT_SPLITS,
+  customPrompt: '',
+  customCampaigns: null,
+  generatedCampaigns: null,
+  generatedKey: null,
+  ruleAssignments: {},
+  naming: DEFAULT_NAMING,
+  startDate: todayIso(),
+  endDate: '',
+  ...objectiveDefaults('amazon'),
+  placementAdjust: { top: null, product: null, rest: null },
+  totalBudgetMode: 'total',
+  budgetType: 'daily',
+  totalBudget: null,
+  budgetRollover: true,
+  expandedTargeting: { brandTerms: true, complementary: false },
+  bidMultipliers: NO_BID_MULTIPLIERS,
+  keywordTargets: [],
+  negativeKeywords: [],
+  productTargets: [],
+  negativeProducts: [],
+  productGroups: [],
+};
+
+export function formatCurrency(n: number): string {
+  return `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+}

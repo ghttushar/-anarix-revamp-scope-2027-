@@ -1,0 +1,11 @@
+// Shrinks CustomTableWrapper's default row/header sizing (built for dense data-heavy
+// pages) down to fit 10 short rows inside the affected-items popup without scrolling.
+.thCompact {
+  height: calc(3.2 * var(--np-rem)) !important;
+}
+.cellWrapperCompact {
+  padding: calc(0.5 * var(--np-rem)) calc(1 * var(--np-rem)) !important;
+}
+.tdDivCompact {
+  min-height: calc(1.6 * var(--np-rem)) !important;
+}

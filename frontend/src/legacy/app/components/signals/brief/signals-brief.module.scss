@@ -1,0 +1,36 @@
+// Three nuggets across the top; While you were away (two columns) and Upcoming meetings across the bottom, filling the
+// height of the tab.
+.brief {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  height: 100%;
+  padding: 14px 0 4px;
+  box-sizing: border-box;
+}
+
+.cell,
+.wide {
+  min-width: 0;
+  min-height: 0;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+// On narrow screens the nuggets stack, each tall enough to read.
+@media (max-width: 900px) {
+  .brief {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-auto-rows: 360px;
+
+    .wide {
+      grid-column: auto;
+    }
+    height: auto;
+    overflow-y: auto;
+  }
+}

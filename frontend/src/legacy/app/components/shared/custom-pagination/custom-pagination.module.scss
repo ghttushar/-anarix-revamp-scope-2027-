@@ -1,0 +1,39 @@
+.paginationWrapper {
+  .pagination {
+    box-sizing: border-box;
+    border: 1px solid rgb(218, 220, 235);
+    border-top: unset;
+    padding: calc(1 * var(--np-rem));
+    height: calc(5 * var(--np-rem));
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: calc(2 * var(--np-rem));
+    font-size: calc(0.9 * var(--np-rem));
+    color: rgba(0, 0, 0, 0.8);
+    background-color: white;
+    .pageSizeDropdown {
+      border: none;
+      font-size: calc(0.8 * var(--np-rem));
+      color: #444444;
+
+      &:focus {
+        outline: none; /* Remove the focus outline */
+        border-color: #0042ff; /* Border color on focus */
+      }
+
+      option {
+        background-color: #ffffff; /* Background color for dropdown options */
+        color: #333333; /* Text color for dropdown options */
+      }
+    }
+    .paginationControls {
+      .btn {
+        background-color: transparent;
+        border: unset;
+        cursor: pointer;
+        padding: calc(1 * var(--np-rem));
+      }
+    }
+  }
+}

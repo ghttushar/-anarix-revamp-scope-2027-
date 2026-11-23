@@ -1,0 +1,236 @@
+/**
+ * Shared icon set for the Alerts surface — one consistent stroke (1.3–1.6px) and weight,
+ * replacing unicode/emoji glyphs (✦ ◆ ✓ ✕ 👤 ⤴) that don't belong to a real icon system.
+ */
+type IconProps = { size?: number; color?: string };
+
+export function SparkleIcon({ size = 12, color = '#2235c4' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M8 1.5l1.4 4.1L13.5 7l-4.1 1.4L8 12.5l-1.4-4.1L2.5 7l4.1-1.4z" fill={color} />
+    </svg>
+  );
+}
+
+/** One consistent "Jiva made this" pill — reused everywhere content is AI-generated instead of each surface inventing its own badge. */
+export function AiDraftBadge({ label = 'AI DRAFT', icon = true }: { label?: string; icon?: boolean }) {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 7px', borderRadius: 4, background: '#eff1fd', font: '600 9px/1.5 Inter,sans-serif', color: '#2235c4', whiteSpace: 'nowrap' as const }}>
+      {icon && <SparkleIcon size={9} />} {label}
+    </span>
+  );
+}
+
+export function DiamondIcon({ size = 9, color = '#2235c4' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M8 1.5l6.5 6.5L8 14.5 1.5 8z" fill={color} />
+    </svg>
+  );
+}
+
+export function AssignIcon({ size = 15, color = '#464646' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="6.5" cy="5.5" r="2.8" stroke={color} strokeWidth="1.4" />
+      <path d="M1.8 14c0-3 2.1-5.2 4.7-5.2s4.7 2.2 4.7 5.2" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M12.3 5.2v4M14.3 7.2h-4" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function ShareIcon({ size = 13, color = '#464646' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="4" cy="8" r="2" stroke={color} strokeWidth="1.3" />
+      <circle cx="12" cy="3.5" r="2" stroke={color} strokeWidth="1.3" />
+      <circle cx="12" cy="12.5" r="2" stroke={color} strokeWidth="1.3" />
+      <path d="M5.8 7l4.4-2.7M5.8 9l4.4 2.7" stroke={color} strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+export function DismissIcon({ size = 13, color = '#464646' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="6.5" stroke={color} strokeWidth="1.3" />
+      <path d="M5 5l6 6" stroke={color} strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function CheckIcon({ size = 14, color = '#ffffff' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M3 8.2l3.3 3.3L13 4.5" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function XIcon({ size = 14, color = '#cc2b2b' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function ThumbUpIcon({ size = 15, color = '#9a9fa8' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M6 14H3.5A1.5 1.5 0 0 1 2 12.5V8a1.5 1.5 0 0 1 1.5-1.5H6m0 7.5V6.5m0 7.5h5.2c.7 0 1.3-.5 1.4-1.2l.9-4A1.5 1.5 0 0 0 12 7H9V3.5A1.5 1.5 0 0 0 7.5 2L6 6.5" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function ThumbDownIcon({ size = 15, color = '#9a9fa8' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" style={{ transform: 'rotate(180deg)' }}>
+      <path d="M6 14H3.5A1.5 1.5 0 0 1 2 12.5V8a1.5 1.5 0 0 1 1.5-1.5H6m0 7.5V6.5m0 7.5h5.2c.7 0 1.3-.5 1.4-1.2l.9-4A1.5 1.5 0 0 0 12 7H9V3.5A1.5 1.5 0 0 0 7.5 2L6 6.5" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function EnvelopeSmallIcon({ size = 12, color = '#464646' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <rect x="1.5" y="3.5" width="13" height="9" rx="1.4" stroke={color} strokeWidth="1.3" />
+      <path d="M2 4.5l6 4.5 6-4.5" stroke={color} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function WorkspaceSmallIcon({ size = 12, color = '#464646' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1" stroke={color} strokeWidth="1.3" />
+      <rect x="9" y="1.5" width="5.5" height="5.5" rx="1" stroke={color} strokeWidth="1.3" />
+      <rect x="1.5" y="9" width="5.5" height="5.5" rx="1" stroke={color} strokeWidth="1.3" />
+      <rect x="9" y="9" width="5.5" height="5.5" rx="1" stroke={color} strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ size = 12, color = '#6b6f78' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M4 4l8 8M12 4l-8 8" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function DownloadIcon({ size = 13, color = '#464646' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M8 1.8v8M4.8 6.8L8 10l3.2-3.2" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 12.2v1.2c0 .6.5 1 1 1h10c.5 0 1-.4 1-1v-1.2" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function BackArrowIcon({ size = 13, color = '#6b6f78' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M10.5 3.5L5 8l5.5 4.5" stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function BoltIcon({ size = 12, color = '#cb8b1c' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M8.8 1.5L3 9.2h4l-1 5.3L13 6.8H9z" fill={color} />
+    </svg>
+  );
+}
+
+export function InfoIcon({ size = 16, color = '#3f4fda' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="6.5" stroke={color} strokeWidth="1.4" />
+      <circle cx="8" cy="5.1" r="0.9" fill={color} />
+      <path d="M8 7.6v3.6" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function MoreVertIcon({ size = 14, color = '#6b6f78' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="3.4" r="1.35" fill={color} />
+      <circle cx="8" cy="8" r="1.35" fill={color} />
+      <circle cx="8" cy="12.6" r="1.35" fill={color} />
+    </svg>
+  );
+}
+
+export function PlusIcon({ size = 12, color = '#ffffff' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M8 2.5v11M2.5 8h11" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function ChevronDownIcon({ size = 9, color = '#9a9fa8' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M3.5 6l4.5 4.5L12.5 6" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function BellIcon({ size = 13, color = '#6b6f78' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M8 1.8c-2 0-3.4 1.6-3.4 3.9 0 3.4-1.1 4.3-1.1 4.9 0 .3.2.5.5.5h8c.3 0 .5-.2.5-.5 0-.6-1.1-1.5-1.1-4.9 0-2.3-1.4-3.9-3.4-3.9z" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M6.3 13.2c.3.7.9 1.1 1.7 1.1s1.4-.4 1.7-1.1" stroke={color} strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Six-dot grip — a drag handle, reused by any widget/card that supports reordering. */
+export function GripIcon({ size = 12, color = '#9a9fa8' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      {[5, 8.5, 12].flatMap((cy) => [5, 11].map((cx) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.15" fill={color} />
+      )))}
+    </svg>
+  );
+}
+
+export function TrashIcon({ size = 13, color = '#cc2b2b' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M3 4.5h10M6.5 4.5V3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1.5M4.5 4.5l.6 8.4a1 1 0 0 0 1 .9h3.8a1 1 0 0 0 1-.9l.6-8.4" stroke={color} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function SearchIcon({ size = 13, color = '#9a9fa8' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="7" cy="7" r="4.3" stroke={color} strokeWidth="1.4" />
+      <path d="M13.2 13.2l-2.9-2.9" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function PencilIcon({ size = 13, color = '#6b6f78' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M10.5 2.5l3 3-8 8-3.6.6.6-3.6z" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M9.3 3.7l3 3" stroke={color} strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+export function ResetIcon({ size = 13, color = '#6b6f78' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M13 8A5 5 0 1 1 11.3 4.2" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M13.2 2.4V5.6H10" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

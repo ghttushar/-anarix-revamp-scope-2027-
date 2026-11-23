@@ -1,0 +1,377 @@
+import { useState, useMemo, useEffect } from 'react';
+import { createPortal } from '@legacy/shell/legacy-portal';
+import { PROTOTYPE_ALERTS, type PrototypeAlert, type AssigneeOption, type AlertStatus } from '@legacy/constants/signals/prototype-data';
+import { formatAlertValue } from './format-money';
+import { AlertBadgeRow } from './alert-badge-row';
+import { AssignDropdownList, AssignPopupModal, DEFAULT_ASSIGNEES, ASSIGN_POPUP_THRESHOLD, Avatar } from './assign-menu';
+import { AssignIcon, ShareIcon, DismissIcon, EnvelopeSmallIcon, WorkspaceSmallIcon, MoreVertIcon, ChevronDownIcon } from './icons';
+import { StatusTag, alertTaskStatus } from '../common/status-tag';
+import scrollStyles from './alerts-scroll.module.scss';
+import motion from './motion.module.scss';
+import rowStyles from './alert-row.module.scss';
+
+interface Props {
+  selectedAlertId: string | null;
+  alertStatusMap: Record<string, AlertStatus>;
+  /** Items already actioned per alert worked through in batches ("7 of 14 actioned"). */
+  actionedCounts?: Record<string, number>;
+  /** Alerts the user has opened at least once — undots the row. */
+  readAlertIds: Set<string>;
+  onSelectAlert: (id: string) => void;
+  onOpenItemsForAlert: (id: string) => void;
+  /** Called whenever the active search/filter changes, so a consumer (e.g. Speed Mode) can cycle only through what's currently shown here. */
+  onFilteredChange: (ids: string[]) => void;
+  /** Forces the filter popover open on mount — for the design-handoff preview, not used by the real app. */
+  initialFilterOpen?: boolean;
+  /** Forces the Yesterday group collapsed on mount — for the design-handoff preview, not used by the real app. */
+  initialYesterdayCollapsed?: boolean;
+  /** Splits this column evenly with its siblings instead of the usual fixed ~35% — used only when list, detail and Ask Jiva are all showing at once. */
+  /** Explicit pixel width from the drag-resize handle — supersedes the default fixed ~35%. */
+  width?: number;
+  /** A category to apply as the sole active filter — bump `nonce` to reapply the same category again (e.g. from the empty state's category cards). */
+  applyCategoryFilter?: { category: string; nonce: number } | null;
+}
+
+export function AlertListPanel({ selectedAlertId, alertStatusMap, actionedCounts = {}, readAlertIds, onSelectAlert, onOpenItemsForAlert, onFilteredChange, initialFilterOpen = false, initialYesterdayCollapsed = false, width, applyCategoryFilter = null }: Props) {
+  const [search, setSearch] = useState('');
+  const [filterOpen, setFilterOpen] = useState(initialFilterOpen);
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+  const [menuMode, setMenuMode] = useState<'main' | 'share' | 'assign'>('main');
+  const [priorityFilters, setPriorityFilters] = useState<Record<string, boolean>>({});
+  const [categoryFilters, setCategoryFilters] = useState<Record<string, boolean>>({});
+  const [sourceFilters, setSourceFilters] = useState<Record<string, boolean>>({});
+  const [valueOp, setValueOp] = useState<'>' | '<' | '='>('>');
+  const [valueThreshold, setValueThreshold] = useState('');
+  const [assignPopupFor, setAssignPopupFor] = useState<PrototypeAlert | null>(null);
+  const [assignedTo, setAssignedTo] = useState<Record<string, AssigneeOption>>({});
+  const [yesterdayCollapsed, setYesterdayCollapsed] = useState(initialYesterdayCollapsed);
+
+  const assignAlert = (id: string, a: AssigneeOption) => setAssignedTo((m) => ({ ...m, [id]: a }));
+
+  useEffect(() => {
+    if (!applyCategoryFilter) return;
+    setCategoryFilters({ [applyCategoryFilter.category]: true });
+    setPriorityFilters({});
+    setSourceFilters({});
+    setValueThreshold('');
+    setSearch('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applyCategoryFilter?.nonce]);
+
+  const filtered = useMemo(() => {
+    return PROTOTYPE_ALERTS.filter((al) => {
+      if (search && !(al.title + ' ' + al.account).toLowerCase().includes(search.toLowerCase())) return false;
+      const activePriorities = Object.keys(priorityFilters).filter((k) => priorityFilters[k]);
+      if (activePriorities.length && !activePriorities.includes(al.priority)) return false;
+      const activeCategories = Object.keys(categoryFilters).filter((k) => categoryFilters[k]);
+      if (activeCategories.length && !activeCategories.includes(al.category)) return false;
+      if (valueThreshold) {
+        const t = parseFloat(valueThreshold.replace(/[^0-9.]/g, '')) || 0;
+        const v = Math.abs(al.valueNum);
+        if (valueOp === '>' && !(v > t)) return false;
+        if (valueOp === '<' && !(v < t)) return false;
+        if (valueOp === '=' && !(Math.abs(v - t) < 1)) return false;
+      }
+      return true;
+    });
+  }, [search, priorityFilters, categoryFilters, valueOp, valueThreshold]);
+
+  useEffect(() => {
+    onFilteredChange(filtered.map((al) => al.id));
+  }, [filtered, onFilteredChange]);
+
+  const todayAlerts = filtered.filter((al) => al.day === 'today');
+  const yesterdayAlerts = filtered.filter((al) => al.day === 'yesterday');
+  const filterCount = Object.values(priorityFilters).filter(Boolean).length + Object.values(categoryFilters).filter(Boolean).length + Object.values(sourceFilters).filter(Boolean).length + (valueThreshold ? 1 : 0);
+
+  const togglePriority = (k: string) => setPriorityFilters((p) => ({ ...p, [k]: !p[k] }));
+  const toggleCategory = (k: string) => setCategoryFilters((p) => ({ ...p, [k]: !p[k] }));
+  const toggleSource = (k: string) => setSourceFilters((p) => ({ ...p, [k]: !p[k] }));
+
+  const requestAssign = (al: PrototypeAlert) => {
+    const assignees = al.assignees ?? DEFAULT_ASSIGNEES;
+    if (assignees.length > ASSIGN_POPUP_THRESHOLD) {
+      setMenuFor(null);
+      setAssignPopupFor(al);
+    } else {
+      setMenuFor(al.id);
+      setMenuMode('assign');
+    }
+  };
+
+  return (
+    <div style={{ flex: width ? `0 0 ${width}px` : '0 0 35%', maxWidth: width ? 'none' : '35%', minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'visible', position: 'relative' }}>
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid #e6e8ec', display: 'flex', flexDirection: 'column', gap: 9, flex: 'none', position: 'relative' }}>
+        <div style={{ display: 'flex', gap: 8, position: 'relative' }}>
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search alerts, ASINs, campaigns" className={motion.focusRing} style={{ flex: 1, minWidth: 0, padding: '9px 12px', border: '1px solid #e1e3e8', borderRadius: 7, font: '400 12px/1 Inter,sans-serif', color: '#3d424b', outline: 'none' }} />
+          <span
+            onClick={() => setFilterOpen(!filterOpen)}
+            className={motion.pressable}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '8px 16px', border: `1px solid ${filterOpen ? '#3f4fda' : '#e1e3e8'}`, borderRadius: 6, font: '500 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', background: filterOpen ? '#f7f8fe' : '#ffffff', flex: 'none', whiteSpace: 'nowrap' as const, transition: 'background 140ms ease-out, border-color 140ms ease-out' }}
+            onMouseEnter={(e) => { if (!filterOpen) e.currentTarget.style.background = '#fbfbfc'; }}
+            onMouseLeave={(e) => { if (!filterOpen) e.currentTarget.style.background = '#ffffff'; }}
+          >
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M1 3h14M4 8h8M6.5 13h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+            Filter{filterCount ? ` (${filterCount})` : ''}
+          </span>
+        </div>
+        {filterOpen && (
+          <div className={motion.popInTop} style={{ position: 'absolute', left: 16, top: 56, width: 270, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, boxShadow: '0 12px 28px rgba(20, 22, 33, .16)', padding: 14, zIndex: 30, maxHeight: 440, overflowY: 'auto' }}>
+            <FilterSection label="Impact value">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, border: '1px solid #e1e3e8', borderRadius: 6, overflow: 'hidden' }}>
+                {(['>', '<', '='] as const).map((op) => (
+                  <span key={op} onClick={() => setValueOp(op)} className={motion.pressable} style={{ padding: '8px 10px', background: valueOp === op ? '#f7f8fe' : '#ffffff', font: '700 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', transition: 'background 120ms ease-out' }}>{op}</span>
+                ))}
+                <span style={{ width: 1, height: 20, background: '#e6e8ec' }} />
+                <span style={{ paddingLeft: 8, font: '600 12px/1 Inter,sans-serif', color: '#9a9fa8' }}>$</span>
+                <input value={valueThreshold} onChange={(e) => setValueThreshold(e.target.value)} placeholder="1,000" style={{ flex: 1, minWidth: 0, padding: '8px 9px 8px 2px', border: 'none', font: '400 12px/1 Inter,sans-serif', outline: 'none' }} />
+              </div>
+            </FilterSection>
+            <FilterSection label="Category">
+              {['Catalog', 'Inventory', 'Advertising', 'Profitability', 'Compliance', 'Operations', 'Billing', 'Reviews'].map((k) => (
+                <div key={k} onClick={() => toggleCategory(k)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '4px 6px', margin: '0 -6px', borderRadius: 6 }}>
+                  <span style={{ width: 13, height: 13, borderRadius: 3, border: '1.5px solid #d1d4da', background: categoryFilters[k] ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                  <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{k}</span>
+                </div>
+              ))}
+            </FilterSection>
+            <FilterSection label="Source">
+              {['Anarix', 'Jiva', 'Meeting', 'Slack', 'Workspace', 'Email'].map((k) => (
+                <div key={k} onClick={() => toggleSource(k)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '4px 6px', margin: '0 -6px', borderRadius: 6 }}>
+                  <span style={{ width: 13, height: 13, borderRadius: 3, border: '1.5px solid #d1d4da', background: sourceFilters[k] ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                  <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{k}</span>
+                </div>
+              ))}
+            </FilterSection>
+            <FilterSection label="Priority">
+              {[['High', '#cc2b2b'], ['Medium', '#5c6f9e'], ['Low', '#2b9652']].map(([k, dot]) => (
+                <div key={k} onClick={() => togglePriority(k)} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', padding: '4px 6px', margin: '0 -6px', borderRadius: 6 }}>
+                  <span style={{ width: 13, height: 13, borderRadius: 3, border: '1.5px solid #d1d4da', background: priorityFilters[k] ? '#3f4fda' : '#ffffff', flex: 'none', transition: 'background 120ms ease-out' }} />
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: dot }} />
+                  <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>{k}</span>
+                </div>
+              ))}
+            </FilterSection>
+            <div style={{ height: 1, background: '#f1f2f4', margin: '13px 0' }} />
+            <span
+              onClick={() => { setSearch(''); setPriorityFilters({}); setCategoryFilters({}); setSourceFilters({}); setValueThreshold(''); }}
+              className={motion.pressable}
+              style={{ display: 'block', textAlign: 'center', padding: 9, borderRadius: 6, border: '1px solid #e1e3e8', font: '600 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', transition: 'background 140ms ease-out, border-color 140ms ease-out' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#f7f8fe'; e.currentTarget.style.borderColor = '#b8c0f0'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = '#e1e3e8'; }}
+            >
+              Clear all
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className={scrollStyles.sleekScroll} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+        {todayAlerts.length > 0 && (
+          <>
+            <div style={{ padding: '9px 16px', background: '#fbfbfc', borderBottom: '1px solid #f1f2f4', display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#6b6f78' }}>Today</span>
+              <span style={{ font: '400 10px/1 Inter,sans-serif', color: '#6b6f78' }}>{todayAlerts.length} alert{todayAlerts.length === 1 ? '' : 's'}</span>
+            </div>
+            {todayAlerts.map((al) => (
+              // a7 (today's 6th card) is pinned to always look selected, independent of which alert is actually open — a deliberate always-highlighted default, not a real selection.
+              <AlertRow key={al.id} al={al} selected={selectedAlertId === al.id || al.id === 'a7'} status={alertStatusMap[al.id] ?? 'needs_attention'} actioned={actionedCounts[al.id] ?? 0} unread={!readAlertIds.has(al.id)} onSelect={() => onSelectAlert(al.id)} onOpenItems={() => onOpenItemsForAlert(al.id)} menuFor={menuFor} setMenuFor={setMenuFor} menuMode={menuMode} setMenuMode={setMenuMode} requestAssign={requestAssign} assignedTo={assignedTo[al.id]} onAssign={assignAlert} />
+            ))}
+          </>
+        )}
+        {yesterdayAlerts.length > 0 && (
+          <>
+            <div
+              onClick={() => setYesterdayCollapsed((v) => !v)}
+              className={motion.rowHover}
+              style={{ padding: '9px 16px', background: '#fbfbfc', borderBottom: '1px solid #f1f2f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ display: 'flex', transform: yesterdayCollapsed ? 'rotate(-90deg)' : 'none', transition: 'transform 160ms ease-out' }}>
+                  <ChevronDownIcon size={9} />
+                </span>
+                <span style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#6b6f78' }}>Yesterday</span>
+              </span>
+              <span style={{ font: '400 10px/1 Inter,sans-serif', color: '#6b6f78' }}>{yesterdayAlerts.length} alert{yesterdayAlerts.length === 1 ? '' : 's'}</span>
+            </div>
+            <div className={`${motion.accordionRow} ${!yesterdayCollapsed ? motion.accordionRowOpen : ''}`}>
+              <div>
+                {yesterdayAlerts.map((al) => (
+                  <AlertRow key={al.id} al={al} selected={selectedAlertId === al.id || al.id === 'a7'} status={alertStatusMap[al.id] ?? 'needs_attention'} actioned={actionedCounts[al.id] ?? 0} unread={!readAlertIds.has(al.id)} onSelect={() => onSelectAlert(al.id)} onOpenItems={() => onOpenItemsForAlert(al.id)} menuFor={menuFor} setMenuFor={setMenuFor} menuMode={menuMode} setMenuMode={setMenuMode} requestAssign={requestAssign} assignedTo={assignedTo[al.id]} onAssign={assignAlert} />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+        {filtered.length === 0 && (
+          <div style={{ padding: '40px 20px', textAlign: 'center' }}>
+            <div style={{ font: '600 13px/1.4 Inter,sans-serif', color: '#23232d' }}>No alerts match</div>
+            <div style={{ font: '400 11px/1.6 Inter,sans-serif', color: '#6b6f78', marginTop: 6 }}>Try clearing the search or filters.</div>
+          </div>
+        )}
+      </div>
+
+      {assignPopupFor && (
+        <AssignPopupModal
+          assignees={assignPopupFor.assignees ?? DEFAULT_ASSIGNEES}
+          onClose={() => setAssignPopupFor(null)}
+          onSelect={(a) => { assignAlert(assignPopupFor.id, a); setAssignPopupFor(null); }}
+        />
+      )}
+    </div>
+  );
+}
+
+function FilterSection({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <>
+      <div style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.09em', textTransform: 'uppercase' as const, color: '#6b6f78' }}>{label}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 9 }}>{children}</div>
+      <div style={{ height: 1, background: '#f1f2f4', margin: '13px 0' }} />
+    </>
+  );
+}
+
+
+function AlertRow({ al, selected, status, actioned = 0, unread, onSelect, onOpenItems, menuFor, setMenuFor, menuMode, setMenuMode, requestAssign, assignedTo, onAssign }: {
+  al: PrototypeAlert; selected: boolean; status: AlertStatus; actioned?: number; unread: boolean; onSelect: () => void; onOpenItems: () => void;
+  menuFor: string | null; setMenuFor: (id: string | null) => void;
+  menuMode: 'main' | 'share' | 'assign'; setMenuMode: (m: 'main' | 'share' | 'assign') => void;
+  requestAssign: (al: PrototypeAlert) => void;
+  assignedTo?: AssigneeOption;
+  onAssign: (id: string, a: AssigneeOption) => void;
+}) {
+  const isOpen = menuFor === al.id;
+  const assignOpen = isOpen && menuMode === 'assign';
+  const resolved = status === 'resolved';
+  // "Assign to" can run to 4-15 names (search + list), tall enough to spill past a short card's own
+  // height — anchored purely via `position:absolute` inside the card that opened it, it would render
+  // on top of whatever card happens to sit below instead of floating cleanly above everything, and
+  // clicking outside it did nothing (no backdrop) so it could get stuck open. Portaling it to
+  // document.body — same fix already used for the Brief key-stat card's edit popover — solves both.
+  const [assignAnchor, setAssignAnchor] = useState<DOMRect | null>(null);
+  const openAssign = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (assignOpen) { setMenuFor(null); return; }
+    setAssignAnchor(e.currentTarget.getBoundingClientRect());
+    requestAssign(al);
+  };
+  return (
+    <div className={`${rowStyles.alertCard} ${motion.cardHover}`} style={{ margin: '10px 12px', padding: '14px 16px', border: '1px solid #eceef1', borderLeft: selected ? '3px solid #3f4fda' : '1px solid #eceef1', borderRadius: 10, background: selected ? '#f7f8fe' : 'transparent', boxShadow: '0 1px 2px rgba(20, 22, 33, .03)', cursor: 'pointer', position: 'relative', opacity: resolved ? 0.7 : 1, transition: 'opacity 220ms ease-out, background 150ms ease-out, border-color 150ms ease-out' }}>
+      {/* Status in the same quiet words and glyph as Work-station: Open, In progress, Done. */}
+      <span key={status} className={motion.contentFadeIn} style={{ position: 'absolute', left: 16, top: 16, display: 'flex' }}>
+        <StatusTag status={alertTaskStatus(status)} />
+      </span>
+      <div style={{ position: 'absolute', right: 12, top: 12, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+        {assignedTo ? (
+          <span
+            onClick={openAssign}
+            className={motion.pressable}
+            style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer' }}
+          >
+            <Avatar name={assignedTo.name} size={22} vivid />
+          </span>
+        ) : (
+          <span
+            onClick={openAssign}
+            className={motion.pressable}
+            style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, color: '#6b6f78', cursor: 'pointer' }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#f4f6fd')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          >
+            <AssignIcon size={14} />
+          </span>
+        )}
+        <span
+          onClick={(e) => { e.stopPropagation(); setMenuFor(isOpen && menuMode !== 'assign' ? null : al.id); setMenuMode('main'); }}
+          className={motion.pressable}
+          style={{ width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, color: '#6b6f78', cursor: 'pointer' }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = '#f4f6fd')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+        >
+          <MoreVertIcon size={13} />
+        </span>
+      </div>
+      <div onClick={onSelect} style={{ marginTop: 22 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {!al.hideValue && (
+            <span style={{ font: '700 20px/1 Inter,sans-serif', color: al.valueNum < 0 ? '#cc2b2b' : '#2b9652' }}>{formatAlertValue(al.valueNum)}</span>
+          )}
+        </div>
+        <div style={{ font: '400 11px/1.5 Inter,sans-serif', color: '#8a909b', marginTop: al.hideValue ? 0 : 4 }}>
+          {al.impactStr}
+          {al.itemsCount > 1 && (
+            <>
+              {' · '}
+              <span
+                onClick={(e) => { e.stopPropagation(); onOpenItems(); }}
+                className={rowStyles.breakdownLink}
+                style={{ fontWeight: 600, cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted' as const, textUnderlineOffset: 2 }}
+              >
+                {al.itemsBreakdown}
+              </span>
+              {actioned > 0 && actioned < al.itemsCount && status !== 'resolved' && (
+                <span style={{ color: '#2b9652', fontWeight: 600 }}>{' · '}{actioned} of {al.itemsCount} actioned</span>
+              )}
+            </>
+          )}
+        </div>
+        <div style={{ font: `${unread ? 700 : 500} 14px/1.35 Inter,sans-serif`, color: unread ? '#23232d' : '#6b6f78', marginTop: 6, paddingRight: 56, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden', textOverflow: 'ellipsis' }}>{al.title}</div>
+      </div>
+      <div style={{ marginTop: 11 }}>
+        <AlertBadgeRow al={al} size={20} />
+      </div>
+      {isOpen && menuMode !== 'assign' && (
+        <div className={motion.popIn} style={{ position: 'absolute', right: 10, top: 40, width: 200, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 9, boxShadow: '0 12px 28px rgba(20, 22, 33, .18)', padding: 6, zIndex: 40 }} onClick={(e) => e.stopPropagation()}>
+          {menuMode === 'main' && (
+            <>
+              <MenuItem icon={<ShareIcon size={13} />} label="Share" onClick={() => setMenuMode('share')} />
+              <MenuItem icon={<DismissIcon size={13} />} label="Dismiss" onClick={() => setMenuFor(null)} />
+            </>
+          )}
+          {menuMode === 'share' && (
+            <>
+              <div style={{ padding: '6px 10px 8px', font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9a9fa8' }}>Share via</div>
+              <MenuItem icon={<EnvelopeSmallIcon size={12} />} label="Email" onClick={() => setMenuFor(null)} />
+              <MenuItem icon={<WorkspaceSmallIcon size={12} />} label="Workspace · Nutrabay pod" onClick={() => setMenuFor(null)} />
+              <MenuItem icon={<WorkspaceSmallIcon size={12} />} label="Workspace · Leadership" onClick={() => setMenuFor(null)} />
+              <div onClick={() => setMenuMode('main')} style={{ padding: '8px 10px 4px', font: '600 11px/1 Inter,sans-serif', color: '#3f4fda', cursor: 'pointer' }}>← Back</div>
+            </>
+          )}
+        </div>
+      )}
+      {assignOpen && assignAnchor && createPortal(
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 239 }} onClick={() => setMenuFor(null)} />
+          <div
+            className={motion.popIn}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'fixed',
+              top: Math.min(assignAnchor.bottom + 6, window.innerHeight - 280),
+              left: Math.max(8, Math.min(assignAnchor.right - 220, window.innerWidth - 220 - 8)),
+              width: 220, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 9,
+              boxShadow: '0 12px 28px rgba(20, 22, 33, .18)', padding: 6, zIndex: 240,
+            }}
+          >
+            <div style={{ padding: '6px 10px 2px', font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9a9fa8' }}>Assign to</div>
+            <AssignDropdownList assignees={al.assignees ?? DEFAULT_ASSIGNEES} onSelect={(a) => { onAssign(al.id, a); setMenuFor(null); }} />
+          </div>
+        </>,
+        document.body,
+      )}
+    </div>
+  );
+}
+
+function MenuItem({ icon, label, onClick }: { icon?: React.ReactNode; label: string; onClick: () => void }) {
+  return (
+    <div
+      onClick={onClick}
+      className={motion.rowHover}
+      style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '9px 10px', borderRadius: 6, cursor: 'pointer', font: '500 12px/1 Inter,sans-serif', color: '#3d424b' }}
+    >
+      {icon}{label}
+    </div>
+  );
+}

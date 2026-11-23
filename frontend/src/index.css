@@ -149,32 +149,32 @@
   }
 }
 
-/* Modern Custom Scrollbars */
-* {
+/* Modern Custom Scrollbars (not on the pages ported from anarix-ui, see legacy/scope.css) */
+*:where(:not(.np-scope, .np-scope *)) {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--border)) transparent;
 }
 
-*::-webkit-scrollbar {
+*:where(:not(.np-scope, .np-scope *))::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-*::-webkit-scrollbar-track {
+*:where(:not(.np-scope, .np-scope *))::-webkit-scrollbar-track {
   background: transparent;
 }
 
-*::-webkit-scrollbar-thumb {
+*:where(:not(.np-scope, .np-scope *))::-webkit-scrollbar-thumb {
   background: hsl(var(--border));
   border-radius: 3px;
   transition: background 0.2s ease;
 }
 
-*::-webkit-scrollbar-thumb:hover {
+*:where(:not(.np-scope, .np-scope *))::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
-*::-webkit-scrollbar-corner {
+*:where(:not(.np-scope, .np-scope *))::-webkit-scrollbar-corner {
   background: transparent;
 }
 
@@ -201,7 +201,7 @@
     font-family: var(--font-body);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  :is(h1, h2, h3, h4, h5, h6):where(:not(.np-scope, .np-scope *)) {
     font-family: var(--font-heading);
     font-weight: 600;
   }

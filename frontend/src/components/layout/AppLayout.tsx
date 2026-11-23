@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 const AanCopilotPanel = lazy(() => import("@/components/aan/AanCopilotPanel").then(m => ({ default: m.AanCopilotPanel })));
 const AskAanTooltip = lazy(() => import("@/components/aan/AskAanTooltip").then(m => ({ default: m.AskAanTooltip })));
 
-function LayoutInner({ children }: { children: ReactNode }) {
+function LayoutInner({ children, fullBleed = false }: { children: ReactNode; fullBleed?: boolean }) {
   const { dataPanel, aiPanel, hasAnyPanel, closeDataPanel } = useActivePanel();
   const { open, setOpen } = useSidebar();
   const { trial } = useTrial();
@@ -87,7 +87,7 @@ function LayoutInner({ children }: { children: ReactNode }) {
         <main
           className={cn(
             "flex-1 overflow-auto bg-background min-h-0 min-w-0",
-            "p-6"
+            !fullBleed && "p-6"
           )}
           onClick={handleMainClick}
         >
@@ -117,12 +117,14 @@ function LayoutInner({ children }: { children: ReactNode }) {
 
 interface AppLayoutProps {
   children: ReactNode;
+  /** Drop the content padding so the page fills the content area edge to edge (the pages ported from anarix-ui). */
+  fullBleed?: boolean;
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({ children, fullBleed }: AppLayoutProps) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <LayoutInner>{children}</LayoutInner>
+      <LayoutInner fullBleed={fullBleed}>{children}</LayoutInner>
     </SidebarProvider>
   );
 }

@@ -1,0 +1,642 @@
+// @ts-nocheck -- ported verbatim from the source repo, which uses looser TS settings
+import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react';
+import { GroupCell, GroupHint } from './step-product-groups';
+import GroupLayer, { type GroupLayerHandle } from './group-layer';
+import { createGroup, groupIndex, groupNameIdeas, moveProducts, suggestGroupName } from '../product-groups';
+import { type CcDraft, type CcProduct, type ProductGroup } from '../campaign-creator.types';
+import {
+  BAD, BORDER, BRAND, BRAND_LINE, BRAND_TINT, Checkbox, ChevronRightIcon, FONT, GOOD, HAIR, RowCheck, SearchIcon,
+  StepHeading, SURFACE_MUTED, TextButton, TEXT_FAINT, TEXT_MUTED, TEXT_PRIMARY,
+} from '../campaign-creator-ui';
+import { Panel } from '../ccd-design';
+import DateRangeSelect, { DEFAULT_RANGE, daysIn, type DateRange } from './date-range';
+
+type StatusFilter = 'all' | 'eligible' | 'ineligible';
+type InventoryFilter = 'all' | 'in-stock' | 'low-stock' | 'out-of-stock';
+type CampaignFilter = 'all' | 'has-campaign' | 'no-campaign';
+
+const LOW_STOCK_BELOW = 200;
+
+const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
+  { value: 'all', label: 'All' }, { value: 'eligible', label: 'Eligible' }, { value: 'ineligible', label: 'Ineligible' },
+];
+const INVENTORY_OPTIONS: { value: InventoryFilter; label: string }[] = [
+  { value: 'all', label: 'All' }, { value: 'in-stock', label: 'In stock' },
+  { value: 'low-stock', label: `Low stock (<${LOW_STOCK_BELOW})` }, { value: 'out-of-stock', label: 'Out of stock' },
+];
+const CAMPAIGN_OPTIONS: { value: CampaignFilter; label: string }[] = [
+  { value: 'all', label: 'All' }, { value: 'has-campaign', label: 'Has campaign' }, { value: 'no-campaign', label: 'No campaign' },
+];
+
+// ── Filters (one set per panel) ───────────────────────────────────────────────────────────────
+
+interface Filters { status: StatusFilter; inventory: InventoryFilter; campaign: CampaignFilter }
+const NO_FILTERS: Filters = { status: 'all', inventory: 'all', campaign: 'all' };
+
+function matchesFilters(p: Pick<CcProduct, 'eligible' | 'inventory' | 'hasExistingCampaign'>, f: Filters): boolean {
+  if (f.status === 'eligible' && !p.eligible) return false;
+  if (f.status === 'ineligible' && p.eligible) return false;
+  if (f.inventory === 'in-stock' && p.inventory < LOW_STOCK_BELOW) return false;
+  if (f.inventory === 'low-stock' && !(p.inventory > 0 && p.inventory < LOW_STOCK_BELOW)) return false;
+  if (f.inventory === 'out-of-stock' && p.inventory !== 0) return false;
+  if (f.campaign === 'has-campaign' && !p.hasExistingCampaign) return false;
+  if (f.campaign === 'no-campaign' && p.hasExistingCampaign) return false;
+  return true;
+}
+
+function activeChips(f: Filters): { key: keyof Filters; label: string }[] {
+  const chips: { key: keyof Filters; label: string }[] = [];
+  if (f.status !== 'all') chips.push({ key: 'status', label: `Status: ${STATUS_OPTIONS.find((o) => o.value === f.status)?.label}` });
+  if (f.inventory !== 'all') chips.push({ key: 'inventory', label: `Inventory: ${INVENTORY_OPTIONS.find((o) => o.value === f.inventory)?.label}` });
+  if (f.campaign !== 'all') chips.push({ key: 'campaign', label: `Campaign: ${CAMPAIGN_OPTIONS.find((o) => o.value === f.campaign)?.label}` });
+  return chips;
+}
+
+function FilterGroup<T extends string>({ label, value, options, onChange }: {
+  label: string; value: T; options: { value: T; label: string }[]; onChange: (v: T) => void;
+}) {
+  return (
+    <div role="radiogroup" aria-label={label}>
+      <div style={{ font: `500 12px/1 ${FONT}`, color: TEXT_MUTED, marginBottom: 8 }}>{label}</div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {options.map((o) => {
+          const on = value === o.value;
+          return (
+            <button
+              key={o.value} type="button" role="radio" aria-checked={on} className="ccd-btn ccd-pick" onClick={() => onChange(o.value)}
+              style={{ padding: '6px 11px', borderRadius: 999, cursor: 'pointer', border: `1.5px solid ${on ? BRAND : BORDER}`, background: on ? BRAND_TINT : '#ffffff', color: on ? BRAND : TEXT_PRIMARY, font: `500 12.5px/1.2 ${FONT}` }}
+            >{o.label}</button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Small icons and buttons ───────────────────────────────────────────────────────────────────
+
+const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
+const FunnelIcon = () => <svg width={13} height={13} viewBox="0 0 16 16" aria-hidden {...stroke}><path d="M2 3h12l-4.6 5.4V13l-2.8-1.4V8.4z" /></svg>;
+const TrashIcon = () => <svg width={13} height={13} viewBox="0 0 16 16" aria-hidden {...stroke}><path d="M2.5 4.2h11M6 4.2V2.6h4v1.6M4 4.2l.6 9h6.8l.6-9M6.6 7v4M9.4 7v4" /></svg>;
+const BoxIcon = () => <svg width={20} height={20} viewBox="0 0 16 16" aria-hidden {...stroke}><path d="M8 1.6l5.6 2.8v6.2L8 13.4 2.4 10.6V4.4zM2.6 4.5L8 7.3l5.4-2.8M8 7.3v6" /></svg>;
+
+function ToolButton({ children, onClick, disabled, primary, active, expanded, haspopup }: {
+  children: React.ReactNode; onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; disabled?: boolean; primary?: boolean; active?: boolean; expanded?: boolean; haspopup?: boolean;
+}) {
+  const on = primary && !disabled;
+  return (
+    <button
+      type="button" className={on ? 'ccd-btn ccd-tool-primary' : 'ccd-btn ccd-ghost'} onClick={onClick} disabled={disabled} aria-expanded={expanded} aria-haspopup={haspopup ? 'dialog' : undefined}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 8, whiteSpace: 'nowrap',
+        cursor: disabled ? 'not-allowed' : 'pointer', font: `500 12.5px/1.2 ${FONT}`,
+        border: `1px solid ${on ? BRAND : active ? BRAND_LINE : BORDER}`, background: on ? BRAND : active ? BRAND_TINT : '#ffffff',
+        color: on ? '#ffffff' : disabled ? TEXT_FAINT : active ? BRAND : TEXT_PRIMARY, opacity: disabled ? 0.65 : 1,
+      }}
+    >{children}</button>
+  );
+}
+
+function FilterButton({ filters, onChange }: { filters: Filters; onChange: (f: Filters) => void }) {
+  const [open, setOpen] = useState(false);
+  const count = activeChips(filters).length;
+  return (
+    <div style={{ position: 'relative' }}>
+      <ToolButton onClick={() => setOpen((v) => !v)} active={count > 0} expanded={open} haspopup>
+        <FunnelIcon /> Filter
+        {count > 0 && <span className="ccd-num" style={{ minWidth: 16, padding: '1px 5px', borderRadius: 999, background: BRAND, color: '#ffffff', font: `600 10.5px/1.3 ${FONT}`, textAlign: 'center' }}>{count}</span>}
+      </ToolButton>
+      {open && (
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 20 }} onMouseDown={() => setOpen(false)} />
+          <div
+            role="dialog" aria-label="Filter products" className="ccd-enter"
+            style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, zIndex: 21, width: 330, padding: 16, display: 'flex', flexDirection: 'column', gap: 18, background: '#ffffff', border: `1px solid ${BORDER}`, borderRadius: 12, boxShadow: '0 14px 32px rgba(20, 22, 33, .14)' }}
+          >
+            <FilterGroup label="Status" value={filters.status} options={STATUS_OPTIONS} onChange={(status) => onChange({ ...filters, status })} />
+            <FilterGroup label="Inventory" value={filters.inventory} options={INVENTORY_OPTIONS} onChange={(inventory) => onChange({ ...filters, inventory })} />
+            <FilterGroup label="Existing campaign" value={filters.campaign} options={CAMPAIGN_OPTIONS} onChange={(campaign) => onChange({ ...filters, campaign })} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: `1px solid ${HAIR}` }}>
+              <TextButton onClick={() => onChange(NO_FILTERS)} tone={count ? BRAND : TEXT_FAINT}>Clear filters</TextButton>
+              <TextButton onClick={() => setOpen(false)}>Done</TextButton>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/** The search for a panel. Compact, it sits in the toolbar beside Filter at the height of the tool buttons. */
+function SearchBox({ value, onChange, label, compact }: { value: string; onChange: (v: string) => void; label: string; compact?: boolean }) {
+  return (
+    <label style={compact ? { position: 'relative', display: 'block', flex: '0 1 220px', minWidth: 140 } : { position: 'relative', display: 'block', marginBottom: 18 }}>
+      <span style={{ position: 'absolute', left: compact ? 10 : 12, top: 0, bottom: 0, display: 'flex', alignItems: 'center' }}><SearchIcon /></span>
+      <input
+        className="ccd-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Search ASIN/Title" aria-label={label}
+        style={{
+          width: '100%', boxSizing: 'border-box', padding: compact ? '0 10px 0 31px' : '10px 12px 10px 34px', height: compact ? 31 : undefined,
+          border: `1px solid ${BORDER}`, borderRadius: 8, font: `400 ${compact ? 12.5 : 13}px/1.2 ${FONT}`, color: TEXT_PRIMARY, outline: 'none', background: '#ffffff',
+        }}
+      />
+    </label>
+  );
+}
+
+/** The row under a panel's title: search and Filter on the left, the panel's main action on the right. */
+function Toolbar({ children, action }: { children: React.ReactNode; action: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+      {children}
+      <span style={{ flex: 1 }} />
+      {action}
+    </div>
+  );
+}
+
+function PanelHead({ title, count, children }: { title: string; count: number; children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 12, flexWrap: 'wrap' }}>
+      <h2 style={{ margin: 0, font: `600 15px/1.3 ${FONT}`, color: TEXT_PRIMARY }}>
+        {title} <span className="ccd-num">({count.toLocaleString()})</span>
+      </h2>
+      {/* Controls sit at the right edge, also when they wrap under the title. */}
+      <div style={{ display: 'flex', flex: '1 1 auto', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>{children}</div>
+    </div>
+  );
+}
+
+// ── Grouping recommendations ──────────────────────────────────────────────────────────────────
+// A placeholder for the recommendation engine: suggested groups, each named, with the products that belong in it.
+// Taking one adds every one of its products to Added Products and groups them under that name.
+
+const RECOMMENDED_GROUPS: { name: string; match: RegExp }[] = [
+  { name: 'Protein powders', match: /protein/i },
+  { name: 'Pre & intra workout', match: /bcaa|pre-workout|creatine|electrolyte/i },
+  { name: 'Home gym', match: /resistance|dumbbell|yoga|foam roller|kettlebell/i },
+  { name: 'Daily wellness', match: /multivitamin|omega|melatonin|collagen|fish oil/i },
+];
+
+// ── Table pieces ──────────────────────────────────────────────────────────────────────────────
+
+const TH: React.CSSProperties = {
+  textAlign: 'left', padding: '12px 12px', font: `600 13px/1 ${FONT}`, color: TEXT_PRIMARY,
+  background: '#ffffff', borderBottom: `1px solid ${BORDER}`, whiteSpace: 'nowrap',
+  // Each header cell sticks to the top on its own (a sticky row alone does not hold in every browser).
+  position: 'sticky', top: 0, zIndex: 1,
+};
+const TD: React.CSSProperties = { padding: '10px 12px', borderBottom: `1px solid ${HAIR}`, verticalAlign: 'middle' };
+const CHECK_COL: React.CSSProperties = { width: 46, padding: '10px 0 10px 14px' };
+
+/** Name on the first line; "SKU | ASIN | status" beneath it. Ineligible products say why. */
+function ProductCell({ title, color, sku, asin, reason, eligible = true, indent, hideStatus }: {
+  title: string; color: string; sku: string; asin: string; eligible?: boolean; reason?: string; indent?: boolean; hideStatus?: boolean;
+}) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, overflow: 'hidden' }}>
+      <span style={{ width: indent ? 30 : 36, height: indent ? 30 : 36, borderRadius: 6, background: color, flex: 'none', opacity: indent ? 0.75 : 1 }} />
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div title={title} style={{ font: `500 13px/1.35 ${FONT}`, color: TEXT_PRIMARY, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</div>
+        <div className="ccd-num" style={{ font: `400 12px/1.4 ${FONT}`, color: TEXT_MUTED, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          SKU - {sku} <span style={{ color: '#d1d4da' }}>|</span> ASIN - {asin} {!(hideStatus && eligible) && <><span style={{ color: '#d1d4da' }}>|</span>{' '}</>}
+          {hideStatus && eligible ? null : eligible ? <span style={{ color: GOOD }}>Eligible</span> : <span style={{ color: BAD }}>{reason ?? 'Ineligible'}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const NUM: React.CSSProperties = { ...TD, textAlign: 'right', color: TEXT_MUTED, whiteSpace: 'nowrap', paddingLeft: 4, paddingRight: 14 };
+const NUM_TH: React.CSSProperties = { ...TH, textAlign: 'right', paddingLeft: 4, paddingRight: 14, fontWeight: 500, color: TEXT_MUTED };
+
+/** Ten columns: the two on the left stay in view while the rest scroll sideways. */
+const COLUMNS = [46, 300, 96, 96, 96, 96, 84, 104, 84, 76, 84];
+const TABLE_MIN = COLUMNS.reduce((a, b) => a + b, 0);
+/** The Added Products table has a Group column after Product. */
+const ADDED_COLUMNS = [COLUMNS[0], COLUMNS[1], 190, ...COLUMNS.slice(2)];
+const ADDED_MIN = ADDED_COLUMNS.reduce((a, b) => a + b, 0);
+const STICKY_CHECK: React.CSSProperties = { position: 'sticky', left: 0, zIndex: 2 };
+const STICKY_PRODUCT: React.CSSProperties = { position: 'sticky', left: COLUMNS[0], zIndex: 2, borderRight: `1px solid ${HAIR}` };
+const STICKY_HEAD_CHECK: React.CSSProperties = { position: 'sticky', top: 0, left: 0, zIndex: 3 };
+const STICKY_HEAD_PRODUCT: React.CSSProperties = { position: 'sticky', top: 0, left: COLUMNS[0], zIndex: 3, borderRight: `1px solid ${HAIR}` };
+
+function seedOf(text: string): number {
+  let h = 0;
+  for (const ch of text) h = (h * 31 + ch.charCodeAt(0)) % 9973;
+  return h;
+}
+
+/** Impressions, clicks, CTR and orders for a product, from its spend and sales over the chosen range (sample figures, not real data). */
+function derive(seed: string, adSpend: number, adSales: number, factor: number) {
+  const h = seedOf(seed);
+  const cpc = 0.55 + (h % 9) * 0.07;
+  const ctr = 0.28 + (h % 11) * 0.045;
+  const aov = 26 + (h % 7) * 5;
+  const clicks = Math.round((adSpend * factor) / cpc);
+  return { clicks, ctr, impressions: Math.round(clicks / (ctr / 100)), orders: Math.round((adSales * factor) / aov) };
+}
+
+function compactCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(n >= 100_000 ? 0 : 1).replace(/\.0$/, '')}K`;
+  return String(n);
+}
+
+/** $128.4K style, so five metric columns still leave room for the product name. */
+function compactMoney(n: number): string {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(n >= 100_000 ? 0 : 1).replace(/\.0$/, '')}K`;
+  return `$${Math.round(n)}`;
+}
+
+/** One row of the Added Products table. Memoised, so a change to one row, or to the picker, does not redraw thousands of others. */
+const AddedRow = memo(function AddedRow({ product: p, group, checked, factor, onToggle, onOpenGroup }: {
+  product: CcProduct; group: ProductGroup | undefined; checked: boolean; factor: number;
+  onToggle: (id: string) => void; onOpenGroup: (anchor: DOMRect, product: CcProduct) => void;
+}) {
+  return (
+    <tr className="ccd-row">
+      <td className="ccd-sticky" style={{ ...TD, ...CHECK_COL, ...STICKY_CHECK, background: '#ffffff' }}>
+        <RowCheck checked={checked} label={`Select ${p.title}`} onToggle={() => onToggle(p.id)} />
+      </td>
+      <td className="ccd-sticky" style={{ ...TD, ...STICKY_PRODUCT, overflow: 'hidden', background: '#ffffff' }}>
+        <ProductCell title={p.title} color={p.thumbnailColor} sku={p.sku} asin={p.asin} eligible={p.eligible} reason={p.ineligibleReason} indent={Boolean(p.parentTitle)} />
+      </td>
+      <td style={TD}><GroupCell product={p} group={group} onOpen={onOpenGroup} /></td>
+      <Metrics inventory={p.inventory} sales={p.sales} adSpend={p.adSpend} adSales={p.adSales} acos={p.acos} seed={p.asin} factor={factor} />
+    </tr>
+  );
+});
+
+function Metrics({ inventory, sales, adSpend, adSales, acos, seed, all = true, factor = 1 }: { inventory: number; sales: number; adSpend: number; adSales: number; acos: number; seed: string; all?: boolean; factor?: number }) {
+  const acosColor = acos > 28 ? '#cb8b1c' : TEXT_MUTED;
+  const d = derive(seed, adSpend, adSales, factor);
+  return (
+    <>
+      <td className="ccd-num" style={{ ...NUM, color: inventory === 0 ? BAD : inventory < LOW_STOCK_BELOW ? '#cb8b1c' : TEXT_MUTED }}>{inventory.toLocaleString()}</td>
+      {all && <td className="ccd-num" style={NUM}>{compactMoney(sales * factor)}</td>}
+      {all && <td className="ccd-num" style={NUM}>{compactMoney(adSpend * factor)}</td>}
+      {all && <td className="ccd-num" style={NUM}>{compactMoney(adSales * factor)}</td>}
+      <td className="ccd-num" style={{ ...NUM, color: acosColor }}>{acos > 0 ? `${acos.toFixed(1)}%` : '—'}</td>
+      <td className="ccd-num" style={NUM}>{compactCount(d.impressions)}</td>
+      <td className="ccd-num" style={NUM}>{compactCount(d.clicks)}</td>
+      <td className="ccd-num" style={NUM}>{d.ctr.toFixed(2)}%</td>
+      <td className="ccd-num" style={NUM}>{compactCount(d.orders)}</td>
+    </>
+  );
+}
+
+const PANEL_TABLE: React.CSSProperties = { border: `1px solid ${BORDER}`, borderRadius: 10, overflow: 'auto', background: '#ffffff' };
+
+// ── Step ──────────────────────────────────────────────────────────────────────────────────────
+
+export default function StepProducts({ draft, products, selectedProducts, onChange }: {
+  draft: CcDraft; products: CcProduct[]; selectedProducts: CcProduct[]; onChange: (patch: Partial<CcDraft>) => void;
+}) {
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<Filters>(NO_FILTERS);
+  const [addedSearch, setAddedSearch] = useState('');
+  const [addedFilters, setAddedFilters] = useState<Filters>(NO_FILTERS);
+  // One range for both tables. The sample figures are per 30 days, so other ranges scale from that.
+  const [range, setRange] = useState<DateRange>(DEFAULT_RANGE);
+  // The picker and the manager live in their own layer, so opening them does not redraw the table.
+  const layerRef = useRef<GroupLayerHandle>(null);
+  const [groupFilter, setGroupFilter] = useState<string | null>(null);
+  const groupByProduct = useMemo(() => groupIndex(draft.productGroups), [draft.productGroups]);
+  const groupById = useMemo(() => new Map(draft.productGroups.map((g) => [g.id, g])), [draft.productGroups]);
+  const viewingGroup = groupFilter && groupById.has(groupFilter) ? groupById.get(groupFilter) : null;
+  const groupByProductRef = useRef(groupByProduct);
+  groupByProductRef.current = groupByProduct;
+  const toggleStagedRemove = useCallback((id: string) => setStagedRemove((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; }), []);
+  // The ticked rows, the products and the groups as the callback below needs them, without it being rebuilt on every render.
+  const stagedRef = useRef<Set<string>>(new Set());
+  const productsRef = useRef<CcProduct[]>([]);
+  const groupsRef = useRef<ProductGroup[]>([]);
+  productsRef.current = selectedProducts;
+  groupsRef.current = draft.productGroups;
+  // Opened from a row: it groups that row, or every ticked row when that row is one of them.
+  const openGroupPicker = useCallback((anchor: DOMRect, product: CcProduct) => {
+    const staged = stagedRef.current;
+    const ids = staged.has(product.id) ? Array.from(staged) : [product.id];
+    const wanted = new Set(ids);
+    const chosen = productsRef.current.filter((x) => wanted.has(x.id));
+    layerRef.current?.openPicker(anchor, {
+      label: ids.length > 1 ? ids.length.toLocaleString() + ' selected products' : product.title,
+      currentId: ids.length === 1 ? groupByProductRef.current.get(product.id)?.id ?? null : null,
+      suggested: suggestGroupName(chosen, groupsRef.current),
+      ideas: groupNameIdeas(chosen, groupsRef.current),
+      ids,
+      after: ids.length > 1 ? () => setStagedRemove(new Set()) : undefined,
+    });
+  }, []);
+  const factor = daysIn(range) / 30;
+  // Ticked in the left table, waiting for "Add Selections".
+  const [staged, setStaged] = useState<Set<string>>(new Set());
+  // Ticked in the right table, waiting for "Clear".
+  const [stagedRemove, setStagedRemove] = useState<Set<string>>(new Set());
+  stagedRef.current = stagedRemove;
+  // Parents with child products start expanded.
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set(products.filter((p) => p.children?.length).map((p) => p.id)));
+
+  const noEligibleAtAll = products.every((p) => !p.eligible);
+  const added = new Set(draft.productIds);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return products.filter((p) => {
+      if (!matchesFilters(p, filters)) return false;
+      if (!q) return true;
+      const own = `${p.title} ${p.asin} ${p.sku}`.toLowerCase().includes(q);
+      return own || (p.children ?? []).some((k) => `${k.title} ${k.asin} ${k.sku}`.toLowerCase().includes(q));
+    });
+  }, [products, search, filters]);
+
+  const shownAdded = useMemo(() => {
+    const q = addedSearch.trim().toLowerCase();
+    return selectedProducts.filter((p) => matchesFilters(p, addedFilters) && (!viewingGroup || groupByProduct.get(p.id)?.id === viewingGroup.id) && (!q || `${p.title} ${p.asin} ${p.sku}`.toLowerCase().includes(q)));
+  }, [selectedProducts, addedSearch, addedFilters, viewingGroup, groupByProduct]);
+
+  // Everything in the left list a user can still add: eligible rows, plus the variations of expanded parents, not already added.
+  const addableIds = useMemo(
+    () => filtered.filter((p) => p.eligible).flatMap((p) => [p.id, ...(p.children ?? []).map((k) => k.id)]).filter((id) => !added.has(id)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filtered, expanded, draft.productIds],
+  );
+  const listedCount = filtered.reduce((n, p) => n + 1 + (p.children?.length ?? 0), 0);
+  const allStaged = addableIds.length > 0 && addableIds.every((id) => staged.has(id));
+
+  function toggleSet(setter: React.Dispatch<React.SetStateAction<Set<string>>>, id: string) {
+    setter((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  }
+  function toggleExpanded(id: string) { toggleSet(setExpanded, id); }
+  // Ticking a parent ticks every variation that can still be added; ticking its last variation ticks the parent too,
+  // and unticking any variation unticks the parent.
+  function toggleParent(p: CcProduct) {
+    const kids = (p.children ?? []).filter((k) => !added.has(k.id)).map((k) => k.id);
+    setStaged((prev) => {
+      const next = new Set(prev);
+      const on = !prev.has(p.id);
+      [p.id, ...kids].forEach((id) => (on ? next.add(id) : next.delete(id)));
+      return next;
+    });
+  }
+  function toggleChild(p: CcProduct, id: string) {
+    const kids = (p.children ?? []).filter((k) => !added.has(k.id)).map((k) => k.id);
+    setStaged((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      if (kids.every((k) => next.has(k)) && !added.has(p.id)) next.add(p.id); else next.delete(p.id);
+      return next;
+    });
+  }
+  function toggleAdded(id: string) {
+    const set = new Set(draft.productIds);
+    if (set.has(id)) set.delete(id); else set.add(id);
+    onChange({ productIds: Array.from(set) });
+    setStaged((prev) => { const n = new Set(prev); n.delete(id); return n; });
+  }
+  function addStaged() {
+    onChange({ productIds: Array.from(new Set([...draft.productIds, ...Array.from(staged)])) });
+    setStaged(new Set());
+  }
+  // Ticked products go straight into a group: pick one or make one, and they are added to the selection with it.
+  function addStagedToGroup(anchor: DOMRect) {
+    const ids = Array.from(staged);
+    if (ids.length === 0) return;
+    const wanted = new Set(ids);
+    const chosen = products.flatMap((x) => [x, ...(x.children ?? [])]).filter((x) => wanted.has(x.id));
+    layerRef.current?.openPicker(anchor, {
+      label: ids.length === 1 && chosen[0] ? chosen[0].title : ids.length.toLocaleString() + ' selected products',
+      currentId: null,
+      suggested: suggestGroupName(chosen, draft.productGroups),
+      ideas: groupNameIdeas(chosen, draft.productGroups),
+      ids,
+      after: addStaged,
+    });
+  }
+  function clearAdded() {
+    const drop = stagedRemove.size > 0 ? stagedRemove : new Set(draft.productIds);
+    onChange({ productIds: draft.productIds.filter((id) => !drop.has(id)) });
+    setStagedRemove(new Set());
+  }
+
+  // Each recommended group with the eligible products (and their variations) that fit it; groups with none are left out.
+  // Taking one adds them all and puts them in a group of that name; an existing group of that name takes them instead
+  // of a second one being made.
+  const recommendations = useMemo(() => {
+    const all = products.flatMap((p) => [p, ...(p.children ?? []).map((k) => ({ ...p, ...k }))]).filter((p) => p.eligible);
+    return RECOMMENDED_GROUPS.map((g) => {
+      const fit = all.filter((p) => g.match.test(p.title));
+      return { name: g.name, ids: fit.map((p) => p.id), names: fit.map((p) => p.title), colors: Array.from(new Set(fit.map((p) => p.thumbnailColor))) };
+    }).filter((g) => g.ids.length > 0);
+  }, [products]);
+  const groupNamed = (name: string) => draft.productGroups.find((g) => g.name.toLowerCase() === name.toLowerCase());
+  const isApplied = (r: { name: string; ids: string[] }) => r.ids.every((id) => added.has(id) && groupNamed(r.name)?.productIds.includes(id));
+  const suggestions = recommendations.map((r) => ({ ...r, applied: isApplied(r) }));
+  function applyRecommendation(r: { name: string; ids: string[] }) {
+    const productIds = Array.from(new Set([...draft.productIds, ...r.ids]));
+    const existing = groupNamed(r.name);
+    const productGroups = existing
+      ? moveProducts(draft.productGroups, r.ids, existing.id)
+      : createGroup({ ...draft, productIds }, r.name, r.ids).groups;
+    onChange({ productIds, productGroups });
+    setStaged((prev) => { const n = new Set(prev); r.ids.forEach((id) => n.delete(id)); return n; });
+  }
+
+  const allAddedStaged = shownAdded.length > 0 && shownAdded.every((p) => stagedRemove.has(p.id));
+
+  return (
+    <div>
+      <StepHeading title="Choose products to promote" aside={<DateRangeSelect value={range} onChange={setRange} />} />
+
+      <div className="ccd-product-stage">
+      <div className="ccd-product-grid">
+        {/* All products */}
+        <Panel pad={14} className="ccd-product-panel">
+          {/* Same two rows as Added Products: title with its list button, then search, Filter and the main action. */}
+          <PanelHead title="All Products" count={listedCount}>
+            <ToolButton disabled={suggestions.length === 0} onClick={(e) => layerRef.current?.openRecommendations(e.currentTarget.getBoundingClientRect())} haspopup>
+              Recommended groups <span className="ccd-gcount ccd-num">{suggestions.length.toLocaleString()}</span>
+            </ToolButton>
+          </PanelHead>
+          <Toolbar
+            action={(
+              <ToolButton primary disabled={staged.size === 0} haspopup onClick={(e) => addStagedToGroup(e.currentTarget.getBoundingClientRect())}>
+                Add to a group{staged.size > 0 ? ` (${staged.size})` : ''}
+              </ToolButton>
+            )}
+          >
+            <SearchBox compact value={search} onChange={setSearch} label="Search all products" />
+            <FilterButton filters={filters} onChange={setFilters} />
+          </Toolbar>
+
+          <div className="ccd-scroll" style={{ ...PANEL_TABLE, height: 460 }}>
+            <table style={{ width: '100%', minWidth: TABLE_MIN, tableLayout: 'fixed', borderCollapse: 'separate', borderSpacing: 0, font: `400 13px/1.4 ${FONT}` }}>
+              <colgroup>{COLUMNS.map((w, i) => <col key={i} style={{ width: w }} />)}</colgroup>
+              <thead>
+                <tr>
+                  <th style={{ ...TH, ...CHECK_COL, ...STICKY_HEAD_CHECK }}>
+                    <RowCheck
+                      checked={allStaged} disabled={addableIds.length === 0} label="Select all products on this list"
+                      onToggle={() => setStaged(allStaged ? new Set() : new Set(addableIds))}
+                    />
+                  </th>
+                  <th style={{ ...TH, ...STICKY_HEAD_PRODUCT }}>Product</th>
+                  <th style={NUM_TH}>Inventory</th>
+                  <th style={NUM_TH}>Sales</th>
+                  <th style={NUM_TH}>Ad spend</th>
+                  <th style={NUM_TH}>Ad sales</th>
+                  <th style={NUM_TH}>ACOS</th>
+                  <th style={NUM_TH}>Impressions</th>
+                  <th style={NUM_TH}>Clicks</th>
+                  <th style={NUM_TH}>CTR</th>
+                  <th style={NUM_TH}>Orders</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!noEligibleAtAll && filtered.map((p) => {
+                  const kids = p.children ?? [];
+                  const isOpen = kids.length > 0 && expanded.has(p.id);
+                  const isAdded = added.has(p.id);
+                  const canAdd = p.eligible && !isAdded;
+                  return (
+                    <Fragment key={p.id}>
+                      <tr className="ccd-row" onClick={() => canAdd && toggleParent(p)} style={{ cursor: canAdd ? 'pointer' : 'default', opacity: p.eligible && !isAdded ? 1 : 0.6 }}>
+                        <td className="ccd-sticky" style={{ ...TD, ...CHECK_COL, ...STICKY_CHECK, background: '#ffffff' }}>
+                          <RowCheck checked={!isAdded && staged.has(p.id)} disabled={!canAdd} label={`Select ${p.title}`} onToggle={() => toggleParent(p)} />
+                        </td>
+                        <td className="ccd-sticky" style={{ ...TD, ...STICKY_PRODUCT, overflow: 'hidden', background: '#ffffff' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0, overflow: 'hidden' }}>
+                            {kids.length > 0 ? (
+                              <button
+                                type="button" aria-expanded={isOpen} aria-label={isOpen ? 'Hide variations' : 'Show variations'}
+                                onClick={(e) => { e.stopPropagation(); toggleExpanded(p.id); }}
+                                style={{ width: 22, height: 22, padding: 0, border: 'none', background: 'none', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flex: 'none', transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 140ms ease-out' }}
+                              ><ChevronRightIcon size={12} color={TEXT_MUTED} /></button>
+                            ) : <span style={{ width: 22, flex: 'none' }} />}
+                            <ProductCell title={p.title} color={p.thumbnailColor} sku={p.sku} asin={p.asin} eligible={p.eligible} reason={p.ineligibleReason} />
+                          </div>
+                        </td>
+                        <Metrics inventory={p.inventory} sales={p.sales} adSpend={p.adSpend} adSales={p.adSales} acos={p.acos} seed={p.asin} factor={factor} />
+                      </tr>
+                      {isOpen && kids.map((k) => {
+                        const kAdded = added.has(k.id);
+                        const kCanAdd = p.eligible && !kAdded;
+                        return (
+                          <tr key={k.id} className="ccd-row" onClick={() => kCanAdd && toggleChild(p, k.id)} style={{ cursor: kCanAdd ? 'pointer' : 'default', background: SURFACE_MUTED, opacity: kAdded ? 0.6 : 1 }}>
+                            <td className="ccd-sticky" style={{ ...TD, ...CHECK_COL, ...STICKY_CHECK, background: SURFACE_MUTED }}>
+                              <RowCheck checked={!kAdded && staged.has(k.id)} disabled={!kCanAdd} label={`Select ${k.title}`} onToggle={() => toggleChild(p, k.id)} />
+                            </td>
+                            {/* Indented one step under the parent's picture, with a connector from it. */}
+                            <td className="ccd-sticky" style={{ ...TD, ...STICKY_PRODUCT, paddingLeft: 72, overflow: 'hidden', background: SURFACE_MUTED }}>
+                              <span aria-hidden style={{ position: 'absolute', left: 57, top: 0, bottom: '50%', width: 11, borderLeft: `1.5px solid ${BORDER}`, borderBottom: `1.5px solid ${BORDER}`, borderBottomLeftRadius: 6 }} />
+                              <ProductCell title={k.title} color={p.thumbnailColor} sku={k.sku} asin={k.asin} indent />
+                            </td>
+                            <Metrics inventory={k.inventory} sales={Math.round(k.adSales * 3.1)} adSpend={k.adSpend} adSales={k.adSales} acos={k.acos} seed={k.asin} factor={factor} />
+                          </tr>
+                        );
+                      })}
+                    </Fragment>
+                  );
+                })}
+                {noEligibleAtAll && (
+                  <tr>
+                    <td colSpan={11} style={{ padding: '44px 14px', textAlign: 'center' }}>
+                      <div style={{ font: `600 14px/1.4 ${FONT}`, color: TEXT_PRIMARY }}>No eligible products found</div>
+                      <div style={{ margin: '4px auto 0', maxWidth: 340, font: `400 13px/1.55 ${FONT}`, color: TEXT_MUTED }}>There are currently no products available for Sponsored Products campaign creation.</div>
+                    </td>
+                  </tr>
+                )}
+                {!noEligibleAtAll && filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={11} style={{ padding: '40px 14px', textAlign: 'center' }}>
+                      <div style={{ font: `400 13px/1.5 ${FONT}`, color: TEXT_MUTED }}>
+                        {search.trim() ? `No products match “${search.trim()}” with these filters.` : 'No products match these filters.'}
+                      </div>
+                      {(search.trim() || activeChips(filters).length > 0) && <div style={{ marginTop: 8 }}><TextButton onClick={() => { setSearch(''); setFilters(NO_FILTERS); }}>Clear search and filters</TextButton></div>}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+
+        {/* Added products */}
+        <Panel pad={14} className="ccd-product-panel ccd-product-panel--selected">
+          <PanelHead title="Added Products" count={selectedProducts.length}>
+            {/* Always there, so both cards keep the same rows; disabled until a group exists. */}
+            <ToolButton disabled={draft.productGroups.length === 0} onClick={(e) => layerRef.current?.openManager(e.currentTarget.getBoundingClientRect())} haspopup>
+              Groups <span className="ccd-gcount ccd-num">{draft.productGroups.length.toLocaleString()}</span>
+            </ToolButton>
+          </PanelHead>
+          <Toolbar
+            action={(
+              <ToolButton disabled={selectedProducts.length === 0} onClick={clearAdded}>
+                <TrashIcon /> {stagedRemove.size > 0 ? `Clear (${stagedRemove.size})` : 'Clear All'}
+              </ToolButton>
+            )}
+          >
+            <SearchBox compact value={addedSearch} onChange={setAddedSearch} label="Search added products" />
+            <FilterButton filters={addedFilters} onChange={setAddedFilters} />
+          </Toolbar>
+          {viewingGroup && (
+            <div className="ccd-gf" role="status">
+              Showing the {viewingGroup.productIds.length.toLocaleString()} {viewingGroup.productIds.length === 1 ? 'product' : 'products'} in <strong>{viewingGroup.name}</strong>
+              <button type="button" onClick={() => setGroupFilter(null)}>Show all</button>
+            </div>
+          )}
+          {draft.productGroups.length === 0 && <GroupHint products={selectedProducts.length} />}
+
+          <div className="ccd-scroll" style={{ ...PANEL_TABLE, height: 460 }}>
+            <table style={{ width: '100%', minWidth: ADDED_MIN, tableLayout: 'fixed', borderCollapse: 'separate', borderSpacing: 0, font: `400 13px/1.4 ${FONT}` }}>
+              <colgroup>{ADDED_COLUMNS.map((w, i) => <col key={i} style={{ width: w }} />)}</colgroup>
+              <thead>
+                <tr>
+                  <th style={{ ...TH, ...CHECK_COL, ...STICKY_HEAD_CHECK }}>
+                    <RowCheck
+                      checked={allAddedStaged} disabled={shownAdded.length === 0} label="Select all added products"
+                      onToggle={() => setStagedRemove(allAddedStaged ? new Set() : new Set(shownAdded.map((p) => p.id)))}
+                    />
+                  </th>
+                  <th style={{ ...TH, ...STICKY_HEAD_PRODUCT }}>Product</th>
+                  <th style={TH}>Group</th>
+                  <th style={NUM_TH}>Inventory</th>
+                  <th style={NUM_TH}>Sales</th>
+                  <th style={NUM_TH}>Ad spend</th>
+                  <th style={NUM_TH}>Ad sales</th>
+                  <th style={NUM_TH}>ACOS</th>
+                  <th style={NUM_TH}>Impressions</th>
+                  <th style={NUM_TH}>Clicks</th>
+                  <th style={NUM_TH}>CTR</th>
+                  <th style={NUM_TH}>Orders</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shownAdded.map((p) => (
+                  <AddedRow key={p.id} product={p} group={groupByProduct.get(p.id)} checked={stagedRemove.has(p.id)} factor={factor} onToggle={toggleStagedRemove} onOpenGroup={openGroupPicker} />
+                ))}
+                {shownAdded.length === 0 && (
+                  <tr>
+                    <td colSpan={12} style={{ height: 380, textAlign: 'center', color: TEXT_MUTED }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, font: `400 13px/1.4 ${FONT}` }}>
+                        <span style={{ color: TEXT_FAINT, display: 'flex' }}><BoxIcon /></span>
+                        {selectedProducts.length === 0 ? "There isn't any product added in the list." : 'No added products match these filters.'}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+      </div>
+      </div>
+
+      <GroupLayer
+        ref={layerRef} draft={draft} onChange={onChange} viewingId={viewingGroup ? viewingGroup.id : null} onView={setGroupFilter}
+        recommendations={suggestions} onApplyRecommendation={applyRecommendation}
+      />
+    </div>
+  );
+}

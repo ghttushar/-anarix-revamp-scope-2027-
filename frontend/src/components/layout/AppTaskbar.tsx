@@ -132,7 +132,7 @@ interface AppTaskbarProps {
 export function AppTaskbar({ showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, breadcrumbItems, dateRangeOverride, onDateRangeOverrideChange, hideUtilityCluster = false }: AppTaskbarProps) {
   const location = useLocation();
   // Hide the app taskbar entirely on the Signals page.
-  if (location.pathname.startsWith("/alerts")) {
+  if (location.pathname.startsWith("/signals")) {
     return null;
   }
   const { adType, setAdType, frequency, setFrequency, dateRange: ctxDateRange, setDateRange: setCtxDateRange } = useFilter();
@@ -381,7 +381,7 @@ export function AppTaskbar({ showAdType = false, showFrequency = false, showDate
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0 relative" onClick={() => navigate("/alerts")}>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0 relative" onClick={() => navigate("/signals")}>
                     <Bell className="h-3.5 w-3.5" />
                     {aanPendingCount > 0 && (
                       <span className={cn(

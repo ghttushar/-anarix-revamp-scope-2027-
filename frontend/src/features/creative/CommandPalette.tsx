@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
-import { LayoutDashboard, TrendingUp, FileText, MapPin, Megaphone, Target, Package, Brain, Search, Clock, Settings, Sparkles, Plus, RefreshCw, Download } from "lucide-react";
+import { LayoutDashboard, TrendingUp, FileText, MapPin, Megaphone, Target, Package, Brain, Search, Clock, Settings, Sparkles, Plus, RefreshCw, Download, LayoutGrid, BellRing, Wand2 } from "lucide-react";
 import { useAan } from "@/components/aan";
 
 interface CommandPaletteContextType {
@@ -21,11 +21,14 @@ export function useCommandPalette() {
 }
 
 const pages = [
+  { name: "Workspace Dashboard", url: "/workspace", icon: LayoutGrid, keywords: ["nuggets", "widgets", "home"] },
+  { name: "Signals", url: "/signals", icon: BellRing, keywords: ["alerts", "meetings", "work-station", "tasks"] },
   { name: "Dashboard", url: "/profitability/dashboard", icon: LayoutDashboard, keywords: ["home", "overview"] },
   { name: "Trends", url: "/profitability/trends", icon: TrendingUp, keywords: ["analytics", "chart"] },
   { name: "Profit & Loss", url: "/profitability/pnl", icon: FileText, keywords: ["pnl", "finance"] },
   { name: "Geographical Data", url: "/profitability/geo", icon: MapPin, keywords: ["map", "region", "state"] },
   { name: "Campaign Manager", url: "/advertising/campaigns", icon: Megaphone, keywords: ["ads", "advertising"] },
+  { name: "Campaign Creator", url: "/advertising/campaign-creator", icon: Wand2, keywords: ["create", "new campaign", "launch"] },
   { name: "Impact Analysis", url: "/advertising/impact", icon: Target, keywords: ["performance"] },
   { name: "Products", url: "/catalog/products", icon: Package, keywords: ["catalog", "inventory"] },
   { name: "Brand SOV", url: "/bi/brand-sov", icon: Brain, keywords: ["share of voice", "intelligence"] },
@@ -88,7 +91,7 @@ export function CommandPalette({ children }: { children: React.ReactNode }) {
           console.log("Exporting report...");
           break;
         case "new-campaign":
-          navigate("/advertising/campaigns?new=true");
+          navigate("/advertising/campaign-creator");
           break;
       }
       close();

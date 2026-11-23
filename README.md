@@ -1,3 +1,13 @@
+# Anarix revamp, scope 2027
+
+The revamped Anarix app: the new design from anarix-insight-engine, plus Campaign Creator, the Dashboard (nuggets) and Signals brought over from anarix-ui (new-page-old-design) with their layout and behaviour unchanged and only their colors moved onto this app's palette.
+
+- **Run it:** `cd frontend && npm i && npm run dev` (http://localhost:8080)
+- **Ported pages:** `/advertising/campaign-creator`, `/workspace` and `/signals`; their code lives in `frontend/src/legacy`. See `frontend/src/legacy/scope.css` for how they keep their sizes inside this app.
+- **Recolor:** `node scripts/legacy-palette/palette.mjs map` writes the old → new color map (`map.json`, `map.html`); `apply` rewrites the colors in `frontend/src/legacy`. Run `apply` only on freshly copied, not-yet-recolored files: a second run would shift the colors again.
+
+---
+
 # Welcome to your Lovable project 
 gc jhgv kghb
 

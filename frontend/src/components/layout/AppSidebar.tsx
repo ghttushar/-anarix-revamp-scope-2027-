@@ -6,7 +6,8 @@ import {
   CalendarClock, History, ListTodo, Settings, Users, ChevronDown,
   ChevronRight, Layers, Image, FlaskConical, PackageCheck,
   Send, Sun, Moon, User, LogOut, PanelLeft,
-  Gauge, Wheat, Bell, Activity, Link, Wrench, LayoutDashboard, Palette, ShieldCheck, Plug, Globe, CreditCard
+  Gauge, Wheat, Bell, Activity, Link, Wrench, LayoutDashboard, Palette, ShieldCheck, Plug, Globe, CreditCard,
+  BellRing, Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -45,7 +46,8 @@ const navigationGroups: NavGroup[] = [{
   label: "Workspace",
   icon: LayoutGrid,
   items: [
-    { title: "Dashboard Builder", url: "/workspace", icon: LayoutGrid, isNewFeature: true },
+    { title: "Dashboard", url: "/workspace", icon: LayoutGrid },
+    { title: "Signals", url: "/signals", icon: BellRing },
     { title: "Health Score", url: "/workspace/health-score", icon: Activity, isNewFeature: true },
   ]
 }, {
@@ -63,6 +65,7 @@ const navigationGroups: NavGroup[] = [{
   icon: Megaphone,
   items: [
     { title: "Campaign Manager", url: "/advertising/campaigns", icon: Megaphone },
+    { title: "Campaign Creator", url: "/advertising/campaign-creator", icon: Wand2 },
     { title: "Impact Analysis", url: "/advertising/impact", icon: Target },
     { title: "Targeting Actions", url: "/advertising/targeting", icon: MousePointerClick },
     { title: "Budget Pacing", url: "/advertising/budget-pacing", icon: Gauge, isNewFeature: true },

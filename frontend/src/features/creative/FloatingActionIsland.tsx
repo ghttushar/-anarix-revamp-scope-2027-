@@ -26,7 +26,7 @@ interface ActionItem {
   alwaysShowLabel?: boolean;
 }
 
-const hiddenRoutes = ["/login", "/onboarding", "/settings", "/alerts"];
+const hiddenRoutes = ["/login", "/onboarding", "/settings", "/signals", "/advertising/campaign-creator"];
 
 export function FloatingActionIsland() {
   const isTabletView = false;
@@ -139,7 +139,7 @@ export function FloatingActionIsland() {
   const signalsAction: ActionItem = {
     icon: Bell,
     label: "Signals",
-    onClick: () => navigate("/alerts"),
+    onClick: () => navigate("/signals"),
     badge: aanPendingCount,
     highlight: aanCriticalCount > 0,
   };

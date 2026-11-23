@@ -1,0 +1,2567 @@
+{
+ "#ffffff": {
+  "hex": "#ffffff",
+  "family": "kept",
+  "uses": 384
+ },
+ "#77469b": {
+  "hex": "#3f4fda",
+  "family": "brand",
+  "uses": 179
+ },
+ "#b3453f": {
+  "hex": "#cc2b2b",
+  "family": "red",
+  "uses": 136
+ },
+ "#3d434b": {
+  "hex": "#3d424b",
+  "family": "neutral",
+  "uses": 95
+ },
+ "#6b7178": {
+  "hex": "#6b6f78",
+  "family": "neutral",
+  "uses": 95
+ },
+ "#3f7d6a": {
+  "hex": "#2b9652",
+  "family": "green",
+  "uses": 91
+ },
+ "#e6e8ec": {
+  "hex": "#e6e8ec",
+  "family": "neutral",
+  "uses": 90
+ },
+ "#9aa0a8": {
+  "hex": "#9a9fa8",
+  "family": "neutral",
+  "uses": 81
+ },
+ "#e78a2e": {
+  "hex": "#f5a520",
+  "family": "amber",
+  "uses": 66
+ },
+ "#464646": {
+  "hex": "#464646",
+  "family": "neutral",
+  "uses": 65
+ },
+ "#23272d": {
+  "hex": "#23232d",
+  "family": "neutral",
+  "uses": 60
+ },
+ "#dfe3ea": {
+  "hex": "#e1e3e8",
+  "family": "neutral",
+  "uses": 56
+ },
+ "#f1f2f4": {
+  "hex": "#f1f2f4",
+  "family": "neutral",
+  "uses": 54
+ },
+ "#141821": {
+  "hex": "#141621",
+  "family": "blue",
+  "uses": 50
+ },
+ "#7b808a": {
+  "hex": "#7b808a",
+  "family": "neutral",
+  "uses": 49
+ },
+ "#1d2129": {
+  "hex": "#1f1f27",
+  "family": "neutral",
+  "uses": 41
+ },
+ "#2d2f36": {
+  "hex": "#2d2d36",
+  "family": "neutral",
+  "uses": 37
+ },
+ "#a8763f": {
+  "hex": "#cb8b1c",
+  "family": "amber",
+  "uses": 35
+ },
+ "#5c7f9e": {
+  "hex": "#5c6f9e",
+  "family": "blue",
+  "uses": 35
+ },
+ "#f6f4fa": {
+  "hex": "#f4f6fd",
+  "family": "brand",
+  "uses": 31
+ },
+ "#000000": {
+  "hex": "#000000",
+  "family": "kept",
+  "uses": 30
+ },
+ "#e4e7ee": {
+  "hex": "#e6e8ec",
+  "family": "neutral",
+  "uses": 28
+ },
+ "#646b76": {
+  "hex": "#646a76",
+  "family": "neutral",
+  "uses": 26
+ },
+ "#5f3880": {
+  "hex": "#2235c4",
+  "family": "brand",
+  "uses": 25
+ },
+ "#9aa0ab": {
+  "hex": "#9aa0ab",
+  "family": "neutral",
+  "uses": 24
+ },
+ "#101828": {
+  "hex": "#101428",
+  "family": "blue",
+  "uses": 24
+ },
+ "#dfe2e9": {
+  "hex": "#e0e3e8",
+  "family": "neutral",
+  "uses": 23
+ },
+ "#fafbfd": {
+  "hex": "#fbfbfc",
+  "family": "neutral",
+  "uses": 21
+ },
+ "#cfd4dc": {
+  "hex": "#d1d4da",
+  "family": "neutral",
+  "uses": 20
+ },
+ "#eceef1": {
+  "hex": "#eceef1",
+  "family": "neutral",
+  "uses": 19
+ },
+ "#8a909b": {
+  "hex": "#8a909b",
+  "family": "neutral",
+  "uses": 17
+ },
+ "#202129": {
+  "hex": "#202029",
+  "family": "neutral",
+  "uses": 16
+ },
+ "#f1f2f6": {
+  "hex": "#f2f3f5",
+  "family": "neutral",
+  "uses": 16
+ },
+ "#eceef2": {
+  "hex": "#edeef1",
+  "family": "neutral",
+  "uses": 15
+ },
+ "#eef0f5": {
+  "hex": "#eeeff5",
+  "family": "blue",
+  "uses": 15
+ },
+ "#f9f7fc": {
+  "hex": "#f7f8fe",
+  "family": "brand",
+  "uses": 15
+ },
+ "#5f3584": {
+  "hex": "#1b31cc",
+  "family": "brand",
+  "uses": 14
+ },
+ "#2f6fed": {
+  "hex": "#2f52ed",
+  "family": "blue",
+  "uses": 13
+ },
+ "#f46d76": {
+  "hex": "#fb6972",
+  "family": "red",
+  "uses": 11
+ },
+ "#dadeeb": {
+  "hex": "#dadceb",
+  "family": "blue",
+  "uses": 11
+ },
+ "#f6f7fa": {
+  "hex": "#f7f8f9",
+  "family": "neutral",
+  "uses": 10
+ },
+ "#eceef3": {
+  "hex": "#edeff2",
+  "family": "neutral",
+  "uses": 10
+ },
+ "#fbfafd": {
+  "hex": "#fafbfe",
+  "family": "brand",
+  "uses": 10
+ },
+ "#eef0f4": {
+  "hex": "#eff0f3",
+  "family": "neutral",
+  "uses": 9
+ },
+ "#fafbfc": {
+  "hex": "#fafbfc",
+  "family": "neutral",
+  "uses": 9
+ },
+ "#8a5bb0": {
+  "hex": "#606eda",
+  "family": "brand",
+  "uses": 9
+ },
+ "#8a56b3": {
+  "hex": "#5a68df",
+  "family": "brand",
+  "uses": 9
+ },
+ "#e3d8f0": {
+  "hex": "#d8ddfa",
+  "family": "brand",
+  "uses": 8
+ },
+ "#eff1f5": {
+  "hex": "#f0f1f4",
+  "family": "neutral",
+  "uses": 8
+ },
+ "#161821": {
+  "hex": "#18181f",
+  "family": "neutral",
+  "uses": 8
+ },
+ "#c9b6dd": {
+  "hex": "#b8c0f0",
+  "family": "brand",
+  "uses": 8
+ },
+ "#8a7fa8": {
+  "hex": "#8b98c6",
+  "family": "brand",
+  "uses": 8
+ },
+ "#c3b3d6": {
+  "hex": "#b7bee9",
+  "family": "brand",
+  "uses": 7
+ },
+ "#f6f7f9": {
+  "hex": "#f6f7f9",
+  "family": "neutral",
+  "uses": 7
+ },
+ "#b3443c": {
+  "hex": "#cc2928",
+  "family": "red",
+  "uses": 7
+ },
+ "#0071ce": {
+  "hex": "#0071ce",
+  "family": "kept",
+  "uses": 7
+ },
+ "#f3f5fa": {
+  "hex": "#f5f6f8",
+  "family": "neutral",
+  "uses": 6
+ },
+ "#efe9f6": {
+  "hex": "#e9ecfc",
+  "family": "brand",
+  "uses": 6
+ },
+ "#c9cdd6": {
+  "hex": "#cbced4",
+  "family": "neutral",
+  "uses": 6
+ },
+ "#efe6f7": {
+  "hex": "#e7eafc",
+  "family": "brand",
+  "uses": 6
+ },
+ "#1b8a4f": {
+  "hex": "#0b9e30",
+  "family": "green",
+  "uses": 6
+ },
+ "#2f7d65": {
+  "hex": "#169b46",
+  "family": "green",
+  "uses": 6
+ },
+ "#5b6170": {
+  "hex": "#5b6270",
+  "family": "neutral",
+  "uses": 6
+ },
+ "#a3a8b2": {
+  "hex": "#a3a8b2",
+  "family": "neutral",
+  "uses": 6
+ },
+ "#a3a8b1": {
+  "hex": "#a3a8b1",
+  "family": "neutral",
+  "uses": 6
+ },
+ "#eee7f5": {
+  "hex": "#e7eafb",
+  "family": "brand",
+  "uses": 6
+ },
+ "#f4f5f8": {
+  "hex": "#f5f6f7",
+  "family": "neutral",
+  "uses": 5
+ },
+ "#5a9b80": {
+  "hex": "#46b468",
+  "family": "green",
+  "uses": 5
+ },
+ "#a3a9b4": {
+  "hex": "#a3a9b4",
+  "family": "neutral",
+  "uses": 5
+ },
+ "#e6e8ef": {
+  "hex": "#e8eaed",
+  "family": "neutral",
+  "uses": 5
+ },
+ "#e0e3ec": {
+  "hex": "#e0e2ec",
+  "family": "blue",
+  "uses": 5
+ },
+ "#e8ebf1": {
+  "hex": "#e8eaf1",
+  "family": "blue",
+  "uses": 5
+ },
+ "#b3b8c2": {
+  "hex": "#b4b8c1",
+  "family": "neutral",
+  "uses": 5
+ },
+ "#1e8449": {
+  "hex": "#0c9a2d",
+  "family": "green",
+  "uses": 5
+ },
+ "#f3eefa": {
+  "hex": "#eff1fd",
+  "family": "brand",
+  "uses": 5
+ },
+ "#3874ff": {
+  "hex": "#3859ff",
+  "family": "blue",
+  "uses": 5
+ },
+ "#f1f2f3": {
+  "hex": "#f1f2f3",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#322f35": {
+  "hex": "#2f2f35",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#8b8b8b": {
+  "hex": "#8b8b8b",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#5f6672": {
+  "hex": "#5f6572",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#643a85": {
+  "hex": "#2336cb",
+  "family": "brand",
+  "uses": 4
+ },
+ "#f3f4f7": {
+  "hex": "#f4f5f6",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#dfe2e8": {
+  "hex": "#e0e2e7",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#d5d9e0": {
+  "hex": "#d5d9e0",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#653a86": {
+  "hex": "#2335cd",
+  "family": "brand",
+  "uses": 4
+ },
+ "#f9fafd": {
+  "hex": "#fafbfc",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#bfaed4": {
+  "hex": "#b2bae9",
+  "family": "brand",
+  "uses": 4
+ },
+ "#faf7fd": {
+  "hex": "#f8f9fe",
+  "family": "brand",
+  "uses": 4
+ },
+ "#8a8f99": {
+  "hex": "#8a8f99",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#cbb8dd": {
+  "hex": "#bac1ef",
+  "family": "brand",
+  "uses": 4
+ },
+ "#f0f1f4": {
+  "hex": "#f0f1f4",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#eef0f3": {
+  "hex": "#eef0f3",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#d5d8df": {
+  "hex": "#d5d8df",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#5b6b8c": {
+  "hex": "#68707f",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#cfd4de": {
+  "hex": "#d2d5db",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#e2e5ec": {
+  "hex": "#e4e6ea",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#2d4a3c": {
+  "hex": "#245632",
+  "family": "green",
+  "uses": 4
+ },
+ "#e6e8ee": {
+  "hex": "#e7e9ed",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#4d535e": {
+  "hex": "#4d535e",
+  "family": "neutral",
+  "uses": 4
+ },
+ "#eef6f3": {
+  "hex": "#ecf9f0",
+  "family": "green",
+  "uses": 4
+ },
+ "#3d2a52": {
+  "hex": "#212e7a",
+  "family": "brand",
+  "uses": 4
+ },
+ "#ff0000": {
+  "hex": "#ff050b",
+  "family": "red",
+  "uses": 3
+ },
+ "#f7f8fa": {
+  "hex": "#f8f8f9",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#c97066": {
+  "hex": "#db5b58",
+  "family": "red",
+  "uses": 3
+ },
+ "#c3c7d0": {
+  "hex": "#c4c8cf",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#b9bec9": {
+  "hex": "#bbbfc7",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#d3a24a": {
+  "hex": "#edb430",
+  "family": "amber",
+  "uses": 3
+ },
+ "#7d838e": {
+  "hex": "#7d838e",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#12141c": {
+  "hex": "#14141a",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#f3f4f8": {
+  "hex": "#f4f5f7",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#c7ccd8": {
+  "hex": "#cbced4",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#f1ecf8": {
+  "hex": "#eceffd",
+  "family": "brand",
+  "uses": 3
+ },
+ "#4d70ee": {
+  "hex": "#4d61ee",
+  "family": "blue",
+  "uses": 3
+ },
+ "#eceff4": {
+  "hex": "#eceef4",
+  "family": "blue",
+  "uses": 3
+ },
+ "#e0a5a0": {
+  "hex": "#ec9897",
+  "family": "red",
+  "uses": 3
+ },
+ "#4b2a6a": {
+  "hex": "#1527a4",
+  "family": "brand",
+  "uses": 3
+ },
+ "#aab0bb": {
+  "hex": "#abb0ba",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#f4f4f4": {
+  "hex": "#f4f4f4",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#eee3f6": {
+  "hex": "#e4e7fc",
+  "family": "brand",
+  "uses": 3
+ },
+ "#8fd9bd": {
+  "hex": "#7af0a1",
+  "family": "green",
+  "uses": 3
+ },
+ "#b9a3cf": {
+  "hex": "#a7b0e6",
+  "family": "brand",
+  "uses": 3
+ },
+ "#e6ddf0": {
+  "hex": "#dee2f9",
+  "family": "brand",
+  "uses": 3
+ },
+ "#f0e9f7": {
+  "hex": "#e9ecfc",
+  "family": "brand",
+  "uses": 3
+ },
+ "#a37fc7": {
+  "hex": "#818fe9",
+  "family": "brand",
+  "uses": 3
+ },
+ "#ea4335": {
+  "hex": "#ea4335",
+  "family": "kept",
+  "uses": 3
+ },
+ "#f3f4f6": {
+  "hex": "#f3f4f6",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#f1f1f1": {
+  "hex": "#f1f1f1",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#d7d7d7": {
+  "hex": "#d7d7d7",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#c0c0c0": {
+  "hex": "#c0c0c0",
+  "family": "neutral",
+  "uses": 3
+ },
+ "#2a6df4": {
+  "hex": "#2a4ff4",
+  "family": "blue",
+  "uses": 2
+ },
+ "#acacac": {
+  "hex": "#acacac",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#858b96": {
+  "hex": "#858b96",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#e3e6ec": {
+  "hex": "#e4e6eb",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#f5effb": {
+  "hex": "#f0f2fe",
+  "family": "brand",
+  "uses": 2
+ },
+ "#dde0e7": {
+  "hex": "#dee1e6",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#d8dce4": {
+  "hex": "#d9dce3",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#d3d7de": {
+  "hex": "#d5d7dc",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#f2f8f5": {
+  "hex": "#f4f5f6",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#f3f5f9": {
+  "hex": "#f5f6f7",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#eaeef5": {
+  "hex": "#eaecf5",
+  "family": "blue",
+  "uses": 2
+ },
+ "#f7f2fb": {
+  "hex": "#f3f4fe",
+  "family": "brand",
+  "uses": 2
+ },
+ "#efe6f6": {
+  "hex": "#e7e9fc",
+  "family": "brand",
+  "uses": 2
+ },
+ "#d5d9e1": {
+  "hex": "#d6d9e0",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#f1f2f5": {
+  "hex": "#f1f2f5",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#b4b9c3": {
+  "hex": "#b5b9c2",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#7d6bb0": {
+  "hex": "#7289d5",
+  "family": "brand",
+  "uses": 2
+ },
+ "#d9cbe6": {
+  "hex": "#cdd2f3",
+  "family": "brand",
+  "uses": 2
+ },
+ "#f5f6f7": {
+  "hex": "#f5f6f7",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#f7f2fc": {
+  "hex": "#f3f5fe",
+  "family": "brand",
+  "uses": 2
+ },
+ "#b07a36": {
+  "hex": "#d09016",
+  "family": "amber",
+  "uses": 2
+ },
+ "#c0443d": {
+  "hex": "#d92929",
+  "family": "red",
+  "uses": 2
+ },
+ "#c9b6e0": {
+  "hex": "#b7c0f3",
+  "family": "brand",
+  "uses": 2
+ },
+ "#cdd2dc": {
+  "hex": "#d0d3d9",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#fdf3e6": {
+  "hex": "#fef6e5",
+  "family": "amber",
+  "uses": 2
+ },
+ "#f3ecfa": {
+  "hex": "#edeffd",
+  "family": "brand",
+  "uses": 2
+ },
+ "#d9dce4": {
+  "hex": "#dadde3",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#8a5a14": {
+  "hex": "#966708",
+  "family": "amber",
+  "uses": 2
+ },
+ "#c9b6df": {
+  "hex": "#b7c0f2",
+  "family": "brand",
+  "uses": 2
+ },
+ "#fcfafd": {
+  "hex": "#fafafe",
+  "family": "brand",
+  "uses": 2
+ },
+ "#989ca6": {
+  "hex": "#989da6",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#e9f4f0": {
+  "hex": "#e6f8ec",
+  "family": "green",
+  "uses": 2
+ },
+ "#a75d58": {
+  "hex": "#b64e4d",
+  "family": "red",
+  "uses": 2
+ },
+ "#faf8fc": {
+  "hex": "#f8f9fe",
+  "family": "brand",
+  "uses": 2
+ },
+ "#6f747e": {
+  "hex": "#6f747e",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#eef4ff": {
+  "hex": "#f5f6f8",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#6b3f8c": {
+  "hex": "#293bd5",
+  "family": "brand",
+  "uses": 2
+ },
+ "#1f7a6c": {
+  "hex": "#0d9047",
+  "family": "green",
+  "uses": 2
+ },
+ "#cfe7e1": {
+  "hex": "#c8efd7",
+  "family": "green",
+  "uses": 2
+ },
+ "#efe9fa": {
+  "hex": "#ebeefd",
+  "family": "brand",
+  "uses": 2
+ },
+ "#cdb6e3": {
+  "hex": "#b7bff6",
+  "family": "brand",
+  "uses": 2
+ },
+ "#e8f0ff": {
+  "hex": "#e8ecff",
+  "family": "blue",
+  "uses": 2
+ },
+ "#2d3139": {
+  "hex": "#2d2d39",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#8a5a17": {
+  "hex": "#986809",
+  "family": "amber",
+  "uses": 2
+ },
+ "#1b6b3f": {
+  "hex": "#0b7f27",
+  "family": "green",
+  "uses": 2
+ },
+ "#d9dce3": {
+  "hex": "#d9dce3",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#efedf3": {
+  "hex": "#eff0f7",
+  "family": "brand",
+  "uses": 2
+ },
+ "#e6e1ec": {
+  "hex": "#e3e6f3",
+  "family": "brand",
+  "uses": 2
+ },
+ "#9a92a6": {
+  "hex": "#9299a6",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#9a66c0": {
+  "hex": "#6875e9",
+  "family": "brand",
+  "uses": 2
+ },
+ "#e9ebf1": {
+  "hex": "#eaecf0",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#dfe2ea": {
+  "hex": "#e1e3e8",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#c9ccd6": {
+  "hex": "#cbced4",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#fdf8f1": {
+  "hex": "#f6f7f8",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#dbdde9": {
+  "hex": "#dbdce9",
+  "family": "blue",
+  "uses": 2
+ },
+ "#8a919b": {
+  "hex": "#8a909b",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#e6e0ec": {
+  "hex": "#e2e5f4",
+  "family": "brand",
+  "uses": 2
+ },
+ "#ff9900": {
+  "hex": "#ff9900",
+  "family": "kept",
+  "uses": 2
+ },
+ "#4285f4": {
+  "hex": "#4285f4",
+  "family": "kept",
+  "uses": 2
+ },
+ "#e01e5a": {
+  "hex": "#e01e5a",
+  "family": "kept",
+  "uses": 2
+ },
+ "#36c5f0": {
+  "hex": "#36c5f0",
+  "family": "kept",
+  "uses": 2
+ },
+ "#2eb67d": {
+  "hex": "#2eb67d",
+  "family": "kept",
+  "uses": 2
+ },
+ "#ecb22e": {
+  "hex": "#ecb22e",
+  "family": "kept",
+  "uses": 2
+ },
+ "#bfbfbf": {
+  "hex": "#bfbfbf",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#a8a8a8": {
+  "hex": "#a8a8a8",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#a6a6a6": {
+  "hex": "#a6a6a6",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#8c8c8c": {
+  "hex": "#8c8c8c",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#f1deff": {
+  "hex": "#e4e7ff",
+  "family": "brand",
+  "uses": 2
+ },
+ "#d1d5db": {
+  "hex": "#d2d5da",
+  "family": "neutral",
+  "uses": 2
+ },
+ "#009688": {
+  "hex": "#009a48",
+  "family": "green",
+  "uses": 2
+ },
+ "#f88a93": {
+  "hex": "#fc8890",
+  "family": "red",
+  "uses": 1
+ },
+ "#f05e6a": {
+  "hex": "#f95863",
+  "family": "red",
+  "uses": 1
+ },
+ "#f57780": {
+  "hex": "#fb747c",
+  "family": "red",
+  "uses": 1
+ },
+ "#1a0608": {
+  "hex": "#1e0305",
+  "family": "red",
+  "uses": 1
+ },
+ "#a7aef2": {
+  "hex": "#a7acf2",
+  "family": "blue",
+  "uses": 1
+ },
+ "#f4e4ff": {
+  "hex": "#e9ebff",
+  "family": "brand",
+  "uses": 1
+ },
+ "#7a4beb": {
+  "hex": "#6585f9",
+  "family": "brand",
+  "uses": 1
+ },
+ "#bbbbbb": {
+  "hex": "#bbbbbb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#3b414b": {
+  "hex": "#3c414a",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f2f4f7": {
+  "hex": "#f3f4f6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#a8433b": {
+  "hex": "#bf2a29",
+  "family": "red",
+  "uses": 1
+ },
+ "#fbefed": {
+  "hex": "#fdeceb",
+  "family": "red",
+  "uses": 1
+ },
+ "#2b7558": {
+  "hex": "#13913b",
+  "family": "green",
+  "uses": 1
+ },
+ "#eaf5ef": {
+  "hex": "#e7f9eb",
+  "family": "green",
+  "uses": 1
+ },
+ "#e9ebf0": {
+  "hex": "#eaecef",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d6dae1": {
+  "hex": "#d7dae0",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#c08a2b": {
+  "hex": "#da9c11",
+  "family": "amber",
+  "uses": 1
+ },
+ "#b6a3cc": {
+  "hex": "#a8b1e3",
+  "family": "brand",
+  "uses": 1
+ },
+ "#ece7f2": {
+  "hex": "#e8ebf8",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f7f4fa": {
+  "hex": "#f4f5fd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#bcadcf": {
+  "hex": "#b2bae3",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f0d3cf": {
+  "hex": "#f6ccca",
+  "family": "red",
+  "uses": 1
+ },
+ "#eff1f4": {
+  "hex": "#f0f1f3",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e2e5ea": {
+  "hex": "#e2e5ea",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#ced2da": {
+  "hex": "#d0d3d8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e0e3ea": {
+  "hex": "#e1e4e9",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#c2c7d1": {
+  "hex": "#c4c8cf",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e8b6b0": {
+  "hex": "#f2aaa8",
+  "family": "red",
+  "uses": 1
+ },
+ "#a9cfbe": {
+  "hex": "#9edcb0",
+  "family": "green",
+  "uses": 1
+ },
+ "#ece3f4": {
+  "hex": "#e3e6fb",
+  "family": "brand",
+  "uses": 1
+ },
+ "#c9b2dd": {
+  "hex": "#b3bbf1",
+  "family": "brand",
+  "uses": 1
+ },
+ "#fbf4f3": {
+  "hex": "#f6f7f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f6ecea": {
+  "hex": "#f8e9e8",
+  "family": "red",
+  "uses": 1
+ },
+ "#e9f3ee": {
+  "hex": "#e6f6ea",
+  "family": "green",
+  "uses": 1
+ },
+ "#f8f6f1": {
+  "hex": "#faf7ef",
+  "family": "amber",
+  "uses": 1
+ },
+ "#f1eee6": {
+  "hex": "#f5f0e2",
+  "family": "amber",
+  "uses": 1
+ },
+ "#f1f6f9": {
+  "hex": "#f4f5f6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e6eff5": {
+  "hex": "#e6ebf5",
+  "family": "blue",
+  "uses": 1
+ },
+ "#f5f4f9": {
+  "hex": "#f5f6fc",
+  "family": "brand",
+  "uses": 1
+ },
+ "#ecebf3": {
+  "hex": "#ebebf3",
+  "family": "blue",
+  "uses": 1
+ },
+ "#f3f7f5": {
+  "hex": "#f4f5f6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e9f0ec": {
+  "hex": "#e7f3ea",
+  "family": "green",
+  "uses": 1
+ },
+ "#faf5f3": {
+  "hex": "#f5f6f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f3ebe8": {
+  "hex": "#f7eee4",
+  "family": "amber",
+  "uses": 1
+ },
+ "#f1f7f7": {
+  "hex": "#eff9f4",
+  "family": "green",
+  "uses": 1
+ },
+ "#e6f0f0": {
+  "hex": "#e3f4ec",
+  "family": "green",
+  "uses": 1
+ },
+ "#f4f3fa": {
+  "hex": "#f5f6f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#eae8f3": {
+  "hex": "#e9edf9",
+  "family": "brand",
+  "uses": 1
+ },
+ "#dfa29a": {
+  "hex": "#ec9390",
+  "family": "red",
+  "uses": 1
+ },
+ "#efcdc8": {
+  "hex": "#f6c4c2",
+  "family": "red",
+  "uses": 1
+ },
+ "#dbe8f1": {
+  "hex": "#dbe2f1",
+  "family": "blue",
+  "uses": 1
+ },
+ "#a684c4": {
+  "hex": "#8893e4",
+  "family": "brand",
+  "uses": 1
+ },
+ "#7aa7c4": {
+  "hex": "#7a92c4",
+  "family": "blue",
+  "uses": 1
+ },
+ "#c5b0d9": {
+  "hex": "#b3baed",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f6e3e0": {
+  "hex": "#fadedd",
+  "family": "red",
+  "uses": 1
+ },
+ "#e3b6b0": {
+  "hex": "#ecaba9",
+  "family": "red",
+  "uses": 1
+ },
+ "#d8dbe2": {
+  "hex": "#d8dbe2",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#dde1e8": {
+  "hex": "#dfe1e6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d9c6ee": {
+  "hex": "#c9d0fa",
+  "family": "brand",
+  "uses": 1
+ },
+ "#c3c8d1": {
+  "hex": "#c5c8cf",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#9a6a14": {
+  "hex": "#a67608",
+  "family": "amber",
+  "uses": 1
+ },
+ "#9a6a1f": {
+  "hex": "#ad790c",
+  "family": "amber",
+  "uses": 1
+ },
+ "#6f9bb8": {
+  "hex": "#6f86b8",
+  "family": "blue",
+  "uses": 1
+ },
+ "#5f9e93": {
+  "hex": "#4cb579",
+  "family": "green",
+  "uses": 1
+ },
+ "#c9a15a": {
+  "hex": "#e9b43a",
+  "family": "amber",
+  "uses": 1
+ },
+ "#a9b1bf": {
+  "hex": "#acb1bb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#6f86a8": {
+  "hex": "#6f7ba8",
+  "family": "blue",
+  "uses": 1
+ },
+ "#cfd8e6": {
+  "hex": "#cfd4e6",
+  "family": "blue",
+  "uses": 1
+ },
+ "#d6d0ea": {
+  "hex": "#d1daf6",
+  "family": "brand",
+  "uses": 1
+ },
+ "#5f84b0": {
+  "hex": "#5f73b0",
+  "family": "blue",
+  "uses": 1
+ },
+ "#cbd8e8": {
+  "hex": "#cbd2e8",
+  "family": "blue",
+  "uses": 1
+ },
+ "#4f9a94": {
+  "hex": "#37b674",
+  "family": "green",
+  "uses": 1
+ },
+ "#c4e0dd": {
+  "hex": "#bcead1",
+  "family": "green",
+  "uses": 1
+ },
+ "#bb8740": {
+  "hex": "#e19e1a",
+  "family": "amber",
+  "uses": 1
+ },
+ "#ecd8b8": {
+  "hex": "#f7e0ad",
+  "family": "amber",
+  "uses": 1
+ },
+ "#c6e0d4": {
+  "hex": "#bee9cb",
+  "family": "green",
+  "uses": 1
+ },
+ "#6d72b8": {
+  "hex": "#6d71b8",
+  "family": "blue",
+  "uses": 1
+ },
+ "#d3d5ee": {
+  "hex": "#d3d4ee",
+  "family": "blue",
+  "uses": 1
+ },
+ "#c07484": {
+  "hex": "#ce6977",
+  "family": "red",
+  "uses": 1
+ },
+ "#eccfd5": {
+  "hex": "#f1cbd0",
+  "family": "red",
+  "uses": 1
+ },
+ "#7a965a": {
+  "hex": "#61ad47",
+  "family": "green",
+  "uses": 1
+ },
+ "#d5e1c4": {
+  "hex": "#c9ebbb",
+  "family": "green",
+  "uses": 1
+ },
+ "#f5f4fa": {
+  "hex": "#f4f7fd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#ecebf5": {
+  "hex": "#ebebf5",
+  "family": "blue",
+  "uses": 1
+ },
+ "#f2f5f9": {
+  "hex": "#f4f5f7",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e8eef5": {
+  "hex": "#e8ebf5",
+  "family": "blue",
+  "uses": 1
+ },
+ "#f0f7f6": {
+  "hex": "#eef9f3",
+  "family": "green",
+  "uses": 1
+ },
+ "#e4f0ee": {
+  "hex": "#e0f4e9",
+  "family": "green",
+  "uses": 1
+ },
+ "#faf6ef": {
+  "hex": "#fdf8ec",
+  "family": "amber",
+  "uses": 1
+ },
+ "#f3ece0": {
+  "hex": "#f9f0da",
+  "family": "amber",
+  "uses": 1
+ },
+ "#e7f2ec": {
+  "hex": "#e4f6e8",
+  "family": "green",
+  "uses": 1
+ },
+ "#f4f4fa": {
+  "hex": "#f6f7f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#eaeaf5": {
+  "hex": "#eaeaf5",
+  "family": "blue",
+  "uses": 1
+ },
+ "#fbf4f5": {
+  "hex": "#f6f7f9",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f4e9eb": {
+  "hex": "#f6e8e9",
+  "family": "red",
+  "uses": 1
+ },
+ "#f5f8f0": {
+  "hex": "#f1fbee",
+  "family": "green",
+  "uses": 1
+ },
+ "#ecf1e3": {
+  "hex": "#e6f6df",
+  "family": "green",
+  "uses": 1
+ },
+ "#9aa1ad": {
+  "hex": "#9aa0ad",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#3d7ea6": {
+  "hex": "#3d5fa6",
+  "family": "blue",
+  "uses": 1
+ },
+ "#d6d9e1": {
+  "hex": "#d7dae0",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fff8ee": {
+  "hex": "#f5f6f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f9f4fd": {
+  "hex": "#f5f6fe",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f1dfc4": {
+  "hex": "#f9e5bc",
+  "family": "amber",
+  "uses": 1
+ },
+ "#2a1d3a": {
+  "hex": "#162057",
+  "family": "brand",
+  "uses": 1
+ },
+ "#2aa566": {
+  "hex": "#11c33f",
+  "family": "green",
+  "uses": 1
+ },
+ "#3a2a4e": {
+  "hex": "#232f73",
+  "family": "brand",
+  "uses": 1
+ },
+ "#8d93a1": {
+  "hex": "#8d94a1",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#9297a2": {
+  "hex": "#9297a2",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#555a64": {
+  "hex": "#555a64",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#8b909a": {
+  "hex": "#8b909a",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e0e2e7": {
+  "hex": "#e0e2e7",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#777c86": {
+  "hex": "#777c86",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#656a74": {
+  "hex": "#656a74",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fdf3f2": {
+  "hex": "#f6f7f9",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#8f3a35": {
+  "hex": "#a22626",
+  "family": "red",
+  "uses": 1
+ },
+ "#7a808c": {
+  "hex": "#7a808c",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#747a86": {
+  "hex": "#747a86",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#ded6e7": {
+  "hex": "#d9dcf1",
+  "family": "brand",
+  "uses": 1
+ },
+ "#85818a": {
+  "hex": "#81848a",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#8a8f98": {
+  "hex": "#8a8f98",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e6e7ec": {
+  "hex": "#e6e8ec",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#8d919b": {
+  "hex": "#8d929b",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#eff0f3": {
+  "hex": "#eff0f3",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#747983": {
+  "hex": "#747983",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d4d6dc": {
+  "hex": "#d4d7dc",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#858a94": {
+  "hex": "#858a94",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#6d7380": {
+  "hex": "#6d7380",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#b17825": {
+  "hex": "#c78b0f",
+  "family": "amber",
+  "uses": 1
+ },
+ "#fff5e5": {
+  "hex": "#fff7e5",
+  "family": "amber",
+  "uses": 1
+ },
+ "#cfe3dc": {
+  "hex": "#c9ead4",
+  "family": "green",
+  "uses": 1
+ },
+ "#f1f8f5": {
+  "hex": "#effaf2",
+  "family": "green",
+  "uses": 1
+ },
+ "#969aa4": {
+  "hex": "#969ba4",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#898e97": {
+  "hex": "#898e97",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#64a2ef": {
+  "hex": "#6485ef",
+  "family": "blue",
+  "uses": 1
+ },
+ "#9a72b8": {
+  "hex": "#7782dc",
+  "family": "brand",
+  "uses": 1
+ },
+ "#50555f": {
+  "hex": "#50555f",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#969aa3": {
+  "hex": "#969aa3",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#626874": {
+  "hex": "#626874",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fff3de": {
+  "hex": "#fff5de",
+  "family": "amber",
+  "uses": 1
+ },
+ "#9a681d": {
+  "hex": "#ab770c",
+  "family": "amber",
+  "uses": 1
+ },
+ "#767b85": {
+  "hex": "#767b85",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#c9ccd3": {
+  "hex": "#c9ccd3",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#999da5": {
+  "hex": "#999da5",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e8e9ee": {
+  "hex": "#e8eaee",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f7f4fb": {
+  "hex": "#f4f6fe",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f1f3f8": {
+  "hex": "#f1f2f8",
+  "family": "blue",
+  "uses": 1
+ },
+ "#e1e4ec": {
+  "hex": "#e3e5ea",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#cdd6e8": {
+  "hex": "#cdd2e8",
+  "family": "blue",
+  "uses": 1
+ },
+ "#eef1f7": {
+  "hex": "#eef0f7",
+  "family": "blue",
+  "uses": 1
+ },
+ "#e8f5f2": {
+  "hex": "#e4f9ed",
+  "family": "green",
+  "uses": 1
+ },
+ "#d6e3fd": {
+  "hex": "#d6ddfd",
+  "family": "blue",
+  "uses": 1
+ },
+ "#6f5bd6": {
+  "hex": "#635bd6",
+  "family": "blue",
+  "uses": 1
+ },
+ "#6a56d0": {
+  "hex": "#5e56d0",
+  "family": "blue",
+  "uses": 1
+ },
+ "#f0f1f5": {
+  "hex": "#f1f2f4",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#dcdfe7": {
+  "hex": "#dde0e6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fbfbfd": {
+  "hex": "#fcfcfc",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e0a8a3": {
+  "hex": "#eb9b9a",
+  "family": "red",
+  "uses": 1
+ },
+ "#eef8f2": {
+  "hex": "#ebfbef",
+  "family": "green",
+  "uses": 1
+ },
+ "#1b6b43": {
+  "hex": "#0b7f2a",
+  "family": "green",
+  "uses": 1
+ },
+ "#fdf6ea": {
+  "hex": "#fef8e9",
+  "family": "amber",
+  "uses": 1
+ },
+ "#4b5260": {
+  "hex": "#4d535e",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e3f5f1": {
+  "hex": "#defbea",
+  "family": "green",
+  "uses": 1
+ },
+ "#1b7f70": {
+  "hex": "#0b9347",
+  "family": "green",
+  "uses": 1
+ },
+ "#fdf0e3": {
+  "hex": "#fef4e2",
+  "family": "amber",
+  "uses": 1
+ },
+ "#a55a14": {
+  "hex": "#b17008",
+  "family": "amber",
+  "uses": 1
+ },
+ "#34363d": {
+  "hex": "#34343d",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#4a4d55": {
+  "hex": "#4a4e55",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#efe6f8": {
+  "hex": "#e8eafd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f6f0fb": {
+  "hex": "#f1f2fe",
+  "family": "brand",
+  "uses": 1
+ },
+ "#aeb3be": {
+  "hex": "#afb4bd",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#b4413a": {
+  "hex": "#ce2625",
+  "family": "red",
+  "uses": 1
+ },
+ "#f7f5fa": {
+  "hex": "#f5f7fd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#5b5266": {
+  "hex": "#535965",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#b8bcc5": {
+  "hex": "#b8bcc5",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#ece1f6": {
+  "hex": "#e3e6fc",
+  "family": "brand",
+  "uses": 1
+ },
+ "#a4a9b4": {
+  "hex": "#a4a9b4",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#c4c9d2": {
+  "hex": "#c6c9d0",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e8eaef": {
+  "hex": "#e9ebee",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fdf6f5": {
+  "hex": "#f8f9fa",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#5a2a26": {
+  "hex": "#651e1d",
+  "family": "red",
+  "uses": 1
+ },
+ "#9a3731": {
+  "hex": "#b0201f",
+  "family": "red",
+  "uses": 1
+ },
+ "#e7a92b": {
+  "hex": "#f5b71d",
+  "family": "amber",
+  "uses": 1
+ },
+ "#14503a": {
+  "hex": "#085e25",
+  "family": "green",
+  "uses": 1
+ },
+ "#fbf1de": {
+  "hex": "#fdf3dc",
+  "family": "amber",
+  "uses": 1
+ },
+ "#dfe1e7": {
+  "hex": "#dfe2e7",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#70747d": {
+  "hex": "#70747d",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d4d7df": {
+  "hex": "#d4d8df",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e2e5eb": {
+  "hex": "#e3e5ea",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#cdbfe0": {
+  "hex": "#c1c9f1",
+  "family": "brand",
+  "uses": 1
+ },
+ "#fcfaff": {
+  "hex": "#fbfcff",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f2f3f6": {
+  "hex": "#f2f3f6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#4a505b": {
+  "hex": "#4a505b",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#cfd3dc": {
+  "hex": "#d1d4da",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f9fafc": {
+  "hex": "#fafafb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#cfe9db": {
+  "hex": "#c7f2d2",
+  "family": "green",
+  "uses": 1
+ },
+ "#f2faf5": {
+  "hex": "#f5f6f7",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#efc4c0": {
+  "hex": "#f7bab9",
+  "family": "red",
+  "uses": 1
+ },
+ "#d98a84": {
+  "hex": "#e87978",
+  "family": "red",
+  "uses": 1
+ },
+ "#fffafa": {
+  "hex": "#fcfcfd",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f3f0f7": {
+  "hex": "#f1f2fb",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f3eef9": {
+  "hex": "#eef1fd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f5f6f8": {
+  "hex": "#f5f6f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e8eaee": {
+  "hex": "#e8eaee",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#6b5a80": {
+  "hex": "#626978",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#ece3f6": {
+  "hex": "#e4e8fc",
+  "family": "brand",
+  "uses": 1
+ },
+ "#b5671d": {
+  "hex": "#c67f0c",
+  "family": "amber",
+  "uses": 1
+ },
+ "#565c66": {
+  "hex": "#565b66",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#9a6418": {
+  "hex": "#a8740a",
+  "family": "amber",
+  "uses": 1
+ },
+ "#3d2454": {
+  "hex": "#152381",
+  "family": "brand",
+  "uses": 1
+ },
+ "#5e54d6": {
+  "hex": "#5754d6",
+  "family": "blue",
+  "uses": 1
+ },
+ "#b78fd6": {
+  "hex": "#919cf2",
+  "family": "brand",
+  "uses": 1
+ },
+ "#7b828f": {
+  "hex": "#7b828f",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e8f6ee": {
+  "hex": "#e4fbe9",
+  "family": "green",
+  "uses": 1
+ },
+ "#c6e8d4": {
+  "hex": "#bcf4c8",
+  "family": "green",
+  "uses": 1
+ },
+ "#2f8f83": {
+  "hex": "#13b05a",
+  "family": "green",
+  "uses": 1
+ },
+ "#c58a2b": {
+  "hex": "#df9e11",
+  "family": "amber",
+  "uses": 1
+ },
+ "#3b6fd4": {
+  "hex": "#3b58d4",
+  "family": "blue",
+  "uses": 1
+ },
+ "#c4566b": {
+  "hex": "#d84658",
+  "family": "red",
+  "uses": 1
+ },
+ "#5f9e3d": {
+  "hex": "#37c21d",
+  "family": "green",
+  "uses": 1
+ },
+ "#7a6fb0": {
+  "hex": "#778fd4",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f6fbf8": {
+  "hex": "#f8f8f9",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e9f7ef": {
+  "hex": "#e5fcea",
+  "family": "green",
+  "uses": 1
+ },
+ "#fdecec": {
+  "hex": "#feebec",
+  "family": "red",
+  "uses": 1
+ },
+ "#ece7f3": {
+  "hex": "#e8ebf9",
+  "family": "brand",
+  "uses": 1
+ },
+ "#444444": {
+  "hex": "#444444",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#007bff": {
+  "hex": "#0042ff",
+  "family": "blue",
+  "uses": 1
+ },
+ "#333333": {
+  "hex": "#333333",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#eeeeee": {
+  "hex": "#eeeeee",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#999999": {
+  "hex": "#999999",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f6f7f8": {
+  "hex": "#f6f7f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d9c6ec": {
+  "hex": "#c8cff9",
+  "family": "brand",
+  "uses": 1
+ },
+ "#fdfcfe": {
+  "hex": "#fcfcff",
+  "family": "brand",
+  "uses": 1
+ },
+ "#e3efe9": {
+  "hex": "#e0f3e5",
+  "family": "green",
+  "uses": 1
+ },
+ "#f4faf7": {
+  "hex": "#f6f7f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#cfe3d8": {
+  "hex": "#c9ead1",
+  "family": "green",
+  "uses": 1
+ },
+ "#5c636e": {
+  "hex": "#5c626e",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f6d9c4": {
+  "hex": "#fbe2bf",
+  "family": "amber",
+  "uses": 1
+ },
+ "#d7e6f5": {
+  "hex": "#d7dff5",
+  "family": "blue",
+  "uses": 1
+ },
+ "#dcead9": {
+  "hex": "#d6f0d4",
+  "family": "green",
+  "uses": 1
+ },
+ "#efd7ea": {
+  "hex": "#dcd7fa",
+  "family": "brand",
+  "uses": 1
+ },
+ "#d7c6e8": {
+  "hex": "#c6cdf7",
+  "family": "brand",
+  "uses": 1
+ },
+ "#ffc220": {
+  "hex": "#ffc220",
+  "family": "kept",
+  "uses": 1
+ },
+ "#0f9488": {
+  "hex": "#06a14f",
+  "family": "green",
+  "uses": 1
+ },
+ "#34a853": {
+  "hex": "#34a853",
+  "family": "kept",
+  "uses": 1
+ },
+ "#fbbc05": {
+  "hex": "#fbbc05",
+  "family": "kept",
+  "uses": 1
+ },
+ "#00ac47": {
+  "hex": "#00ac47",
+  "family": "kept",
+  "uses": 1
+ },
+ "#00832d": {
+  "hex": "#00832d",
+  "family": "kept",
+  "uses": 1
+ },
+ "#ffba00": {
+  "hex": "#ffba00",
+  "family": "kept",
+  "uses": 1
+ },
+ "#9a7fb8": {
+  "hex": "#8692d8",
+  "family": "brand",
+  "uses": 1
+ },
+ "#663d87": {
+  "hex": "#283acd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#d9c8ea": {
+  "hex": "#c9cff8",
+  "family": "brand",
+  "uses": 1
+ },
+ "#dcdfe5": {
+  "hex": "#dcdfe5",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#c7cbd1": {
+  "hex": "#c7cad1",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f1eefc": {
+  "hex": "#f0f3fe",
+  "family": "brand",
+  "uses": 1
+ },
+ "#b4b9c1": {
+  "hex": "#b4b8c1",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#b8853f": {
+  "hex": "#de9c19",
+  "family": "amber",
+  "uses": 1
+ },
+ "#4b8f76": {
+  "hex": "#35a95c",
+  "family": "green",
+  "uses": 1
+ },
+ "#5c626b": {
+  "hex": "#5c616b",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#a58cc0": {
+  "hex": "#929ddd",
+  "family": "brand",
+  "uses": 1
+ },
+ "#474747": {
+  "hex": "#474747",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#676f7e": {
+  "hex": "#676f7e",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#7c7c7c": {
+  "hex": "#7c7c7c",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#9a9a9a": {
+  "hex": "#9a9a9a",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#969696": {
+  "hex": "#969696",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#969191": {
+  "hex": "#919396",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#a3a3a3": {
+  "hex": "#a3a3a3",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#ededed": {
+  "hex": "#ededed",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f26e77": {
+  "hex": "#fa6972",
+  "family": "red",
+  "uses": 1
+ },
+ "#f7edfe": {
+  "hex": "#f0f1ff",
+  "family": "brand",
+  "uses": 1
+ },
+ "#e1e4e8": {
+  "hex": "#e1e3e8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d1d1d1": {
+  "hex": "#d1d1d1",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fbf3ff": {
+  "hex": "#f5f6ff",
+  "family": "brand",
+  "uses": 1
+ },
+ "#9551ab": {
+  "hex": "#5559da",
+  "family": "brand",
+  "uses": 1
+ },
+ "#5e02a2": {
+  "hex": "#0116cc",
+  "family": "brand",
+  "uses": 1
+ },
+ "#894db5": {
+  "hex": "#4f5ee5",
+  "family": "brand",
+  "uses": 1
+ },
+ "#6205a7": {
+  "hex": "#0218d5",
+  "family": "brand",
+  "uses": 1
+ },
+ "#5e11f0": {
+  "hex": "#395efa",
+  "family": "brand",
+  "uses": 1
+ },
+ "#4b0dcc": {
+  "hex": "#1644f9",
+  "family": "brand",
+  "uses": 1
+ },
+ "#0085ff": {
+  "hex": "#0047ff",
+  "family": "blue",
+  "uses": 1
+ },
+ "#d9d9d9": {
+  "hex": "#d9d9d9",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#429488": {
+  "hex": "#28b365",
+  "family": "green",
+  "uses": 1
+ },
+ "#f1a03a": {
+  "hex": "#f9b432",
+  "family": "amber",
+  "uses": 1
+ },
+ "#ffaf38": {
+  "hex": "#ffbe38",
+  "family": "amber",
+  "uses": 1
+ },
+ "#fffdf9": {
+  "hex": "#fcfcfc",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#919191": {
+  "hex": "#919191",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#ebebeb": {
+  "hex": "#ebebeb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#fbfbfb": {
+  "hex": "#fbfbfb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f0f0f0": {
+  "hex": "#f0f0f0",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f5f7fb": {
+  "hex": "#f7f8f9",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f2f2f2": {
+  "hex": "#f2f2f2",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#303030": {
+  "hex": "#303030",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#bcbcbc": {
+  "hex": "#bcbcbc",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f6f6f7": {
+  "hex": "#f6f6f7",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f9fbff": {
+  "hex": "#fcfcfc",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f8f8f8": {
+  "hex": "#f8f8f8",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#d3d3d3": {
+  "hex": "#d3d3d3",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#eafffc": {
+  "hex": "#eafff4",
+  "family": "green",
+  "uses": 1
+ },
+ "#fef6ec": {
+  "hex": "#f4f5f6",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#13c9c8": {
+  "hex": "#08d973",
+  "family": "green",
+  "uses": 1
+ },
+ "#fff6e8": {
+  "hex": "#fff8e8",
+  "family": "amber",
+  "uses": 1
+ },
+ "#f6edfc": {
+  "hex": "#eff0fe",
+  "family": "brand",
+  "uses": 1
+ },
+ "#f5f5f5": {
+  "hex": "#f5f5f5",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#f9fafb": {
+  "hex": "#f9fafb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#e5e7eb": {
+  "hex": "#e5e7eb",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#cbd5e1": {
+  "hex": "#cbd0e1",
+  "family": "blue",
+  "uses": 1
+ },
+ "#9ca3af": {
+  "hex": "#9da3ae",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#6b7280": {
+  "hex": "#6b7280",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#4b5563": {
+  "hex": "#4e5460",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#374151": {
+  "hex": "#3d424b",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#1f2937": {
+  "hex": "#1f2437",
+  "family": "blue",
+  "uses": 1
+ },
+ "#111827": {
+  "hex": "#111527",
+  "family": "blue",
+  "uses": 1
+ },
+ "#c8ccd2": {
+  "hex": "#c8cbd2",
+  "family": "neutral",
+  "uses": 1
+ },
+ "#5f9e8a": {
+  "hex": "#4cb572",
+  "family": "green",
+  "uses": 1
+ },
+ "#030712": {
+  "hex": "#09090c",
+  "family": "neutral",
+  "uses": 1
+ }
+}

@@ -1,0 +1,229 @@
+// Shared motion primitives for the Signals surface — subtle, fast, transform/opacity only.
+// Vocabulary: ease-out for entrances, ease-in-out for on-screen movement (Kowalski's UI motion tokens).
+$ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+$ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+// Press feedback — the interface acknowledging a click. Safe on touch and mouse alike.
+.pressable {
+  transition: transform 120ms $ease-out;
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// Clickable list rows — a hint the row is interactive before the pointer even settles.
+.rowHover {
+  transition: background 120ms $ease-out;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: #fbfbfc;
+    }
+  }
+  &:active {
+    background: #f4f6fd;
+  }
+}
+
+// Clickable cards (Alerts rows, Meeting rows, Workstation tasks) — a soft lift so the
+// surface itself feels liftable, not just recolored, before the pointer settles.
+.cardHover {
+  transition: transform 160ms $ease-out, box-shadow 160ms $ease-out, border-color 160ms $ease-out;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(20, 22, 33, 0.08);
+    }
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// A visible, on-brand focus/hover ring for text inputs, selects and textareas —
+// replaces bare `outline: none` with something intentional instead of nothing.
+.focusRing {
+  transition: border-color 140ms $ease-out, box-shadow 140ms $ease-out;
+  &:hover {
+    border-color: #b8c0f0;
+  }
+  &:focus {
+    border-color: #3f4fda;
+    box-shadow: 0 0 0 3px rgba(63, 79, 218, 0.14);
+  }
+}
+
+// Filled primary buttons (any base colour) — a touch of lift instead of sitting flat.
+// `filter` and `box-shadow` are used deliberately: they layer on top of whatever
+// inline `background` a button already has, no specificity fight required.
+.btnPrimary {
+  transition: filter 140ms $ease-out, box-shadow 140ms $ease-out, transform 120ms $ease-out;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      filter: brightness(0.93);
+      box-shadow: 0 4px 14px rgba(20, 22, 33, 0.18);
+    }
+  }
+  &:active {
+    transform: scale(0.97);
+    filter: brightness(0.88);
+  }
+}
+
+// Outline / ghost buttons — an inset ring + soft shadow stand in for a border-colour
+// change, again to avoid overriding an inline `border`.
+.btnSecondary {
+  transition: box-shadow 140ms $ease-out, transform 120ms $ease-out;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      box-shadow: inset 0 0 0 1px #b8c0f0, 0 2px 8px rgba(63, 79, 218, 0.1);
+    }
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// Popovers, dropdowns, menus — grow from their trigger instead of popping into existence.
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.popIn {
+  animation: popIn 160ms $ease-out;
+  transform-origin: top right;
+}
+.popInTop {
+  animation: popIn 160ms $ease-out;
+  transform-origin: top left;
+}
+.popInBottomLeft {
+  animation: popIn 160ms $ease-out;
+  transform-origin: bottom left;
+}
+.popInBottomRight {
+  animation: popIn 160ms $ease-out;
+  transform-origin: bottom right;
+}
+
+// Centered overlays (modals) — fade + scale, no directional origin.
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.overlayIn {
+  animation: overlayIn 200ms $ease-out;
+}
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.backdropIn {
+  animation: backdropIn 200ms $ease-out;
+}
+
+// Side peek drawer (Work-station task detail) — slides in from the right edge.
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.slideInRight {
+  animation: slideInRight 220ms $ease-out;
+}
+
+// Bottom sheets — already docked to the viewport edge via fixed positioning, so (like
+// slideInRight) this is a small arrival nudge, not a full off-screen slide.
+@keyframes slideUpSheet {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.slideUpSheet {
+  animation: slideUpSheet 220ms $ease-out;
+}
+
+// Toasts — bridge an instant notification into view instead of popping.
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.toastIn {
+  animation: toastIn 220ms $ease-out;
+}
+
+// Content swap on selection change — near-imperceptible, this fires often.
+@keyframes contentFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.contentFadeIn {
+  animation: contentFadeIn 140ms $ease-out;
+}
+
+// Accordions — the sanctioned exception to the transform/opacity-only rule; no transform equivalent for height.
+.accordionRow {
+  display: grid;
+  grid-template-rows: 0fr;
+  min-height: 0;
+  transition: grid-template-rows 220ms $ease-in-out;
+  > div {
+    // min-height: 0 is required here too — without it, a grid row sized to 0fr still
+    // reserves the content's intrinsic height (min-height: auto default) and never fully collapses.
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+.accordionRowOpen {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressable {
+    transition: none;
+    &:active { transform: none; }
+  }
+  .popIn, .popInTop, .popInBottomLeft, .popInBottomRight, .overlayIn, .backdropIn, .toastIn, .contentFadeIn, .slideInRight, .slideUpSheet {
+    animation-duration: 1ms;
+  }
+  .accordionRow {
+    transition: none;
+  }
+  .cardHover {
+    transition: box-shadow 120ms linear;
+    &:hover {
+      transform: none;
+    }
+  }
+  .btnPrimary, .btnSecondary {
+    transition: none;
+    &:active { transform: none; }
+  }
+}

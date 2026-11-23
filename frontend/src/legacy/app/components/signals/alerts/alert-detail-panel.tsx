@@ -1,0 +1,565 @@
+import { useEffect, useState } from 'react';
+import { PROTOTYPE_ALERTS, type PrototypeAlert, type AlertOption, type LoggedActionItem } from '@legacy/constants/signals/prototype-data';
+import { ACTION_TYPES, type ActionType } from '@legacy/constants/signals/action-types.constants';
+
+const GENERIC_SEND_UPDATE = ACTION_TYPES.find((a) => a.id === 'send-report-update')!;
+import { ItemsModal } from './items-modal';
+import { ActionPicker } from './action-picker';
+import { ComposeMail } from './compose-mail';
+import { ImageGenStudio } from './image-gen-studio';
+import { formatAlertValue, explainAlertValue } from './format-money';
+import { getDisplayItems } from './items-util';
+import { itemKey, pendingItems, statusLabel, type ItemBatch } from './item-batches';
+import { ValueInfoIcon } from './value-info-icon';
+import { AssignDropdownList, AssignPopupModal, DEFAULT_ASSIGNEES, ASSIGN_POPUP_THRESHOLD } from './assign-menu';
+import { AlertBadgeRow } from './alert-badge-row';
+import { DetailFooterBar } from './detail-footer-bar';
+import { AssignIcon, ShareIcon, ThumbUpIcon, ThumbDownIcon, EnvelopeSmallIcon, WorkspaceSmallIcon, SparkleIcon, AiDraftBadge, CloseIcon } from './icons';
+import { ConnectedEmptyHero } from '../common/connected-empty-hero';
+import scrollStyles from './alerts-scroll.module.scss';
+import motion from './motion.module.scss';
+
+interface Props {
+  alert: PrototypeAlert | null;
+  phase: 'view' | 'executing' | 'report' | 'genReview';
+  execProgress: number;
+  /** Runs the picked action on the chosen items (by ASIN). The page decides between a partial batch and the full flow. */
+  onExecuteItems: (keys: string[], label: string) => void;
+  /** Batches already applied to this alert's items, oldest first. */
+  batches?: ItemBatch[];
+  /** A batch on some of the items, still running on this screen. */
+  inlineRun?: { batch: ItemBatch; progress: number } | null;
+  onUndoBatch?: (batchId: string) => void;
+  onViewReport: () => void;
+  onBackToAlerts: () => void;
+  onGenReview: () => void;
+  /** Unused: Approve now runs the chosen items through onExecuteItems. Kept optional for old call sites. */
+  onApproveGenReview?: () => void;
+  onOpenItems: () => void;
+  itemsModalOpen: boolean;
+  onCloseItems: () => void;
+  onLogAction: (item: LoggedActionItem) => void;
+  onDismiss: () => void;
+  /** Reverses an in-progress Execute — clears the running progress and un-resolves the alert. */
+  onUndoExecute?: () => void;
+  /** Unused — every alert now renders the same detail layout. Kept optional so existing call sites don't need to change. */
+  isFirstAlert?: boolean;
+  onOpenAskJiva?: () => void;
+  /** Applies a category as the alert list's active filter — used by the empty state's category cards. */
+  onFilterCategory?: (category: string) => void;
+  /** Deselects the current alert, returning to the empty state — the panel's "Back" button. */
+  onBack?: () => void;
+}
+
+const CATEGORY_COLORS: Record<string, string> = {
+  Catalog: '#3f4fda',
+  Inventory: '#2b9652',
+  Compliance: '#cc2b2b',
+  Profitability: '#cb8b1c',
+  Advertising: '#5c6f9e',
+  Operations: '#2235c4',
+  Billing: '#0071ce',
+  Reviews: '#f5a520',
+};
+
+/** Alert categories by count (busiest first), for the empty-state overview — each carries its top (highest-priority) alert so the row can jump straight to it. */
+const CATEGORY_METRICS: { category: string; count: number; topAlertId: string }[] = (() => {
+  const byCategory = new Map<string, PrototypeAlert[]>();
+  PROTOTYPE_ALERTS.forEach((a) => {
+    const list = byCategory.get(a.category) ?? [];
+    list.push(a);
+    byCategory.set(a.category, list);
+  });
+  return Array.from(byCategory.entries())
+    .map(([category, alerts]) => ({
+      category,
+      count: alerts.length,
+      topAlertId: (alerts.find((a) => a.priority === 'High') ?? alerts[0]).id,
+    }))
+    .sort((a, b) => b.count - a.count);
+})();
+
+export function AlertDetailPanel({ alert: sel, phase, execProgress, onExecuteItems, batches = [], inlineRun = null, onUndoBatch, onViewReport, onBackToAlerts, onGenReview, onOpenItems, itemsModalOpen, onCloseItems, onLogAction, onDismiss, onUndoExecute, onOpenAskJiva, onFilterCategory, onBack }: Props) {
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [detailMenu, setDetailMenu] = useState<'assign' | 'share' | null>(null);
+  const [thumb, setThumb] = useState<'up' | 'down' | null>(null);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [actionPickerOpen, setActionPickerOpen] = useState(false);
+  const [assignPopupOpen, setAssignPopupOpen] = useState(false);
+  const [emailFor, setEmailFor] = useState<ActionType | null>(null);
+  const [imageStudioOpen, setImageStudioOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const [lastLogged, setLastLogged] = useState<{ label: string; sent: boolean } | null>(null);
+  // Execute first asks which items to act on; a generative action keeps that choice until its draft is approved.
+  const [picker, setPicker] = useState<AlertOption | null>(null);
+  const [scope, setScope] = useState<string[] | null>(null);
+  const [viewBatch, setViewBatch] = useState<ItemBatch | null>(null);
+  // After a batch lands, the action list goes back to the recommended option for the items left.
+  useEffect(() => { setSelectedOptionId(null); }, [batches.length]);
+
+  useEffect(() => {
+    setActionPickerOpen(false);
+    setAssignPopupOpen(false);
+    setEmailFor(null);
+    setImageStudioOpen(false);
+    setDismissed(false);
+    setPicker(null);
+    setScope(null);
+    setViewBatch(null);
+  }, [sel?.id]);
+
+  if (!sel) {
+    return (
+      <div style={{ flex: 1, minWidth: 0, minHeight: 0, height: '100%', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'hidden' }}>
+        <ConnectedEmptyHero
+          title="Your alerts."
+          subtitle="Here's a quick overview of your alerts and how many fall into each category. Click a category to filter the list."
+          categories={CATEGORY_METRICS.map((m) => ({
+            key: m.category,
+            label: m.category,
+            count: m.count,
+            unit: m.count === 1 ? 'alert' : 'alerts',
+            color: CATEGORY_COLORS[m.category] ?? '#3f4fda',
+            onClick: () => onFilterCategory?.(m.category),
+          }))}
+        />
+      </div>
+    );
+  }
+
+  const mappedActionType = sel.mappedActionTypeId ? ACTION_TYPES.find((a) => a.id === sel.mappedActionTypeId) : undefined;
+  const money = formatAlertValue;
+
+  const optId = selectedOptionId || (sel.options.find((o) => o.recommended) || sel.options[0])?.id;
+  const pickedOption = sel.options.find((o) => o.id === optId);
+
+  const executeLabel = 'Execute';
+
+  const pending = pendingItems(sel, batches);
+  const pendingKeys = pending.map(itemKey);
+  const statusFor = statusLabel(batches);
+  const applied = batches.filter((b) => !b.dismissed);
+  const latest = applied[applied.length - 1];
+  const actionLabel = pickedOption?.label ?? 'Execute';
+
+  // Ask Jiva and the approval gate don't act on items, so they skip the item picker.
+  const handleExecute = () => {
+    if (pickedOption?.isOther) { onOpenAskJiva?.(); return; }
+    if (pickedOption?.isMeetingAsk) { setActionPickerOpen(true); return; }
+    if (!pickedOption || pending.length === 0) return;
+    setPicker(pickedOption);
+  };
+  const confirmItems = (keys: string[]) => {
+    const option = picker;
+    setPicker(null);
+    if (!option) return;
+    if (option.kind === 'GENERATIVE') {
+      setScope(keys);
+      if (option.generates === 'image') { setImageStudioOpen(true); return; }
+      onGenReview();
+      return;
+    }
+    onExecuteItems(keys, option.label);
+  };
+  const runScoped = () => { onExecuteItems(scope ?? pendingKeys, actionLabel); setScope(null); };
+
+  // These local action flows fully replace the panel content — no popups, everything stays in this column.
+  if (imageStudioOpen) {
+    return (
+      <ImageGenStudio
+        alert={sel}
+        onBack={() => setImageStudioOpen(false)}
+        onPublish={() => {
+          onLogAction({
+            id: `log-${Date.now()}`,
+            alertId: sel.id,
+            alertTitle: sel.title,
+            account: sel.account,
+            actionTypeId: mappedActionType?.id ?? 'update-product-images',
+            actionTypeLabel: pickedOption?.label ?? 'Generated image published',
+            note: 'Generated and published via Image Studio.',
+            status: 'logged',
+            createdAt: Date.now(),
+          });
+          setImageStudioOpen(false);
+          runScoped();
+        }}
+      />
+    );
+  }
+
+  if (actionPickerOpen) {
+    return (
+      <ActionPicker
+        alert={sel}
+        variant="inline"
+        initialSearch={mappedActionType?.label}
+        onClose={() => setActionPickerOpen(false)}
+        onRequestEmail={(actionType) => { setActionPickerOpen(false); setEmailFor(actionType); }}
+        onRequestImageGen={() => { setActionPickerOpen(false); setImageStudioOpen(true); }}
+        onSave={(actionType, note, dueDate, assignee) => {
+          onLogAction({
+            id: `log-${Date.now()}`,
+            alertId: sel.id,
+            alertTitle: sel.title,
+            account: sel.account,
+            actionTypeId: actionType.id,
+            actionTypeLabel: actionType.label,
+            note,
+            dueDate: dueDate || undefined,
+            assignee: assignee || undefined,
+            status: 'logged',
+            createdAt: Date.now(),
+          });
+          setActionPickerOpen(false);
+          setLastLogged({ label: actionType.label, sent: false });
+          window.setTimeout(() => setLastLogged(null), 3200);
+        }}
+      />
+    );
+  }
+
+  if (emailFor) {
+    return (
+      <ComposeMail
+        alert={sel}
+        actionType={emailFor}
+        variant="inline"
+        onClose={() => setEmailFor(null)}
+        onSend={({ subject }) => {
+          onLogAction({
+            id: `log-${Date.now()}`,
+            alertId: sel.id,
+            alertTitle: sel.title,
+            account: sel.account,
+            actionTypeId: emailFor.id,
+            actionTypeLabel: emailFor.label,
+            note: `Emailed: ${subject}`,
+            status: 'sent',
+            createdAt: Date.now(),
+          });
+          setLastLogged({ label: emailFor.label, sent: true });
+          window.setTimeout(() => setLastLogged(null), 3200);
+        }}
+      />
+    );
+  }
+
+  if (assignPopupOpen) {
+    return (
+      <AssignPopupModal
+        assignees={sel.assignees ?? DEFAULT_ASSIGNEES}
+        variant="inline"
+        onClose={() => setAssignPopupOpen(false)}
+        onSelect={() => setAssignPopupOpen(false)}
+      />
+    );
+  }
+
+  if (phase === 'executing') {
+    return (
+      <div style={{ flex: 1, minWidth: 0, height: '100%', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ height: '100%', overflowY: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ width: 480 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: execProgress >= 100 ? '#2b9652' : '#cb8b1c' }} />
+              <span style={{ font: '500 11px/1 Inter,sans-serif', color: '#6b6f78' }}>{execProgress >= 100 ? 'Completed' : 'Applying changes'}</span>
+              <span style={{ marginLeft: 'auto', font: '600 13px/1 Inter,sans-serif', color: '#464646' }}>{execProgress}%</span>
+            </div>
+            <div style={{ font: '600 16px/1.4 Inter,sans-serif', color: '#23232d', marginTop: 11 }}>{sel.title}</div>
+            <div style={{ height: 6, borderRadius: 3, background: '#f1f2f4', marginTop: 14, overflow: 'hidden' }}>
+              <div style={{ width: `${execProgress}%`, height: '100%', background: '#3f4fda', transition: 'width .5s ease' }} />
+            </div>
+            <div style={{ font: '400 12px/1.65 Inter,sans-serif', color: '#6b6f78', marginTop: 12 }}>You can leave this alert. Progress continues in the background.</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16 }}>
+              {execProgress >= 100 ? (
+                <span onClick={onViewReport} className={motion.btnPrimary} style={{ padding: '10px 16px', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer' }}>View impact report</span>
+              ) : (
+                onUndoExecute && (
+                  <span onClick={onUndoExecute} className={motion.btnSecondary} style={{ padding: '10px 16px', borderRadius: 7, border: '1px solid #e1e3e8', font: '600 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}>Undo</span>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'report') {
+    return (
+      <div style={{ flex: 1, minWidth: 0, height: '100%', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ height: '100%', overflowY: 'auto', padding: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#2b9652' }} />
+            <span style={{ font: '500 11px/1 Inter,sans-serif', color: '#6b6f78' }}>Verified over 7 days on conversion</span>
+          </div>
+          <div style={{ font: '600 17px/1.4 Inter,sans-serif', color: '#23232d', marginTop: 11 }}>Recovered $7,240</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px 90px', padding: '9px 0', borderBottom: '1px solid #f1f2f4', font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.06em', color: '#6b6f78', marginTop: 14 }}>
+            <div>METRIC</div><div style={{ textAlign: 'right' }}>BEFORE</div><div style={{ textAlign: 'right' }}>AFTER</div><div style={{ textAlign: 'right' }}>CHANGE</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px 90px', padding: '11px 0', borderBottom: '1px solid #f1f2f4', font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>
+            <div>Conversion</div><div style={{ textAlign: 'right' }}>6.4%</div><div style={{ textAlign: 'right' }}>8.9%</div><div style={{ textAlign: 'right', color: '#2b9652', fontWeight: 600 }}>+2.5 pt</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px 90px', padding: '11px 0', font: '400 12px/1 Inter,sans-serif', color: '#464646' }}>
+            <div>Net profit · 7d</div><div style={{ textAlign: 'right' }}>$12,180</div><div style={{ textAlign: 'right' }}>$19,420</div><div style={{ textAlign: 'right', color: '#2b9652', fontWeight: 600 }}>+$7,240</div>
+          </div>
+          <span onClick={onBackToAlerts} className={motion.btnSecondary} style={{ display: 'inline-block', marginTop: 18, padding: '10px 16px', borderRadius: 7, border: '1px solid #e1e3e8', font: '600 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}>Back to alerts</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'genReview') {
+    return (
+      <div style={{ flex: 1, minWidth: 0, height: '100%', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ height: '100%', overflowY: 'auto', padding: '20px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ font: '600 14px/1 Inter,sans-serif', color: '#23232d' }}>Review generated content</span>
+            <AiDraftBadge label="AI DRAFT · NOT PUBLISHED" />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: '#e6e8ec', border: '1px solid #e6e8ec', borderRadius: 8, overflow: 'hidden', marginTop: 14 }}>
+            <div style={{ background: '#ffffff', padding: 15 }}>
+              <div style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.09em', textTransform: 'uppercase' as const, color: '#6b6f78' }}>Live now</div>
+              <div style={{ marginTop: 10, padding: 12, border: '1px solid #e6e8ec', borderRadius: 7, background: '#fbfbfc', font: '400 12px/1.75 Inter,sans-serif', color: '#6b6f78' }}>Premium whey isolate<br />25g protein per serving<br />Great taste, mixes well</div>
+            </div>
+            <div style={{ background: '#fcfcff', padding: 15 }}>
+              <div style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.09em', textTransform: 'uppercase' as const, color: '#2235c4' }}>Proposed · editable</div>
+              <textarea className={motion.focusRing} style={{ width: '100%', marginTop: 10, padding: 12, border: '1px solid #3f4fda', borderRadius: 7, background: '#ffffff', font: '400 12px/1.75 Inter,sans-serif', color: '#23232d', minHeight: 88, outline: 'none', resize: 'vertical' as const }} defaultValue={`Ultra-filtered whey protein isolate — 25g protein, 0g sugar\nThird-party lab tested for banned substances\nMixes instantly, no clumping`} />
+              <div style={{ display: 'flex', gap: 6, marginTop: 9 }}>
+                <span style={{ padding: '3px 8px', borderRadius: 5, background: '#ecf9f0', font: '600 9px/1.5 Inter,sans-serif', color: '#2b9652' }}>COMPLIANCE PASSED</span>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16 }}>
+            <span onClick={runScoped} className={motion.btnPrimary} style={{ padding: '10px 16px', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer' }}>Approve and publish</span>
+            <span style={{ font: '400 12px/1 Inter,sans-serif', color: '#6b6f78' }}>Applies to {(scope ?? pendingKeys).length} of {sel.itemsCount} items</span>
+            <span onClick={onBackToAlerts} className={motion.btnSecondary} style={{ padding: '10px 16px', borderRadius: 7, border: '1px solid #e1e3e8', font: '600 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}>Cancel</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // View phase
+  const valueColor = sel.valueNum < 0 ? '#cc2b2b' : '#2b9652';
+  return (
+    <div style={{ flex: 1, minWidth: 0, minHeight: 0, height: '100%', background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+      <div key={sel.id} className={`${scrollStyles.sleekScroll} ${motion.contentFadeIn}`} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+        {/* Header — badges/marketplace/source match the Alerts row exactly (shared AlertBadgeRow), so the two never diverge */}
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f2f4' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <AlertBadgeRow al={sel} size={20} showAccount />
+            </div>
+            <span onClick={onBack} className={motion.pressable} style={{ display: 'flex', flex: 'none', cursor: 'pointer', padding: 3, borderRadius: 6 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#f4f6fd')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            >
+              <CloseIcon size={15} color="#6b6f78" />
+            </span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ font: '600 18px/1.35 Inter,sans-serif', color: '#23232d' }}>{sel.title}</div>
+              <div style={{ font: '400 12px/1.55 Inter,sans-serif', color: '#6b6f78', marginTop: 6 }}>{sel.subheader}</div>
+            </div>
+            {!sel.hideValue && (
+              <div style={{ textAlign: 'right', flex: 'none' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 3, justifyContent: 'flex-end' }}>
+                  <div style={{ font: '600 22px/1 Inter,sans-serif', color: valueColor }}>{money(sel.valueNum)}</div>
+                  <ValueInfoIcon label={explainAlertValue(sel)} size={11} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: '18px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+              <SparkleIcon size={11} />
+              <span style={{ font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#9a9fa8' }}>Jiva's analysis</span>
+            </div>
+            <div className={motion.contentFadeIn} style={{ font: '400 13px/1.6 Inter,sans-serif', color: '#464646' }}>{sel.why}</div>
+            <div className={motion.contentFadeIn} style={{ font: '400 13px/1.6 Inter,sans-serif', color: '#464646', marginTop: 4, animationDelay: '110ms', animationFillMode: 'backwards' }}>{sel.root}</div>
+          </div>
+
+          {/* Strategy picker — the decision this whole card exists to support, so it gets a primary border instead of blending in with the reference cards around it */}
+          <div style={{ border: '1.5px solid #3f4fda', borderRadius: 8, overflow: 'hidden', boxShadow: '0 0 0 3px rgba(63, 79, 218, 0.07)' }}>
+            <div style={{ padding: '12px 14px', borderBottom: '1px solid #e4e7fc', background: '#fafbfe', display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
+              <span style={{ font: '600 12px/1 Inter,sans-serif', color: '#23232d' }}>Suggested actions</span>
+              {applied.length > 0 && pending.length > 0 && (
+                <span style={{ marginLeft: 'auto', font: '500 11px/1 Inter,sans-serif', color: '#6b6f78' }}>For the {pending.length} items still affected</span>
+              )}
+            </div>
+            {/* A batch on some of the items runs right here, then says what was done, so the rest can take a different action. */}
+            {inlineRun ? (
+              <div className={motion.contentFadeIn} style={{ padding: '11px 14px', borderBottom: '1px solid #e4e7fc', background: '#ffffff' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#cb8b1c', flex: 'none' }} />
+                  <span style={{ font: '500 12px/1.4 Inter,sans-serif', color: '#464646' }}>Applying <b style={{ fontWeight: 600, color: '#23232d' }}>{inlineRun.batch.label}</b> to {inlineRun.batch.keys.length} item{inlineRun.batch.keys.length === 1 ? '' : 's'}…</span>
+                  <span style={{ marginLeft: 'auto', font: '600 12px/1 Inter,sans-serif', color: '#464646' }}>{inlineRun.progress}%</span>
+                  {onUndoBatch && <span onClick={() => onUndoBatch(inlineRun.batch.id)} className={motion.btnSecondary} style={{ padding: '6px 11px', border: '1px solid #e1e3e8', borderRadius: 6, font: '600 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', background: '#ffffff' }}>Undo</span>}
+                </div>
+                <div style={{ height: 4, borderRadius: 2, background: '#f1f2f4', marginTop: 9, overflow: 'hidden' }}>
+                  <div style={{ width: inlineRun.progress + '%', height: '100%', background: '#3f4fda', transition: 'width .5s ease' }} />
+                </div>
+              </div>
+            ) : latest && pending.length > 0 && (
+              <div className={motion.contentFadeIn} style={{ padding: '11px 14px', borderBottom: '1px solid #e0f3e5', background: '#f6f7f8', display: 'flex', alignItems: 'center', gap: 9 }}>
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{ flex: 'none' }}><path d="M3 8l3.5 3.5L13 4.5" stroke="#2b9652" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <span style={{ font: '500 12px/1.4 Inter,sans-serif', color: '#245632' }}><b style={{ fontWeight: 600 }}>{latest.label}</b> applied to {latest.keys.length} item{latest.keys.length === 1 ? '' : 's'}. Pick an action for the {pending.length} left.</span>
+                {onUndoBatch && <span onClick={() => onUndoBatch(latest.id)} className={motion.btnSecondary} style={{ marginLeft: 'auto', padding: '6px 11px', border: '1px solid #c9ead1', borderRadius: 6, font: '600 11px/1 Inter,sans-serif', color: '#245632', cursor: 'pointer', background: '#ffffff', flex: 'none' }}>Undo</span>}
+              </div>
+            )}
+            {sel.options.map((o) => (
+              <div key={o.id} onClick={() => setSelectedOptionId(o.id)} className={motion.rowHover} style={{ padding: '13px 14px', borderBottom: '1px solid #f1f2f4', display: 'flex', gap: 11, alignItems: 'flex-start', cursor: 'pointer', background: optId === o.id ? '#fafbfe' : '#ffffff' }}>
+                <span style={{ width: 14, height: 14, borderRadius: '50%', border: optId === o.id ? '4px solid #3f4fda' : '1px solid #e1e3e8', flex: 'none', marginTop: 2, transition: 'border 140ms ease-out' }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, flexWrap: 'wrap' as const }}>
+                    <span style={{ font: '600 12px/1.4 Inter,sans-serif', color: '#23232d' }}>{o.isOther ? 'Ask Jiva' : o.label}</span>
+                    {o.recommended && <AiDraftBadge label="Jiva recommends" />}
+                  </span>
+                  {(o.expected || o.confidence !== undefined) && (
+                    <div style={{ font: '400 11px/1.4 Inter,sans-serif', color: '#9a9fa8', marginTop: 3 }}>
+                      {o.expected ? `Est. ${o.expected}` : ''}{o.expected && o.confidence !== undefined ? ' · ' : ''}{o.confidence !== undefined ? `${o.confidence}% confidence` : ''}
+                    </div>
+                  )}
+                  {o.isMeetingAsk && optId === o.id && (
+                    <span
+                      onClick={(e) => { e.stopPropagation(); setActionPickerOpen(true); }}
+                      className={motion.btnSecondary}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 9, padding: '8px 13px', border: '1px solid #e1e3e8', borderRadius: 7, font: '600 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', background: '#ffffff' }}
+                    >
+                      Choose action type <span style={{ color: '#3f4fda' }}>→</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+            <div key="action" className={motion.contentFadeIn} style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 9, background: '#fbfbfc' }}>
+              <span onClick={() => { if (!inlineRun) handleExecute(); }} className={inlineRun ? undefined : motion.btnPrimary} aria-disabled={Boolean(inlineRun)} style={{ padding: '10px 16px', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: inlineRun ? 'wait' : 'pointer', opacity: inlineRun ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 7 }}>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4.5" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                {executeLabel}
+              </span>
+              <span
+                onClick={() => { if (dismissed) return; setDismissed(true); onDismiss(); setLastLogged({ label: 'Dismissed', sent: false }); window.setTimeout(() => setLastLogged(null), 3200); }}
+                className={dismissed ? undefined : motion.btnSecondary}
+                style={{ padding: '9px 14px', border: '1px solid #e1e3e8', borderRadius: 7, font: '500 12px/1 Inter,sans-serif', color: dismissed ? '#9a9fa8' : '#3d424b', cursor: dismissed ? 'default' : 'pointer', transition: 'color 150ms ease-out' }}
+              >
+                {dismissed ? 'Dismissed' : applied.length > 0 && pending.length > 0 ? 'Dismiss remaining ' + pending.length : 'Dismiss'}
+              </span>
+            </div>
+          </div>
+
+          {/* Affected items */}
+          {sel.items.length > 0 && (
+            <div style={{ border: '1px solid #e6e8ec', borderRadius: 8, overflow: 'hidden' }}>
+              <div style={{ padding: '12px 14px', borderBottom: '1px solid #f1f2f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ font: '600 12px/1 Inter,sans-serif', color: '#23232d' }}>Affected items</span>
+                <span style={{ font: '400 11px/1 Inter,sans-serif', color: '#6b6f78' }}>
+                  {pending.length === 0 && batches.length > 0 ? <b style={{ color: '#2b9652', fontWeight: 600 }}>All {sel.itemsCount} handled</b> : pending.length < sel.itemsCount ? <><b style={{ color: '#cb8b1c', fontWeight: 600 }}>{pending.length} still affected</b> · {sel.itemsCount} total</> : sel.itemsCount + ' total'}
+                </span>
+              </div>
+              {/* What's been done, one quiet row per batch, so actioned items leave the list but not the record. */}
+              {batches.map((b) => (
+                <div key={b.id} style={{ padding: '9px 14px', display: 'flex', alignItems: 'center', gap: 9, borderBottom: '1px solid #f1f2f4', background: '#fbfbfc' }}>
+                  {b.dismissed
+                    ? <span style={{ width: 13, height: 13, display: 'grid', placeItems: 'center', color: '#9a9fa8', font: '600 12px/1 Inter,sans-serif', flex: 'none' }}>–</span>
+                    : <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{ flex: 'none' }}><path d="M3 8l3.5 3.5L13 4.5" stroke="#2b9652" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                  <span style={{ flex: 1, minWidth: 0, font: '500 12px/1.4 Inter,sans-serif', color: b.dismissed ? '#6b6f78' : '#245632', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{b.label} · {b.keys.length} item{b.keys.length === 1 ? '' : 's'}</span>
+                  <span onClick={() => setViewBatch(b)} className={motion.pressable} style={{ font: '600 11px/1 Inter,sans-serif', color: '#3f4fda', cursor: 'pointer', flex: 'none' }}>View</span>
+                </div>
+              ))}
+              {pending.slice(0, 4).map((it, i) => (
+                <div key={i} style={{ padding: '9px 14px', display: 'flex', alignItems: 'center', gap: 11, borderBottom: '1px solid #f1f2f4' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ font: '400 12px/1.4 Inter,sans-serif', color: '#464646', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{it.name}</div>
+                    <div style={{ font: '400 10.5px/1.4 Inter,sans-serif', color: '#9a9fa8', marginTop: 1 }}>ASIN {it.sku}</div>
+                  </div>
+                  <span style={{ font: '600 12px/1 Inter,sans-serif', color: it.color, flex: 'none' }}>{it.impact}</span>
+                </div>
+              ))}
+              <div onClick={onOpenItems} className={motion.rowHover} style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+                <span style={{ font: '600 11px/1 Inter,sans-serif', color: '#3f4fda' }}>Show all {sel.itemsCount} →</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <DetailFooterBar>
+        <span
+          onClick={() => {
+            const assignees = sel.assignees ?? DEFAULT_ASSIGNEES;
+            if (assignees.length > ASSIGN_POPUP_THRESHOLD) { setAssignPopupOpen(true); setDetailMenu(null); }
+            else setDetailMenu(detailMenu === 'assign' ? null : 'assign');
+          }}
+          className={motion.btnSecondary}
+          style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 12px', border: '1px solid #e1e3e8', borderRadius: 7, font: '500 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', position: 'relative' }}
+        >
+          <AssignIcon size={13} /> Assign
+          {detailMenu === 'assign' && (
+            <div className={motion.popInBottomLeft} style={{ position: 'absolute', left: 0, bottom: 38, width: 220, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 9, boxShadow: '0 12px 28px rgba(20, 22, 33, .18)', padding: 6, zIndex: 70, textAlign: 'left' }} onClick={(e) => e.stopPropagation()}>
+              <AssignDropdownList assignees={sel.assignees ?? DEFAULT_ASSIGNEES} onSelect={() => setDetailMenu(null)} />
+            </div>
+          )}
+        </span>
+        <span onClick={() => setDetailMenu(detailMenu === 'share' ? null : 'share')} className={motion.btnSecondary} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 12px', border: '1px solid #e1e3e8', borderRadius: 7, font: '500 11px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer', position: 'relative' }}>
+          <ShareIcon size={13} /> Share
+          {detailMenu === 'share' && (
+            <div className={motion.popInBottomLeft} style={{ position: 'absolute', left: 0, bottom: 38, width: 180, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 9, boxShadow: '0 12px 28px rgba(20, 22, 33, .18)', padding: 6, zIndex: 70, textAlign: 'left' }}>
+              <div style={{ padding: '6px 10px 8px', font: '600 10px/1 Inter,sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9a9fa8' }}>Share via</div>
+              <div onClick={() => { setDetailMenu(null); setEmailFor(GENERIC_SEND_UPDATE); }} className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 10px', borderRadius: 6, font: '500 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}><EnvelopeSmallIcon size={12} /> Email</div>
+              <div className={motion.rowHover} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 10px', borderRadius: 6, font: '500 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}><WorkspaceSmallIcon size={12} /> Workspace · {sel.account}</div>
+            </div>
+          )}
+        </span>
+        <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 9, position: 'relative' }}>
+          <span style={{ font: '400 10px/1 Inter,sans-serif', color: '#9a9fa8' }}>Rate these results</span>
+          <span onClick={() => { setThumb('up'); setFeedbackOpen(false); }} className={motion.pressable} style={{ display: 'flex', cursor: 'pointer' }}>
+            <ThumbUpIcon size={15} color={thumb === 'up' ? '#2b9652' : '#9a9fa8'} />
+          </span>
+          <span onClick={() => { setThumb('down'); setFeedbackOpen(true); }} className={motion.pressable} style={{ display: 'flex', cursor: 'pointer' }}>
+            <ThumbDownIcon size={15} color={thumb === 'down' ? '#cc2b2b' : '#9a9fa8'} />
+          </span>
+          {feedbackOpen && (
+            <div className={motion.popInBottomRight} style={{ position: 'absolute', right: 0, bottom: 38, width: 280, background: '#ffffff', border: '1px solid #e6e8ec', borderRadius: 10, boxShadow: '0 12px 28px rgba(20, 22, 33, .18)', padding: 16, zIndex: 75, textAlign: 'left' }}>
+              <div style={{ font: '600 13px/1.4 Inter,sans-serif', color: '#23232d' }}>Help us make it better for you</div>
+              <textarea placeholder="What was off about this recommendation?" className={motion.focusRing} style={{ width: '100%', marginTop: 11, padding: '9px 11px', border: '1px solid #e1e3e8', borderRadius: 7, font: '400 12px/1.5 Inter,sans-serif', color: '#464646', resize: 'vertical' as const, minHeight: 64, outline: 'none' }} />
+              <div style={{ display: 'flex', gap: 8, marginTop: 11 }}>
+                <span onClick={() => setFeedbackOpen(false)} className={motion.btnPrimary} style={{ padding: '9px 15px', borderRadius: 7, background: '#3f4fda', color: '#ffffff', font: '600 12px/1 Inter,sans-serif', cursor: 'pointer' }}>Send</span>
+                <span onClick={() => setFeedbackOpen(false)} className={motion.btnSecondary} style={{ padding: '9px 15px', borderRadius: 7, border: '1px solid #e1e3e8', font: '600 12px/1 Inter,sans-serif', color: '#3d424b', cursor: 'pointer' }}>Cancel</span>
+              </div>
+            </div>
+          )}
+        </span>
+      </DetailFooterBar>
+
+      {itemsModalOpen && <ItemsModal items={getDisplayItems(sel)} itemCount={sel.itemsCount} breakdown={sel.itemsBreakdown} statusFor={batches.length > 0 ? statusFor : undefined} onClose={onCloseItems} />}
+      {picker && (
+        <ItemsModal
+          mode="select" items={pending} itemCount={pending.length} actionLabel={picker.label}
+          breakdown={pending.length < sel.itemsCount ? pending.length + ' of ' + sel.itemsCount + ' still affected' : sel.itemsBreakdown}
+          onConfirm={confirmItems} onClose={() => setPicker(null)}
+        />
+      )}
+      {viewBatch && (
+        <ItemsModal
+          items={getDisplayItems(sel).filter((it) => viewBatch.keys.includes(itemKey(it)))} itemCount={viewBatch.keys.length}
+          title={viewBatch.dismissed ? 'Dismissed items' : viewBatch.label} breakdown={viewBatch.keys.length + (viewBatch.keys.length === 1 ? ' item' : ' items')}
+          statusFor={statusFor} onClose={() => setViewBatch(null)}
+        />
+      )}
+
+      {lastLogged && (
+        <div className={motion.toastIn} style={{ position: 'absolute', right: 20, bottom: 20, padding: '12px 16px', borderRadius: 9, background: '#23232d', color: '#ffffff', font: '500 12px/1.4 Inter,sans-serif', boxShadow: '0 12px 28px rgba(20, 22, 33, .28)', zIndex: 250, display: 'flex', alignItems: 'center', gap: 9 }}>
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4.5" stroke="#7af0a1" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          {lastLogged.sent ? `Sent: ${lastLogged.label}` : `Logged: ${lastLogged.label}`}
+        </div>
+      )}
+    </div>
+  );
+}

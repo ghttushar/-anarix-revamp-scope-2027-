@@ -1,0 +1,72 @@
+@import '../../../../assets/styles/variables/variables.scss';
+
+.subHeader {
+  margin-top: calc(1 * var(--np-rem));
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0 calc(0.2 * var(--np-rem));
+  background-color: #f5f6f8;
+  min-height: calc(8 * var(--np-rem));
+}
+
+.subHeaderContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: calc(1 * var(--np-rem)) calc(1 * var(--np-rem));
+  width: 100%;
+  .rowFilter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: calc(3 * var(--np-rem));
+    width: auto;
+    background-color: $foreground-color;
+    cursor: pointer;
+    gap: calc(0.5 * var(--np-rem));
+    padding: calc(0.9 * var(--np-rem)) calc(1.5 * var(--np-rem));
+    outline: none;
+    font-size: calc(1.2 * var(--np-rem));
+    font-weight: 400;
+    letter-spacing: -0.24px;
+    border: 1px solid #dadceb;
+    color: $sub-text-1;
+    border-radius: calc(0.4 * var(--np-rem));
+
+    &:hover {
+      border-color: #8b8b8b;
+    }
+  }
+}
+
+.subHeaderTitle {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  font-size: calc(2 * var(--np-rem));
+  margin-bottom: calc(0.5 * var(--np-rem));
+  color: #464646;
+  padding: calc(0 * var(--np-rem)) 0 calc(0 * var(--np-rem)) 0;
+  font-weight: 700;
+  line-height: 29.05px;
+  align-items: end;
+  gap: calc(1 * var(--np-rem));
+  .subHeaderSubTitle {
+    padding-top: calc(0.7 * var(--np-rem));
+    font-size: calc(1.2 * var(--np-rem));
+    font-weight: 400;
+    color: #8b8b8b;
+    line-height: 14.52px;
+    height: calc(1.7 * var(--np-rem));
+    text-transform: none;
+  }
+}
+
+.subHeaderFilter {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: $spacing-10;
+}

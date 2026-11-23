@@ -27,6 +27,8 @@ export default defineConfig(({ mode }) => ({
     dedupe: ["react", "react-dom", "react/jsx-runtime"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Pages ported from anarix-ui (Campaign Creator, Dashboard, Signals) keep their own import tree.
+      "@legacy": path.resolve(__dirname, "./src/legacy"),
     },
   },
 }));

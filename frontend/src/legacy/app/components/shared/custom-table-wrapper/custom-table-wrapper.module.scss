@@ -1,0 +1,41 @@
+@import '../../../../assets/styles/scrollbar.scss';
+@import '../../../../assets/styles/variables/variables.scss';
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  .container {
+    overflow: auto;
+    @include fancy-scrollbar();
+    background: $foreground-color;
+    border: 1px solid $stoke-color-1;
+    width: 100%;
+    height: calc(100% - calc(7 * var(--np-rem)));
+    &.disableScroll {
+      overflow: hidden;
+      background-color: unset !important;
+    }
+  }
+
+  .paginationWrapper {
+    width: 100%;
+    // height: calc(7 * var(--np-rem));
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .loader {
+      width: calc(5 * var(--np-rem));
+      height: auto;
+    }
+    .text {
+      margin-top: calc(1 * var(--np-rem));
+      font-size: calc(1.4 * var(--np-rem));
+      font-weight: 500;
+    }
+  }
+}

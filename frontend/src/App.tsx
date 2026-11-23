@@ -25,7 +25,7 @@ import { InsightsProvider } from "@/components/insights";
 import { CreativeFeatures } from "@/features/creative";
 import { toast } from "sonner";
 import NotFound from "./pages/NotFound";
-import SignalsPage from "./pages/SignalsPage";
+import Signals from "./pages/signals/Signals";
 
 // Auth & Onboarding
 import Login from "./pages/auth/Login";
@@ -33,6 +33,7 @@ import ConnectAccounts from "./pages/onboarding/ConnectAccounts";
 
 // Advertising
 import CampaignManager from "./pages/advertising/CampaignManager";
+import CampaignCreator from "./pages/advertising/CampaignCreator";
 import ImpactAnalysis from "./pages/advertising/ImpactAnalysis";
 import ImpactCampaignDetail from "./pages/advertising/ImpactCampaignDetail";
 import ImpactAdGroupDetail from "./pages/advertising/ImpactAdGroupDetail";
@@ -76,7 +77,7 @@ import AMCInstances from "./pages/amc/Instances";
 
 // Day Parting
 import HourlyData from "./pages/dayparting/HourlyData";
-import WorkspaceDashboard from "./pages/workspace/Dashboard";
+import NuggetsDashboard from "./pages/workspace/NuggetsDashboard";
 import HealthScore from "./pages/workspace/HealthScore";
 import ClientPortal from "./pages/reports/ClientPortal";
 
@@ -181,8 +182,9 @@ function AppRoutes() {
       <Route path="/onboarding/connect" element={<ConnectAccounts />} />
 
       {/* Sandbox */}
-      <Route path="/workspace" element={<WorkspaceDashboard />} />
-      <Route path="/workspace/:dashboardId" element={<WorkspaceDashboard />} />
+      <Route path="/workspace" element={<NuggetsDashboard />} />
+      <Route path="/workspace/:dashboardId" element={<NuggetsDashboard />} />
+      <Route path="/dashboard" element={<Navigate to="/workspace" replace />} />
       <Route path="/workspace/health-score" element={<HealthScore />} />
 
       {/* Profitability */}
@@ -195,6 +197,7 @@ function AppRoutes() {
 
       {/* Advertising */}
       <Route path="/advertising/campaigns" element={<CampaignManager />} />
+      <Route path="/advertising/campaign-creator/*" element={<CampaignCreator />} />
       <Route path="/advertising/campaigns/:campaignId" element={<AdvCampaignDetail />} />
       <Route path="/advertising/campaigns/:campaignId/:adGroupId" element={<AdGroupDetail />} />
       <Route path="/advertising/campaigns/:campaignId/:adGroupId/:productAdId" element={<ProductAdDetail />} />
@@ -248,11 +251,10 @@ function AppRoutes() {
       {/* Reports */}
       <Route path="/reports/client-portal" element={<ClientPortal />} />
 
-      {/* Signals (formerly Alerts) — full-screen workspace */}
-      <Route path="/signals" element={<Navigate to="/alerts/stack" replace />} />
-      <Route path="/signals/*" element={<Navigate to="/alerts/stack" replace />} />
-      <Route path="/alerts" element={<Navigate to="/alerts/stack" replace />} />
-      <Route path="/alerts/:viewMode" element={<SignalsPage />} />
+      {/* Signals (Alerts, Meetings, Work-station), ported from anarix-ui. The old /alerts addresses open it. */}
+      <Route path="/signals" element={<Signals />} />
+      <Route path="/alerts" element={<Navigate to="/signals" replace />} />
+      <Route path="/alerts/*" element={<Navigate to="/signals" replace />} />
 
       {/* Standalone panel routes — for figma export and shareable deep links */}
       <Route path="/panels" element={<PanelIndex />} />
