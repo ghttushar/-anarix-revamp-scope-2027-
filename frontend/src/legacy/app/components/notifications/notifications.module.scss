@@ -1,0 +1,1013 @@
+@import '../../../assets/styles/variables/variables.scss';
+
+// Notifications: header bell, right drawer and the Settings notification center.
+// Same language as Campaign Creator: soft tinted surface, each notification its own white card, the brand purple for
+// anything unread or actionable, and a quiet tint per type (info purple, success green, warning amber).
+// Sizes are in px on purpose: the app's root font-size makes calc(1 * var(--np-rem)) about 10px.
+
+$ink: #1f1f27;
+$body: #464646;
+$muted: #646a76;
+$faint: #7b808a;
+$line: #dadceb;
+$hairline: #edeff2;
+$tile: #f2f3f5;
+$hover: #f7f8f9;
+$surface: #f8f8f9;
+$brand-tint: #f0f2fe;
+$brand-line: #d8ddfa;
+$good: #0b9e30;
+$good-tint: #e4fbe9;
+$warn: #b17806;
+$warn-tint: #fdf3dc;
+
+// ── Bell ─────────────────────────────────────────────────────────────────────────────────────
+
+.bellWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bellButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(31, 31, 39, 0.06);
+  color: $body;
+  cursor: pointer;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    border-color: $line;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.bellIcon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  transform-origin: 50% 12%;
+}
+
+.bellGlow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  background: #e9ebfd;
+  pointer-events: none;
+}
+
+.bellPulse {
+  position: absolute;
+  inset: 0;
+  border: 2px solid $primary-color;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.badgeRing {
+  position: absolute;
+  inset: 0;
+  border: 2px solid $primary-color;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: $primary-color;
+  box-shadow: 0 0 0 2px #f5f6f8;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ── Drawer ───────────────────────────────────────────────────────────────────────────────────
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 43, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  @media (prefers-reduced-transparency: reduce) {
+    background: rgba(17, 24, 43, 0.45);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: 420px;
+  max-width: 100vw;
+  background: #ffffff;
+  border-left: 1px solid $line;
+  box-shadow: -24px 0 48px -24px rgba(17, 24, 43, 0.28);
+  border-radius: 12px 0 0 12px;
+  overflow: hidden;
+  outline: none;
+}
+
+.drawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+
+.drawerTitle {
+  margin: 0;
+  color: $ink;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.iconButton {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: $muted;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+
+  &:hover {
+    background: $tile;
+    color: $ink;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+.tabsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px 0;
+  border-bottom: 1px solid $hairline;
+}
+
+.tabs {
+  display: flex;
+  gap: 20px;
+}
+
+.tab {
+  position: relative;
+  padding: 8px 0 12px;
+  border: 0;
+  background: none;
+  color: $muted;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+
+  &:hover {
+    color: $ink;
+  }
+
+  &[aria-selected='true'] {
+    color: $ink;
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.tabCount {
+  margin-left: 6px;
+  color: $faint;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabUnderline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: $primary-color;
+}
+
+.textButton {
+  padding: 6px 0 12px;
+  border: 0;
+  background: none;
+  color: $primary-color;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:disabled {
+    color: #abb0ba;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #d2d5db transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    background: #d2d5db;
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.groupLabel {
+  margin: 0;
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid $hairline;
+  color: $muted;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+// ── Row: a flat inbox line ───────────────────────────────────────────────────────────────────
+// Full-width rows split by hairlines. Unread rows carry a faint brand tint, a filled tile and a heavier title; the
+// time sits on the right and gives way to Remove on hover.
+
+$unread-tint: #f9faff;
+$unread-hover: #f1f3fe;
+$read-hover: #f8f8f9;
+
+.row {
+  position: relative;
+  border-bottom: 1px solid $hairline;
+  background: #ffffff;
+  transition: background-color 160ms ease-out;
+
+  &:hover {
+    background: $read-hover;
+  }
+}
+
+.rowUnread {
+  background: $unread-tint;
+
+  &:hover {
+    background: $unread-hover;
+  }
+}
+
+@keyframes arrive {
+  from {
+    background: #e6e8fd;
+  }
+  to {
+    background: $unread-tint;
+  }
+}
+
+.rowNew {
+  animation: arrive 1400ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.rowHead {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.rowMain {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+  width: 100%;
+  padding: 12px 8px 12px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
+}
+
+// The type tile: grey for read, brand tint with a filled glyph for unread.
+.iconTile {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: $tile;
+  color: #7b808a;
+  transition: background-color 160ms ease-out, color 160ms ease-out;
+}
+
+.rowUnread .iconTile {
+  background: $brand-tint;
+  color: $primary-color;
+}
+
+.text {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 32px;
+}
+
+.title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin: 0;
+  color: $muted;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.titleUnread {
+  color: $ink;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+// The right column: the time, and the chevron when the notification opens. Lines up with the title's first line.
+.rowSide {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 64px;
+  padding: 21px 16px 0 0;
+  transition: opacity 120ms ease-out;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $faint;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+button.meta {
+  cursor: pointer;
+
+  &:hover {
+    color: $ink;
+  }
+}
+
+.chevron {
+  display: grid;
+  place-items: center;
+  color: $faint;
+  transition: transform 200ms ease-out;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+// Remove: hidden until the row is hovered or something in it has focus.
+.rowActions {
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+
+.row:hover,
+.row:focus-within {
+  .rowActions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .rowSide {
+    opacity: 0;
+  }
+}
+
+.rowAction {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: $muted;
+  cursor: pointer;
+  transition: background-color 140ms ease-out, color 140ms ease-out;
+
+  &:hover {
+    background: rgba(31, 31, 39, 0.06);
+    color: $ink;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: -1px;
+  }
+}
+
+// Lines up with the title: 16px row padding + 32px tile + 12px gap.
+.rowCta {
+  margin-top: -6px;
+  padding: 0 16px 12px 60px;
+}
+
+.expand {
+  overflow: hidden;
+}
+
+.expandInner {
+  padding: 0 18px 16px 60px;
+}
+
+.details {
+  margin: 0 0 12px;
+  color: $body;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.fact {
+  padding: 8px 11px;
+  border-radius: 8px;
+  background: #f5f6f8;
+
+  dt {
+    color: $faint;
+    font-size: 12px;
+  }
+
+  dd {
+    margin: 2px 0 0;
+    color: $ink;
+    font-size: 13px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// The action is a plain text button: no box, no fill.
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $primary-color;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  svg {
+    transition: transform 150ms ease-out;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    svg {
+      transform: translateX(2px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+// ── Footer and empty state ───────────────────────────────────────────────────────────────────
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 40px 28px 56px;
+  text-align: center;
+}
+
+.emptyMark {
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  color: #b6bbc4;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: $ink;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.emptyText {
+  max-width: 280px;
+  margin: 0;
+  color: $muted;
+  font-size: 13px;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+
+// ── Settings page ────────────────────────────────────────────────────────────────────────────
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 280px;
+  max-width: 100%;
+
+  svg {
+    position: absolute;
+    left: 10px;
+    color: $faint;
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    height: 34px;
+    padding: 0 10px 0 32px;
+    border: 1px solid $line;
+    border-radius: 8px;
+    background: #ffffff;
+    color: $ink;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+
+    &::placeholder {
+      color: $faint;
+    }
+
+    &:focus {
+      border-color: $primary-color;
+     
+    }
+  }
+}
+
+.select {
+  height: 34px;
+  padding: 0 28px 0 12px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $ink;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+
+  &:focus-visible {
+    border-color: $primary-color;
+   
+  }
+}
+
+.toolbarSpacer {
+  flex: 1;
+}
+
+.pageCard {
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px -28px rgba(31, 31, 39, 0.6);
+}
+
+// One-day picker on the mini panel's All tab: a calendar icon that shows the day once one is picked.
+.dayPicker {
+  display: flex;
+  align-items: center;
+  padding-bottom: 6px;
+}
+
+.dayTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: $muted;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    background: $hover;
+    color: $ink;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.dayTriggerSet {
+  border-color: $brand-line;
+  background: $brand-tint;
+  color: $primary-color;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    background: $brand-tint;
+    color: $primary-color;
+  }
+}
+
+// The calendar opens in a popover outside the panel.
+.dayCalendar {
+  padding: 14px 14px 10px;
+}
+
+.dayCaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dayMonth {
+  color: $primary-color;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dayNav {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: $primary-color;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $hover;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
+.dayFooter {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid $hairline;
+}
+
+.dayToday {
+  padding: 4px 2px;
+  border: 0;
+  background: none;
+  color: $primary-color;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.tabsTools {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 6px;
+
+  // The "Mark all as read" button carries its own bottom padding for the underlined tabs; here it sits level.
+  button {
+    padding-bottom: 6px;
+  }
+}
+
+.pageCardTabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 20px 0;
+  border-bottom: 1px solid $hairline;
+}
+
+.pageBody {
+  padding: 0 0 8px;
+  border-radius: 0 0 12px 12px;
+  background: #ffffff;
+}
+
+.pageList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.loadMore {
+  display: block;
+  margin: 4px auto 16px;
+  padding: 8px 16px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $ink;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 150ms ease-out;
+
+  &:hover {
+    border-color: $primary-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bellButton,
+  .iconButton,
+  .row,
+  .chevron,
+  .cta svg,
+  .dot {
+    transition: none;
+  }
+}
+
+// ── The card that names a new notification under the bell ─────────────────────────────────────
+
+.peek {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 300px;
+  padding: 12px 14px;
+  border: 1px solid $line;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 16px 32px -16px rgba(17, 24, 43, 0.32);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.peekTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.peekDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $primary-color;
+}
+
+.peekTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: $ink;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peekTime {
+  flex: none;
+  color: $faint;
+  font-size: 12px;
+}
+
+.peekText {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  padding-left: 16px;
+  color: $muted;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+// ── The Empty / Normal / Incoming switch at the top of the panel ──────────────────────────────
+
+.previewBar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin: 14px 20px 0;
+  padding: 3px;
+  border-radius: 9px;
+  background: $tile;
+}
+
+.previewOption {
+  position: relative;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: $muted;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+
+  &[aria-checked='true'] {
+    color: $ink;
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 1px;
+  }
+}
+
+.previewPill {
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.previewLabel {
+  position: relative;
+}

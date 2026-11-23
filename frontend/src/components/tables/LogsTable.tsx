@@ -17,6 +17,11 @@ interface LogsTableProps {
 }
 
 const dash = (value?: string | null) => (value ? value : "-");
+/**
+ * Long names like Anarix_B07XK2_SP_Broad_Match_US_Q4_Scale have no spaces. Table columns ignore max-width, so these
+ * cells wrap inside a fixed-width box that may break anywhere (after an underscore first, see `breakable`).
+ */
+const WRAP = "whitespace-normal [overflow-wrap:anywhere]";
 const timeOf = (r: ILogsData) => r.timestamp || r.changedAt;
 
 /**
@@ -83,24 +88,24 @@ export function LogsTable({ rows, isLoading = false }: LogsTableProps) {
               return (
                 <TableRow key={`${(page - 1) * pageSize + i}-${time ?? ""}`} className="align-top">
                   <TableCell>
-                    <div className="font-medium text-foreground">{dash(name)}</div>
-                    {r.entityId && r.entityId !== name && <div className="mt-0.5 text-xs text-muted-foreground">{r.entityId}</div>}
+                    <div className={cn(WRAP, "w-[220px] font-medium text-foreground")}>{dash(name)}</div>
+                    {r.entityId && r.entityId !== name && <div className={cn(WRAP, "w-[220px] mt-0.5 text-xs text-muted-foreground")}>{r.entityId}</div>}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {r.entityType ? LOG_ENTITY_TYPES[r.entityType] ?? getTitleCaseString(r.entityType) : "-"}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{r.service ? getTitleCaseString(r.service) : "-"}</TableCell>
                   <TableCell>
-                    <div className="text-foreground" title={label}>{label}</div>
+                    <div className={cn(WRAP, "w-[240px] text-foreground")} title={label}>{label}</div>
                     <div className="mt-0.5 empty:hidden">
                       <LogViewLink data={r} className="text-xs font-medium text-primary hover:underline cursor-pointer" />
                     </div>
                   </TableCell>
-                  <TableCell className={cn("max-w-[220px] break-words", showValues && from ? "font-medium text-foreground" : "text-muted-foreground")}>
-                    {showValues && from ? breakable(String(from)) : "-"}
+                  <TableCell className={showValues && from ? "font-medium text-foreground" : "text-muted-foreground"}>
+                    <div className={cn(WRAP, "w-[200px]")}>{showValues && from ? breakable(String(from)) : "-"}</div>
                   </TableCell>
-                  <TableCell className={cn("max-w-[220px] break-words", showValues && to ? "font-medium text-foreground" : "text-muted-foreground")}>
-                    {showValues && to ? breakable(String(to)) : "-"}
+                  <TableCell className={showValues && to ? "font-medium text-foreground" : "text-muted-foreground"}>
+                    <div className={cn(WRAP, "w-[200px]")}>{showValues && to ? breakable(String(to)) : "-"}</div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {r.editSource ? LOG_SOURCE_LABELS[r.editSource] ?? getTitleCaseString(r.editSource) : "-"}

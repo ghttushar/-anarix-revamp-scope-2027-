@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 import { useInsights } from "@/components/insights";
-import { useAanEvents } from "@/components/aan/autonomous/AanEventsContext";
 import { toast } from "sonner";
 import { useActivePanel } from "@/contexts/ActivePanelContext";
 import { useAan } from "@/components/aan/AanContext";
 import { KeyboardShortcutsDialog } from "@/components/shortcuts/KeyboardShortcutsDialog";
 import html2canvas from "html2canvas";
+import { LegacyNotificationsDrawer, useLegacyUnreadNotifications } from "@legacy/shell/notifications-bridge";
 
 interface ActionItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -41,7 +41,8 @@ export function FloatingActionIsland() {
   const navigate = useNavigate();
   const { openCopilot, mode } = useAan();
   const { criticalCount: insightsCriticalCount } = useInsights();
-  const { pendingCount: aanPendingCount, criticalCount: aanCriticalCount } = useAanEvents();
+  const unreadNotifications = useLegacyUnreadNotifications();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   
@@ -125,16 +126,16 @@ export function FloatingActionIsland() {
     onClick: () => setTheme(isDark ? "light" : "dark"),
   };
 
-  const signalsAction: ActionItem = {
+  // anarix-ui's notification centre (Signals has its own place in the sidebar).
+  const notificationsAction: ActionItem = {
     icon: Bell,
-    label: "Signals",
-    onClick: () => navigate("/signals"),
-    badge: aanPendingCount,
-    highlight: aanCriticalCount > 0,
+    label: "Notifications",
+    onClick: () => setNotificationsOpen((v) => !v),
+    badge: unreadNotifications,
   };
 
   const appActions: ActionItem[] = [
-    signalsAction,
+    notificationsAction,
     { icon: RefreshCw, label: "Refresh", onClick: () => toast.info("Refreshing data...") },
     { icon: Download, label: "Export", onClick: () => toast.success("Export started") },
     themeAction,
@@ -274,6 +275,7 @@ export function FloatingActionIsland() {
       </div>
     </div>
     <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+    <LegacyNotificationsDrawer open={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
     </>
   );
 }
