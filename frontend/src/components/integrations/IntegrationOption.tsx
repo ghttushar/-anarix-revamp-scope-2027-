@@ -26,14 +26,14 @@ export const IntegrationOption = forwardRef<HTMLDivElement, Props>(function Inte
     <div
       ref={ref}
       className={cn(
-        "rounded-xl border border-border bg-card p-5 flex items-start gap-4 transition-shadow duration-500",
+        "rounded-xl border border-border bg-card px-4 py-3 flex items-center gap-4 transition-shadow duration-500",
         highlight && "ring-2 ring-primary/50 shadow-md"
       )}
     >
-      <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0", tileClassName ?? "bg-primary/10")}>{icon}</div>
+      <div className={cn("h-10 w-10 rounded-lg flex items-center justify-center shrink-0", tileClassName ?? "bg-primary/10")}>{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <h3 className="text-base font-medium text-foreground">{title}</h3>
+          <h3 className="text-sm font-medium text-foreground">{title}</h3>
           {tag && (
             <span className="text-[10px] uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5">{tag}</span>
           )}
@@ -41,11 +41,11 @@ export const IntegrationOption = forwardRef<HTMLDivElement, Props>(function Inte
             <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">New</span>
           )}
         </div>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
-        <div className="mt-3 flex items-center gap-3">
-          <Button size="sm" onClick={onAction}>{actionLabel}</Button>
-          {status}
-        </div>
+        <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+      </div>
+      <div className="flex items-center gap-3 shrink-0">
+        {status}
+        <Button size="sm" onClick={onAction}>{actionLabel}</Button>
       </div>
     </div>
   );

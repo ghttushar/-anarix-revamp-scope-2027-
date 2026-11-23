@@ -5,8 +5,9 @@ import {
 } from "recharts";
 import {
   TrendingUp, BarChart as BarChartIcon, LineChart as LineChartIcon,
-  ChevronDown, Check, ArrowUpRight, ArrowDownRight, Minus,
+  ChevronDown, Check, ArrowUpRight, ArrowDownRight, Minus, Maximize2,
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -80,6 +81,7 @@ export function MetricFrequencyChart({
 }: Props) {
   const [chartView, setChartView] = useState<"area" | "bar" | "line">("area");
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   // Re-bucket the trend points based on frequency.
   // Source data has weekly-ish points. We approximate buckets by group size.
@@ -136,7 +138,7 @@ export function MetricFrequencyChart({
     }
   };
 
-  const renderChart = (height: number) => {
+  const renderChart = (height: number | string) => {
     const commonAxes = (
       <>
         <CartesianGrid strokeDasharray="3 3" className="stroke-border" opacity={0.5} />
@@ -192,8 +194,9 @@ export function MetricFrequencyChart({
     );
   };
 
-  return (
-    <div className="rounded-lg border border-border bg-card p-3 min-w-0">
+  // The toolbar and chart, shown in the card and again, larger, in the expand dialog.
+  const body = (inDialog: boolean) => (
+    <>
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
@@ -266,43 +269,40 @@ export function MetricFrequencyChart({
               <LineChartIcon className="h-3 w-3" />
             </Button>
           </div>
+
+          {/* Expand */}
+          {!inDialog && (
+            <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => setExpanded(true)} title="Expand chart" aria-label="Expand chart">
+              <Maximize2 className="h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Chart */}
-      {selectedMetrics.length === 0 ? (
-        <div className="h-[220px] flex items-center justify-center text-xs text-muted-foreground">
-          Select at least one metric to display the chart.
-        </div>
-      ) : (
-        renderChart(220)
-      )}
+      {/* Chart: fills the card, so it matches the period rows beside it */}
+      <div className="flex-1 min-h-[240px]">
+        {selectedMetrics.length === 0 ? (
+          <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
+            Select at least one metric to display the chart.
+          </div>
+        ) : (
+          renderChart("100%")
+        )}
+      </div>
+    </>
+  );
 
-      {/* Metric legend strip below chart */}
-      {selectedMetrics.length > 0 && (
-        <div className="border-t border-border/50 mt-3 pt-3 grid gap-2" style={{ gridTemplateColumns: `repeat(${selectedMetrics.length}, minmax(0, 1fr))` }}>
-          {selectedMetrics.map((m) => {
-            const def = METRIC_DEFS.find((d) => d.key === m)!;
-            const curr = getValue(summary, m);
-            const prev = getValue(compareTo, m);
-            const d = getDelta(curr, prev);
-            return (
-              <div key={m} className="rounded-md border border-border/50 px-2.5 py-2 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full shrink-0" style={{ background: def.color }} />
-                  <span className="text-[10px] text-muted-foreground truncate">{def.label}</span>
-                </div>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="text-sm font-semibold text-foreground tabular-nums truncate">
-                    {formatValue(m, curr)}
-                  </span>
-                  <DeltaPill value={d.value} trend={d.trend} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 min-w-0 h-full flex flex-col">
+      {body(false)}
+      <Dialog open={expanded} onOpenChange={setExpanded}>
+        <DialogContent className="max-w-6xl w-[92vw]">
+          <DialogHeader>
+            <DialogTitle className="text-base">Performance Trend</DialogTitle>
+          </DialogHeader>
+          <div className="h-[65vh] flex flex-col">{body(true)}</div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import { IntegrationsBanner } from "@/components/integrations/IntegrationsBanner";
-import { ProfitabilityHeroCard } from "@/components/profitability/ProfitabilityHeroCard";
+import { ProfitabilityPeriodBoard } from "@/components/profitability/ProfitabilityPeriodBoard";
 import { ProductsPnLTable } from "@/components/profitability/ProductsPnLTable";
 import { COGSEditModal } from "@/components/profitability/COGSEditModal";
 import { BulkCogsUploadModal } from "@/components/profitability/BulkCogsUploadModal";
@@ -146,12 +146,10 @@ export default function ProfitabilityDashboard() {
           <IntegrationsBanner />
           <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} breadcrumbItems={breadcrumbItems} />
 
-          <ProfitabilityHeroCard
+          <ProfitabilityPeriodBoard
             summaries={profitabilitySummaries}
             trendDataByPeriod={trendDataByPeriod}
-            selectedPeriod={selectedPeriod}
-            onPeriodChange={setSelectedPeriod}
-            onViewBreakdown={handleOpenBreakdown}
+            onPeriodChange={(p) => setSelectedPeriod(p as typeof selectedPeriod)}
           />
 
           <div className="space-y-3">

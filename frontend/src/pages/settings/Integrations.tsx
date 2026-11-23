@@ -18,7 +18,7 @@ import { ConnectionRow } from "@/components/integrations/ConnectionRow";
 import { WhatsAppPurposeInfo } from "@/components/integrations/WhatsAppPurposeInfo";
 import { IntegrationWhatsAppFlow } from "./IntegrationWhatsApp";
 import { IntegrationOption } from "@/components/integrations/IntegrationOption";
-import { IntegrationsBanner, type BannerConnect } from "@/components/integrations/IntegrationsBanner";
+import type { BannerConnect } from "@/components/integrations/IntegrationsBanner";
 import { McpConnectFlow } from "@/components/integrations/McpConnectFlow";
 import { WorkspaceConnectFlow } from "@/components/integrations/WorkspaceConnectFlow";
 import { ChatGptLogo, ClaudeLogo, WORKSPACE_APPS, WorkspaceStack } from "@/components/integrations/BrandLogos";
@@ -78,8 +78,7 @@ export default function Integrations() {
 
   return (
     <AppLayout>
-      <div className="space-y-6 max-w-5xl">
-        <IntegrationsBanner onConnect={openConnect} />
+      <div className="space-y-6 w-full">
         <AppTaskbar breadcrumbItems={breadcrumbItems} />
 
         <div>
@@ -94,7 +93,7 @@ export default function Integrations() {
           <IntegrationOption
             ref={mcpCardRef}
             highlight={flash === "mcp"}
-            icon={<AanMascot size={28} interactive={false} />}
+            icon={<AanMascot size={24} interactive={false} />}
             title="MCP"
             tag="AI assistants"
             isNew={!mcpConnected}
@@ -113,7 +112,7 @@ export default function Integrations() {
           <IntegrationOption
             ref={workspaceCardRef}
             highlight={flash === "workspace"}
-            icon={<WorkspaceStack size={12} />}
+            icon={<WorkspaceStack size={10} />}
             title="Workspace AI"
             tag="Chat"
             isNew={connectedApps.length === 0}
