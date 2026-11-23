@@ -46,13 +46,13 @@ export function TrialExpiredState() {
       </p>
 
       <div className="flex items-center gap-3 relative">
-        <Button size="lg" onClick={() => navigate("/website/pricing")}>
+        <Button size="lg" onClick={() => navigate("/settings/billing/change-plan")}>
           Reheat my plan
         </Button>
         <Button
           size="lg"
           variant="ghost"
-          onClick={() => navigate("/website/company/contact")}
+          onClick={() => window.open("https://www.anarix.ai", "_blank", "noopener")}
         >
           Talk to us first
         </Button>

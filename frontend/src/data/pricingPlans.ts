@@ -1,4 +1,4 @@
-// Pricing plans for the redesigned Pricing page.
+// Pricing plans for the in-app plan picker (Settings → Billing).
 // Numbers are placeholders — confirm with finance before shipping live.
 
 export type PricingMode = "monthly" | "yearly";

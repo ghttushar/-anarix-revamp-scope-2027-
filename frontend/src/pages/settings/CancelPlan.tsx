@@ -2,29 +2,26 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, MessageSquare, X } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import PageLayout from "@/website/components/PageLayout";
-import { HiddenRouteGuard } from "@/website/components/HiddenRouteGuard";
 import { useTrial } from "@/contexts/TrialContext";
 
-const CancelPlanInner = () => {
+/** Settings → Billing → Cancel Plan: offer a downgrade or a conversation before canceling. */
+export default function CancelPlan() {
   const navigate = useNavigate();
   const { setTrial } = useTrial();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const handleConfirmCancel = () => {
     setTrial("expired");
-    try { sessionStorage.removeItem("anarix-cancel-from-app"); } catch {}
     setConfirmOpen(false);
     navigate("/profitability/dashboard");
   };
 
-  const handleDowngrade = () => navigate("/website/downgrade-plan?from=app");
-
   return (
-    <PageLayout>
-      <div className="max-w-2xl mx-auto px-6">
+    <AppLayout>
+      <div className="max-w-2xl mx-auto px-6 py-10">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3 text-center">Before you go…</h1>
           <p className="text-muted-foreground text-center mb-10">
@@ -33,7 +30,7 @@ const CancelPlanInner = () => {
 
           <div className="space-y-3 mb-10">
             <button
-              onClick={handleDowngrade}
+              onClick={() => navigate("/settings/billing/downgrade")}
               className="w-full text-left rounded-xl border border-border bg-card p-5 flex items-center gap-4 hover:border-primary/40 transition-colors"
             >
               <div className="h-10 w-10 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -64,7 +61,7 @@ const CancelPlanInner = () => {
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">Didn't find what you were looking for?</p>
               <p className="text-sm text-muted-foreground mb-3">Need a custom solution? We'll build a plan around your team.</p>
-              <Button size="sm" variant="outline" onClick={() => navigate("/website/company/contact")}>
+              <Button size="sm" variant="outline" onClick={() => window.open("https://www.anarix.ai", "_blank", "noopener")}>
                 Contact us
               </Button>
             </div>
@@ -86,14 +83,6 @@ const CancelPlanInner = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </PageLayout>
+    </AppLayout>
   );
-};
-
-const CancelPlan = () => (
-  <HiddenRouteGuard>
-    <CancelPlanInner />
-  </HiddenRouteGuard>
-);
-
-export default CancelPlan;
+}

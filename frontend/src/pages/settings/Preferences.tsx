@@ -6,8 +6,6 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCurrency, CURRENCIES } from "@/contexts/CurrencyContext";
-import { useFeatureToggle } from "@/contexts/FeatureToggleContext";
-import { useBranding } from "@/contexts/BrandingContext";
 import { useBillingFlow } from "@/contexts/BillingFlowContext";
 import { useTrial } from "@/contexts/TrialContext";
 import { useMaintenance } from "@/contexts/MaintenanceContext";
@@ -156,8 +154,6 @@ const breadcrumbItems = [
 ];
 export default function Preferences() {
   const { displayCurrency, setDisplayCurrency, exchangeRate, lastUpdated } = useCurrency();
-  const { newFeaturesVisible, toggleNewFeatures } = useFeatureToggle();
-  const { newBranding, toggleNewBranding } = useBranding();
   const { billingFlowEnabled, toggleBillingFlow } = useBillingFlow();
   const { trial, startSync, forceExpire, reset: resetTrial } = useTrial();
   const { maintenanceMode, setMaintenanceMode } = useMaintenance();
@@ -341,44 +337,6 @@ export default function Preferences() {
                 The conversion is for display purposes only and does not affect actual billing or reporting values.
               </p>
             </div>
-          </div>
-        </section>
-
-        <Separator />
-
-        {/* New Feature Pages Toggle */}
-        <section className="space-y-4">
-          <div>
-            <h2 className="font-heading text-lg font-medium text-foreground">New Feature Pages</h2>
-            <p className="text-sm text-muted-foreground">Show or hide recently added feature pages in the sidebar navigation</p>
-          </div>
-          <div className="rounded-lg border border-border bg-card">
-            <label className="flex items-center justify-between cursor-pointer p-4">
-              <div>
-                <p className="font-medium text-foreground">Show New Feature Pages</p>
-                <p className="text-xs text-muted-foreground">Includes Workspace, Health Score, Budget Pacing, Search Harvesting, Anomaly Alerts, Creative Analyzer, Rule Builder, Inventory & Ads, Competitor Pricing, Client Portal, Unified P&L</p>
-              </div>
-              <Switch checked={newFeaturesVisible} onCheckedChange={toggleNewFeatures} />
-            </label>
-          </div>
-        </section>
-
-        <Separator />
-
-        {/* New Branding */}
-        <section className="space-y-4">
-          <div>
-            <h2 className="font-heading text-lg font-medium text-foreground">New Branding</h2>
-            <p className="text-sm text-muted-foreground">Enable the new Anarix logo system and Aan mascot across the app. Rolls out progressively.</p>
-          </div>
-          <div className="rounded-lg border border-border bg-card">
-            <label className="flex items-center justify-between cursor-pointer p-4">
-              <div>
-                <p className="font-medium text-foreground">Use New Branding</p>
-                <p className="text-xs text-muted-foreground">Swaps the Anarix logo with the new mark. Phase 0 covers the sidebars; later phases extend to Aan mascot, chat, and app chrome.</p>
-              </div>
-              <Switch checked={newBranding} onCheckedChange={toggleNewBranding} />
-            </label>
           </div>
         </section>
 

@@ -20,7 +20,7 @@ export function TrialBanner() {
         <p className="text-sm font-medium text-foreground">Your free trial has ended.</p>
         <p className="text-xs text-muted-foreground">Upgrade your plan to keep syncing data and unlock advanced analytics.</p>
       </div>
-      <Button size="sm" onClick={() => navigate("/website/pricing")}>Upgrade plan</Button>
+      <Button size="sm" onClick={() => navigate("/settings/billing/change-plan")}>Upgrade plan</Button>
       <button
         type="button"
         aria-label="Dismiss"

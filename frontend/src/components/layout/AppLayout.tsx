@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 
 
 const AanCopilotPanel = lazy(() => import("@/components/aan/AanCopilotPanel").then(m => ({ default: m.AanCopilotPanel })));
-const AskAanTooltip = lazy(() => import("@/components/aan/AskAanTooltip").then(m => ({ default: m.AskAanTooltip })));
 
 function LayoutInner({ children, fullBleed = false }: { children: ReactNode; fullBleed?: boolean }) {
   const { dataPanel, aiPanel, hasAnyPanel, closeDataPanel } = useActivePanel();
@@ -110,7 +109,6 @@ function LayoutInner({ children, fullBleed = false }: { children: ReactNode; ful
         {showInboxPanel && <AanInboxPanel />}
         {showCopilot && <Suspense fallback={null}><AanCopilotPanel /></Suspense>}
       </div>
-      <Suspense fallback={null}><AskAanTooltip /></Suspense>
     </div>
   );
 }

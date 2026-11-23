@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RefreshCw, Download, Camera, Lightbulb, GripVertical, Bell, CalendarPlus, ArrowUp, Sun, Moon, Inbox } from "lucide-react";
+import { RefreshCw, Download, Camera, Lightbulb, GripVertical, Bell, Sun, Moon, Inbox } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 import { AanGlyph } from "@/components/aan/AanGlyph";
@@ -12,7 +12,6 @@ import { useInsights } from "@/components/insights";
 import { useAanEvents } from "@/components/aan/autonomous/AanEventsContext";
 import { toast } from "sonner";
 import { useActivePanel } from "@/contexts/ActivePanelContext";
-import { useBranding } from "@/contexts/BrandingContext";
 import { useAan } from "@/components/aan/AanContext";
 import { KeyboardShortcutsDialog } from "@/components/shortcuts/KeyboardShortcutsDialog";
 import html2canvas from "html2canvas";
@@ -43,19 +42,9 @@ export function FloatingActionIsland() {
   const { openCopilot, mode } = useAan();
   const { criticalCount: insightsCriticalCount } = useInsights();
   const { pendingCount: aanPendingCount, criticalCount: aanCriticalCount } = useAanEvents();
-  const { newBranding } = useBranding();
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   
-  const isWebsite = location.pathname.startsWith("/website");
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    if (!isWebsite) return;
-    const onScroll = () => setScrolled(window.scrollY > 800);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isWebsite]);
 
   const scheduleTabletCollapse = useCallback(() => {
     if (!isTabletView) return;
@@ -153,13 +142,7 @@ export function FloatingActionIsland() {
 
 
 
-  const websiteActions: ActionItem[] = [
-    { icon: CalendarPlus, label: "Book a demo", onClick: () => window.open("https://calendly.com/sunil-anarix/30min", "_blank") },
-    themeAction,
-    ...(scrolled ? [{ icon: ArrowUp, label: "Top", onClick: () => window.scrollTo({ top: 0, behavior: "smooth" }) }] : []),
-  ];
-
-  const actions = isWebsite ? websiteActions : appActions;
+  const actions = appActions;
 
   const takeScreenshot = async () => {
     setIsCapturing(true);
@@ -223,7 +206,7 @@ export function FloatingActionIsland() {
               </button>
             )}
             <div className="h-5 w-px bg-border" />
-            {newBranding && mode !== "copilot" && (
+            {mode !== "copilot" && (
               <button
                 type="button"
                 onClick={openCopilot}
@@ -260,7 +243,7 @@ export function FloatingActionIsland() {
                 </Button>
                 );
               })}
-              {!isWebsite && !isTabletView && (
+              {!isTabletView && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -274,7 +257,7 @@ export function FloatingActionIsland() {
               )}
             </div>
 
-            {isExpanded && !isWebsite && (
+            {isExpanded && (
               <div className="pl-1.5 border-l border-border" data-tour-id="island-shortcuts">
                 <button
                   type="button"
@@ -290,9 +273,7 @@ export function FloatingActionIsland() {
         </div>
       </div>
     </div>
-    {!isWebsite && (
-      <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-    )}
+    <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </>
   );
 }

@@ -8,21 +8,18 @@ import { useAccounts } from "@/contexts/AccountContext";
 
 
 import { AnarixLogo } from "@/components/branding/AnarixLogo";
-import { useBranding } from "@/contexts/BrandingContext";
-import legacyLogoWhite from "@/assets/logo-dark-full.svg";
 import newLogoFullDark from "@/assets/branding/anarix-full-dark.svg";
 
 export default function Login() {
   const navigate = useNavigate();
   const { clearAccounts } = useAccounts();
-  const { newBranding } = useBranding();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Brand panel always uses the dark/white-on-color logo
-  const brandPanelLogo = newBranding ? newLogoFullDark : legacyLogoWhite;
+  const brandPanelLogo = newLogoFullDark;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,13 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target,
-  MousePointerClick, Package, Database, Search, BarChart3, Clock,
-  CalendarClock, History, ListTodo, Settings, Users, ChevronDown,
-  ChevronRight, Layers, Image, FlaskConical, PackageCheck,
-  Send, Sun, Moon, User, LogOut, PanelLeft,
-  Gauge, Wheat, Bell, Activity, Link, Wrench, LayoutDashboard, Palette, ShieldCheck, Plug, Globe, CreditCard,
-  BellRing, Wand2,
+  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target, MousePointerClick, Package, Database, Search, BarChart3, Clock, CalendarClock, Settings, Users, ChevronDown, ChevronRight, FlaskConical, User, LogOut, PanelLeft, Link, LayoutDashboard, ShieldCheck, Plug, CreditCard, BellRing, Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -22,7 +16,6 @@ import { MarketplaceSelector } from "./MarketplaceSelector";
 
 import { AanGlyph } from "@/components/aan/AanGlyph";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useFeatureToggle } from "@/contexts/FeatureToggleContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -34,7 +27,6 @@ interface NavItem {
   title: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
-  isNewFeature?: boolean;
 }
 interface NavGroup {
   label: string;
@@ -48,7 +40,6 @@ const navigationGroups: NavGroup[] = [{
   items: [
     { title: "Dashboard", url: "/workspace", icon: LayoutGrid },
     { title: "Signals", url: "/signals", icon: BellRing },
-    { title: "Health Score", url: "/workspace/health-score", icon: Activity, isNewFeature: true },
   ]
 }, {
   label: "Profitability",
@@ -58,7 +49,6 @@ const navigationGroups: NavGroup[] = [{
     { title: "Trends", url: "/profitability/trends", icon: TrendingUp },
     { title: "Profit & Loss", url: "/profitability/pnl", icon: FileText },
     { title: "Geographical Data", url: "/profitability/geo", icon: MapPin },
-    { title: "Unified P&L", url: "/profitability/unified-pnl", icon: Layers, isNewFeature: true },
   ]
 }, {
   label: "Advertising",
@@ -68,10 +58,6 @@ const navigationGroups: NavGroup[] = [{
     { title: "Campaign Creator", url: "/advertising/campaign-creator", icon: Wand2 },
     { title: "Impact Analysis", url: "/advertising/impact", icon: Target },
     { title: "Targeting Actions", url: "/advertising/targeting", icon: MousePointerClick },
-    { title: "Budget Pacing", url: "/advertising/budget-pacing", icon: Gauge, isNewFeature: true },
-    { title: "Search Harvesting", url: "/advertising/search-harvesting", icon: Wheat, isNewFeature: true },
-    { title: "Anomaly Alerts", url: "/advertising/anomaly-alerts", icon: Bell, isNewFeature: true },
-    { title: "Creative Analyzer", url: "/advertising/creative-analyzer", icon: Image, isNewFeature: true },
   ]
 }, {
   label: "Rules",
@@ -85,7 +71,6 @@ const navigationGroups: NavGroup[] = [{
   icon: Package,
   items: [
     { title: "Products", url: "/catalog/products", icon: Package },
-    { title: "Inventory & Ads", url: "/catalog/inventory-ads", icon: PackageCheck, isNewFeature: true },
   ]
 }, {
   label: "AMC",
@@ -106,19 +91,12 @@ const navigationGroups: NavGroup[] = [{
     { title: "Keyword Tracker", url: "/bi/keyword-tracker", icon: Search },
     { title: "Keyword SOV", url: "/bi/keyword-sov", icon: BarChart3 },
     { title: "Product SOV", url: "/bi/product-sov", icon: Package },
-    { title: "Competitor Pricing", url: "/bi/competitor-pricing", icon: BarChart3, isNewFeature: true },
   ]
 }, {
   label: "Day Parting",
   icon: Clock,
   items: [
     { title: "Day Parting", url: "/dayparting", icon: Clock },
-  ]
-}, {
-  label: "Reports",
-  icon: FileText,
-  items: [
-    { title: "Automated Reports", url: "/reports/client-portal", icon: Send, isNewFeature: true },
   ]
 }];
 
@@ -133,7 +111,6 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   // (Ask Aan navigates to /aan via react-router)
   // theme toggle moved to Floating Action Island
-  const { newFeaturesVisible } = useFeatureToggle();
   const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
   const [triggerRects, setTriggerRects] = useState<Record<string, DOMRect | null>>({});
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -188,11 +165,7 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath.startsWith(path);
 
-  const filteredGroups = navigationGroups.map(group => {
-    if (newFeaturesVisible) return group;
-    const filteredItems = group.items.filter(item => !item.isNewFeature);
-    return { ...group, items: filteredItems };
-  }).filter(group => group.items.length > 0);
+  const filteredGroups = navigationGroups;
 
   return (
     <Sidebar className={cn("border-r border-sidebar-border bg-sidebar transition-all duration-200", collapsed ? "w-14" : "w-56")} collapsible="icon">
@@ -341,10 +314,6 @@ export function AppSidebar() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start" className="w-[220px]">
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/website")}>
-                    <Globe className="h-4 w-4" /><span>Anarix Website</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/appearance")}>
                     <Settings className="h-4 w-4" /><span>Preferences</span>
                   </DropdownMenuItem>
@@ -356,12 +325,6 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/team")}>
                     <Users className="h-4 w-4" /><span>Team</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/system")}>
-                    <Wrench className="h-4 w-4" /><span>System</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/aan-triggers")}>
-                    <Wrench className="h-4 w-4" /><span>Aan Triggers</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/billing")}>
                     <CreditCard className="h-4 w-4" /><span>Billing</span>
@@ -393,10 +356,6 @@ export function AppSidebar() {
                     <p className="text-xs text-muted-foreground">john@anarix.com</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/website")}>
-                    <Globe className="h-4 w-4" /><span>Anarix Website</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/appearance")}>
                     <Settings className="h-4 w-4" /><span>Preferences</span>
                   </DropdownMenuItem>
@@ -408,12 +367,6 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/team")}>
                     <Users className="h-4 w-4" /><span>Team</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/system")}>
-                    <Wrench className="h-4 w-4" /><span>System</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/aan-triggers")}>
-                    <Wrench className="h-4 w-4" /><span>Aan Triggers</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/settings/billing")}>
                     <CreditCard className="h-4 w-4" /><span>Billing</span>

@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useFeatureToggle } from "@/contexts/FeatureToggleContext";
 import { useAan } from "@/components/aan";
 import { SidebarHoverPopup } from "./SidebarHoverPopup";
 import { navigationGroups } from "./AppSidebar";
@@ -14,7 +13,6 @@ export function MiniSidebar() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   
-  const { newFeaturesVisible } = useFeatureToggle();
   const { closeAan } = useAan();
   
 
@@ -23,10 +21,7 @@ export function MiniSidebar() {
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  const filteredGroups = navigationGroups.map(group => {
-    if (newFeaturesVisible) return group;
-    return { ...group, items: group.items.filter(item => !item.isNewFeature) };
-  }).filter(group => group.items.length > 0);
+  const filteredGroups = navigationGroups;
 
   const handleMouseEnter = useCallback((label: string) => {
     if (hoverTimeoutRef.current) { clearTimeout(hoverTimeoutRef.current); hoverTimeoutRef.current = null; }

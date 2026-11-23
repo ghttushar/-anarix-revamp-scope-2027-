@@ -12,8 +12,6 @@ import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { AccountProvider, useAccounts } from "@/contexts/AccountContext";
 import { IntegrationsProvider } from "@/contexts/IntegrationsContext";
 import { VisualEffectsProvider } from "@/contexts/VisualEffectsContext";
-import { FeatureToggleProvider } from "@/contexts/FeatureToggleContext";
-import { BrandingProvider } from "@/contexts/BrandingContext";
 import { BillingFlowProvider } from "@/contexts/BillingFlowContext";
 import { TrialProvider } from "@/contexts/TrialContext";
 import { MaintenanceProvider, useMaintenance } from "@/contexts/MaintenanceContext";
@@ -41,10 +39,6 @@ import TargetingActions from "./pages/advertising/TargetingActions";
 import AdvCampaignDetail from "./pages/advertising/CampaignDetail";
 import AdGroupDetail from "./pages/advertising/AdGroupDetail";
 import ProductAdDetail from "./pages/advertising/ProductAdDetail";
-import BudgetPacing from "./pages/advertising/BudgetPacing";
-import SearchHarvesting from "./pages/advertising/SearchHarvesting";
-import AnomalyAlerts from "./pages/advertising/AnomalyAlerts";
-import CreativeAnalyzer from "./pages/advertising/CreativeAnalyzer";
 import RuleAgents from "./pages/advertising/RuleAgents";
 import RuleCreation from "./pages/advertising/RuleCreation";
 import AppliedRules from "./pages/advertising/AppliedRules";
@@ -54,18 +48,15 @@ import ProfitabilityDashboard from "./pages/profitability/Dashboard";
 import ProfitabilityTrends from "./pages/profitability/Trends";
 import ProfitLoss from "./pages/profitability/ProfitLoss";
 import Geographical from "./pages/profitability/Geographical";
-import UnifiedPnL from "./pages/profitability/UnifiedPnL";
 
 // Catalog
 import CatalogProducts from "./pages/catalog/Products";
-import InventoryAds from "./pages/catalog/InventoryAds";
 
 // Business Intelligence
 import BrandSOV from "./pages/bi/BrandSOV";
 import KeywordTracker from "./pages/bi/KeywordTracker";
 import KeywordSOV from "./pages/bi/KeywordSOV";
 import ProductSOV from "./pages/bi/ProductSOV";
-import CompetitorPricing from "./pages/bi/CompetitorPricing";
 
 // AMC
 import AMCQueries from "./pages/amc/Queries";
@@ -78,14 +69,11 @@ import AMCInstances from "./pages/amc/Instances";
 // Day Parting
 import HourlyData from "./pages/dayparting/HourlyData";
 import NuggetsDashboard from "./pages/workspace/NuggetsDashboard";
-import HealthScore from "./pages/workspace/HealthScore";
-import ClientPortal from "./pages/reports/ClientPortal";
 
 // Aan
 import AanWorkspacePage from "./pages/aan/Workspace";
 import AanFeedPage from "./pages/aan/Feed";
 import AanPoliciesPage from "./pages/aan/Policies";
-import AanTriggersPage from "./pages/settings/AanTriggers";
 import { AanEventsProvider } from "@/components/aan/autonomous/AanEventsContext";
 import PanelIndex, {
   AanInboxPanelRoute,
@@ -103,29 +91,13 @@ import Accounts from "./pages/settings/Accounts";
 import ConnectAmazon from "./pages/settings/ConnectAmazon";
 import ConnectWalmart from "./pages/settings/ConnectWalmart";
 import SettingsTeam from "./pages/settings/Team";
-import SettingsSystem from "./pages/settings/System";
 import Integrations from "./pages/settings/Integrations";
 import Billing from "./pages/settings/Billing";
+import ChangePlan from "./pages/settings/ChangePlan";
+import CancelPlan from "./pages/settings/CancelPlan";
 
 // Brand
 
-// Website
-import WebsiteLayout from "./website/WebsiteLayout";
-import WebsiteHome from "./website/pages/Home";
-import WebsiteAanAI from "./website/pages/AanPage";
-import WebsiteMcp from "./website/pages/McpPage";
-import WebsiteSignals from "./website/pages/SignalsPage";
-import WebsitePricing from "./website/pages/Pricing";
-import WebsiteProduct from "./website/pages/Product";
-import WebsiteDocumentation from "./website/pages/Documentation";
-import WebsiteAbout from "./website/pages/company/About";
-import WebsiteCareer from "./website/pages/company/Career";
-import WebsiteContact from "./website/pages/company/Contact";
-import WebsiteDemo from "./website/pages/Demo";
-import WebsitePrivacyPolicy from "./website/pages/legal/PrivacyPolicy";
-import WebsiteTermsAndConditions from "./website/pages/legal/TermsAndConditions";
-import WebsiteCancelPlan from "./website/pages/CancelPlan";
-import WebsiteDowngradePlan from "./website/pages/DowngradePlan";
 
 const queryClient = new QueryClient();
 
@@ -185,7 +157,6 @@ function AppRoutes() {
       <Route path="/workspace" element={<NuggetsDashboard />} />
       <Route path="/workspace/:dashboardId" element={<NuggetsDashboard />} />
       <Route path="/dashboard" element={<Navigate to="/workspace" replace />} />
-      <Route path="/workspace/health-score" element={<HealthScore />} />
 
       {/* Profitability */}
       <Route path="/profitability/dashboard" element={<ProfitabilityDashboard />} />
@@ -193,7 +164,6 @@ function AppRoutes() {
       <Route path="/profitability/trends" element={<ProfitabilityTrends />} />
       <Route path="/profitability/pnl" element={<ProfitLoss />} />
       <Route path="/profitability/geo" element={<Geographical />} />
-      <Route path="/profitability/unified-pnl" element={<UnifiedPnL />} />
 
       {/* Advertising */}
       <Route path="/advertising/campaigns" element={<CampaignManager />} />
@@ -205,10 +175,6 @@ function AppRoutes() {
       <Route path="/advertising/impact/campaigns/:campaignId" element={<ImpactCampaignDetail />} />
       <Route path="/advertising/impact/campaigns/:campaignId/:adGroupId" element={<ImpactAdGroupDetail />} />
       <Route path="/advertising/targeting" element={<TargetingActions />} />
-      <Route path="/advertising/budget-pacing" element={<BudgetPacing />} />
-      <Route path="/advertising/search-harvesting" element={<SearchHarvesting />} />
-      <Route path="/advertising/anomaly-alerts" element={<AnomalyAlerts />} />
-      <Route path="/advertising/creative-analyzer" element={<CreativeAnalyzer />} />
       <Route path="/advertising/rules/agents" element={<RuleAgents />} />
       <Route path="/advertising/rules/applied" element={<AppliedRules />} />
       <Route path="/advertising/rules/create" element={<RuleCreation />} />
@@ -217,14 +183,12 @@ function AppRoutes() {
 
       {/* Catalog */}
       <Route path="/catalog/products" element={<CatalogProducts />} />
-      <Route path="/catalog/inventory-ads" element={<InventoryAds />} />
 
       {/* Business Intelligence */}
       <Route path="/bi/brand-sov" element={<BrandSOV />} />
       <Route path="/bi/keyword-tracker" element={<KeywordTracker />} />
       <Route path="/bi/keyword-sov" element={<KeywordSOV />} />
       <Route path="/bi/product-sov" element={<ProductSOV />} />
-      <Route path="/bi/competitor-pricing" element={<CompetitorPricing />} />
 
       {/* AMC */}
       <Route path="/amc/queries" element={<AMCQueries />} />
@@ -249,7 +213,6 @@ function AppRoutes() {
       <Route path="/aan/policies" element={<AanPoliciesPage />} />
 
       {/* Reports */}
-      <Route path="/reports/client-portal" element={<ClientPortal />} />
 
       {/* Signals (Alerts, Meetings, Work-station), ported from anarix-ui. The old /alerts addresses open it. */}
       <Route path="/signals" element={<Signals />} />
@@ -273,30 +236,12 @@ function AppRoutes() {
       <Route path="/settings/accounts/connect/amazon" element={<ConnectAmazon />} />
       <Route path="/settings/accounts/connect/walmart" element={<ConnectWalmart />} />
       <Route path="/settings/team" element={<SettingsTeam />} />
-      <Route path="/settings/system" element={<SettingsSystem />} />
-      <Route path="/settings/aan-triggers" element={<AanTriggersPage />} />
+      <Route path="/settings/billing/change-plan" element={<ChangePlan mode="change" />} />
+      <Route path="/settings/billing/downgrade" element={<ChangePlan mode="downgrade" />} />
+      <Route path="/settings/billing/cancel" element={<CancelPlan />} />
       <Route path="/settings/billing" element={<Billing />} />
       <Route path="/settings/billing/:tab" element={<Billing />} />
 
-      {/* Marketing website */}
-      <Route path="/website" element={<WebsiteLayout />}>
-        <Route index element={<WebsiteHome />} />
-        <Route path="aan-ai" element={<WebsiteAanAI />} />
-        <Route path="mcp" element={<WebsiteMcp />} />
-        <Route path="signals" element={<WebsiteSignals />} />
-        <Route path="pricing" element={<WebsitePricing />} />
-        <Route path="product" element={<WebsiteProduct />} />
-        <Route path="documentation" element={<WebsiteDocumentation />} />
-        <Route path="company" element={<Navigate to="/website/company/about" replace />} />
-        <Route path="company/about" element={<WebsiteAbout />} />
-        <Route path="company/career" element={<WebsiteCareer />} />
-        <Route path="company/contact" element={<WebsiteContact />} />
-        <Route path="demo" element={<WebsiteDemo />} />
-        <Route path="privacy-policy" element={<WebsitePrivacyPolicy />} />
-        <Route path="terms-and-conditions" element={<WebsiteTermsAndConditions />} />
-        <Route path="cancel-plan" element={<WebsiteCancelPlan />} />
-        <Route path="downgrade-plan" element={<WebsiteDowngradePlan />} />
-      </Route>
 
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -318,26 +263,22 @@ const App = () => (
                   <AanPanelProvider>
                   <InsightsProvider>
                     <VisualEffectsProvider>
-                      <FeatureToggleProvider>
-                        <BrandingProvider>
-                        <BillingFlowProvider>
-                        <TrialProvider>
-                        <MaintenanceProvider>
-                        <TooltipProvider>
-                          <Toaster />
-                          <Sonner position="bottom-left" />
-                          <BrowserRouter>
-                                <CreativeFeatures>
-                                  <WelcomeToasts />
-                                  <MaintenanceGate />
-                                </CreativeFeatures>
-                          </BrowserRouter>
-                        </TooltipProvider>
-                        </MaintenanceProvider>
-                        </TrialProvider>
-                        </BillingFlowProvider>
-                        </BrandingProvider>
-                      </FeatureToggleProvider>
+                    <BillingFlowProvider>
+                    <TrialProvider>
+                    <MaintenanceProvider>
+                    <TooltipProvider>
+                      <Toaster />
+                      <Sonner position="bottom-left" />
+                      <BrowserRouter>
+                            <CreativeFeatures>
+                              <WelcomeToasts />
+                              <MaintenanceGate />
+                            </CreativeFeatures>
+                      </BrowserRouter>
+                    </TooltipProvider>
+                    </MaintenanceProvider>
+                    </TrialProvider>
+                    </BillingFlowProvider>
                     </VisualEffectsProvider>
                   </InsightsProvider>
                   </AanPanelProvider>

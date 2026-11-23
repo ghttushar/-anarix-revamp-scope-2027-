@@ -1,44 +1,53 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, ArrowLeft } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
-import PageLayout from "@/website/components/PageLayout";
-import { HiddenRouteGuard } from "@/website/components/HiddenRouteGuard";
-import { pricingMajors } from "@/website/data/pricingPlans";
+import { pricingMajors } from "@/data/pricingPlans";
 import { useTrial } from "@/contexts/TrialContext";
 import { toast } from "sonner";
 
-const DowngradePlanInner = () => {
+/**
+ * Settings → Billing plan picker.
+ * - "change": every plan (Upgrade plan, Edit Plan, Reheat my plan).
+ * - "downgrade": only the lower tiers, reached from Cancel Plan.
+ */
+export default function ChangePlan({ mode }: { mode: "change" | "downgrade" }) {
   const navigate = useNavigate();
   const { setTrial } = useTrial();
+  const downgrading = mode === "downgrade";
 
-  // Show only lower tiers (everything except the most expensive in each section)
-  const downgradeOptions = pricingMajors.flatMap((m) =>
-    m.sections.flatMap((s) => s.plans.slice(0, -1).map((p) => ({ ...p, sectionLabel: `${m.label} · ${s.label}` })))
+  const options = pricingMajors.flatMap((m) =>
+    m.sections.flatMap((s) =>
+      (downgrading ? s.plans.slice(0, -1) : s.plans).map((p) => ({ ...p, sectionLabel: `${m.label} · ${s.label}` }))
+    )
   );
 
-  const handleDowngrade = (planName: string) => {
+  const handlePick = (planName: string) => {
     setTrial("paid");
-    try { sessionStorage.removeItem("anarix-cancel-from-app"); } catch {}
-    toast.success(`Downgraded to ${planName}`);
+    toast.success(downgrading ? `Downgraded to ${planName}` : `Switched to ${planName}`);
     navigate("/profitability/dashboard");
   };
 
   return (
-    <PageLayout>
-      <div className="max-w-4xl mx-auto px-6">
+    <AppLayout>
+      <div className="max-w-4xl mx-auto px-6 py-10">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <button
-            onClick={() => navigate("/website/cancel-plan?from=app")}
+            onClick={() => navigate(downgrading ? "/settings/billing/cancel" : "/settings/billing/manage-plans")}
             className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 mb-6"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back
           </button>
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">Pick a smaller plan</h1>
-          <p className="text-muted-foreground mb-10">Keep what you love about Anarix on a lighter plan. You can upgrade again any time.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">{downgrading ? "Pick a smaller plan" : "Choose your plan"}</h1>
+          <p className="text-muted-foreground mb-10">
+            {downgrading
+              ? "Keep what you love about Anarix on a lighter plan. You can upgrade again any time."
+              : "Pick the plan that fits your team. You can change it again any time."}
+          </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {downgradeOptions.map((p) => (
+            {options.map((p) => (
               <div key={p.id} className="rounded-xl border border-border bg-card p-5">
                 <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{p.sectionLabel}</p>
                 <h3 className="text-lg font-bold text-foreground">{p.name}</h3>
@@ -55,22 +64,14 @@ const DowngradePlanInner = () => {
                     </li>
                   ))}
                 </ul>
-                <Button size="sm" variant="outline" className="w-full rounded-pill" onClick={() => handleDowngrade(p.name)}>
-                  Confirm Downgrade
+                <Button size="sm" variant="outline" className="w-full rounded-pill" onClick={() => handlePick(p.name)}>
+                  {downgrading ? "Confirm Downgrade" : "Choose plan"}
                 </Button>
               </div>
             ))}
           </div>
         </motion.div>
       </div>
-    </PageLayout>
+    </AppLayout>
   );
-};
-
-const DowngradePlan = () => (
-  <HiddenRouteGuard>
-    <DowngradePlanInner />
-  </HiddenRouteGuard>
-);
-
-export default DowngradePlan;
+}

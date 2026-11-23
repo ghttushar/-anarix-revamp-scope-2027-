@@ -2,18 +2,14 @@ import { useRef, useEffect, useState } from "react";
 import { useAan } from "./AanContext";
 import { cn } from "@/lib/utils";
 import { User } from "lucide-react";
-import { AanGlyph } from "./AanGlyph";
 import { AanMascot } from "./AanMascot";
 import { useAanPresence } from "./AanPresenceContext";
-import { useBranding } from "@/contexts/BrandingContext";
 import { format } from "date-fns";
 import { ArtifactCard } from "./ArtifactCard";
-import { CircularProgress } from "@/components/ui/circular-progress";
 import { FloatingDots } from "./FloatingDots";
 
 export function AanConversation() {
   const { messages, openSplit, isGenerating, generationType, generationProgress } = useAan();
-  const { newBranding } = useBranding();
   const { registerAnchor } = useAanPresence();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [pendingAnchorEl, setPendingAnchorEl] = useState<HTMLDivElement | null>(null);
@@ -27,14 +23,13 @@ export function AanConversation() {
 
   // Register the generation card anchor - owns the live presence while generating
   useEffect(() => {
-    if (!newBranding) return;
     if (isGenerating) {
       registerAnchor("generation", generationAnchorEl, 40);
     } else {
       registerAnchor("generation", null);
     }
     return () => registerAnchor("generation", null);
-  }, [newBranding, isGenerating, generationAnchorEl, registerAnchor]);
+  }, [isGenerating, generationAnchorEl, registerAnchor]);
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -51,18 +46,12 @@ export function AanConversation() {
             className={cn(
               "flex h-8 w-8 shrink-0 items-center justify-center",
               message.role === "assistant"
-                ? newBranding
-                  ? "text-foreground"
-                  : "rounded-full aan-gradient text-white"
+                ? "text-foreground"
                 : "rounded-full bg-muted text-muted-foreground"
             )}
           >
             {message.role === "assistant" ? (
-              newBranding ? (
-                <AanMascot size={20} state="anchor" interactive={false} />
-              ) : (
-                <AanGlyph className="h-4 w-4" />
-              )
+              <AanMascot size={20} state="anchor" interactive={false} />
             ) : (
               <User className="h-4 w-4" />
             )}
@@ -107,28 +96,19 @@ export function AanConversation() {
         <div className="flex flex-row gap-3">
           <div
             className={cn(
-              "flex h-8 w-8 shrink-0 items-center justify-center",
-              newBranding ? "text-foreground" : "rounded-full aan-gradient text-white"
+              "flex h-8 w-8 shrink-0 items-center justify-center text-foreground"
             )}
           >
-            {newBranding ? (
-              <AanMascot size={20} state="anchor" interactive={false} />
-            ) : (
-              <AanGlyph className="h-4 w-4" />
-            )}
+            <AanMascot size={20} state="anchor" interactive={false} />
           </div>
           <div className="flex max-w-[80%] flex-col gap-2 items-start">
             <div className="flex flex-row items-center gap-4 px-5 py-4 rounded-2xl border border-border bg-card shadow-sm w-fit min-w-[280px]">
-              {newBranding ? (
-                <div
-                  ref={setGenerationAnchorEl}
-                  aria-hidden
-                  data-aan-anchor="generation"
-                  className="w-10 h-10 shrink-0 flex items-center justify-center"
-                />
-              ) : (
-                <CircularProgress progress={generationProgress} size={48} />
-              )}
+              <div
+                ref={setGenerationAnchorEl}
+                aria-hidden
+                data-aan-anchor="generation"
+                className="w-10 h-10 shrink-0 flex items-center justify-center"
+              />
               <div className="flex flex-col items-start text-left">
                 <p className="font-medium text-foreground text-sm leading-tight">
                   {generationType === "report" ? "Generating Report" : "Running Audit"}

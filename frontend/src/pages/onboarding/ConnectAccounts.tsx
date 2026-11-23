@@ -9,8 +9,8 @@ import { useAccounts } from "@/contexts/AccountContext";
 import { useTrial } from "@/contexts/TrialContext";
 import { useBillingFlow } from "@/contexts/BillingFlowContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import logoFull from "@/assets/logo-light-full.svg";
-import logoWhite from "@/assets/logo-dark-full.svg";
+import logoFull from "@/assets/branding/anarix-full-light.svg";
+import logoWhite from "@/assets/branding/anarix-full-dark.svg";
 
 // Walmart logo
 const WalmartLogo = ({ className }: { className?: string }) => (

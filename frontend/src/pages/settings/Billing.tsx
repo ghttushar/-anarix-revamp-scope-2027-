@@ -139,14 +139,13 @@ export default function Billing() {
                   <Badge>Active</Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" onClick={() => window.open("/website/pricing", "_blank")}>
-                    <ExternalLink className="h-3.5 w-3.5 mr-1" /> Edit Plan
+                  <Button variant="outline" onClick={() => navigate("/settings/billing/change-plan")}>
+                    <Pencil className="h-3.5 w-3.5 mr-1" /> Edit Plan
                   </Button>
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      sessionStorage.setItem("anarix-cancel-from-app", "1");
-                      navigate("/website/cancel-plan?from=app");
+                      navigate("/settings/billing/cancel");
                     }}
                   >
                     Cancel Plan

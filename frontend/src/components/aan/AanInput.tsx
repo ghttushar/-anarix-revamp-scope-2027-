@@ -7,10 +7,8 @@ import { WORKSPACE_CORPUS } from "@/data/mockWorkspaceCorpus";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Square, X, Paperclip, ChevronDown, Check, Zap, Brain, Cpu, Gauge } from "lucide-react";
-import { AanGlyph } from "./AanGlyph";
 import { AanMascot } from "./AanMascot";
 import { useAanPresence } from "./AanPresenceContext";
-import { useBranding } from "@/contexts/BrandingContext";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -108,7 +106,6 @@ export function AanInput() {
   const { addMessage, setGenerationState, messages, selectedModel, setSelectedModel, pendingPrompt, setPendingPrompt, isGenerating, generationType, setInputFocused } = useAan();
   const { fireScenario } = useAanEvents();
   const { setDataPanel } = useActivePanel();
-  const { newBranding } = useBranding();
   const { registerAnchor } = useAanPresence();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -126,10 +123,9 @@ export function AanInput() {
 
   // Register the top-left input slot as the resting anchor for the travelling Aan presence
   useEffect(() => {
-    if (!newBranding) return;
     registerAnchor("input", inputAnchorEl, 44);
     return () => registerAnchor("input", null);
-  }, [newBranding, inputAnchorEl, registerAnchor]);
+  }, [inputAnchorEl, registerAnchor]);
 
   useEffect(() => {
     return () => {
@@ -309,72 +305,40 @@ export function AanInput() {
       <div className="px-4 pb-4 pt-3">
         <div className="relative">
           {/* Aan presence slot - sits above the input, left-aligned. Reserves height even when no suggestion is active. */}
-          {newBranding && (
-            <div className="flex items-center gap-3 pl-3 mb-2 h-[52px]">
-              <div
-                ref={setInputAnchorEl}
-                data-aan-anchor="input"
-                className="w-[52px] h-[52px] flex items-center justify-center shrink-0"
-              />
-              {showSuggestion && (
-                <div
-                  className={cn(
-                    "flex-1 min-w-0 transition-all duration-300 ease-out",
-                    suggestionVisible
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-1"
-                  )}
-                >
-                  <button
-                    onClick={handleSuggestionClick}
-                    className="group inline-flex max-w-full items-center gap-2 text-left"
-                  >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 shrink-0">Suggested</span>
-                    <span className="text-xs font-medium text-primary group-hover:underline truncate">
-                      {PROMPT_SUGGESTIONS[suggestionIndex]}
-                    </span>
-                  </button>
-                  <button
-                    onClick={handleDismissSuggestion}
-                    className="ml-2 p-0.5 rounded hover:bg-muted text-muted-foreground transition-colors"
-                    aria-label="Dismiss suggestion"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Legacy suggestion notch (old branding only) */}
-          {!newBranding && showSuggestion && (
+          <div className="flex items-center gap-3 pl-3 mb-2 h-[52px]">
             <div
-              className={cn(
-                "absolute bottom-full left-0 right-0 origin-bottom transition-all duration-300 ease-out",
-                suggestionVisible
-                  ? "opacity-100 translate-y-0 scale-100"
-                  : "opacity-0 translate-y-1 scale-[0.98]"
-              )}
-            >
-              <div className="mx-0 flex overflow-hidden rounded-t-lg border border-b-0 border-border bg-card/90 shadow-sm">
-                <div className="w-[3px] shrink-0 bg-gradient-to-b from-primary to-accent" />
-                <div className="flex items-center gap-2.5 px-3 py-2.5 flex-1 min-w-0">
-                  <div className="flex items-center justify-center h-6 w-6 rounded-md bg-primary/10 shrink-0">
-                    <AanGlyph state="listening" className="h-3.5 w-3.5 text-primary" />
-                  </div>
-                  <button onClick={handleSuggestionClick} className="flex-1 text-left min-w-0 cursor-pointer group">
-                    <span className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-0.5">Suggested</span>
-                    <span className="block text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors truncate">
-                      {PROMPT_SUGGESTIONS[suggestionIndex]}
-                    </span>
-                  </button>
-                  <button onClick={handleDismissSuggestion} className="p-1 rounded-md hover:bg-muted cursor-pointer transition-colors shrink-0">
-                    <X className="h-3 w-3 text-muted-foreground" />
-                  </button>
-                </div>
+              ref={setInputAnchorEl}
+              data-aan-anchor="input"
+              className="w-[52px] h-[52px] flex items-center justify-center shrink-0"
+            />
+            {showSuggestion && (
+              <div
+                className={cn(
+                  "flex-1 min-w-0 transition-all duration-300 ease-out",
+                  suggestionVisible
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-1"
+                )}
+              >
+                <button
+                  onClick={handleSuggestionClick}
+                  className="group inline-flex max-w-full items-center gap-2 text-left"
+                >
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 shrink-0">Suggested</span>
+                  <span className="text-xs font-medium text-primary group-hover:underline truncate">
+                    {PROMPT_SUGGESTIONS[suggestionIndex]}
+                  </span>
+                </button>
+                <button
+                  onClick={handleDismissSuggestion}
+                  className="ml-2 p-0.5 rounded hover:bg-muted text-muted-foreground transition-colors"
+                  aria-label="Dismiss suggestion"
+                >
+                  <X className="h-3 w-3" />
+                </button>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Attached files chips */}
           {attachedFiles.length > 0 && (

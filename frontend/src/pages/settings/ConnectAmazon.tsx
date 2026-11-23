@@ -9,8 +9,8 @@ import { PageBreadcrumb } from "@/components/layout/PageBreadcrumb";
 import { useAccounts } from "@/contexts/AccountContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { toast } from "sonner";
-import logoFull from "@/assets/logo-light-full.svg";
-import logoWhite from "@/assets/logo-dark-full.svg";
+import logoFull from "@/assets/branding/anarix-full-light.svg";
+import logoWhite from "@/assets/branding/anarix-full-dark.svg";
 const connectionOptions = [
   {
     id: "seller",
