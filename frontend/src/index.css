@@ -54,6 +54,12 @@
     --popover-foreground: 240 53% 9%;
 
     --primary: 229 65% 57%; /* #4A62D9 - Brand Primary Periwinkle */
+    /* Chart series (lib/constants/metrics.ts SERIES_COLORS) */
+    --chart-1: 229 65% 57%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 38 90% 50%;
+    --chart-4: 330 58% 55%;
+    --chart-5: 262 52% 62%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 234 30% 24%; /* #2A2D4F - Ink Blue */
@@ -113,6 +119,11 @@
     --popover-foreground: 240 100% 97%;
 
     --primary: 231 88% 70%; /* #6E82F5 - Brand Primary */
+    --chart-1: 231 88% 70%;
+    --chart-2: 173 55% 50%;
+    --chart-3: 38 90% 58%;
+    --chart-4: 330 65% 65%;
+    --chart-5: 262 60% 72%;
     --primary-foreground: 240 53% 9%;
 
     --secondary: 234 43% 32%; /* #2F3470 */

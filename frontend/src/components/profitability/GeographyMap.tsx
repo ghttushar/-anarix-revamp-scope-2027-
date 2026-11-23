@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ZoomIn, ZoomOut, RotateCcw, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BarIconButton } from "@/components/bars";
+import { ChartCard } from "@/components/charts/ChartCard";
 
 interface GeographyMapProps {
   selectedRegion?: string;
@@ -169,139 +170,141 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
   const hoveredData = hoveredCountry ? activeCountryData[hoveredCountry] : null;
 
   return (
-    <div className="h-full rounded-lg border border-border bg-card p-4 flex flex-col">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-foreground">Sales by Region</h3>
-        <div className="flex items-center gap-1">
-          <Button variant="outline" size="icon" onClick={handleZoomIn} className="h-7 w-7" title="Zoom in">
-            <ZoomIn className="h-3.5 w-3.5" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleZoomOut} className="h-7 w-7" title="Zoom out">
-            <ZoomOut className="h-3.5 w-3.5" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleReset} className="h-7 w-7" title="Reset view">
-            <RotateCcw className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
-
-      <div
-        className="relative h-[400px] overflow-hidden rounded-lg bg-muted/5 border border-border select-none"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        style={{ cursor: isPanning ? "grabbing" : "grab" }}
-      >
-        <svg
-          viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
-          className="h-full w-full"
-          style={{
-            transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
-            transformOrigin: "center center",
-            transition: isPanning ? "none" : "transform 0.2s ease",
-          }}
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {dots.map(([col, row, country], i) => {
-            const cx = col * DOT_SPACING + 10;
-            const cy = row * DOT_SPACING + 10;
-            const isActive = country in activeCountryData;
-            const isSelected = selectedRegion === country;
-            const isHovered = hoveredCountry === country;
-
-            let fill: string;
-            if (isActive) {
-              const op = activeCountryData[country].opacity;
-              fill = `hsl(var(--primary) / ${isHovered ? Math.min(op + 0.2, 1) : op})`;
-            } else {
-              fill = "hsl(var(--muted-foreground) / 0.1)";
-            }
-
-            return (
-              <circle
-                key={i}
-                cx={cx}
-                cy={cy}
-                r={isSelected ? DOT_RADIUS + 0.5 : DOT_RADIUS}
-                fill={fill}
-                stroke={isSelected ? "hsl(var(--primary))" : "none"}
-                strokeWidth={isSelected ? 0.8 : 0}
-                className="transition-colors duration-150"
-                style={{ cursor: isActive ? "pointer" : "default" }}
-                onMouseEnter={() => isActive && setHoveredCountry(country)}
-                onMouseLeave={() => setHoveredCountry(null)}
-                onClick={(e) => {
-                  if (!isActive) return;
-                  e.stopPropagation();
-                  onRegionSelect?.(country);
-                }}
-              />
-            );
-          })}
-        </svg>
-
-        {/* Floating callout cards */}
-        {Object.entries(activeCountryData).map(([code, data]) => {
-          const positions: Record<string, { left: string; top: string }> = {
-            USA: { left: "22%", top: "38%" },
-            CAN: { left: "25%", top: "14%" },
-            MEX: { left: "14%", top: "52%" },
-          };
-          const pos = positions[code];
-          if (!pos) return null;
-
-          return (
-            <div
-              key={code}
-              className={`absolute rounded-md border bg-popover/95 backdrop-blur-sm px-2.5 py-1.5 shadow-sm transition-all duration-150 ${
-                selectedRegion === code ? "border-primary ring-1 ring-primary/20" : "border-border"
-              } ${hoveredCountry === code ? "scale-105" : ""}`}
-              style={{ left: pos.left, top: pos.top, pointerEvents: "none" }}
-            >
-              <div className="flex items-center gap-1.5">
-                <MapPin className="h-3 w-3 text-primary" />
-                <span className="text-xs font-medium text-foreground">{data.name}</span>
+    <ChartCard
+      title="Sales by Region"
+      height="lg"
+      className="h-full"
+      csv={() => ({
+        filename: "sales-by-region",
+        rows: Object.entries(activeCountryData).map(([code, d]) => ({ code, region: d.name, sales: d.sales, orders: d.orders })),
+      })}
+      footer={
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] text-muted-foreground">Low</span>
+              <div className="flex rounded overflow-hidden">
+                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.2)" }} />
+                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.35)" }} />
+                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.5)" }} />
+                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.8)" }} />
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                ${data.sales.toLocaleString()}
-              </p>
+              <span className="text-[10px] text-muted-foreground">High</span>
             </div>
-          );
-        })}
-
-        {/* Hover tooltip */}
-        {hoveredData && (
-          <div className="absolute bottom-3 left-3 rounded-lg border border-border bg-popover px-3 py-2 shadow-lg z-10">
-            <p className="font-medium text-foreground text-sm">{hoveredData.name}</p>
-            <p className="text-xs text-muted-foreground">Sales: ${hoveredData.sales.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">Orders: {hoveredData.orders.toLocaleString()}</p>
+            <div className="flex items-center gap-1.5">
+              <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--muted-foreground) / 0.1)" }} />
+              <span className="text-[10px] text-muted-foreground">No data</span>
+            </div>
           </div>
-        )}
-
-        {/* Zoom indicator */}
-        <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-popover/80 text-[10px] text-muted-foreground">
-          {Math.round(zoom * 100)}%
-        </div>
-      </div>
-
-      {/* Legend */}
-      <div className="mt-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-[10px] text-muted-foreground">Low</span>
-          <div className="flex rounded overflow-hidden">
-            <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.2)" }} />
-            <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.35)" }} />
-            <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.5)" }} />
-            <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.8)" }} />
+      }
+    >
+      {() => (
+          <div
+            className="relative h-full overflow-hidden rounded-lg bg-muted/5 border border-border select-none"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            style={{ cursor: isPanning ? "grabbing" : "grab" }}
+          >
+            <svg
+              viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+              className="h-full w-full"
+              style={{
+                transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
+                transformOrigin: "center center",
+                transition: isPanning ? "none" : "transform 0.2s ease",
+              }}
+              preserveAspectRatio="xMidYMid meet"
+            >
+              {dots.map(([col, row, country], i) => {
+                const cx = col * DOT_SPACING + 10;
+                const cy = row * DOT_SPACING + 10;
+                const isActive = country in activeCountryData;
+                const isSelected = selectedRegion === country;
+                const isHovered = hoveredCountry === country;
+    
+                let fill: string;
+                if (isActive) {
+                  const op = activeCountryData[country].opacity;
+                  fill = `hsl(var(--primary) / ${isHovered ? Math.min(op + 0.2, 1) : op})`;
+                } else {
+                  fill = "hsl(var(--muted-foreground) / 0.1)";
+                }
+    
+                return (
+                  <circle
+                    key={i}
+                    cx={cx}
+                    cy={cy}
+                    r={isSelected ? DOT_RADIUS + 0.5 : DOT_RADIUS}
+                    fill={fill}
+                    stroke={isSelected ? "hsl(var(--primary))" : "none"}
+                    strokeWidth={isSelected ? 0.8 : 0}
+                    className="transition-colors duration-150"
+                    style={{ cursor: isActive ? "pointer" : "default" }}
+                    onMouseEnter={() => isActive && setHoveredCountry(country)}
+                    onMouseLeave={() => setHoveredCountry(null)}
+                    onClick={(e) => {
+                      if (!isActive) return;
+                      e.stopPropagation();
+                      onRegionSelect?.(country);
+                    }}
+                  />
+                );
+              })}
+            </svg>
+    
+            {/* Floating callout cards */}
+            {Object.entries(activeCountryData).map(([code, data]) => {
+              const positions: Record<string, { left: string; top: string }> = {
+                USA: { left: "22%", top: "38%" },
+                CAN: { left: "25%", top: "14%" },
+                MEX: { left: "14%", top: "52%" },
+              };
+              const pos = positions[code];
+              if (!pos) return null;
+    
+              return (
+                <div
+                  key={code}
+                  className={`absolute rounded-md border bg-popover/95 backdrop-blur-sm px-2.5 py-1.5 shadow-sm transition-all duration-150 ${
+                    selectedRegion === code ? "border-primary ring-1 ring-primary/20" : "border-border"
+                  } ${hoveredCountry === code ? "scale-105" : ""}`}
+                  style={{ left: pos.left, top: pos.top, pointerEvents: "none" }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3 w-3 text-primary" />
+                    <span className="text-xs font-medium text-foreground">{data.name}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    ${data.sales.toLocaleString()}
+                  </p>
+                </div>
+              );
+            })}
+    
+            {/* Hover tooltip */}
+            {hoveredData && (
+              <div className="absolute bottom-3 left-3 rounded-lg border border-border bg-popover px-3 py-2 shadow-lg z-10">
+                <p className="font-medium text-foreground text-sm">{hoveredData.name}</p>
+                <p className="text-xs text-muted-foreground">Sales: ${hoveredData.sales.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">Orders: {hoveredData.orders.toLocaleString()}</p>
+              </div>
+            )}
+    
+            {/* Zoom stays inside the plot (the chart bar holds only settings and the fixed utilities). */}
+            <div className="absolute left-2 top-2 flex flex-col gap-0.5 rounded-md border border-border bg-card/90 p-0.5 shadow-sm" onMouseDown={(e) => e.stopPropagation()}>
+              <BarIconButton icon={ZoomIn} label="Zoom in" tooltipSide="right" onClick={handleZoomIn} />
+              <BarIconButton icon={ZoomOut} label="Zoom out" tooltipSide="right" onClick={handleZoomOut} />
+              <BarIconButton icon={RotateCcw} label="Reset view" tooltipSide="right" onClick={handleReset} />
+            </div>
+    
+            {/* Zoom indicator */}
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-popover/80 text-[10px] text-muted-foreground">
+              {Math.round(zoom * 100)}%
+            </div>
           </div>
-          <span className="text-[10px] text-muted-foreground">High</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--muted-foreground) / 0.1)" }} />
-          <span className="text-[10px] text-muted-foreground">No data</span>
-        </div>
-      </div>
-    </div>
+      )}
+    </ChartCard>
   );
 }

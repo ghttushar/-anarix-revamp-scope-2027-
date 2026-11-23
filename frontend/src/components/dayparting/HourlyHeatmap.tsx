@@ -1,6 +1,9 @@
 import { cn } from "@/lib/utils";
 import { HourlyDataPoint, MetricType } from "@/types/dayparting";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ChartCard } from "@/components/charts/ChartCard";
+
+const METRIC_LABEL: Record<string, string> = { spend: "Spend", revenue: "Revenue", roas: "ROAS", acos: "ACOS", orders: "Orders", ctr: "CTR", units: "Units", clicks: "Clicks", cvr: "CVR", impressions: "Impressions" };
 
 interface HourlyHeatmapProps {
   data: HourlyDataPoint[];
@@ -128,7 +131,35 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
   });
 
   return (
-    <div className="rounded-lg border border-border p-4 overflow-x-auto">
+    <ChartCard
+      title="Hourly heatmap"
+      context={METRIC_LABEL[metric] ?? metric}
+      height="auto"
+      png={false}
+      csv={() => ({
+        filename: "hourly-heatmap",
+        rows: data.map((p) => ({ day: DAYS[p.dayOfWeek] ?? p.dayOfWeek, hour: p.hour, [METRIC_LABEL[metric] ?? metric]: getMetricValue(p, metric) })),
+      })}
+      footer={
+            <div className="flex items-center gap-2 pt-2">
+              <span className="text-xs text-muted-foreground">
+                {isHigherBetter ? "Low" : "High"}
+              </span>
+              <div className="flex rounded overflow-hidden">
+                <div className="h-4 w-8 bg-primary/5" />
+                <div className="h-4 w-8 bg-primary/15" />
+                <div className="h-4 w-8 bg-primary/30" />
+                <div className="h-4 w-8 bg-primary/50" />
+                <div className="h-4 w-8 bg-primary/70" />
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {isHigherBetter ? "High" : "Low"}
+              </span>
+            </div>
+      }
+    >
+      {() => (
+    <div className="overflow-x-auto">
       <div className="min-w-[850px]">
         {/* Header row with hours + Daily Total */}
         <div className="grid grid-cols-[60px_repeat(24,1fr)_60px] gap-1 mb-1">
@@ -212,23 +243,9 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-xs text-muted-foreground">
-            {isHigherBetter ? "Low" : "High"}
-          </span>
-          <div className="flex rounded overflow-hidden">
-            <div className="h-4 w-8 bg-primary/5" />
-            <div className="h-4 w-8 bg-primary/15" />
-            <div className="h-4 w-8 bg-primary/30" />
-            <div className="h-4 w-8 bg-primary/50" />
-            <div className="h-4 w-8 bg-primary/70" />
-          </div>
-          <span className="text-xs text-muted-foreground">
-            {isHigherBetter ? "High" : "Low"}
-          </span>
-        </div>
       </div>
     </div>
+      )}
+    </ChartCard>
   );
 }

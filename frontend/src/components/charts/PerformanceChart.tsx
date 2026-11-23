@@ -7,8 +7,7 @@ import {
 import { ChartDataPoint, MetricKey } from "@/types/campaign";
 import { METRIC_CONFIGS, MAX_VISIBLE_METRICS, DEFAULT_SELECTED_METRICS } from "@/lib/constants/chartColors";
 import { ChartContainer, ChartType, ChartMetric } from "./ChartContainer";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { BarChip } from "@/components/bars";
 import { Button } from "@/components/ui/button";
 import { mockCampaigns } from "@/data/mockCampaigns";
 import { ExternalLink } from "lucide-react";
@@ -170,18 +169,15 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
 
   const tooltipNode = showImpact ? <Tooltip content={<ImpactTooltip />} /> : <Tooltip {...tooltipConfig} />;
 
+  // Show Impact is a setting like any other: a chip in the chart bar's variable slot.
   const impactControl = onShowImpactChange ? (
-    <div className="flex items-center gap-2">
-      <Switch
-        id="show-impact-chart"
-        checked={showImpact}
-        onCheckedChange={onShowImpactChange}
-        className="h-4 w-8 [&>span]:h-3 [&>span]:w-3 [&>span]:data-[state=checked]:translate-x-4"
-      />
-      <Label htmlFor="show-impact-chart" className="text-[11px] font-medium text-muted-foreground cursor-pointer whitespace-nowrap">
-        Show Impact
-      </Label>
-    </div>
+    <BarChip
+      label="Impact"
+      value={showImpact ? "on" : "off"}
+      onChange={(v) => onShowImpactChange(v === "on")}
+      options={[{ value: "off", label: "Off" }, { value: "on", label: "On" }]}
+      align="end"
+    />
   ) : undefined;
 
   const renderChart = (height: number) => (
@@ -191,7 +187,6 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
           <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
           <XAxis dataKey="date" tick={{ fontSize: 12 }} className="text-muted-foreground" />
           {tooltipNode}
-          <Legend />
           {selectedConfigs.map((config) => (
             <Bar key={config.key} dataKey={config.key} name={config.key} fill={config.color} radius={[3, 3, 0, 0]} />
           ))}
@@ -206,7 +201,6 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
           {hasLeftAxis && <YAxis yAxisId="left" orientation="left" tick={{ fontSize: 12 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} className="text-muted-foreground" />}
           {hasRightAxis && <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} className="text-muted-foreground" />}
           {tooltipNode}
-          <Legend />
           {selectedConfigs.map((config) => (
             <Area key={config.key} type="monotone" dataKey={config.key} name={config.key} stroke={config.color} fill={config.color} fillOpacity={0.15} yAxisId={config.yAxisId || "left"} strokeWidth={2} />
           ))}
@@ -221,7 +215,6 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
           {hasLeftAxis && <YAxis yAxisId="left" orientation="left" tick={{ fontSize: 12 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} className="text-muted-foreground" />}
           {hasRightAxis && <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} className="text-muted-foreground" />}
           {tooltipNode}
-          <Legend />
           {selectedConfigs.map((config) => (
             <Line key={config.key} type="monotone" dataKey={config.key} name={config.key} stroke={config.color} yAxisId={config.yAxisId || "left"} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
           ))}
@@ -242,6 +235,7 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
       onChartTypeChange={setChartType}
       extraControls={impactControl}
       expandedChildren={renderChart(500)}
+      csv={() => ({ filename: "performance-overview", rows: data.map((p) => ({ date: p.date, ...Object.fromEntries(selectedConfigs.map((c) => [c.label, (p as unknown as Record<string, number>)[c.key]])) })) })}
     >
       {renderChart(300)}
     </ChartContainer>

@@ -8,6 +8,7 @@ import {
   Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw, Download,
   BarChart3, Activity, Target,
 } from "lucide-react";
+import { ChartCard } from "@/components/charts/ChartCard";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
@@ -468,7 +469,6 @@ const quadrantLabels = {
 };
 
 export function ScatterPlotChart({ data, selectedIds, onPointToggle, onPointDetail }: ScatterPlotChartProps) {
-  const [expanded, setExpanded] = useState(false);
   const [chartView, setChartView] = useState<ChartView>("scatter");
 
   const quadrantAggregates = Object.keys(quadrantLabels).map((q) => {
@@ -521,85 +521,27 @@ export function ScatterPlotChart({ data, selectedIds, onPointToggle, onPointDeta
     { tier: "winner" as const, label: "Winner (≥30%)" },
   ];
 
-  const controls = (
-    <div className="flex items-center gap-1">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs px-2">
-            <ViewIcon className="h-3.5 w-3.5" />
-            {chartView === "scatter" ? "Scatter" : chartView === "bar" ? "Bar" : "Line"}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setChartView("scatter")} className="text-xs gap-2 cursor-pointer"><Target className="h-3.5 w-3.5" />Scatter</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setChartView("bar")} className="text-xs gap-2 cursor-pointer"><BarChart3 className="h-3.5 w-3.5" />Bar</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setChartView("line")} className="text-xs gap-2 cursor-pointer"><Activity className="h-3.5 w-3.5" />Line</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.success("Exporting chart...")} title="Export chart">
-        <Download className="h-3.5 w-3.5" />
-      </Button>
-      <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setExpanded(!expanded)} title="Expand">
-        {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-      </Button>
-    </div>
-  );
-
-  const legend =
-    chartView === "scatter" ? (
-      <div className="flex items-center gap-3">
-        {tierLegend.map((t) => (
-          <div key={t.tier} className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: tierColor[t.tier] }} />
-            <span className="text-xs text-muted-foreground">{t.label}</span>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className="flex items-center gap-3">
-        {Object.entries(quadrantLabels).map(([key, value]) => (
-          <div key={key} className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: quadrantColors[key as keyof typeof quadrantColors] }} />
-            <span className="text-xs text-muted-foreground">{value.title}</span>
-          </div>
-        ))}
-      </div>
-    );
+  const legendItems =
+    chartView === "scatter"
+      ? tierLegend.map((t) => ({ key: t.tier, label: t.label, color: tierColor[t.tier] }))
+      : Object.entries(quadrantLabels).map(([key, value]) => ({ key, label: value.title, color: quadrantColors[key as keyof typeof quadrantColors] }));
 
   return (
-    <>
-      <div className="rounded-lg border border-border bg-card p-4">
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-foreground">Product Performance</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {chartView === "scatter"
-                ? "Profit margin vs ad spend — click a cluster to zoom; click a dot for details"
-                : `Aggregated by quadrant (${chartView} view)`}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {legend}
-            <div className="w-px h-5 bg-border" />
-            {controls}
-          </div>
-        </div>
-        <div className="h-[440px]">{renderChart(440)}</div>
-      </div>
-
-      <Dialog open={expanded} onOpenChange={setExpanded}>
-        <DialogContent className="max-w-[90vw] max-h-[90vh] p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-foreground">Product Performance</h3>
-            <div className="flex items-center gap-3">
-              {legend}
-              <div className="w-px h-5 bg-border" />
-              {controls}
-            </div>
-          </div>
-          <div className="h-[70vh]">{renderChart(typeof window !== "undefined" ? Math.min(700, window.innerHeight * 0.7) : 600)}</div>
-        </DialogContent>
-      </Dialog>
-    </>
+    <ChartCard
+      title="Product Performance"
+      context={chartView === "scatter" ? "Profit margin vs ad spend" : "Aggregated by quadrant"}
+      info="Click a cluster to zoom in; click a dot for the product's details."
+      chartType={chartView}
+      onChartTypeChange={(t) => setChartView(t as ChartView)}
+      chartTypes={["line", "bar", "scatter"]}
+      height="lg"
+      legend={legendItems}
+      csv={() => ({
+        filename: "product-performance",
+        rows: data.map((d) => Object.fromEntries(Object.entries(d).filter(([, v]) => typeof v !== "object")) as Record<string, string | number>),
+      })}
+    >
+      {({ expanded }) => renderChart(expanded ? (typeof window !== "undefined" ? Math.min(700, window.innerHeight * 0.62) : 560) : 400)}
+    </ChartCard>
   );
 }

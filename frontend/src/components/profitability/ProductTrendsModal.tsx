@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,18 +7,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { ProfitabilityProduct } from "@/types/profitability";
-import { Checkbox } from "@/components/ui/checkbox";
+import { SERIES_COLORS } from "@/lib/constants/metrics";
+import { BarChip } from "@/components/bars";
+import { ChartBar, ChartLegend, downloadCsv, downloadSvgAsPng, type ChartKind } from "@/components/charts/ChartCard";
 import { ChartType } from "@/components/charts/ChartContainer";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
@@ -29,9 +24,9 @@ interface ProductTrendsModalProps {
 }
 
 const METRICS_OPTIONS = [
-  { key: "orderSales", label: "Order Sales", color: "hsl(var(--primary))" },
-  { key: "totalSales", label: "Total Sales", color: "hsl(var(--chart-2))" },
-  { key: "commission", label: "Commission on Product", color: "hsl(var(--chart-3))" },
+  { key: "orderSales", label: "Order Sales", color: SERIES_COLORS[0] },
+  { key: "totalSales", label: "Total Sales", color: SERIES_COLORS[1] },
+  { key: "commission", label: "Commission on Product", color: SERIES_COLORS[2] },
 ];
 
 export function ProductTrendsModal({ product, isOpen, onClose }: ProductTrendsModalProps) {
@@ -39,6 +34,7 @@ export function ProductTrendsModal({ product, isOpen, onClose }: ProductTrendsMo
   const [frequency, setFrequency] = useState("weekly");
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["orderSales", "totalSales"]);
   const [chartType, setChartType] = useState<ChartType>("line");
+  const plotRef = useRef<HTMLDivElement>(null);
 
   if (!product) return null;
 
@@ -120,40 +116,39 @@ export function ProductTrendsModal({ product, isOpen, onClose }: ProductTrendsMo
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="flex items-center gap-4 flex-wrap">
-            <Select value={frequency} onValueChange={setFrequency}>
-              <SelectTrigger className="h-8 w-[120px] text-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {["Daily", "Weekly", "Monthly", "Quarterly", "Yearly"].map((f) => (
-                  <SelectItem key={f.toLowerCase()} value={f.toLowerCase()} className="text-xs">{f}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* The shared chart bar: settings as chips, then the type switch and the ⋯ menu. */}
+          <ChartBar
+            title="Trend"
+            controls={
+              <>
+                <BarChip
+                  multiple
+                  label="Metrics"
+                  value={selectedMetrics}
+                  onChange={setSelectedMetrics}
+                  options={METRICS_OPTIONS.map((m) => ({ value: m.key, label: m.label, color: m.color }))}
+                  align="end"
+                />
+                <BarChip
+                  value={frequency}
+                  onChange={setFrequency}
+                  options={["Daily", "Weekly", "Monthly", "Quarterly", "Yearly"].map((f) => ({ value: f.toLowerCase(), label: f }))}
+                  align="end"
+                />
+              </>
+            }
+            chartType={chartType as ChartKind}
+            onChartTypeChange={(k) => setChartType(k as ChartType)}
+            chartTypes={["line", "bar", "area"]}
+            onDownloadPng={() => void downloadSvgAsPng(plotRef.current, "product-trends")}
+            onDownloadCsv={() => downloadCsv({ filename: "product-trends", rows: chartData.map((r) => ({ week: r.week, ...Object.fromEntries(activeOptions.map((m) => [m.label, +(r as Record<string, number | string>)[m.key]])) })) })}
+          />
 
-            <Select value={chartType} onValueChange={(v) => setChartType(v as ChartType)}>
-              <SelectTrigger className="h-8 w-[90px] text-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="line" className="text-xs">Line</SelectItem>
-                <SelectItem value="bar" className="text-xs">Bar</SelectItem>
-                <SelectItem value="area" className="text-xs">Area</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <div className="flex items-center gap-3">
-              {METRICS_OPTIONS.map((m) => (
-                <button key={m.key} onClick={() => toggleMetric(m.key)} className="flex items-center gap-1.5 text-xs">
-                  <Checkbox checked={selectedMetrics.includes(m.key)} className="pointer-events-none h-3.5 w-3.5" />
-                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: m.color }} />
-                  <span className="text-muted-foreground">{m.label}</span>
-                </button>
-              ))}
+          <div>
+            <div ref={plotRef} className="h-[260px]">
+              {renderChart()}
             </div>
-          </div>
-
-          {/* Chart */}
-          <div className="h-[260px]">
-            {renderChart()}
+            <ChartLegend items={activeOptions.map((m) => ({ key: m.key, label: m.label, color: m.color }))} />
           </div>
         </div>
       </DialogContent>

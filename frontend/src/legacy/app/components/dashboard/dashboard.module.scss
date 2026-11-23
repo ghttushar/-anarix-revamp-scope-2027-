@@ -588,18 +588,21 @@ $ease: cubic-bezier(0.22, 0.8, 0.3, 1);
   }
 }
 
+// The app's one bar chip (components/bars): 32px, muted fill, no border, so a nugget's setting looks like every
+// other chart setting in the app.
 .selectChip {
-  height: 28px;
+  height: 32px;
   margin-right: 2px;
   padding: 0 8px 0 10px;
-  border: 1px solid $line;
-  border-radius: 7px;
-  background: #ffffff;
-  color: $ink;
+  border: 0;
+  border-radius: 6px;
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--foreground));
+  font-size: 12px;
 
   &:hover,
   &[aria-expanded='true'] {
-    border-color: #cbced4;
+    background: hsl(var(--muted));
   }
 }
 

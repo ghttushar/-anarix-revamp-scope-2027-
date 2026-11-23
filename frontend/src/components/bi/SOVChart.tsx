@@ -1,9 +1,11 @@
 import { useState } from "react";
 import {
   AreaChart, Area, LineChart, Line, BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { SOVDataPoint } from "@/types/bi";
+import { SERIES_COLORS } from "@/lib/constants/metrics";
+import { chartTooltipStyle } from "@/components/charts/ChartCard";
 import { ChartContainer, ChartType, ChartMetric } from "@/components/charts/ChartContainer";
 
 interface SOVChartProps {
@@ -12,14 +14,7 @@ interface SOVChartProps {
   subtitle?: string;
 }
 
-const COLORS = [
-  "hsl(var(--primary))",
-  "hsl(142, 71%, 45%)",
-  "hsl(38, 92%, 50%)",
-  "hsl(0, 84%, 60%)",
-  "hsl(280, 65%, 60%)",
-  "hsl(var(--muted-foreground))",
-];
+const COLORS = SERIES_COLORS;
 
 export function SOVChart({ data, title = "Share of Voice Trend", subtitle }: SOVChartProps) {
   const [chartType, setChartType] = useState<ChartType>("area");
@@ -51,8 +46,7 @@ export function SOVChart({ data, title = "Share of Voice Trend", subtitle }: SOV
       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
       <XAxis dataKey="timestamp" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={{ stroke: "hsl(var(--border))" }} tickLine={{ stroke: "hsl(var(--border))" }} />
       <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={{ stroke: "hsl(var(--border))" }} tickLine={{ stroke: "hsl(var(--border))" }} tickFormatter={(v) => `${v}%`} />
-      <Tooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px", padding: "12px" }} formatter={(value: number) => [`${value.toFixed(1)}%`, ""]} />
-      <Legend wrapperStyle={{ paddingTop: "16px" }} formatter={(value) => <span className="text-sm text-foreground">{value}</span>} />
+      <Tooltip contentStyle={chartTooltipStyle} formatter={(value: number) => [`${value.toFixed(1)}%`, ""]} />
     </>
   );
 
@@ -92,6 +86,8 @@ export function SOVChart({ data, title = "Share of Voice Trend", subtitle }: SOV
       chartType={chartType}
       onChartTypeChange={setChartType}
       expandedChildren={renderChart(500)}
+      legendAll
+      csv={() => ({ filename: "share-of-voice", rows: data.map((p) => ({ time: p.timestamp, ...p.brands })) })}
     >
       {renderChart(300)}
     </ChartContainer>

@@ -11,7 +11,8 @@ import { Download, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
 import { ImpactDateRangePair } from "@/components/advertising/ImpactDateRangePair";
 import { ImpactMetricMultiSelect } from "@/components/advertising/ImpactMetricMultiSelect";
-import { ImpactLineChart } from "@/components/charts/ImpactLineChart";
+import { ImpactLegend, ImpactLineChart, impactCsvRows } from "@/components/charts/ImpactLineChart";
+import { ChartCard } from "@/components/charts/ChartCard";
 import { DateRange, ImpactMetricKey, addDays } from "@/lib/utils/impactSeries";
 import {
   mockImpactCampaigns,
@@ -99,29 +100,18 @@ export default function ImpactAnalysis() {
             impact={impact}
             onChange={setRanges}
           />
-          <ImpactMetricMultiSelect selected={selectedMetrics} onChange={setSelectedMetrics} />
         </AppTaskbar>
 
-        <div className="rounded-lg border border-border bg-card p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h3 className="font-heading text-sm font-medium text-foreground">Performance Comparison</h3>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Showing all {data.length} items
-              </p>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 cursor-pointer" title="Expand chart"><Maximize2 className="h-3.5 w-3.5" /></Button>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 cursor-pointer" onClick={handleDownload} title="Download data"><Download className="h-3.5 w-3.5" /></Button>
-            </div>
-          </div>
-          <ImpactLineChart
-            items={selectedItems}
-            previous={previous}
-            impact={impact}
-            metrics={selectedMetrics}
-          />
-        </div>
+        <ChartCard
+          title="Performance Comparison"
+          context={<>Showing all {data.length} items</>}
+          controls={<ImpactMetricMultiSelect selected={selectedMetrics} onChange={setSelectedMetrics} />}
+          height={280}
+          csv={() => ({ filename: "impact-comparison", rows: impactCsvRows(selectedItems, previous, impact, selectedMetrics) })}
+          footer={<ImpactLegend metrics={selectedMetrics} />}
+        >
+          {({ height }) => <ImpactLineChart items={selectedItems} previous={previous} impact={impact} metrics={selectedMetrics} height={height} />}
+        </ChartCard>
 
         <UnderlineTabs tabs={tabs} value={activeTab} onChange={(v) => setActiveTab(v as ImpactTab)} />
 

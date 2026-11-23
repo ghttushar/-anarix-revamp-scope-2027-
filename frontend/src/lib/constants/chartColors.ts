@@ -1,15 +1,17 @@
 import { MetricConfig, MetricKey } from "@/types/campaign";
 
-// Chart colors locked per metric - using CSS custom properties for theme support
+import { METRIC_COLORS } from "./metrics";
+
+// Chart colors locked per metric (one registry for the whole app: ./metrics.ts)
 export const CHART_COLORS: Record<MetricKey, string> = {
-  adSpend: "hsl(229, 65%, 57%)",      // Primary - #4A62D9
-  adSales: "hsl(142, 71%, 45%)",      // Success - #22C55E
-  roas: "hsl(38, 92%, 50%)",          // Warning - #F59E0B
-  impressions: "hsl(230, 29%, 69%)",  // Muted - #9CA2C8
-  clicks: "hsl(231, 88%, 70%)",       // Primary light - #6E82F5
-  ctr: "hsl(231, 74%, 81%)",          // Accent - #A7AEF2
-  cpc: "hsl(234, 30%, 24%)",          // Secondary - #2A2D4F
-  acos: "hsl(0, 84%, 60%)",           // Destructive - #EF4444
+  adSpend: METRIC_COLORS.adSpend,
+  adSales: METRIC_COLORS.adSales,
+  roas: METRIC_COLORS.roas,
+  impressions: METRIC_COLORS.impressions,
+  clicks: METRIC_COLORS.clicks,
+  ctr: METRIC_COLORS.ctr,
+  cpc: METRIC_COLORS.cpc,
+  acos: METRIC_COLORS.acos,
 };
 
 export const METRIC_CONFIGS: MetricConfig[] = [

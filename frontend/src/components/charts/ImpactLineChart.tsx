@@ -6,7 +6,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceArea,
 } from "recharts";
 import { ImpactComparison } from "@/types/advertising";
@@ -18,17 +17,19 @@ import {
 } from "@/lib/utils/impactSeries";
 import { IMPACT_METRIC_OPTIONS } from "@/components/advertising/ImpactMetricMultiSelect";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { ChartLegend } from "@/components/charts/ChartCard";
 
 interface Props {
   items: ImpactComparison[];
   previous: DateRange;
   impact: DateRange;
   metrics: ImpactMetricKey[];
+  height?: number | "100%";
 }
 
 const isRatio = (m: ImpactMetricKey) => m === "ctr" || m === "roas" || m === "acos";
 
-export function ImpactLineChart({ items, previous, impact, metrics }: Props) {
+export function ImpactLineChart({ items, previous, impact, metrics, height = 280 }: Props) {
   const { formatCurrency } = useCurrency();
   const data = buildImpactSeries(items, previous, impact, metrics);
 
@@ -123,7 +124,7 @@ export function ImpactLineChart({ items, previous, impact, metrics }: Props) {
   const hasRight = metrics.some((m) => isRatio(m));
 
   return (
-    <ResponsiveContainer width="100%" height={280}>
+    <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
         <XAxis
@@ -144,7 +145,6 @@ export function ImpactLineChart({ items, previous, impact, metrics }: Props) {
           />
         )}
         <Tooltip content={<CustomTooltip />} />
-        <Legend wrapperStyle={{ fontSize: "11px" }} />
         {metrics.map((m) => {
           const opt = optionFor(m);
           const color = opt?.color || "hsl(var(--primary))";
@@ -181,4 +181,35 @@ export function ImpactLineChart({ items, previous, impact, metrics }: Props) {
       </LineChart>
     </ResponsiveContainer>
   );
+}
+
+/** The chart's legend (one entry per metric) and its line key, for ChartCard's footer. */
+export function ImpactLegend({ metrics }: { metrics: ImpactMetricKey[] }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <ChartLegend
+        items={metrics.map((m) => {
+          const o = IMPACT_METRIC_OPTIONS.find((x) => x.key === m);
+          return { key: m, label: o?.label ?? m, color: o?.color ?? "hsl(var(--primary))" };
+        })}
+      />
+      <span className="flex items-center gap-3 pt-2 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1.5"><span className="w-4 border-t border-dashed border-muted-foreground" />Previous</span>
+        <span className="flex items-center gap-1.5"><span className="w-4 border-t-2 border-muted-foreground" />Impact</span>
+      </span>
+    </div>
+  );
+}
+
+/** Rows for Download CSV: one per date, one column per metric and period. */
+export function impactCsvRows(items: ImpactComparison[], previous: DateRange, impact: DateRange, metrics: ImpactMetricKey[]) {
+  return buildImpactSeries(items, previous, impact, metrics).map((p) => {
+    const row: Record<string, string | number | null> = { date: p.label, period: p.period };
+    metrics.forEach((m) => {
+      const label = IMPACT_METRIC_OPTIONS.find((o) => o.key === m)?.label ?? m;
+      row[`${label} (previous)`] = (p as unknown as Record<string, number | null>)[`${m}_previous`] ?? null;
+      row[`${label} (impact)`] = (p as unknown as Record<string, number | null>)[`${m}_impact`] ?? null;
+    });
+    return row;
+  });
 }
