@@ -3,7 +3,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * The app's one table style: "Pulse" (picked in /design-lab/tables).
+ * The app's one table style: "Pulse".
  *  - hairline rows, no column lines, small caps header labels, tabular numbers
  *  - totals live in the header (TableTotalsRow), right under the column labels
  *  - crosshair hover: the hovered cell's column lights up with its row, and the sorted column is tinted
