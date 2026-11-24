@@ -28,9 +28,6 @@ export default function Login() {
     // Clear any existing accounts for fresh demo experience
     clearAccounts();
 
-    // Simulate login delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     // Navigate to onboarding/connect accounts
     navigate("/onboarding/connect");
     setIsLoading(false);
@@ -98,7 +95,8 @@ export default function Login() {
             <p className="text-muted-foreground">Sign in to your Anarix account</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          {/* Demo sign-in: the fields are optional, Sign In always goes straight through. */}
+          <form onSubmit={handleLogin} noValidate className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -109,8 +107,7 @@ export default function Login() {
                   placeholder="you@company.com"
                   className="pl-10"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required />
+                  onChange={(e) => setEmail(e.target.value)} />
                 
               </div>
             </div>
@@ -133,8 +130,7 @@ export default function Login() {
                   placeholder="Enter your password"
                   className="pl-10 pr-10"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required />
+                  onChange={(e) => setPassword(e.target.value)} />
                 
                 <button
                   type="button"
