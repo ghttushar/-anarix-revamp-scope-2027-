@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
-import { LayoutDashboard, TrendingUp, FileText, MapPin, Megaphone, Target, Package, Brain, Search, Clock, Settings, Sparkles, Plus, RefreshCw, Download, LayoutGrid, BellRing, Wand2 } from "lucide-react";
+import { LayoutDashboard, TrendingUp, FileText, MapPin, Megaphone, Target, Package, Brain, Search, Clock, Settings, Sparkles, Plus, RefreshCw, Download, BellRing, Wand2, ScanEye } from "lucide-react";
 import { useAan } from "@/components/aan";
 
 interface CommandPaletteContextType {
@@ -21,7 +21,7 @@ export function useCommandPalette() {
 }
 
 const pages = [
-  { name: "Glance", url: "/glance", icon: LayoutGrid, keywords: ["nuggets", "widgets", "home", "dashboard"] },
+  { name: "Glance", url: "/glance", icon: ScanEye, keywords: ["nuggets", "widgets", "home", "dashboard"] },
   { name: "Signals", url: "/signals", icon: BellRing, keywords: ["alerts", "meetings", "work-station", "tasks"] },
   { name: "Dashboard", url: "/profitability/dashboard", icon: LayoutDashboard, keywords: ["home", "overview"] },
   { name: "Trends", url: "/profitability/trends", icon: TrendingUp, keywords: ["analytics", "chart"] },

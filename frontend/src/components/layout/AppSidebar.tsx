@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target, MousePointerClick, Package, Database, Search, BarChart3, Clock, CalendarClock, Settings, Users, ChevronDown, ChevronRight, FlaskConical, User, LogOut, PanelLeft, Link, LayoutDashboard, ShieldCheck, Plug, CreditCard, BellRing, Wand2, ScrollText,
-} from "lucide-react";
+  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target, MousePointerClick, Package, Database, Search, BarChart3, Clock, CalendarClock, Settings, Users, ChevronDown, ChevronRight, FlaskConical, User, LogOut, PanelLeft, Link, LayoutDashboard, ShieldCheck, Plug, CreditCard, BellRing, Wand2, ScrollText, ScanEye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -36,7 +35,7 @@ interface NavGroup {
 
 /** Pages that stand on their own at the top of the nav, outside any group. */
 const standaloneItems: NavItem[] = [
-  { title: "Glance", url: "/glance", icon: LayoutGrid },
+  { title: "Glance", url: "/glance", icon: ScanEye },
   { title: "Signals", url: "/signals", icon: BellRing },
 ];
 
