@@ -27,18 +27,14 @@
    - Brand Primary (Periwinkle): #4A62D9
    - Brand Accent (Lilac): #A7AEF2
    
-   Dark Mode:
-   - Background: #0E1020
-   - Card/Surface: #171A2E
+   Dark Mode (neutral grey, kept by choice):
+   - Background: hsl(240 12% 8%)
+   - Card/Surface: hsl(240 12% 12%)
    - Text Primary: #ECEEFF
-   - Text Muted: #8590B5
-   - Muted fill: #22253F (a step from both background and card, toward the text)
-   - Secondary: #2F3470
+   - Text Muted: hsl(230 20% 64%)
+   - Secondary: hsl(234 30% 28%)
    - Brand Primary: #6E82F5
    - Brand Accent: #B8BEFF
-
-   Rule: muted, border and input sit the same distance from the surfaces in both modes, so a fill or outline
-   that reads in light mode reads in dark mode too.
    
    Data Visualization Colors (RESERVED FOR DATA ONLY):
    - Positive/Success: #22C55E (green)
@@ -113,14 +109,14 @@
   }
 
   .dark {
-    /* Dark Mode - Periwinkle System 01 */
-    --background: 234 53% 9%; /* #0E1020 */
+    /* Dark Mode - neutral grey (kept by choice; light mode follows Periwinkle System 01) */
+    --background: 240 12% 8%;
     --foreground: 240 100% 97%; /* #ECEEFF */
 
-    --card: 235 37% 14%; /* #171A2E */
+    --card: 240 12% 12%;
     --card-foreground: 240 100% 97%;
 
-    --popover: 235 37% 14%;
+    --popover: 240 12% 12%;
     --popover-foreground: 240 100% 97%;
 
     --primary: 231 88% 70%; /* #6E82F5 - Brand Primary */
@@ -129,16 +125,16 @@
     --chart-3: 38 90% 58%;
     --chart-4: 330 65% 65%;
     --chart-5: 262 60% 72%;
-    --primary-foreground: 240 53% 9%;
+    --primary-foreground: 240 12% 8%;
 
-    --secondary: 234 43% 32%; /* #2F3470 */
+    --secondary: 234 30% 28%;
     --secondary-foreground: 240 100% 97%;
 
-    --muted: 235 29% 19%; /* #22253F: distinct from background and card */
-    --muted-foreground: 230 27% 63%; /* #8590B5 */
+    --muted: 240 12% 12%;
+    --muted-foreground: 230 20% 64%;
 
     --accent: 231 100% 87%; /* #B8BEFF - Lilac */
-    --accent-foreground: 240 53% 9%;
+    --accent-foreground: 240 12% 8%;
 
     --destructive: 0 60% 52%; /* Muted red for dark mode */
     --destructive-foreground: 0 0% 100%;
@@ -149,18 +145,18 @@
     --warning: 38 70% 50%; /* Muted amber for dark mode */
     --warning-foreground: 0 0% 100%;
 
-    --border: 235 28% 21%;
-    --input: 235 24% 28%; /* field outlines: a step stronger than dividers */
+    --border: 240 12% 18%;
+    --input: 240 12% 18%;
     --ring: 231 88% 70%;
 
     /* Sidebar - Dark */
-    --sidebar-background: 235 37% 14%;
-    --sidebar-foreground: 230 27% 63%;
+    --sidebar-background: 240 12% 12%;
+    --sidebar-foreground: 230 20% 64%;
     --sidebar-primary: 231 88% 70%;
-    --sidebar-primary-foreground: 240 53% 9%;
-    --sidebar-accent: 235 29% 19%;
+    --sidebar-primary-foreground: 240 12% 8%;
+    --sidebar-accent: 240 12% 8%;
     --sidebar-accent-foreground: 240 100% 97%;
-    --sidebar-border: 235 28% 21%;
+    --sidebar-border: 240 12% 18%;
     --sidebar-ring: 231 88% 70%;
   }
 }
