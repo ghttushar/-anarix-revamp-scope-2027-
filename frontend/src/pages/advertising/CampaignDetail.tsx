@@ -69,7 +69,9 @@ export default function CampaignDetail() {
         <div className="flex-1 min-w-0 space-y-4">
           <PageHeader title="Advertising" />
 
-          <AppTaskbar showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
+          <AppTaskbar
+            breadcrumbs={[{ label: "Campaign Manager", href: "/advertising/campaigns" }, { label: campaignName }]}
+            showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
 
           {campaign && <CampaignInfoCard campaign={campaign} />}
 

@@ -15,11 +15,14 @@ The live reference, captured from the running app, is `public/design-inventory/b
 `AppTaskbar` (also exported as `PageBar`) in `components/layout/AppTaskbar.tsx`.
 
 ```
-[date range] [settings… (chips)]  ·········  [account · synced] [island-off utilities] | [Run]
+[breadcrumb] | [date range] [settings… (chips)]  ·····  [account · synced] [island-off utilities] | [Run]
  fixed 1      variable                        fixed                                    fixed, always last
 ```
 
 - **Placement:** one row, always directly under the page heading.
+- **Breadcrumb:** only on pages that are a level inside another (`breadcrumbs`, two or more crumbs, such as
+  Campaign Manager › campaign › ad group). It comes first; top-level pages have none. Long names truncate (full name on
+  hover) so the bar stays one row.
 - **Date range:** `showDateRange` puts it first. Use `dateRangeOverride` for a page-local range.
 - **Settings:**
   - `showAdType` and `showFrequency` are the built-in settings.

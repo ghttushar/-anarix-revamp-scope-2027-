@@ -29,10 +29,6 @@ const tabs = [
 ];
 
 
-const breadcrumbItems = [
-  { label: "Advertising", href: "/advertising/campaigns" },
-  { label: "Ad Group Detail" },
-];
 export default function AdGroupDetail() {
   const { campaignId, adGroupId } = useParams();
   const navigate = useNavigate();
@@ -72,7 +68,13 @@ export default function AdGroupDetail() {
         <div className="flex-1 min-w-0 space-y-4">
           <PageHeader title="Advertising" />
 
-          <AppTaskbar showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
+          <AppTaskbar
+            breadcrumbs={[
+              { label: "Campaign Manager", href: "/advertising/campaigns" },
+              { label: campaignName, href: `/advertising/campaigns/${campaignId}` },
+              { label: adGroupName },
+            ]}
+            showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
 
           {adGroup && <AdGroupInfoCard adGroup={adGroup} />}
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
-import { CalendarIcon, Play, Bell, Lightbulb, RefreshCw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { CalendarIcon, ChevronRight, Play, Bell, Lightbulb, RefreshCw } from "lucide-react";
 import { AanGlyph } from "@/components/aan/AanGlyph";
 import { format, subDays, startOfWeek, endOfWeek, subWeeks, startOfMonth, endOfMonth, subMonths, startOfQuarter, endOfQuarter, subQuarters } from "date-fns";
 
@@ -114,7 +114,15 @@ const AD_TYPE_OPTIONS = [
 ];
 const FREQUENCY_OPTIONS = ["Daily", "Weekly", "Monthly"].map((f) => ({ value: f, label: f }));
 
+export interface BarCrumb {
+  label: string;
+  href?: string;
+}
+
 interface AppTaskbarProps {
+  /** Where this page sits when it is a level inside another (Campaign Manager › campaign › ad group). Drawn first,
+   *  and only when there are at least two levels; top-level pages have none. */
+  breadcrumbs?: BarCrumb[];
   /** Fixed slot 1: the app's date range picker (always first). */
   showDateRange?: boolean;
   /** Built-in settings, in the variable slot right after the date range. */
@@ -137,11 +145,11 @@ interface AppTaskbarProps {
  * The page level metric bar: one row under every page heading, with fixed zones so a control is always in the same
  * place on every page.
  *
- *   [date range] [settings… (variable)]  ·········  [account · synced] [island-off utilities] | [Run]
+ *   [breadcrumb (level pages only)] | [date range] [settings… (variable)]  ·····  [account · synced] [utilities] | [Run]
  *
  * Only the middle slot changes from page to page. See components/bars/README.md.
  */
-export function AppTaskbar({ showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, filters, dateRangeOverride, onDateRangeOverrideChange }: AppTaskbarProps) {
+export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, filters, dateRangeOverride, onDateRangeOverrideChange }: AppTaskbarProps) {
   const { adType, setAdType, frequency, setFrequency, dateRange: ctxDateRange, setDateRange: setCtxDateRange } = useFilter();
   const dateRange = dateRangeOverride ?? ctxDateRange;
   const setDateRange = onDateRangeOverrideChange ?? setCtxDateRange;
@@ -185,8 +193,31 @@ export function AppTaskbar({ showAdType = false, showFrequency = false, showDate
       data-tour-id="taskbar"
       className="sticky top-0 z-30 flex min-h-12 shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-2 py-2 shadow-[0_1px_2px_rgba(16,24,40,0.04)]"
     >
+      {/* Level pages: where you are, first. */}
+      {breadcrumbs && breadcrumbs.length > 1 && (
+        <>
+          <nav aria-label="Breadcrumb" className="flex min-w-0 shrink items-center gap-1 pl-1.5 text-xs">
+            {breadcrumbs.map((c, i) => {
+              const last = i === breadcrumbs.length - 1;
+              return (
+                <span key={i} className="flex min-w-0 items-center gap-1">
+                  {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground/60" />}
+                  {c.href && !last ? (
+                    <Link to={c.href} title={c.label} className="min-w-0 max-w-[9rem] truncate rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">{c.label}</Link>
+                  ) : (
+                    <span title={c.label} aria-current={last ? "page" : undefined} className={cn("min-w-0 max-w-[14rem] truncate px-1", last ? "font-medium text-foreground" : "text-muted-foreground")}>{c.label}</span>
+                  )}
+                </span>
+              );
+            })}
+          </nav>
+          <BarDivider />
+        </>
+      )}
+
       {/* Variable zone: the date range always first, then this page's settings. */}
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+      {/* With a breadcrumb, the settings keep their width and the breadcrumb truncates instead. */}
+      <div className={cn("flex min-w-0 flex-wrap items-center gap-1.5", breadcrumbs && breadcrumbs.length > 1 ? "flex-[1_0_auto]" : "flex-1")}>
         {showDateRange && (
           <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
             <PopoverTrigger asChild>

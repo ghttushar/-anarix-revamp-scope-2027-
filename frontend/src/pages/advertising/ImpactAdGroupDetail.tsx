@@ -47,13 +47,6 @@ export default function ImpactAdGroupDetail() {
 
   const selectedItems = selectedIds.size > 0 ? data.filter((d) => selectedIds.has(d.id)) : data;
 
-  const breadcrumbItems = [
-    { label: "Advertising", href: "/advertising/impact" },
-    { label: "Impact Analysis", href: "/advertising/impact" },
-    { label: campaign?.name ?? "Campaign", href: `/advertising/impact/campaigns/${campaignId}` },
-    { label: adGroup?.name ?? "Ad Group" },
-  ];
-
   const handleDownload = () => toast.success("Exporting impact data as CSV...");
 
   return (
@@ -64,6 +57,11 @@ export default function ImpactAdGroupDetail() {
           subtitle="Products within this ad group — compare impact across time periods"
         />
         <AppTaskbar
+          breadcrumbs={[
+            { label: "Impact Analysis", href: "/advertising/impact" },
+            { label: campaign?.name ?? "Campaign", href: `/advertising/impact/campaigns/${campaignId}` },
+            { label: adGroup?.name ?? "Ad Group" },
+          ]}
           showRunButton
           onRun={() => toast.info("Analyzing impact comparison...")}
         >

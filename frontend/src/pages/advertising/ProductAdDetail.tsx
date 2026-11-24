@@ -19,10 +19,6 @@ import { useFilter } from "@/contexts/FilterContext";
 import { useActivePanel } from "@/contexts/ActivePanelContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
-const breadcrumbItems = [
-  { label: "Advertising", href: "/advertising/campaigns" },
-  { label: "Product Ad Detail" },
-];
 export default function ProductAdDetail() {
   const { campaignId, adGroupId, productAdId } = useParams();
   const navigate = useNavigate();
@@ -58,7 +54,14 @@ export default function ProductAdDetail() {
           <PageHeader title="Advertising" />
 
 
-          <AppTaskbar showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
+          <AppTaskbar
+            breadcrumbs={[
+              { label: "Campaign Manager", href: "/advertising/campaigns" },
+              { label: campaignName, href: `/advertising/campaigns/${campaignId}` },
+              { label: adGroupName, href: `/advertising/campaigns/${campaignId}/${adGroupId}` },
+              { label: productAdName },
+            ]}
+            showDateRange showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
 
           {productAd && (
             <div className="rounded-lg border border-border bg-card p-4">
