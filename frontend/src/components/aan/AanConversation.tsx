@@ -10,7 +10,7 @@ import { FloatingDots } from "./FloatingDots";
 
 /** compact: the narrow side panel (nav width). Smaller gutters, no user avatar, wider bubbles. */
 export function AanConversation({ compact = false }: { compact?: boolean }) {
-  const { messages, openSplit, isGenerating, generationType, generationProgress } = useAan();
+  const { messages, openSplit, isGenerating, generationType, generationProgress, isThinking } = useAan();
   const { registerAnchor } = useAanPresence();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [pendingAnchorEl, setPendingAnchorEl] = useState<HTMLDivElement | null>(null);
@@ -20,7 +20,14 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isGenerating, generationProgress]);
+  }, [messages, isGenerating, generationProgress, isThinking]);
+
+  // Register the thinking row's anchor - the travelling presence shows the searching orb there while Aan prepares a reply
+  useEffect(() => {
+    if (isThinking) registerAnchor("pending", pendingAnchorEl, 40);
+    else registerAnchor("pending", null);
+    return () => registerAnchor("pending", null);
+  }, [isThinking, pendingAnchorEl, registerAnchor]);
 
   // Register the generation card anchor - owns the live presence while generating
   useEffect(() => {
@@ -96,6 +103,19 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
           </div>
         </div>
       ))}
+
+      {/* Thinking - Aan is preparing a reply; the presence docks here as the searching orb */}
+      {isThinking && !isGenerating && (
+        <div className={cn("flex flex-row items-center", compact ? "gap-2" : "gap-3")}>
+          <div
+            ref={setPendingAnchorEl}
+            aria-hidden
+            data-aan-anchor="pending"
+            className="w-10 h-10 shrink-0 flex items-center justify-center"
+          />
+          <p className="text-sm text-muted-foreground">Thinking…</p>
+        </div>
+      )}
 
       {/* Generation Progress Indicator - rendered like an assistant message */}
       {isGenerating && (

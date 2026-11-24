@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { AanOrb } from "./AanOrb";
 
 export type AanMascotState = "idle" | "listening" | "thinking" | "working" | "speaking" | "anchor";
 export type AanMascotShape = "diamond" | "circle" | "bar" | "cube";
@@ -26,9 +27,13 @@ const CORAL = {
 };
 
 // Brand manual: state IS shape.
-// idle/anchor → diamond, listening → circle, thinking → cube, working → bar, speaking → diamond
+// idle/anchor → diamond, listening → circle, speaking → diamond.
+// thinking and working are drawn by AanOrb (Thinking Orbs "searching" / "solving"), not by a body shape.
+const isOrbState = (state: AanMascotState): state is "thinking" | "working" =>
+  state === "thinking" || state === "working";
+
 function deriveShape(state: AanMascotState, override?: AanMascotShape): AanMascotShape {
-  if (override) return override;
+  if (override && !isOrbState(state)) return override;
   if (state === "listening") return "circle";
   if (state === "thinking") return "cube";
   if (state === "working") return "bar";
@@ -59,12 +64,13 @@ export function AanMascot({
   const rawTier: "micro" | "compact" | "full" = size < 24 ? "micro" : size <= 40 ? "compact" : "full";
   const tier: "micro" | "compact" | "full" = staticEyes && size >= 16 && rawTier === "micro" ? "compact" : rawTier;
   const isStatic = staticEyes || state === "anchor" || reduceMotion;
-  const trackCursor = interactive && !isStatic && tier !== "micro" && shape !== "bar";
+  const orb = isOrbState(state);
+  const trackCursor = interactive && !isStatic && !orb && tier !== "micro" && shape !== "bar";
   const showEyes = staticEyes
     ? size >= 16 && shape !== "bar"
     : tier !== "micro" &&
       !reduceMotion &&
-      (state === "idle" || state === "listening" || state === "speaking" || state === "working");
+      (state === "idle" || state === "listening" || state === "speaking");
 
   // Cursor tracking - body lean + eye gaze
   useEffect(() => {
@@ -138,6 +144,20 @@ export function AanMascot({
     };
   }, [showEyes, state]);
 
+  // ---------- THINKING / WORKING: Thinking Orbs (searching globe / solving Rubik's cube) ----------
+  if (orb) {
+    return (
+      <motion.span
+        layout
+        layoutId={layoutId}
+        className={cn("relative inline-flex shrink-0 items-center justify-center", className)}
+        style={{ width: size, height: size }}
+      >
+        <AanOrb mode={state} size={size} aura={tier === "full"} />
+      </motion.span>
+    );
+  }
+
   // ---------- MICRO TIER (<24px) ----------
   if (tier === "micro") {
     const microRadius =
@@ -182,19 +202,11 @@ export function AanMascot({
   const stretchX = hoverBoost ? 1.06 : 1;
   const stretchY = hoverBoost ? 0.95 : 1;
 
-  const floatDur = state === "listening" ? 3.2 : state === "thinking" || state === "working" ? 2.6 : 4.4;
-  const floatRange = tier === "full" && shape !== "bar" ? (state === "thinking" ? 3 : 2.5) : 0;
-  const auraScale =
-    shape === "bar"
-      ? [1, 1.02, 1]
-      : state === "thinking" || state === "working"
-        ? [1, 1.06, 1]
-        : state === "listening"
-          ? [1, 1.04, 1]
-          : [1, 1.02, 1];
-  const auraOpacity =
-    shape === "bar" ? 0.55 : state === "thinking" || state === "working" ? 1.05 : state === "listening" ? 1.0 : 0.85;
-  const internalSpin = state === "thinking" && !isStatic && tier === "full";
+  // (thinking / working returned above as orbs; these cover idle, listening, speaking, anchor)
+  const floatDur = state === "listening" ? 3.2 : 4.4;
+  const floatRange = tier === "full" && shape !== "bar" ? 2.5 : 0;
+  const auraScale = shape !== "bar" && state === "listening" ? [1, 1.04, 1] : [1, 1.02, 1];
+  const auraOpacity = shape === "bar" ? 0.55 : state === "listening" ? 1.0 : 0.85;
 
   // Container must accommodate the widest body shape (bar) to avoid clipping
   const slotW = Math.max(size, bodyW);
@@ -296,27 +308,17 @@ export function AanMascot({
             />
           )}
 
-          {/* Body - morphs between diamond / circle / cube / bar */}
+          {/* Body - morphs between diamond / circle (and the explicit cube / bar shape overrides) */}
           <motion.div
             animate={{
               width: bodyW,
               height: bodyH,
               borderRadius: radius,
-              rotate: internalSpin ? [baseRotate, baseRotate + 360] : baseRotate,
+              rotate: baseRotate,
               scaleX: stretchX,
               scaleY: stretchY,
             }}
-            transition={
-              internalSpin
-                ? {
-                    rotate: { duration: 5, repeat: Infinity, ease: "linear" },
-                    width: { type: "spring", stiffness: 140, damping: 20 },
-                    height: { type: "spring", stiffness: 140, damping: 20 },
-                    borderRadius: { type: "spring", stiffness: 140, damping: 20 },
-                    default: { type: "spring", stiffness: 140, damping: 20 },
-                  }
-                : { type: "spring", stiffness: 140, damping: 20 }
-            }
+            transition={{ type: "spring", stiffness: 140, damping: 20 }}
             style={{
               position: "absolute",
               top: "50%",
@@ -377,30 +379,6 @@ export function AanMascot({
               />
             )}
 
-            {/* Liquid swirl - thinking state */}
-            {state === "thinking" && tier === "full" && !isStatic && (
-              <motion.div
-                aria-hidden
-                animate={{ rotate: [-baseRotate, -baseRotate - 360] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                style={{ position: "absolute", inset: 0 }}
-              >
-                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <motion.path
-                    fill="rgba(255,255,255,0.12)"
-                    animate={{
-                      d: [
-                        "M30,50 Q50,20 70,50 Q50,80 30,50 Z",
-                        "M28,52 Q52,28 72,48 Q48,78 28,52 Z",
-                        "M32,48 Q48,22 68,52 Q52,82 32,48 Z",
-                        "M30,50 Q50,20 70,50 Q50,80 30,50 Z",
-                      ],
-                    }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </svg>
-              </motion.div>
-            )}
           </motion.div>
 
           {/* Eyes - overlay, always upright */}

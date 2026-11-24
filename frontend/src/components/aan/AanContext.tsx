@@ -83,6 +83,9 @@ interface AanContextType {
   setPendingPrompt: (prompt: string | null) => void;
   inputFocused: boolean;
   setInputFocused: (focused: boolean) => void;
+  /** Aan is preparing a reply (shows the thinking orb in the conversation). */
+  isThinking: boolean;
+  setIsThinking: (thinking: boolean) => void;
 }
 
 const AanContext = createContext<AanContextType | undefined>(undefined);
@@ -142,6 +145,7 @@ export function AanProvider({ children }: { children: ReactNode }) {
   const [selectedModel, setSelectedModel] = useState("gemini-flash");
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
   const [inputFocused, setInputFocused] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
 
   const currentConversation = useMemo(() => {
     return conversations.find((c) => c.id === currentConversationId) || null;
@@ -260,6 +264,7 @@ export function AanProvider({ children }: { children: ReactNode }) {
       context, setContext, selectedModel, setSelectedModel,
       pendingPrompt, setPendingPrompt,
       inputFocused, setInputFocused,
+      isThinking, setIsThinking,
     }}>
       {children}
     </AanContext.Provider>

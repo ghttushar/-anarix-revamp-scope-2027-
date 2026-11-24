@@ -104,12 +104,17 @@ function formatFileSize(bytes: number): string {
 
 /** compact: the narrow side panel (nav width). */
 export function AanInput({ compact = false }: { compact?: boolean } = {}) {
-  const { addMessage, setGenerationState, messages, selectedModel, setSelectedModel, pendingPrompt, setPendingPrompt, isGenerating, generationType, setInputFocused } = useAan();
+  const { addMessage, setGenerationState, messages, selectedModel, setSelectedModel, pendingPrompt, setPendingPrompt, isGenerating, generationType, setInputFocused, setIsThinking } = useAan();
   const { fireScenario } = useAanEvents();
   const { setDataPanel } = useActivePanel();
   const { registerAnchor } = useAanPresence();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // The reply-preparing phase is Aan thinking: the conversation shows the searching orb meanwhile.
+  const setThinking = (thinking: boolean) => {
+    setIsLoading(thinking);
+    setIsThinking(thinking);
+  };
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [suggestionVisible, setSuggestionVisible] = useState(false);
@@ -133,7 +138,9 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
+      setIsThinking(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -160,7 +167,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
     if (progressIntervalRef.current) { clearInterval(progressIntervalRef.current); progressIntervalRef.current = null; }
     setGenerationState(false, null, 0);
-    setIsLoading(false);
+    setThinking(false);
     addMessage("Generation stopped.", "assistant");
   };
 
@@ -216,10 +223,10 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
 
 
     if (isReportRequest(userMessage)) {
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      setThinking(true);
+      await new Promise((resolve) => setTimeout(resolve, 1200));
       addMessage(getReportSummary(), "assistant");
-      setIsLoading(false);
+      setThinking(false);
       setGenerationState(true, "report", 0);
       let progress = 0;
       progressIntervalRef.current = setInterval(() => {
@@ -241,10 +248,10 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
     }
 
     if (isAuditRequest(userMessage)) {
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      setThinking(true);
+      await new Promise((resolve) => setTimeout(resolve, 1200));
       addMessage(getAuditSummary(), "assistant");
-      setIsLoading(false);
+      setThinking(false);
       setGenerationState(true, "audit", 0);
       let progress = 0;
       progressIntervalRef.current = setInterval(() => {
@@ -265,11 +272,11 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
       return;
     }
 
-    setIsLoading(true);
+    setThinking(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
     addMessage(randomResponse.content, "assistant", randomResponse.draft);
-    setIsLoading(false);
+    setThinking(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
