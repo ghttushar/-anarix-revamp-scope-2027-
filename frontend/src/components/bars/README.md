@@ -15,7 +15,7 @@ The live reference, captured from the running app, is `public/design-inventory/b
 `AppTaskbar` (also exported as `PageBar`) in `components/layout/AppTaskbar.tsx`.
 
 ```
-[breadcrumb] | [date range] [settings… (chips)]  ·····  [account · synced] [island-off utilities] | [Run]
+[breadcrumb] | [date range] [settings… (chips)] [Run]  ·····  [account · synced] [island-off utilities]
  fixed 1      variable                        fixed                                    fixed, always last
 ```
 
@@ -29,7 +29,8 @@ The live reference, captured from the running app, is `public/design-inventory/b
   - `filters` takes this page's settings as `BarFilter[]` (`BarChip` props plus a `key`).
 - **Escape hatch:** `children` is for a control that is not a select, such as a search box or the product picker.
   Build it on `BarChipTrigger`.
-- **Run:** `showRunButton` with `onRun`. It is always the last element, and nothing goes after it.
+- **Run:** `showRunButton` with `onRun`. It always sits right after the last setting (it applies them), before the
+  account and sync status.
 
 ## 2. Table toolbar
 

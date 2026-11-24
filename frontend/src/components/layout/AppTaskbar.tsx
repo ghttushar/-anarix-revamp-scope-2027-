@@ -130,7 +130,7 @@ interface AppTaskbarProps {
   showFrequency?: boolean;
   /** Page-specific settings, as chips, after the built-in ones. */
   filters?: BarFilter[];
-  /** Fixed last slot: the Run button. */
+  /** The Run button: always right after the last setting (it applies them). */
   showRunButton?: boolean;
   onRun?: () => void;
   /** Escape hatch for a control that is not a plain select (a search box, the product picker). Drawn in the variable
@@ -145,7 +145,7 @@ interface AppTaskbarProps {
  * The page level metric bar: one row under every page heading, with fixed zones so a control is always in the same
  * place on every page.
  *
- *   [breadcrumb (level pages only)] | [date range] [settings… (variable)]  ·····  [account · synced] [utilities] | [Run]
+ *   [breadcrumb (level pages only)] | [date range] [settings… (variable)] [Run]  ·····  [account · synced] [utilities]
  *
  * Only the middle slot changes from page to page. See components/bars/README.md.
  */
@@ -285,9 +285,16 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
         {showFrequency && <BarChip label="Frequency" value={frequency} options={FREQUENCY_OPTIONS} onChange={(v) => setFrequency(v as typeof frequency)} />}
         {filters?.map(({ key, ...f }) => <BarChip key={key} {...(f as BarChipProps<string>)} />)}
         {children}
+        {/* Run applies the settings, so it always sits right after the last one. */}
+        {showRunButton && (
+          <Button size="xs" className="ml-0.5 gap-1.5" onClick={onRun} data-bar-run>
+            <Play />
+            Run
+          </Button>
+        )}
       </div>
 
-      {/* Fixed zone: account and sync, then (island off) the utilities, then Run, always last. */}
+      {/* Fixed zone: account and sync, then (island off) the utilities. */}
       <div className="flex shrink-0 items-center gap-1">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -324,16 +331,6 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
               <TooltipContent side="bottom" className="text-xs">Ask Aan</TooltipContent>
             </Tooltip>
             <BarIconButton icon={RefreshCw} label="Refresh" onClick={() => toast.info("Refreshing data...")} />
-          </>
-        )}
-
-        {showRunButton && (
-          <>
-            <BarDivider />
-            <Button size="xs" className="gap-1.5" onClick={onRun} data-bar-run>
-              <Play />
-              Run
-            </Button>
           </>
         )}
       </div>
