@@ -1,7 +1,7 @@
 {
   "framework": "vite",
   "installCommand": "npm install",
-  "buildCommand": "npm run build && rm -rf frontend/dist && cp -r dist frontend/dist",
+  "buildCommand": "npm run build && R=\"$(cd \"$(npm prefix)\" && pwd -P)\" && H=\"$(pwd -P)\" && echo \"build cwd: $H, repo root: $R\" && if [ \"$R\" != \"$H\" ]; then rm -rf dist && cp -r \"$R/dist\" dist; fi && test -f dist/index.html",
   "outputDirectory": "dist",
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
 }
