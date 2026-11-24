@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { BarChip } from "@/components/bars";
-import { ChartCard, type ChartKind, type CsvExport } from "./ChartCard";
+import { ChartCard, type ChartKind } from "./ChartCard";
 
 export type ChartType = "line" | "bar" | "area" | "pie";
 
@@ -25,7 +25,6 @@ interface ChartContainerProps {
   extraControls?: ReactNode;
   /** List every series in the legend (inactive ones dimmed), not only the active ones. */
   legendAll?: boolean;
-  csv?: () => CsvExport;
   /** Plot height in px (the children draw at this height). */
   height?: number;
   className?: string;
@@ -47,7 +46,6 @@ export function ChartContainer({
   expandedChildren,
   extraControls,
   legendAll,
-  csv,
   height = 300,
   className,
 }: ChartContainerProps) {
@@ -87,7 +85,6 @@ export function ChartContainer({
       chartTypes={availableChartTypes.filter((t) => t !== "pie") as ChartKind[]}
       legend={legend}
       onLegendToggle={onMetricToggle}
-      csv={csv}
       height={height}
       className={className}
     >

@@ -18,6 +18,7 @@ import {
 import { IMPACT_METRIC_OPTIONS } from "@/components/advertising/ImpactMetricMultiSelect";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { ChartLegend } from "@/components/charts/ChartCard";
+import { AXIS, CURSOR_LINE, GRID, VALUE_AXIS, compactNumber } from "@/components/charts/theme";
 
 interface Props {
   items: ImpactComparison[];
@@ -126,15 +127,10 @@ export function ImpactLineChart({ items, previous, impact, metrics, height = 280
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-        <XAxis
-          dataKey="label"
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-          interval="preserveStartEnd"
-          minTickGap={20}
-        />
-        {hasLeft && <YAxis yAxisId="left" orientation="left" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />}
-        {hasRight && <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `${v}${metrics.some((m) => m === "ctr" || m === "acos") ? "%" : ""}`} />}
+        <CartesianGrid {...GRID} />
+        <XAxis {...AXIS} dataKey="label" interval="preserveStartEnd" minTickGap={20} />
+        {hasLeft && <YAxis {...VALUE_AXIS} yAxisId="left" orientation="left" tickFormatter={compactNumber} />}
+        {hasRight && <YAxis {...VALUE_AXIS} yAxisId="right" orientation="right" tickFormatter={(v) => `${v}${metrics.some((m) => m === "ctr" || m === "acos") ? "%" : ""}`} />}
         {impactStartLabel && impactEndLabel && (
           <ReferenceArea
             yAxisId={hasLeft ? "left" : "right"}
@@ -144,7 +140,7 @@ export function ImpactLineChart({ items, previous, impact, metrics, height = 280
             fillOpacity={0.06}
           />
         )}
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<CustomTooltip />} cursor={CURSOR_LINE} />
         {metrics.map((m) => {
           const opt = optionFor(m);
           const color = opt?.color || "hsl(var(--primary))";
@@ -186,7 +182,7 @@ export function ImpactLineChart({ items, previous, impact, metrics, height = 280
 /** The chart's legend (one entry per metric) and its line key, for ChartCard's footer. */
 export function ImpactLegend({ metrics }: { metrics: ImpactMetricKey[] }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2">
+    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
       <ChartLegend
         items={metrics.map((m) => {
           const o = IMPACT_METRIC_OPTIONS.find((x) => x.key === m);
@@ -199,17 +195,4 @@ export function ImpactLegend({ metrics }: { metrics: ImpactMetricKey[] }) {
       </span>
     </div>
   );
-}
-
-/** Rows for Download CSV: one per date, one column per metric and period. */
-export function impactCsvRows(items: ImpactComparison[], previous: DateRange, impact: DateRange, metrics: ImpactMetricKey[]) {
-  return buildImpactSeries(items, previous, impact, metrics).map((p) => {
-    const row: Record<string, string | number | null> = { date: p.label, period: p.period };
-    metrics.forEach((m) => {
-      const label = IMPACT_METRIC_OPTIONS.find((o) => o.key === m)?.label ?? m;
-      row[`${label} (previous)`] = (p as unknown as Record<string, number | null>)[`${m}_previous`] ?? null;
-      row[`${label} (impact)`] = (p as unknown as Record<string, number | null>)[`${m}_impact`] ?? null;
-    });
-    return row;
-  });
 }

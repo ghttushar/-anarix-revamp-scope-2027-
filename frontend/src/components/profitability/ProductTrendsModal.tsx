@@ -13,7 +13,8 @@ import {
 import { ProfitabilityProduct } from "@/types/profitability";
 import { SERIES_COLORS } from "@/lib/constants/metrics";
 import { BarChip } from "@/components/bars";
-import { ChartBar, ChartLegend, downloadCsv, downloadSvgAsPng, type ChartKind } from "@/components/charts/ChartCard";
+import { ChartBar, ChartLegend, type ChartKind } from "@/components/charts/ChartCard";
+import { AXIS, CURSOR_BAND, CURSOR_LINE, ChartTooltip, GRID, seriesGradients, VALUE_AXIS, areaSeries, barSeries, compactCurrency, gradientId, lineSeries } from "@/components/charts/theme";
 import { ChartType } from "@/components/charts/ChartContainer";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
@@ -61,37 +62,37 @@ export function ProductTrendsModal({ product, isOpen, onClose }: ProductTrendsMo
     fontSize: "12px",
   };
 
+  const axes = (
+    <>
+      <CartesianGrid {...GRID} />
+      <XAxis {...AXIS} dataKey="week" minTickGap={16} />
+      <YAxis {...VALUE_AXIS} tickFormatter={compactCurrency} />
+    </>
+  );
+  const tip = (bar?: boolean) => (
+    <Tooltip cursor={bar ? CURSOR_BAND : CURSOR_LINE} content={<ChartTooltip valueOf={(_, v) => formatCurrency(v)} />} />
+  );
+  const margin = { top: 8, right: 4, left: 0, bottom: 0 };
   const renderChart = () => (
     <ResponsiveContainer width="100%" height="100%">
       {chartType === "bar" ? (
-        <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis dataKey="week" tick={{ fontSize: 11 }} className="text-muted-foreground" />
-          <YAxis tick={{ fontSize: 11 }} className="text-muted-foreground" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-          <Tooltip contentStyle={tooltipStyle} />
-          {activeOptions.map((m) => (
-            <Bar key={m.key} dataKey={m.key} fill={m.color} name={m.label} radius={[3, 3, 0, 0]} />
-          ))}
+        <BarChart data={chartData} margin={margin} barGap={2}>
+          {axes}
+          {tip(true)}
+          {activeOptions.map((m) => <Bar key={m.key} dataKey={m.key} name={m.label} {...barSeries(m.color)} />)}
         </BarChart>
       ) : chartType === "area" ? (
-        <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis dataKey="week" tick={{ fontSize: 11 }} className="text-muted-foreground" />
-          <YAxis tick={{ fontSize: 11 }} className="text-muted-foreground" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-          <Tooltip contentStyle={tooltipStyle} />
-          {activeOptions.map((m) => (
-            <Area key={m.key} type="monotone" dataKey={m.key} stroke={m.color} fill={m.color} fillOpacity={0.15} strokeWidth={2} />
-          ))}
+        <AreaChart data={chartData} margin={margin}>
+          {seriesGradients(activeOptions.map((m) => ({ id: gradientId("ptm", m.key), color: m.color })))}
+          {axes}
+          {tip()}
+          {activeOptions.map((m) => <Area key={m.key} dataKey={m.key} name={m.label} {...areaSeries(m.color, gradientId("ptm", m.key))} />)}
         </AreaChart>
       ) : (
-        <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis dataKey="week" tick={{ fontSize: 11 }} className="text-muted-foreground" />
-          <YAxis tick={{ fontSize: 11 }} className="text-muted-foreground" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-          <Tooltip contentStyle={tooltipStyle} />
-          {activeOptions.map((m) => (
-            <Line key={m.key} type="monotone" dataKey={m.key} stroke={m.color} strokeWidth={2} dot={{ fill: m.color, strokeWidth: 0, r: 3 }} />
-          ))}
+        <LineChart data={chartData} margin={margin}>
+          {axes}
+          {tip()}
+          {activeOptions.map((m) => <Line key={m.key} dataKey={m.key} name={m.label} {...lineSeries(m.color)} />)}
         </LineChart>
       )}
     </ResponsiveContainer>
@@ -140,8 +141,6 @@ export function ProductTrendsModal({ product, isOpen, onClose }: ProductTrendsMo
             chartType={chartType as ChartKind}
             onChartTypeChange={(k) => setChartType(k as ChartType)}
             chartTypes={["line", "bar", "area"]}
-            onDownloadPng={() => void downloadSvgAsPng(plotRef.current, "product-trends")}
-            onDownloadCsv={() => downloadCsv({ filename: "product-trends", rows: chartData.map((r) => ({ week: r.week, ...Object.fromEntries(activeOptions.map((m) => [m.label, +(r as Record<string, number | string>)[m.key]])) })) })}
           />
 
           <div>

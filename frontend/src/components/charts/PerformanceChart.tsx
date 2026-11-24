@@ -8,6 +8,7 @@ import { ChartDataPoint, MetricKey } from "@/types/campaign";
 import { METRIC_CONFIGS, MAX_VISIBLE_METRICS, DEFAULT_SELECTED_METRICS } from "@/lib/constants/chartColors";
 import { ChartContainer, ChartType, ChartMetric } from "./ChartContainer";
 import { BarChip } from "@/components/bars";
+import { AXIS, CURSOR_BAND, CURSOR_LINE, ChartTooltip, GRID, seriesGradients, VALUE_AXIS, areaSeries, barSeries, compactCurrency, compactNumber, gradientId, lineSeries } from "./theme";
 import { Button } from "@/components/ui/button";
 import { mockCampaigns } from "@/data/mockCampaigns";
 import { ExternalLink } from "lucide-react";
@@ -180,46 +181,59 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
     />
   ) : undefined;
 
+  const nameOf = (k: string) => {
+    const base = k.replace(/_impact$/, "");
+    const c = METRIC_CONFIGS.find((m) => m.key === base);
+    return c ? (k.endsWith("_impact") ? `${c.label} (impact)` : c.label) : k;
+  };
+  const valueOf = (k: string, v: number) => formatTooltipValue(v, METRIC_CONFIGS.find((m) => m.key === k.replace(/_impact$/, ""))?.format || "number");
+  const tip = showImpact
+    ? <Tooltip content={<ImpactTooltip />} cursor={chartType === "bar" ? CURSOR_BAND : CURSOR_LINE} />
+    : <Tooltip content={<ChartTooltip nameOf={nameOf} valueOf={valueOf} />} cursor={chartType === "bar" ? CURSOR_BAND : CURSOR_LINE} />;
+  const axes = (
+    <>
+      <CartesianGrid {...GRID} />
+      <XAxis {...AXIS} dataKey="date" minTickGap={16} />
+      {hasLeftAxis && <YAxis {...VALUE_AXIS} yAxisId="left" orientation="left" tickFormatter={compactCurrency} />}
+      {hasRightAxis && <YAxis {...VALUE_AXIS} yAxisId="right" orientation="right" tickFormatter={compactNumber} />}
+    </>
+  );
+  const margin = { top: 8, right: 4, left: 0, bottom: 0 };
+
   const renderChart = (height: number) => (
     <ResponsiveContainer width="100%" height={height}>
       {chartType === "bar" ? (
-        <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis dataKey="date" tick={{ fontSize: 12 }} className="text-muted-foreground" />
-          {tooltipNode}
+        <BarChart data={chartData} margin={margin} barGap={2}>
+          {axes}
+          {tip}
           {selectedConfigs.map((config) => (
-            <Bar key={config.key} dataKey={config.key} name={config.key} fill={config.color} radius={[3, 3, 0, 0]} />
+            <Bar key={config.key} dataKey={config.key} name={config.key} yAxisId={config.yAxisId || "left"} {...barSeries(config.color)} />
           ))}
           {showImpact && selectedConfigs.map((config) => (
-            <Bar key={`${config.key}_impact`} dataKey={`${config.key}_impact`} name={`${config.label} (Impact)`} fill={config.color} fillOpacity={0.4} radius={[3, 3, 0, 0]} />
+            <Bar key={`${config.key}_impact`} dataKey={`${config.key}_impact`} name={`${config.key}_impact`} yAxisId={config.yAxisId || "left"} {...barSeries(config.color)} fillOpacity={0.4} />
           ))}
         </BarChart>
       ) : chartType === "area" ? (
-        <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis dataKey="date" tick={{ fontSize: 12 }} className="text-muted-foreground" />
-          {hasLeftAxis && <YAxis yAxisId="left" orientation="left" tick={{ fontSize: 12 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} className="text-muted-foreground" />}
-          {hasRightAxis && <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} className="text-muted-foreground" />}
-          {tooltipNode}
+        <AreaChart data={chartData} margin={margin}>
+          {seriesGradients(selectedConfigs.map((c) => ({ id: gradientId("perf", c.key), color: c.color })))}
+          {axes}
+          {tip}
           {selectedConfigs.map((config) => (
-            <Area key={config.key} type="monotone" dataKey={config.key} name={config.key} stroke={config.color} fill={config.color} fillOpacity={0.15} yAxisId={config.yAxisId || "left"} strokeWidth={2} />
+            <Area key={config.key} dataKey={config.key} name={config.key} yAxisId={config.yAxisId || "left"} {...areaSeries(config.color, gradientId("perf", config.key))} />
           ))}
           {showImpact && selectedConfigs.map((config) => (
-            <Area key={`${config.key}_impact`} type="monotone" dataKey={`${config.key}_impact`} name={`${config.label} (Impact)`} stroke={config.color} fill={config.color} fillOpacity={0.05} yAxisId={config.yAxisId || "left"} strokeWidth={1.5} strokeDasharray="5 3" />
+            <Area key={`${config.key}_impact`} dataKey={`${config.key}_impact`} name={`${config.key}_impact`} yAxisId={config.yAxisId || "left"} {...lineSeries(config.color)} fill="none" strokeWidth={1.5} strokeDasharray="5 4" />
           ))}
         </AreaChart>
       ) : (
-        <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis dataKey="date" tick={{ fontSize: 12 }} className="text-muted-foreground" />
-          {hasLeftAxis && <YAxis yAxisId="left" orientation="left" tick={{ fontSize: 12 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} className="text-muted-foreground" />}
-          {hasRightAxis && <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} className="text-muted-foreground" />}
-          {tooltipNode}
+        <LineChart data={chartData} margin={margin}>
+          {axes}
+          {tip}
           {selectedConfigs.map((config) => (
-            <Line key={config.key} type="monotone" dataKey={config.key} name={config.key} stroke={config.color} yAxisId={config.yAxisId || "left"} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+            <Line key={config.key} dataKey={config.key} name={config.key} yAxisId={config.yAxisId || "left"} {...lineSeries(config.color)} />
           ))}
           {showImpact && selectedConfigs.map((config) => (
-            <Line key={`${config.key}_impact`} type="monotone" dataKey={`${config.key}_impact`} name={`${config.label} (Impact)`} stroke={config.color} yAxisId={config.yAxisId || "left"} strokeWidth={1.5} strokeDasharray="5 3" dot={false} />
+            <Line key={`${config.key}_impact`} dataKey={`${config.key}_impact`} name={`${config.key}_impact`} yAxisId={config.yAxisId || "left"} {...lineSeries(config.color)} strokeWidth={1.5} strokeDasharray="5 4" />
           ))}
         </LineChart>
       )}
@@ -235,7 +249,6 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
       onChartTypeChange={setChartType}
       extraControls={impactControl}
       expandedChildren={renderChart(500)}
-      csv={() => ({ filename: "performance-overview", rows: data.map((p) => ({ date: p.date, ...Object.fromEntries(selectedConfigs.map((c) => [c.label, (p as unknown as Record<string, number>)[c.key]])) })) })}
     >
       {renderChart(300)}
     </ChartContainer>

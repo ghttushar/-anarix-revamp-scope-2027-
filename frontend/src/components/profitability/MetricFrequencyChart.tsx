@@ -8,7 +8,8 @@ import { ProfitabilitySummary, TrendDataPoint } from "@/types/profitability";
 import { cn } from "@/lib/utils";
 import { METRIC_COLORS } from "@/lib/constants/metrics";
 import { BarChip } from "@/components/bars";
-import { ChartCard, chartTooltipStyle } from "@/components/charts/ChartCard";
+import { ChartCard } from "@/components/charts/ChartCard";
+import { AXIS, CURSOR_BAND, CURSOR_LINE, ChartTooltip, GRID, seriesGradients, VALUE_AXIS, areaSeries, barSeries, compactCurrency, compactNumber, gradientId, lineSeries } from "@/components/charts/theme";
 
 export type MetricKey =
   | "gmv" | "authSales" | "orders" | "units"
@@ -123,49 +124,39 @@ export function MetricFrequencyChart({
     return val.toLocaleString();
   };
 
+  const nameOf = (k: string) => METRIC_DEFS.find((d) => d.key === k)?.label ?? k;
+  const currencyAxis = selectedMetrics.every((m) => METRIC_DEFS.find((d) => d.key === m)?.format === "currency");
+
   const renderChart = (height: number | string) => {
-    const commonAxes = (
+    const common = (
       <>
-        <CartesianGrid strokeDasharray="3 3" className="stroke-border" opacity={0.5} />
-        <XAxis dataKey="label" tick={{ fontSize: 10 }} className="text-muted-foreground" tickLine={false} axisLine={false} />
-        <YAxis tick={{ fontSize: 10 }} className="text-muted-foreground" tickLine={false} axisLine={false} />
+        <CartesianGrid {...GRID} />
+        <XAxis {...AXIS} dataKey="label" minTickGap={16} />
+        <YAxis {...VALUE_AXIS} tickFormatter={currencyAxis ? compactCurrency : compactNumber} />
         <Tooltip
-          contentStyle={chartTooltipStyle}
-          formatter={(val: number, name: string) => [formatValue(name as MetricKey, val), METRIC_DEFS.find((d) => d.key === name)?.label ?? name]}
+          cursor={chartView === "bar" ? CURSOR_BAND : CURSOR_LINE}
+          content={<ChartTooltip nameOf={nameOf} valueOf={(k, v) => formatValue(k as MetricKey, v)} />}
         />
       </>
     );
-
+    const margin = { top: 8, right: 8, left: 0, bottom: 0 };
     return (
       <ResponsiveContainer width="100%" height={height}>
         {chartView === "bar" ? (
-          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-            {commonAxes}
-            {selectedMetrics.map((m) => {
-              const def = METRIC_DEFS.find((d) => d.key === m)!;
-              return <Bar key={m} dataKey={m} fill={def.color} radius={[2, 2, 0, 0]} />;
-            })}
+          <BarChart data={chartData} margin={margin} barGap={2}>
+            {common}
+            {selectedMetrics.map((m) => <Bar key={m} dataKey={m} {...barSeries(METRIC_DEFS.find((d) => d.key === m)!.color)} />)}
           </BarChart>
         ) : chartView === "line" ? (
-          <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-            {commonAxes}
-            {selectedMetrics.map((m) => {
-              const def = METRIC_DEFS.find((d) => d.key === m)!;
-              return <Line key={m} type="monotone" dataKey={m} stroke={def.color} strokeWidth={1.5} dot={false} />;
-            })}
+          <LineChart data={chartData} margin={margin}>
+            {common}
+            {selectedMetrics.map((m) => <Line key={m} dataKey={m} {...lineSeries(METRIC_DEFS.find((d) => d.key === m)!.color)} />)}
           </LineChart>
         ) : (
-          <AreaChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-            {commonAxes}
-            {selectedMetrics.map((m) => {
-              const def = METRIC_DEFS.find((d) => d.key === m)!;
-              return (
-                <Area
-                  key={m} type="monotone" dataKey={m}
-                  stroke={def.color} fill={def.color} fillOpacity={0.08} strokeWidth={1.5}
-                />
-              );
-            })}
+          <AreaChart data={chartData} margin={margin}>
+            {seriesGradients(selectedMetrics.map((m) => ({ id: gradientId("mfc", m), color: METRIC_DEFS.find((d) => d.key === m)!.color })))}
+            {common}
+            {selectedMetrics.map((m) => <Area key={m} dataKey={m} {...areaSeries(METRIC_DEFS.find((d) => d.key === m)!.color, gradientId("mfc", m))} />)}
           </AreaChart>
         )}
       </ResponsiveContainer>
@@ -195,13 +186,6 @@ export function MetricFrequencyChart({
       chartType={chartView}
       onChartTypeChange={(t) => setChartView(t as typeof chartView)}
       chartTypes={["line", "bar", "area"]}
-      csv={() => ({
-        filename: "performance-trend",
-        rows: chartData.map((r) => ({
-          period: r.label,
-          ...Object.fromEntries(selectedMetrics.map((m) => [METRIC_DEFS.find((d) => d.key === m)?.label ?? m, r[m]])),
-        })),
-      })}
       legend={selectedMetrics.map((m) => {
         const def = METRIC_DEFS.find((d) => d.key === m)!;
         return { key: m, label: def.label, color: def.color };

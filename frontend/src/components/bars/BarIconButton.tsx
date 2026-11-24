@@ -3,6 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useBarDensity } from "./density";
 
 interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   icon: LucideIcon;
@@ -26,6 +27,7 @@ export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIc
   { icon: Icon, label, hint, active, badge, tone = "default", tooltipSide = "bottom", className, ...props },
   ref,
 ) {
+  const compact = useBarDensity() === "compact";
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -37,6 +39,7 @@ export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIc
           aria-label={label}
           aria-pressed={active}
           className={cn(
+            compact && "h-7 w-7 [&_svg]:size-3.5",
             "relative text-muted-foreground hover:bg-muted hover:text-foreground data-[state=open]:bg-muted data-[state=open]:text-foreground",
             active && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
             tone === "danger" && active && "bg-destructive/10 text-destructive hover:bg-destructive/15 hover:text-destructive",

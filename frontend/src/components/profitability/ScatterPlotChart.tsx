@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import {
   BarChart, Bar, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 import { ScatterDataPoint } from "@/types/profitability";
 import {
@@ -9,6 +9,7 @@ import {
   BarChart3, Activity, Target,
 } from "lucide-react";
 import { ChartCard } from "@/components/charts/ChartCard";
+import { AXIS, CURSOR_BAND, CURSOR_LINE, ChartTooltip, GRID, VALUE_AXIS, compactCurrency, lineSeries } from "@/components/charts/theme";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
@@ -484,26 +485,29 @@ export function ScatterPlotChart({ data, selectedIds, onPointToggle, onPointDeta
 
   const renderBar = (height: number) => (
     <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={quadrantAggregates} margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-        <XAxis dataKey="quadrant" tick={{ fontSize: 12 }} className="text-muted-foreground" />
-        <YAxis tick={{ fontSize: 12 }} className="text-muted-foreground" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-        <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} />
-        {quadrantAggregates.map((item, i) => (
-          <Bar key={i} dataKey="totalSales" fill={item.fill} radius={[4, 4, 0, 0]} />
-        ))}
+      <BarChart data={quadrantAggregates} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
+        <CartesianGrid {...GRID} />
+        <XAxis {...AXIS} dataKey="quadrant" />
+        <YAxis {...VALUE_AXIS} tickFormatter={compactCurrency} />
+        <Tooltip cursor={CURSOR_BAND} content={<ChartTooltip nameOf={() => "Total sales"} valueOf={(_, v) => `$${v.toLocaleString()}`} />} />
+        <Bar dataKey="totalSales" radius={[4, 4, 0, 0]} maxBarSize={56}>
+          {quadrantAggregates.map((item) => <Cell key={item.quadrant} fill={item.fill} />)}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
 
   const renderLine = (height: number) => (
     <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={[...data].sort((a, b) => a.profitMargin - b.profitMargin)} margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-        <XAxis dataKey="profitMargin" tick={{ fontSize: 12 }} className="text-muted-foreground" tickFormatter={(v) => `${v.toFixed(0)}%`} />
-        <YAxis tick={{ fontSize: 12 }} className="text-muted-foreground" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-        <Tooltip formatter={(value: number, name: string) => name === "totalSales" ? `$${value.toLocaleString()}` : `${value.toFixed(1)}%`} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} />
-        <Line type="monotone" dataKey="totalSales" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+      <LineChart data={[...data].sort((a, b) => a.profitMargin - b.profitMargin)} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
+        <CartesianGrid {...GRID} />
+        <XAxis {...AXIS} dataKey="profitMargin" tickFormatter={(v) => `${v.toFixed(0)}%`} minTickGap={16} />
+        <YAxis {...VALUE_AXIS} tickFormatter={compactCurrency} />
+        <Tooltip
+          cursor={CURSOR_LINE}
+          content={<ChartTooltip nameOf={() => "Total sales"} valueOf={(_, v) => `$${v.toLocaleString()}`} labelOf={(l) => `Margin ${Number(l).toFixed(1)}%`} />}
+        />
+        <Line dataKey="totalSales" {...lineSeries("hsl(var(--primary))")} />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -536,10 +540,6 @@ export function ScatterPlotChart({ data, selectedIds, onPointToggle, onPointDeta
       chartTypes={["line", "bar", "scatter"]}
       height="lg"
       legend={legendItems}
-      csv={() => ({
-        filename: "product-performance",
-        rows: data.map((d) => Object.fromEntries(Object.entries(d).filter(([, v]) => typeof v !== "object")) as Record<string, string | number>),
-      })}
     >
       {({ expanded }) => renderChart(expanded ? (typeof window !== "undefined" ? Math.min(700, window.innerHeight * 0.62) : 560) : 400)}
     </ChartCard>

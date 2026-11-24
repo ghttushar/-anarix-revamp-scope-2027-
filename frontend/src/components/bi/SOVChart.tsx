@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { SOVDataPoint } from "@/types/bi";
 import { SERIES_COLORS } from "@/lib/constants/metrics";
-import { chartTooltipStyle } from "@/components/charts/ChartCard";
+import { AXIS, CURSOR_BAND, CURSOR_LINE, ChartTooltip, GRID, VALUE_AXIS, lineSeries } from "@/components/charts/theme";
 import { ChartContainer, ChartType, ChartMetric } from "@/components/charts/ChartContainer";
 
 interface SOVChartProps {
@@ -38,16 +38,22 @@ export function SOVChart({ data, title = "Share of Voice Trend", subtitle }: SOV
 
   const commonProps = {
     data,
-    margin: { top: 10, right: 10, left: 0, bottom: 0 },
+    margin: { top: 8, right: 4, left: 0, bottom: 0 },
   };
 
+  const color = (brand: string) => COLORS[brandNames.indexOf(brand) % COLORS.length];
   const axes = (
     <>
-      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-      <XAxis dataKey="timestamp" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={{ stroke: "hsl(var(--border))" }} tickLine={{ stroke: "hsl(var(--border))" }} />
-      <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={{ stroke: "hsl(var(--border))" }} tickLine={{ stroke: "hsl(var(--border))" }} tickFormatter={(v) => `${v}%`} />
-      <Tooltip contentStyle={chartTooltipStyle} formatter={(value: number) => [`${value.toFixed(1)}%`, ""]} />
+      <CartesianGrid {...GRID} />
+      <XAxis {...AXIS} dataKey="timestamp" minTickGap={16} />
+      <YAxis {...VALUE_AXIS} tickFormatter={(v) => `${v}%`} />
     </>
+  );
+  const tip = (bar?: boolean) => (
+    <Tooltip
+      cursor={bar ? CURSOR_BAND : CURSOR_LINE}
+      content={<ChartTooltip nameOf={(k) => k.replace(/^brands\./, "")} valueOf={(_, v) => `${v.toFixed(1)}%`} />}
+    />
   );
 
   const renderChart = (height: number) => (
@@ -55,22 +61,24 @@ export function SOVChart({ data, title = "Share of Voice Trend", subtitle }: SOV
       {chartType === "line" ? (
         <LineChart {...commonProps}>
           {axes}
-          {activeBrands.map((brand, i) => (
-            <Line key={brand} type="monotone" dataKey={`brands.${brand}`} name={brand} stroke={COLORS[brandNames.indexOf(brand) % COLORS.length]} strokeWidth={2} dot={{ r: 3 }} />
-          ))}
+          {tip()}
+          {activeBrands.map((brand) => <Line key={brand} dataKey={`brands.${brand}`} name={brand} {...lineSeries(color(brand))} />)}
         </LineChart>
       ) : chartType === "bar" ? (
         <BarChart {...commonProps}>
           {axes}
-          {activeBrands.map((brand) => (
-            <Bar key={brand} dataKey={`brands.${brand}`} name={brand} fill={COLORS[brandNames.indexOf(brand) % COLORS.length]} stackId="1" />
+          {tip(true)}
+          {activeBrands.map((brand, i) => (
+            <Bar key={brand} dataKey={`brands.${brand}`} name={brand} stackId="1" fill={color(brand)} maxBarSize={28}
+              radius={i === activeBrands.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]} />
           ))}
         </BarChart>
       ) : (
         <AreaChart {...commonProps}>
           {axes}
+          {tip()}
           {activeBrands.map((brand) => (
-            <Area key={brand} type="monotone" dataKey={`brands.${brand}`} name={brand} stackId="1" stroke={COLORS[brandNames.indexOf(brand) % COLORS.length]} fill={COLORS[brandNames.indexOf(brand) % COLORS.length]} fillOpacity={0.6} />
+            <Area key={brand} dataKey={`brands.${brand}`} name={brand} stackId="1" {...lineSeries(color(brand))} strokeWidth={1.5} fill={color(brand)} fillOpacity={0.22} />
           ))}
         </AreaChart>
       )}
@@ -87,7 +95,6 @@ export function SOVChart({ data, title = "Share of Voice Trend", subtitle }: SOV
       onChartTypeChange={setChartType}
       expandedChildren={renderChart(500)}
       legendAll
-      csv={() => ({ filename: "share-of-voice", rows: data.map((p) => ({ time: p.timestamp, ...p.brands })) })}
     >
       {renderChart(300)}
     </ChartContainer>

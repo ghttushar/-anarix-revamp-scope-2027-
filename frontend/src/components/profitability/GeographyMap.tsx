@@ -174,12 +174,8 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
       title="Sales by Region"
       height="lg"
       className="h-full"
-      csv={() => ({
-        filename: "sales-by-region",
-        rows: Object.entries(activeCountryData).map(([code, d]) => ({ code, region: d.name, sales: d.sales, orders: d.orders })),
-      })}
       footer={
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center justify-center gap-6 pt-3">
             <div className="flex items-center gap-3">
               <span className="text-[10px] text-muted-foreground">Low</span>
               <div className="flex rounded overflow-hidden">

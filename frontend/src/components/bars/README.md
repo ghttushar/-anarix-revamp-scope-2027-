@@ -62,21 +62,26 @@ A table only switches an action on or off. It never reorders them or adds its ow
 `ChartCard` in `components/charts/ChartCard.tsx`. Use `ChartBar` alone only outside a card, as in a modal.
 
 ```
-Title · context ⓘ          [settings… (chips)] | [line bar area] | ⋯ ⤢
-                                                                         (legend under the plot)
+Title · context ⓘ                                   [settings…] [chart type ▾]  ⤢
+                          (plot)
+                     ● series  ● series  ● series        (legend, centred)
 ```
 
 - **Title:** `title`, with `context` for the period or "Showing N items", and an optional `info`.
-- **Settings:** `controls` takes `BarChip`s for metrics (multi, max 4), frequency, compare and so on.
-- **Chart type:** `chartType` / `chartTypes` draw an icon switch, always ordered line → bar → area → scatter.
-- **⋯ menu:** Download PNG (from the plot's SVG; turn off with `png={false}` for non-SVG plots) and Download CSV (via
-  `csv`).
-- **Expand:** always last. It opens a dialog with the same bar.
-- **Under the plot:** `legend` for series, or `footer` for a gradient scale.
-- **Height:** `height` is `sm` (240) / `md` (300) / `lg` (400), `"fill"` or `"auto"`. Don't use one-off numbers.
-
-Colors come from `lib/constants/metrics.ts`: one color per metric everywhere, and `SERIES_COLORS` for anything
-else.
+- **Right side:** everything after the title is compact (h-7) and right-aligned.
+  - `controls`: this chart's settings as `BarChip`s (metrics, multi, max 4; frequency; compare).
+  - `chartTypes`: the chart type as a dropdown chip (line, bar, area, scatter).
+  - Expand: always last.
+- **No ⋯ menu** and no downloads.
+- **Under the plot:** `legend` (centred), or `footer` for a scale such as a gradient.
+- **Height:** `height` is `sm` (240) / `md` (300) / `lg` (400), `"fill"` or `"auto"`.
+- **Drawing:** use the shared theme in `components/charts/theme.tsx`:
+  - `AXIS` / `VALUE_AXIS` / `GRID` for axes and grid
+  - `lineSeries` / `areaSeries` + `seriesGradients` / `barSeries` for series (stacked areas use a soft solid fill)
+  - `CURSOR_LINE` / `CURSOR_BAND` for the hover guide
+  - `ChartTooltip` for the tooltip card
+  - `compactCurrency` / `compactNumber` for axis labels
+- **Colours:** from `lib/constants/metrics.ts`.
 
 ## Where does my new option go?
 
@@ -89,8 +94,7 @@ else.
 | creates something new from the table | the toolbar `primaryAction`, one per table |
 | acts on selected rows | the toolbar `selection.actions` |
 | changes one chart (metric, frequency, compare) | a chart bar chip (`controls`) |
-| changes how one chart draws (line / bar) | `chartTypes` |
-| exports one chart | `csv` (PNG is automatic) |
+| changes how one chart draws (line / bar) | `chartTypes` (the type dropdown) |
 
 ## Parts
 

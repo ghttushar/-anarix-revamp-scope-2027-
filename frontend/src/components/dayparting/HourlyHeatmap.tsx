@@ -135,13 +135,8 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
       title="Hourly heatmap"
       context={METRIC_LABEL[metric] ?? metric}
       height="auto"
-      png={false}
-      csv={() => ({
-        filename: "hourly-heatmap",
-        rows: data.map((p) => ({ day: DAYS[p.dayOfWeek] ?? p.dayOfWeek, hour: p.hour, [METRIC_LABEL[metric] ?? metric]: getMetricValue(p, metric) })),
-      })}
       footer={
-            <div className="flex items-center gap-2 pt-2">
+            <div className="flex items-center justify-center gap-2 pt-3">
               <span className="text-xs text-muted-foreground">
                 {isHigherBetter ? "Low" : "High"}
               </span>

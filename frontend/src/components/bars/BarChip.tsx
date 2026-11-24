@@ -3,6 +3,7 @@ import { Check, ChevronDown, Search } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { BAR_CHIP_CLASS } from "./tokens";
+import { useBarDensity } from "./density";
 
 export interface BarOption<V extends string = string> {
   value: V;
@@ -33,14 +34,15 @@ export const BarChipTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functi
   { label, icon, value, noCaret, className, children, ...props },
   ref,
 ) {
+  const compact = useBarDensity() === "compact";
   return (
-    <button ref={ref} type="button" className={cn(BAR_CHIP_CLASS, className)} {...props}>
-      {icon && <span className="flex shrink-0 text-muted-foreground [&_svg]:h-3.5 [&_svg]:w-3.5">{icon}</span>}
+    <button ref={ref} type="button" className={cn(BAR_CHIP_CLASS, compact && "h-7 gap-1 px-2 text-[11px]", className)} {...props}>
+      {icon && <span className={cn("flex shrink-0 text-muted-foreground", compact ? "[&_svg]:h-3 [&_svg]:w-3" : "[&_svg]:h-3.5 [&_svg]:w-3.5")}>{icon}</span>}
       {label && <span className="bar-chip-label shrink-0 text-muted-foreground">{label}</span>}
       {/* A long value (a campaign name) truncates so the bar stays one row; the full text is in the menu. */}
       {value !== undefined && <span className="min-w-0 max-w-[12rem] truncate font-medium text-foreground">{value}</span>}
       {children}
-      {!noCaret && <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+      {!noCaret && <ChevronDown className={cn("shrink-0 text-muted-foreground", compact ? "h-3 w-3" : "h-3.5 w-3.5")} />}
     </button>
   );
 });

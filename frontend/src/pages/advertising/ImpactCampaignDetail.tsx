@@ -10,7 +10,7 @@ import { Download, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
 import { ImpactDateRangePair } from "@/components/advertising/ImpactDateRangePair";
 import { ImpactMetricMultiSelect } from "@/components/advertising/ImpactMetricMultiSelect";
-import { ImpactLegend, ImpactLineChart, impactCsvRows } from "@/components/charts/ImpactLineChart";
+import { ImpactLegend, ImpactLineChart } from "@/components/charts/ImpactLineChart";
 import { ChartCard } from "@/components/charts/ChartCard";
 import { DateRange, ImpactMetricKey, addDays } from "@/lib/utils/impactSeries";
 import { mockImpactAdGroups, mockImpactCampaigns } from "@/data/mockImpactData";
@@ -71,7 +71,6 @@ export default function ImpactCampaignDetail() {
                   : `Showing all ${data.length} ad groups — select rows below to filter`}
           controls={<ImpactMetricMultiSelect selected={selectedMetrics} onChange={setSelectedMetrics} />}
           height={280}
-          csv={() => ({ filename: "impact-comparison", rows: impactCsvRows(selectedItems, previous, impact, selectedMetrics) })}
           footer={<ImpactLegend metrics={selectedMetrics} />}
         >
           {({ height }) => <ImpactLineChart items={selectedItems} previous={previous} impact={impact} metrics={selectedMetrics} height={height} />}
