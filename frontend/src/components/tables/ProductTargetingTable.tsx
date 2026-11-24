@@ -18,8 +18,8 @@ interface ProductTargetingTableProps {
 }
 
 const targetTypeColors: Record<string, string> = {
-  asin: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-  category: "bg-teal-500/10 text-teal-600 border-teal-500/20",
+  asin: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
+  category: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20",
 };
 
 const PINNABLE = ["adGroupName", "campaignName", "minBid", "maxBid", "targetBid", "impressions", "clicks", "ctr", "adUnits", "cvr", "cpc", "adSpend", "adSales", "roas", "acos"];

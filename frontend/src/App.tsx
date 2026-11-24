@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MarketplaceProvider } from "@/contexts/MarketplaceContext";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { ColorSchemeProvider } from "@/contexts/ColorSchemeContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { AccountProvider, useAccounts } from "@/contexts/AccountContext";
 import { IntegrationsProvider } from "@/contexts/IntegrationsContext";
@@ -254,7 +253,6 @@ function AppRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <ColorSchemeProvider>
         <CurrencyProvider>
         <AccountProvider>
           <IntegrationsProvider>
@@ -293,7 +291,6 @@ const App = () => (
           </IntegrationsProvider>
         </AccountProvider>
         </CurrencyProvider>
-      </ColorSchemeProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

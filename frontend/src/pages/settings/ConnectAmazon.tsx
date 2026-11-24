@@ -18,7 +18,7 @@ const connectionOptions = [
     description:
       "Connect your Amazon Seller Central account to sync orders, inventory, and advertising data.",
     icon: Store,
-    color: "bg-orange-100 text-orange-600",
+    color: "bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400",
     accountType: "seller" as const,
   },
   {
@@ -27,7 +27,7 @@ const connectionOptions = [
     description:
       "Connect your Amazon Advertising account to manage Sponsored Products, Brands, and Display campaigns.",
     icon: Tag,
-    color: "bg-blue-100 text-blue-600",
+    color: "bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400",
     accountType: "ads" as const,
   },
   {
@@ -36,7 +36,7 @@ const connectionOptions = [
     description:
       "Connect your Amazon Vendor Central account for 1P sellers to sync purchase orders and analytics.",
     icon: ShoppingCart,
-    color: "bg-purple-100 text-purple-600",
+    color: "bg-purple-100 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400",
     accountType: "vendor" as const,
   },
 ];
@@ -115,8 +115,8 @@ export default function ConnectAmazon() {
         <PageBreadcrumb items={breadcrumbItems} className="mb-6" />
 
         <div className="text-center mb-10">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-100 mb-4">
-            <Store className="h-8 w-8 text-orange-600" />
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-100 dark:bg-orange-500/15 mb-4">
+            <Store className="h-8 w-8 text-orange-600 dark:text-orange-400" />
           </div>
           <h1 className="text-3xl font-heading font-semibold text-foreground mb-2">
             Accelerate Your Growth on Amazon

@@ -24,7 +24,7 @@ const connectionOptions = [
     title: "Walmart Connect",
     description: "Connect your Walmart Connect advertising account to manage Sponsored Search and Display campaigns.",
     icon: Megaphone,
-    color: "bg-blue-100 text-blue-600",
+    color: "bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400",
     accountType: "connect" as const,
   },
   {
@@ -32,7 +32,7 @@ const connectionOptions = [
     title: "Walmart Marketplace",
     description: "Connect your Walmart Marketplace seller account to sync orders, inventory, and catalog data.",
     icon: ShoppingCart,
-    color: "bg-green-100 text-green-600",
+    color: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400",
     accountType: "marketplace" as const,
   },
 ];
@@ -109,8 +109,8 @@ export default function ConnectWalmart() {
         <PageBreadcrumb items={breadcrumbItems} className="mb-6" />
 
         <div className="text-center mb-10">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 mb-4">
-            <WalmartLogo className="h-8 w-8 text-blue-600" />
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-500/15 mb-4">
+            <WalmartLogo className="h-8 w-8 text-blue-600 dark:text-blue-400" />
           </div>
           <h1 className="text-3xl font-heading font-semibold text-foreground mb-2">
             Accelerate Your Growth on Walmart

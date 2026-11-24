@@ -68,7 +68,7 @@ export function RegionStatsPanel({ region, dateRange }: RegionStatsPanelProps) {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Margin</span>
-            <span className={cn("font-medium", margin > 20 ? "text-green-600" : "text-foreground")}>
+            <span className={cn("font-medium", margin > 20 ? "text-success" : "text-foreground")}>
               {formatPercent(margin)}
             </span>
           </div>

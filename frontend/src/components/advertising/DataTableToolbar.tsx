@@ -231,7 +231,7 @@ export function DataTableToolbar({
                   value={searchValue}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="h-8 w-full border-0 bg-muted/50 pl-8 text-xs shadow-none focus-visible:ring-1 focus-visible:ring-offset-0"
+                  className="h-8 w-full border-input bg-card pl-8 text-xs shadow-none focus-visible:ring-1 focus-visible:ring-offset-0"
                 />
               </div>
             </>

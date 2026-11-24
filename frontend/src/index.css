@@ -14,14 +14,15 @@
   font-display: swap;
 }
 
-/* PERIWINKLE SYSTEM 01 - LOCKED DESIGN SYSTEM
+/* PERIWINKLE SYSTEM 01 - LOCKED DESIGN SYSTEM (the only palette: nothing overrides these at runtime)
    DO NOT MODIFY WITHOUT EXPLICIT INSTRUCTION
    
    Light Mode:
    - Background: #F5F6FA
    - Card/Surface: #FFFFFF
    - Text Primary: #0F1020
-   - Text Muted: #646A86
+   - Text Muted: #555D78
+   - Muted fill: #EBEDF3 (a step from both background and card, toward the text)
    - Secondary (Ink Blue): #2A2D4F
    - Brand Primary (Periwinkle): #4A62D9
    - Brand Accent (Lilac): #A7AEF2
@@ -30,10 +31,14 @@
    - Background: #0E1020
    - Card/Surface: #171A2E
    - Text Primary: #ECEEFF
-   - Text Muted: #9CA2C8
+   - Text Muted: #8590B5
+   - Muted fill: #22253F (a step from both background and card, toward the text)
    - Secondary: #2F3470
    - Brand Primary: #6E82F5
    - Brand Accent: #B8BEFF
+
+   Rule: muted, border and input sit the same distance from the surfaces in both modes, so a fill or outline
+   that reads in light mode reads in dark mode too.
    
    Data Visualization Colors (RESERVED FOR DATA ONLY):
    - Positive/Success: #22C55E (green)
@@ -65,7 +70,7 @@
     --secondary: 234 30% 24%; /* #2A2D4F - Ink Blue */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 230 33% 97%;
+    --muted: 230 27% 94%; /* #EBEDF3: distinct from background and card */
     --muted-foreground: 228 18% 40%; /* #555D78 — darker for better light mode contrast */
 
     --accent: 231 74% 81%; /* #A7AEF2 - Lilac */
@@ -81,7 +86,7 @@
     --warning-foreground: 0 0% 100%;
 
     --border: 230 25% 90%;
-    --input: 230 25% 90%;
+    --input: 230 20% 84%; /* field outlines: a step stronger than dividers */
     --ring: 229 65% 57%;
 
     --radius: 0.5rem;
@@ -91,7 +96,7 @@
     --sidebar-foreground: 228 18% 40%;
     --sidebar-primary: 229 65% 57%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 230 33% 97%;
+    --sidebar-accent: 230 27% 94%;
     --sidebar-accent-foreground: 240 53% 9%;
     --sidebar-border: 230 25% 90%;
     --sidebar-ring: 229 65% 57%;
@@ -129,8 +134,8 @@
     --secondary: 234 43% 32%; /* #2F3470 */
     --secondary-foreground: 240 100% 97%;
 
-    --muted: 235 37% 14%;
-    --muted-foreground: 230 29% 69%; /* #9CA2C8 */
+    --muted: 235 29% 19%; /* #22253F: distinct from background and card */
+    --muted-foreground: 230 27% 63%; /* #8590B5 */
 
     --accent: 231 100% 87%; /* #B8BEFF - Lilac */
     --accent-foreground: 240 53% 9%;
@@ -144,18 +149,18 @@
     --warning: 38 70% 50%; /* Muted amber for dark mode */
     --warning-foreground: 0 0% 100%;
 
-    --border: 235 30% 20%;
-    --input: 235 30% 20%;
+    --border: 235 28% 21%;
+    --input: 235 24% 28%; /* field outlines: a step stronger than dividers */
     --ring: 231 88% 70%;
 
     /* Sidebar - Dark */
     --sidebar-background: 235 37% 14%;
-    --sidebar-foreground: 230 29% 69%;
+    --sidebar-foreground: 230 27% 63%;
     --sidebar-primary: 231 88% 70%;
     --sidebar-primary-foreground: 240 53% 9%;
-    --sidebar-accent: 234 53% 9%;
+    --sidebar-accent: 235 29% 19%;
     --sidebar-accent-foreground: 240 100% 97%;
-    --sidebar-border: 235 30% 20%;
+    --sidebar-border: 235 28% 21%;
     --sidebar-ring: 231 88% 70%;
   }
 }

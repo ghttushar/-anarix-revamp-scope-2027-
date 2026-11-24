@@ -34,7 +34,7 @@ function AccountCard({ account, onSync, onRemove }: {
           <div className="flex items-start gap-3">
             <div className={cn(
               "h-12 w-12 rounded-xl flex items-center justify-center shrink-0",
-              isAmazon ? "bg-orange-100 text-orange-600" : "bg-blue-100 text-blue-600"
+              isAmazon ? "bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400" : "bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400"
             )}>
               {isAmazon ? (
                 <Store className="h-6 w-6" />
@@ -227,8 +227,8 @@ export default function Accounts() {
                 "hover:border-primary hover:bg-primary/5 transition-all duration-200"
               )}
             >
-              <div className="h-16 w-16 rounded-2xl bg-orange-100 flex items-center justify-center">
-                <Store className="h-8 w-8 text-orange-600" />
+              <div className="h-16 w-16 rounded-2xl bg-orange-100 dark:bg-orange-500/15 flex items-center justify-center">
+                <Store className="h-8 w-8 text-orange-600 dark:text-orange-400" />
               </div>
               <span className="font-medium text-foreground">Amazon</span>
             </button>
@@ -240,8 +240,8 @@ export default function Accounts() {
                 "hover:border-primary hover:bg-primary/5 transition-all duration-200"
               )}
             >
-              <div className="h-16 w-16 rounded-2xl bg-blue-100 flex items-center justify-center">
-                <WalmartLogo className="h-8 w-8 text-blue-600" />
+              <div className="h-16 w-16 rounded-2xl bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center">
+                <WalmartLogo className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
               <span className="font-medium text-foreground">Walmart</span>
             </button>

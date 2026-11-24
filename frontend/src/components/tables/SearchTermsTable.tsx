@@ -18,9 +18,9 @@ interface SearchTermsTableProps {
 }
 
 const matchTypeColors: Record<string, string> = {
-  broad: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  exact: "bg-green-500/10 text-green-600 border-green-500/20",
-  phrase: "bg-purple-500/10 text-purple-600 border-purple-500/20",
+  broad: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+  exact: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+  phrase: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
 };
 
 const PINNABLE = ["keyword", "adGroupName", "campaignName", "impressions", "clicks", "ctr", "adUnits", "cvr", "cpc", "adSpend", "adSales", "roas", "acos"];

@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Apply the saved theme before the first paint, so dark mode never flashes light (ThemeContext takes over after). -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("anarix-theme") || "light";
+          if (t === "system") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.classList.add(t);
+        } catch (e) {}
+      })();
+    </script>
     <!-- TODO: Set the document title to the name of your application -->
     <title>Lovable App</title>
     <meta name="description" content="Lovable Generated Project" />

@@ -26,10 +26,10 @@ const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(va
 
 const STATUS_STYLES: Record<string, string> = {
   delivered: "bg-success/10 text-success border-success/30",
-  shipped: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  shipped: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
   processing: "bg-warning/10 text-warning border-warning/30",
   cancelled: "bg-destructive/10 text-destructive border-destructive/30",
-  returned: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+  returned: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
 };
 
 export function ProductsPnLTable({ products, orders = [], mode = "products", visibleColumns, showDeltas = false, onCogsClick, onTrendsClick, onMoreClick }: ProductsPnLTableProps) {

@@ -113,8 +113,8 @@ export default function ConnectAccounts() {
                     className={cn(
                       "h-10 w-10 rounded-lg flex items-center justify-center",
                       account.marketplace === "amazon"
-                        ? "bg-orange-100 text-orange-600"
-                        : "bg-blue-100 text-blue-600"
+                        ? "bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400"
+                        : "bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400"
                     )}
                   >
                     {account.marketplace === "amazon" ? (
@@ -183,8 +183,8 @@ export default function ConnectAccounts() {
                 "hover:border-primary hover:bg-primary/5 transition-all duration-200"
               )}
             >
-              <div className="h-16 w-16 rounded-2xl bg-orange-100 flex items-center justify-center">
-                <Store className="h-8 w-8 text-orange-600" />
+              <div className="h-16 w-16 rounded-2xl bg-orange-100 dark:bg-orange-500/15 flex items-center justify-center">
+                <Store className="h-8 w-8 text-orange-600 dark:text-orange-400" />
               </div>
               <span className="font-medium text-foreground">Amazon</span>
             </button>
@@ -196,8 +196,8 @@ export default function ConnectAccounts() {
                 "hover:border-primary hover:bg-primary/5 transition-all duration-200"
               )}
             >
-              <div className="h-16 w-16 rounded-2xl bg-blue-100 flex items-center justify-center">
-                <WalmartLogo className="h-8 w-8 text-blue-600" />
+              <div className="h-16 w-16 rounded-2xl bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center">
+                <WalmartLogo className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
               <span className="font-medium text-foreground">Walmart</span>
             </button>

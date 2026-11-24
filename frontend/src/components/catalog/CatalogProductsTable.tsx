@@ -43,7 +43,7 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
   const getStatusBadge = (status: CatalogProduct["status"]) => {
     const variants = {
       published: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-      unpublished: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
+      unpublished: "bg-muted text-muted-foreground",
       draft: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
     };
     return <Badge className={cn("uppercase text-xs font-medium", variants[status])}>{status}</Badge>;
