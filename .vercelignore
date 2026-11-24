@@ -1,0 +1,9 @@
+# The Vercel deployment is the frontend SPA only (frontend/dist). Keep the Python backend and test
+# folders out, or Vercel's zero-config Python detection tries to install backend/requirements.txt
+# (which needs the private emergentintegrations package) and the build fails.
+backend
+tests
+test_reports
+test_result.md
+memory
+.emergent
