@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import amazonLogo from "@/assets/amazon-logo.png";
 import walmartLogo from "@/assets/walmart-logo.png";
 import { useAanEvents } from "@/components/aan/autonomous/AanEventsContext";
-import { BarChip, BarChipTrigger, BarDivider, BarIconButton, type BarChipProps } from "@/components/bars";
+import { BarChip, BarChipTrigger, BarDivider, BarIconButton, type BarChipProps, BarSearch } from "@/components/bars";
 
 interface DatePreset {
   label: string;
@@ -135,6 +135,8 @@ interface AppTaskbarProps {
   filters?: BarFilter[];
   /** The Run button: always right after the last setting (it applies them). */
   showRunButton?: boolean;
+  /** A page-wide search, at the right end of the settings zone (before the account). */
+  search?: { value: string; onChange: (value: string) => void; placeholder?: string };
   onRun?: () => void;
   /** Escape hatch for a control that is not a plain select (a search box, the product picker). Drawn in the variable
    *  slot after the filters; build it on BarChipTrigger so it matches the chips. */
@@ -152,7 +154,7 @@ interface AppTaskbarProps {
  *
  * Only the middle slot changes from page to page. See components/bars/README.md.
  */
-export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, filters, dateRangeOverride, onDateRangeOverrideChange }: AppTaskbarProps) {
+export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = false, showDateRange = false, showRunButton = false, onRun, children, filters, search, dateRangeOverride, onDateRangeOverrideChange }: AppTaskbarProps) {
   const { adType, setAdType, frequency, setFrequency, dateRange: ctxDateRange, setDateRange: setCtxDateRange } = useFilter();
   const dateRange = dateRangeOverride ?? ctxDateRange;
   const setDateRange = onDateRangeOverrideChange ?? setCtxDateRange;
@@ -293,6 +295,7 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
             Run
           </Button>
         )}
+        {search && <BarSearch value={search.value} onChange={search.onChange} placeholder={search.placeholder} className="ml-auto" />}
       </div>
 
       {/* Fixed zone: account and sync, then (island off) the utilities. */}

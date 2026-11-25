@@ -67,6 +67,8 @@ interface DataTableToolbarProps {
   /** Where the primary sits: "actions" (default) = first on the right, before the named actions; "search" = on the
    *  left, just before the search. */
   primaryPlacement?: "actions" | "search";
+  /** The page puts its search somewhere else (the page bar), so the toolbar shows none. */
+  hideSearch?: boolean;
   /** While rows are selected the left zone shows the count, Clear and these actions instead of the view and search. */
   selection?: { count: number; onClear: () => void; actions?: ReactNode; total?: number };
   /**
@@ -132,6 +134,7 @@ export function DataTableToolbar({
   selection,
   editActions,
   primaryPlacement = "actions",
+  hideSearch = false,
   showDeltas,
   onShowDeltasChange,
   onUpload,
@@ -253,7 +256,7 @@ export function DataTableToolbar({
           {editing ? (
             <>
               {primaryAtSearch}
-              <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
+              {!hideSearch && <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />}
               {selection && (
                 <div className="flex h-7 items-center gap-1 text-xs text-muted-foreground" data-tb-selection>
                   <span>
@@ -276,7 +279,7 @@ export function DataTableToolbar({
             <>
               {view && <BarSegmented value={view.value} onChange={view.onChange} items={view.items} aria-label="View" />}
               {primaryAtSearch}
-              <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
+              {!hideSearch && <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />}
             </>
           )}
         </div>

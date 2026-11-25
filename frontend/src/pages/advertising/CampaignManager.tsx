@@ -289,7 +289,14 @@ function CampaignManagerInner() {
             subtitle="Manage and optimize your advertising campaigns"
           />
           <IntegrationsBanner />
-          <AppTaskbar showDateRange showAdType showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
+          <AppTaskbar
+            showDateRange
+            showAdType
+            showFrequency
+            showRunButton
+            onRun={() => toast.info("Refreshing data...")}
+            search={{ value: searchQuery, onChange: setSearchQuery, placeholder: `Search ${(tabs.find((t) => t.value === activeTab)?.label ?? "").toLowerCase()}…` }}
+          />
 
           <InlineKPIStrip items={kpiItems} availableMetrics={AVAILABLE_METRICS} onMetricChange={handleKPISwap} />
           <PerformanceChart
@@ -318,6 +325,7 @@ function CampaignManagerInner() {
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}
             searchPlaceholder={`Search ${activeTab.replace("-", " ")}...`}
+            hideSearch
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             showViewToggle={activeTab === "campaigns" || activeTab === "ad-groups" || activeTab === "keywords"}

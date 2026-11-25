@@ -27,7 +27,10 @@ The live reference, captured from the running app, is `public/design-inventory/b
 - **Settings:**
   - `showAdType` and `showFrequency` are the built-in settings.
   - `filters` takes this page's settings as `BarFilter[]` (`BarChip` props plus a `key`).
-- **Escape hatch:** `children` is for a control that is not a select, such as a search box or the product picker.
+- **Search:** `search={{ value, onChange, placeholder }}` puts a page-wide search field (`BarSearch`) at the right end of
+  the settings zone, before the account. Use it when the search belongs to the page (Campaign Manager: it filters
+  whichever tab is showing), and pass `hideSearch` to that page's `DataTableToolbar`.
+- **Escape hatch:** `children` is for a control that is not a select, such as the product picker.
   Build it on `BarChipTrigger`.
 - **Run:** `showRunButton` with `onRun`. It always sits right after the last setting (it applies them), before the
   account and sync status.
