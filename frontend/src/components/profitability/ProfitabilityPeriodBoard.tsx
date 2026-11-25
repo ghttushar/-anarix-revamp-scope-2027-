@@ -371,7 +371,10 @@ export function ProfitabilityPeriodBoard({ summaries, trendDataByPeriod, onPerio
           />
         ))}
       </div>
-      <div className="min-w-0">
+      {/* The five cards set the row's height; the chart (or breakdown) fills exactly that, whichever card is selected.
+          On xl it is taken out of the flow (absolute) so its own content can never make the row taller. */}
+      <div className="relative min-w-0 h-[440px] xl:h-auto">
+        <div className="h-full xl:absolute xl:inset-0">
         {expandedRow ? (
           <PeriodBreakdown row={expandedRow} onClose={() => setExpanded(null)} formatCurrency={formatCurrency} />
         ) : (
@@ -387,6 +390,7 @@ export function ProfitabilityPeriodBoard({ summaries, trendDataByPeriod, onPerio
             contextLabel={`${selectedRow.label} · ${selectedRow.range}`}
           />
         )}
+        </div>
       </div>
     </div>
   );

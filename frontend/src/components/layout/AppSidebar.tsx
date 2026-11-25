@@ -166,7 +166,7 @@ export function AppSidebar() {
   const filteredGroups = navigationGroups;
 
   return (
-    <Sidebar className={cn("border-r border-sidebar-border bg-sidebar transition-all duration-200", collapsed ? "w-14" : "w-56")} collapsible="icon">
+    <Sidebar className={cn("border-r border-sidebar-border bg-sidebar transition-all duration-200", collapsed ? "w-14" : "w-[--sidebar-width]")} collapsible="icon">
       {/* overflow-hidden defeats shadcn SidebarContent's default overflow-auto so
           header/Aan/marketplace/footer stay pinned and only the nav-groups
           section scrolls (critical for tablet portrait viewports). */}
@@ -293,9 +293,9 @@ export function AppSidebar() {
                               <NavLink
                                 to={item.url}
                                 className={cn(
-                                  "flex items-center gap-2.5 rounded-md pl-8 pr-3 py-1.5 text-sm transition-colors",
+                                  "flex items-center gap-2.5 rounded-md pl-6 pr-2 py-1.5 text-sm transition-colors",
                                   isActive(item.url)
-                                    ? "bg-primary/8 text-primary border-l-2 border-primary ml-0 pl-[30px]"
+                                    ? "bg-primary/8 text-primary border-l-2 border-primary ml-0 pl-[25px]"
                                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                 )}
                               >
