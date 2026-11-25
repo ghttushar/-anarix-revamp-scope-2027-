@@ -45,7 +45,7 @@ export default function AMCSchedules() {
             primaryAction={{ label: "New schedule", write: true, onClick: () => toast.info("New schedule") }}
             onDownload={() => toast.success("Exporting schedules...")}
           />
-          <div className="rounded-lg border border-border bg-card">
+          <div data-table-frame className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-card hover:bg-card">

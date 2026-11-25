@@ -8,22 +8,13 @@ import { useBillingFlow } from "@/contexts/BillingFlowContext";
 import { DataSyncingState } from "@/components/billing/DataSyncingState";
 import { TrialExpiredState } from "@/components/billing/TrialExpiredState";
 import { cn } from "@/lib/utils";
-import { useLocation } from "react-router-dom";
-import { isProKitRoute } from "@/components/kit/routes";
 
 
 const AanCopilotPanel = lazy(() => import("@/components/aan/AanCopilotPanel").then(m => ({ default: m.AanCopilotPanel })));
 
 function LayoutInner({ children, fullBleed = false, showWhenLapsed = false }: { children: ReactNode; fullBleed?: boolean; showWhenLapsed?: boolean }) {
   const { dataPanel, aiPanel, hasAnyPanel, closeDataPanel } = useActivePanel();
-  const { pathname } = useLocation();
 
-  // The "pro" UI kit (pilot): scoped on <html> so the sidebar, panels, island and portalled menus all pick it up.
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isProKitRoute(pathname)) root.setAttribute("data-kit", "pro");
-    else root.removeAttribute("data-kit");
-  }, [pathname]);
   const { open, setOpen } = useSidebar();
   const { trial } = useTrial();
   const { billingFlowEnabled } = useBillingFlow();

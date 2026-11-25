@@ -137,7 +137,7 @@ export default function AMCQueries() {
               searchPlaceholder="Search queries..."
               onDownload={() => toast.success("Exporting queries...")}
             />
-            <div className="rounded-lg border border-border bg-card">
+            <div data-table-frame className="rounded-lg border border-border bg-card">
             <Table>
               <TableHeader>
                 <TableRow className="bg-card hover:bg-card">

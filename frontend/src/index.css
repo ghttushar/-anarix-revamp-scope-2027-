@@ -269,8 +269,8 @@
   }
 }
 
-/* ==== "Pro" kit (dense, non-boxy). Pilot scope: <AppLayout> sets data-kit="pro" on the pilot routes
-   (Campaign Manager, /kit). After sign-off these values move to :root.
+/* ==== "Pro" kit (dense, non-boxy): the app's UI kit. index.html puts data-kit="pro" on <html>, so it applies
+   everywhere; the :root recipe defaults above only matter outside that scope.
    Surfaces: canvas (page) · sheet (one white workspace) · inset well (fields, tracks) · raised (menus, dialogs, island).
    States are real periwinkle steps that read on white and never equal the canvas. ==== */
 @layer base {

@@ -281,7 +281,7 @@ export default function HourlyData() {
                   onShowDeltasChange={setShowDeltas}
                   primaryAction={{ label: "Create schedule", write: true, onClick: () => setDataPanel("createSchedule") }}
                 />
-                <div className="rounded-lg border border-border bg-card overflow-auto">
+                <div data-table-frame className="rounded-lg border border-border bg-card overflow-auto">
                   <Table>
                     <TableHeader>
                       <tr className="bg-card hover:bg-card">

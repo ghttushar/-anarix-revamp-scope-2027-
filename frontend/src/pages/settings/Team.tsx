@@ -74,7 +74,7 @@ export default function Team() {
             <div className="flex justify-end">
               <Button onClick={() => setShowAddUser(true)}><UserPlus className="h-4 w-4 mr-2" />Invite User</Button>
             </div>
-            <div className="rounded-lg border border-border bg-card">
+            <div data-table-frame className="rounded-lg border border-border bg-card">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -117,7 +117,7 @@ export default function Team() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-border bg-card">
+            <div data-table-frame className="rounded-lg border border-border bg-card">
               <Table>
                 <TableHeader>
                   <TableRow>

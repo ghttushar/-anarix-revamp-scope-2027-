@@ -44,7 +44,7 @@ export default function AMCCreatedAudiences() {
             searchPlaceholder="Search audiences..."
             onDownload={() => toast.success("Exporting audiences...")}
           />
-          <div className="rounded-lg border border-border bg-card">
+          <div data-table-frame className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-card hover:bg-card">

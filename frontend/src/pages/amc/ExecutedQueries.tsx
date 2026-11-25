@@ -40,7 +40,7 @@ export default function AMCExecutedQueries() {
             searchPlaceholder="Search executed queries..."
             onDownload={() => toast.success("Exporting executed queries...")}
           />
-          <div className="rounded-lg border border-border bg-card">
+          <div data-table-frame className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-card hover:bg-card">

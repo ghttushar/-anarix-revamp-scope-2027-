@@ -44,7 +44,7 @@ export function BrandCoverageTable({ brands, onViewTrend, showDeltas = false }: 
   const sp = { sortField, sortDirection, onSort: handleSort, pinnedColumns, onPinToggle: handlePinToggle };
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div data-table-frame className="rounded-lg border border-border bg-card">
       <Table>
         <TableHeader>
           <TableRow className="bg-card">
