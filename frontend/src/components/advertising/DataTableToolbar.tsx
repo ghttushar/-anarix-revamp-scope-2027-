@@ -62,8 +62,11 @@ interface DataTableToolbarProps {
   filterFields?: string[];
   /** A segmented switch before the search (Products | Orders, State | Product). */
   view?: { value: string; onChange: (value: string) => void; items: SegmentItem<string>[] };
-  /** The one labelled button, fixed at the far right (Create campaign, Add keyword…). */
+  /** The one labelled button (Create campaign, Add keyword…). */
   primaryAction?: TablePrimaryAction;
+  /** Where the primary sits: "actions" (default) = first on the right, before the named actions; "search" = on the
+   *  left, right after the search (and the selection count in edit mode). */
+  primaryPlacement?: "actions" | "search";
   /** While rows are selected the left zone shows the count, Clear and these actions instead of the view and search. */
   selection?: { count: number; onClear: () => void; actions?: ReactNode; total?: number };
   /**
@@ -128,6 +131,7 @@ export function DataTableToolbar({
   primaryAction,
   selection,
   editActions,
+  primaryPlacement = "actions",
   showDeltas,
   onShowDeltasChange,
   onUpload,
@@ -223,6 +227,22 @@ export function DataTableToolbar({
   );
 
 
+  const primaryButton = primaryAction && (
+    <Button
+      size="xs"
+      className="gap-1.5"
+      onClick={primaryAction.onClick}
+      disabled={primaryAction.disabled}
+      title={primaryAction.hint}
+      data-write-action={primaryAction.write || undefined}
+      data-tb-primary
+    >
+      {primaryAction.icon ? <primaryAction.icon /> : <Plus />}
+      {primaryAction.label}
+    </Button>
+  );
+  const primaryAtSearch = primaryPlacement === "search" ? primaryButton : null;
+
   return (
     <div className={"space-y-1.5"} data-table-toolbar>
       {/* One row with fixed zones (components/bars/README.md):
@@ -244,6 +264,7 @@ export function DataTableToolbar({
                   )}
                 </div>
               )}
+              {primaryAtSearch}
             </>
           ) : selection && selection.count > 0 ? (
             <div className="flex h-8 items-center gap-1 rounded-md bg-primary/[0.08] pl-2.5 pr-1 text-xs">
@@ -255,26 +276,16 @@ export function DataTableToolbar({
             <>
               {view && <BarSegmented value={view.value} onChange={view.onChange} items={view.items} aria-label="View" />}
               <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
+              {primaryAtSearch}
             </>
           )}
         </div>
 
         <div className="flex shrink-0 items-center gap-0.5" data-tb-actions>
           {/* Create / Add / Save is the first thing on the right, then the named actions. */}
-          {primaryAction && (
+          {primaryButton && primaryPlacement === "actions" && (
             <>
-              <Button
-                size="xs"
-                className="gap-1.5"
-                onClick={primaryAction.onClick}
-                disabled={primaryAction.disabled}
-                title={primaryAction.hint}
-                data-write-action={primaryAction.write || undefined}
-                data-tb-primary
-              >
-                {primaryAction.icon ? <primaryAction.icon /> : <Plus />}
-                {primaryAction.label}
-              </Button>
+              {primaryButton}
               <BarDivider />
             </>
           )}

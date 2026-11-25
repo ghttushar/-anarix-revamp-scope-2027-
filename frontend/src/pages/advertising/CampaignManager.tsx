@@ -345,6 +345,7 @@ function CampaignManagerInner() {
             editActions={activeTab === "campaigns" ? (
               <CampaignBulkActions selectedIds={Array.from(selectedIds)} onBulkUpdate={handleBulkUpdate} />
             ) : undefined}
+            primaryPlacement="search"
             primaryAction={viewMode === "edit"
               ? { label: "Save changes", icon: Check, write: true, onClick: () => { saveEdits(); setViewMode("view"); } }
               : { label: "Create campaign", write: true, onClick: () => navigate("/advertising/campaign-creator") }}
