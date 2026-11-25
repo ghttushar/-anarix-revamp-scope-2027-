@@ -110,7 +110,7 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange, varian
           <div
             className={cn(
               "flex flex-1 flex-col gap-0.5 min-w-0",
-              zone ? "px-4 py-3" : cn("border-l-4 bg-field px-3 py-2.5 first:rounded-l-md last:rounded-r-md", colorClass),
+              zone ? "px-4 py-3" : cn("border-l-4 bg-card px-3 py-2.5 first:rounded-l-md last:rounded-r-md", colorClass),
               isSwappable && "cursor-pointer hover:bg-hover transition-colors"
             )}
           >
