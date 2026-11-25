@@ -166,7 +166,7 @@ export function AppSidebar() {
   const filteredGroups = navigationGroups;
 
   return (
-    <Sidebar className={cn("border-r border-sidebar-border bg-sidebar transition-all duration-200", collapsed ? "w-14" : "w-[--sidebar-width]")} collapsible="icon">
+    <Sidebar className={cn("overflow-hidden rounded-r-2xl border-r border-sidebar-border bg-sidebar transition-all duration-200", collapsed ? "w-14" : "w-[--sidebar-width]")} collapsible="icon">
       {/* overflow-hidden defeats shadcn SidebarContent's default overflow-auto so
           header/Aan/marketplace/footer stay pinned and only the nav-groups
           section scrolls (critical for tablet portrait viewports). */}

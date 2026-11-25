@@ -290,9 +290,15 @@
     --k-shadow-e2: 0 12px 28px -10px rgb(15 16 32 / 0.22), 0 0 0 1px hsl(var(--haze-200));
     --k-shadow-e3: 0 28px 56px -16px rgb(15 16 32 / 0.32), 0 0 0 1px hsl(var(--haze-200));
   }
-  /* Inside a sheet, chips go ghost: no fill or outline until hover / open. */
-  [data-kit="pro"] [data-zone] {
+  /* Inside a chart card (or a sheet zone), chips go ghost: no fill or outline until hover / open. */
+  [data-kit="pro"] [data-zone],
+  [data-kit="pro"] [data-chart-card] {
     --control-alpha: 0;
+    --control-border-alpha: 0;
+  }
+  /* Inside the page level metric bar (a white bar), chips are inset wells, so never white on white. */
+  [data-kit="pro"] [data-app-taskbar] {
+    --control: var(--field);
     --control-border-alpha: 0;
   }
   .dark[data-kit="pro"],
@@ -1003,8 +1009,8 @@ html[data-view="mobile"] [data-island] {
 /* Dense rows: 32px header, ~34px rows. */
 [data-kit="pro"] .pulse-table thead tr:first-child > th { height: 32px; padding-top: 4px; padding-bottom: 4px; }
 [data-kit="pro"] .pulse-table tbody td { padding-top: 7px; padding-bottom: 7px; }
-/* The page level metric bar sits on the canvas (no box); its chips are white with an outline there. */
-[data-kit="pro"] [data-app-taskbar] { border-color: transparent; background: hsl(var(--background)); box-shadow: none; padding-left: 0; padding-right: 0; border-radius: 0; }
+/* Table cards clip to their rounded corners (header and totals fills used to square them off). */
+[data-kit="pro"] [data-table-frame] { overflow: hidden; }
 /* A chart inside a zone is the zone: no card of its own. */
 [data-kit="pro"] [data-zone] [data-chart-card] { border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 0; }
 /* Floating things are raised (elevation), not outlined. */

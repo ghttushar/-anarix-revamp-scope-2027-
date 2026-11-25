@@ -65,7 +65,7 @@ export default function Kit() {
   return (
     <AppLayout>
       <div className="space-y-4">
-        <PageHeader title="UI kit" subtitle="Dense pro kit: one sheet per workspace, zones split by dividers, inset fields, real state colours." />
+        <PageHeader title="UI kit" subtitle="The app kit: rounded cards per section, inset wells for fields and bar chips, ghost chips on charts, real state colours." />
         <AppTaskbar showDateRange showAdType showFrequency showRunButton>
           <Button size="xs" variant="ghost" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
             {resolvedTheme === "dark" ? <Sun /> : <Moon />} {resolvedTheme === "dark" ? "Light" : "Dark"}
