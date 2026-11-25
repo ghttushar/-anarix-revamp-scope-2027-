@@ -8,7 +8,15 @@ import { productSOVData, sovTrendData } from "@/data/mockBrandSOV";
 import { toast } from "sonner";
 import { TablePagination } from "@/components/tables/TablePagination";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
+import { DeltaBadge } from "@/components/ui/delta-badge";
+import { getDelta } from "@/lib/utils/deltaGenerator";
 
+const NumCell = ({ formatted, id, metric, show }: { formatted: string; id: string; metric: string; show: boolean }) => (
+  <div className="flex flex-col items-end">
+    <span>{formatted}</span>
+    {show && <DeltaBadge value={getDelta(id, metric)} />}
+  </div>
+);
 
 const breadcrumbItems = [
   { label: "Business Intelligence", href: "/bi/product-sov" },
@@ -71,11 +79,11 @@ export default function ProductSOV() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">#{product.position}</TableCell>
-                  <TableCell className="text-right">{product.impressions.toLocaleString()}</TableCell>
-                  <TableCell className="text-right">{product.organicSOV.toFixed(1)}%</TableCell>
-                  <TableCell className="text-right">{product.sponsoredSOV.toFixed(1)}%</TableCell>
-                  <TableCell className="text-right font-medium">{product.totalSOV.toFixed(1)}%</TableCell>
+                  <TableCell className="text-right"><NumCell formatted={`#${product.position}`} id={product.id} metric="position" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right"><NumCell formatted={product.impressions.toLocaleString()} id={product.id} metric="impressions" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right"><NumCell formatted={`${product.organicSOV.toFixed(1)}%`} id={product.id} metric="organicSOV" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right"><NumCell formatted={`${product.sponsoredSOV.toFixed(1)}%`} id={product.id} metric="sponsoredSOV" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right font-medium"><NumCell formatted={`${product.totalSOV.toFixed(1)}%`} id={product.id} metric="totalSOV" show={showDeltas} /></TableCell>
                 </TableRow>
               ))}
               {filteredProducts.length === 0 && (

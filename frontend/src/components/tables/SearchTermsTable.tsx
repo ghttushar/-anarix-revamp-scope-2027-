@@ -104,7 +104,8 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
             <TableTotalsRow>
-              <TableCell colSpan={6} className="font-semibold">Total ({filteredTerms.length} search terms)</TableCell>
+              <TableCell colSpan={2} className="sticky z-10 bg-card">Total ({filteredTerms.length} search terms)</TableCell>
+              <TableCell colSpan={4} />
               <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.impressions)} metric="impressions" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatNumber(searchTermsTotals.clicks)} metric="clicks" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatPercent(searchTermsTotals.ctr)} metric="ctr" /></TableCell>

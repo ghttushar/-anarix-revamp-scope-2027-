@@ -96,7 +96,8 @@ export function ProductTargetingTable({ searchQuery = "", showDeltas = false }: 
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
             <TableTotalsRow>
-              <TableCell colSpan={9} className="font-semibold">Total ({filteredTargets.length} targets)</TableCell>
+              <TableCell colSpan={2} className="sticky z-10 bg-card">Total ({filteredTargets.length} targets)</TableCell>
+              <TableCell colSpan={7} />
               <TableCell className="text-right"><TotalCell value={formatNumber(productTargetsTotals.impressions)} metric="impressions" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatNumber(productTargetsTotals.clicks)} metric="clicks" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatPercent(productTargetsTotals.ctr)} metric="ctr" /></TableCell>

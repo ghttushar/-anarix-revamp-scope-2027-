@@ -7,6 +7,8 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 interface CampaignTableTotalRowProps {
   campaigns: Campaign[];
   showTotalBudget?: boolean;
+  /** Edit mode shows a selection checkbox column before Active. */
+  selectable?: boolean;
   viewMode?: "view" | "edit";
 }
 
@@ -18,7 +20,7 @@ function formatPercent(value: number): string {
   return `${value.toFixed(2)}%`;
 }
 
-export function CampaignTableTotalRow({ campaigns, showTotalBudget = true, viewMode = "view" }: CampaignTableTotalRowProps) {
+export function CampaignTableTotalRow({ campaigns, showTotalBudget = true, viewMode = "view", selectable = false }: CampaignTableTotalRowProps) {
   const { formatCurrency } = useCurrency();
   const isEdit = viewMode === "edit";
 
@@ -44,13 +46,14 @@ export function CampaignTableTotalRow({ campaigns, showTotalBudget = true, viewM
     </div>
   );
 
-  // colSpan covers: Status + Campaign Name = 2
-  // In edit mode, Active column adds 1
-  const labelColSpan = isEdit ? 3 : 2;
+  // Edit mode adds columns before Status: the selection checkbox (when selectable) and Active. They stay empty; the
+  // label spans the sticky Status + Campaign Name columns and pins with them on horizontal scroll.
+  const leadColumns = isEdit ? (selectable ? 2 : 1) : 0;
 
   return (
     <TableTotalsRow>
-      <TableCell colSpan={labelColSpan}>Total ({campaigns.length} campaigns)</TableCell>
+      {leadColumns > 0 && <TableCell colSpan={leadColumns} />}
+      <TableCell colSpan={2} className="sticky z-10 bg-card">Total ({campaigns.length} campaigns)</TableCell>
       {/* Start Date, End Date, Bidding Strategy — empty for totals */}
       <TableCell />
       <TableCell />

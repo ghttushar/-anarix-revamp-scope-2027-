@@ -69,7 +69,7 @@ export default function BrandSOV() {
             showDeltas={showDeltas}
             onShowDeltasChange={setShowDeltas}
           />
-          <BrandCoverageTable brands={brands} onViewTrend={(brandId) => console.log("View trend for brand:", brandId)} />
+          <BrandCoverageTable brands={brands} showDeltas={showDeltas} onViewTrend={(brandId) => console.log("View trend for brand:", brandId)} />
         </div>
       </div>
 </AppLayout>

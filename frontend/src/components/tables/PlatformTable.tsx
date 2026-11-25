@@ -15,7 +15,7 @@ interface PlatformTableProps {
   showDeltas?: boolean;
 }
 
-const PINNABLE = ["platform", "bidModifier", "impressions", "clicks", "ctr", "cpc", "adSpend", "adSales", "roas", "acos"];
+const PINNABLE = ["bidModifier", "impressions", "clicks", "ctr", "cpc", "adSpend", "adSales", "roas", "acos"];
 
 export function PlatformTable({ searchQuery = "", showDeltas = false }: PlatformTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -69,7 +69,7 @@ export function PlatformTable({ searchQuery = "", showDeltas = false }: Platform
         <Table>
           <TableHeader>
             <TableRow className="bg-card hover:bg-card">
-              <SortableTableHead field="platform" {...sp} className={cn("min-w-[180px]", pc("platform", true))} style={ps("platform")}>Platform</SortableTableHead>
+              <SortableTableHead field="platform" {...sp} isFixed className="min-w-[180px] sticky z-10 bg-card">Platform</SortableTableHead>
               <SortableTableHead field="bidModifier" {...sp} className={cn("w-32 text-right", pc("bidModifier", true))} style={ps("bidModifier")} align="right">Bid Modifier %</SortableTableHead>
               <SortableTableHead field="impressions" {...sp} className={cn("text-right", pc("impressions", true))} style={ps("impressions")} align="right">Impressions</SortableTableHead>
               <SortableTableHead field="clicks" {...sp} className={cn("text-right", pc("clicks", true))} style={ps("clicks")} align="right">Clicks</SortableTableHead>
@@ -81,7 +81,8 @@ export function PlatformTable({ searchQuery = "", showDeltas = false }: Platform
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
             <TableTotalsRow>
-              <TableCell colSpan={2} className="font-semibold">Total ({filteredPlatforms.length} platforms)</TableCell>
+              <TableCell className="sticky z-10 bg-card">Total ({filteredPlatforms.length} platforms)</TableCell>
+              <TableCell />
               <TableCell className="text-right"><TotalCell value={formatNumber(platformsTotals.impressions)} metric="impressions" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatNumber(platformsTotals.clicks)} metric="clicks" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatPercent(platformsTotals.ctr)} metric="ctr" /></TableCell>
@@ -95,7 +96,7 @@ export function PlatformTable({ searchQuery = "", showDeltas = false }: Platform
           <TableBody>
             {paginatedPlatforms.map((platform) => (
               <TableRow key={platform.id}>
-                <TableCell style={ps("platform")} className={cn("font-medium text-foreground", pc("platform"))}>{platform.platform}</TableCell>
+                <TableCell className="sticky z-10 bg-card font-medium text-foreground group-hover:bg-muted transition-colors">{platform.platform}</TableCell>
                 <TableCell style={ps("bidModifier")} className={cn("text-right", pc("bidModifier"))}>
                   <div className="flex items-center justify-end gap-1">
                     <Input type="number" value={bidModifiers[platform.id]} onChange={(e) => setBidModifiers((prev) => ({ ...prev, [platform.id]: parseInt(e.target.value) || 0 }))} className="h-8 w-20 text-right" min={0} max={1000} />

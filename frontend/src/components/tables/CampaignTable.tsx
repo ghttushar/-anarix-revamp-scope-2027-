@@ -163,7 +163,7 @@ export function CampaignTable({
               )}
               {isEdit && show("active") && <TableHead className="w-16">Active</TableHead>}
               {show("status") && <TableHead className="w-28 sticky left-0 z-10 bg-card">Status</TableHead>}
-              {show("name") && <TableHead className={cn("min-w-[220px] sticky z-10 bg-card", isEdit ? "left-[64px]" : "left-[112px]")}>
+              {show("name") && <TableHead className="min-w-[180px] sticky z-10 bg-card">
                 Campaign Name
               </TableHead>}
               {show("startDate") && <TableHead>Start Date</TableHead>}
@@ -179,7 +179,7 @@ export function CampaignTable({
               {show("ctr") && <TableHead className="text-right">CTR</TableHead>}
               {show("acos") && <TableHead className="text-right">ACOS</TableHead>}
             </TableRow>
-            <CampaignTableTotalRow campaigns={campaigns} showTotalBudget={showTotalBudget} viewMode={viewMode} />
+            <CampaignTableTotalRow campaigns={campaigns} showTotalBudget={showTotalBudget} viewMode={viewMode} selectable={isEdit && !!onSelectionChange} />
           </TableHeader>
           <TableBody>
             {paginatedCampaigns.map((campaign) => (
@@ -210,13 +210,13 @@ export function CampaignTable({
                       </TableCell>
                     )}
                     {show("status") && <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={campaign.status} /></TableCell>}
-                    {show("name") && <TableCell className={cn("font-medium sticky z-10 bg-card group-hover:bg-muted transition-colors", isEdit ? "left-[64px]" : "left-[112px]")}>
-                      <div className="space-y-1 min-w-[200px]">
+                    {show("name") && <TableCell className="font-medium sticky z-10 bg-card group-hover:bg-muted transition-colors">
+                      <div className="space-y-1 min-w-[170px]">
                         {isEdit ? (
                           <Input defaultValue={campaign.name} className="h-8 text-sm" onBlur={(e) => onCampaignUpdate?.(campaign.id, { name: e.target.value })} onClick={(e) => e.stopPropagation()} />
                         ) : (
                           <div className="flex items-center gap-1.5">
-                            <span className="text-primary hover:underline cursor-pointer">{campaign.name}</span>
+                            <span className="max-w-[180px] truncate text-primary hover:underline cursor-pointer" title={campaign.name}>{campaign.name}</span>
                             {(campaign.acos > 30 || campaign.status === "out_of_budget") && (
                               <button
                                 type="button"
@@ -289,6 +289,7 @@ export function CampaignTable({
                       <TableCell className="text-right">
                         <div className="flex flex-col items-end">
                           <span className="text-foreground">{campaign.totalBudget ? formatCurrency(campaign.totalBudget) : "—"}</span>
+                          {showDeltas && campaign.totalBudget ? <DeltaBadge value={getDelta(campaign.id, "totalBudget")} /> : null}
                         </div>
                       </TableCell>
                     )}

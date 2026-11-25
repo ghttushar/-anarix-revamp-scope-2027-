@@ -16,6 +16,8 @@ import { BarIconButton } from "@/components/bars";
 import { mockTargetingActions, mockTargetCampaigns, mockTargetAdGroups } from "@/data/mockTargetingActions";
 import { MatchTypePicker } from "@/components/advertising/MatchTypePicker";
 import { cn } from "@/lib/utils";
+import { DeltaBadge } from "@/components/ui/delta-badge";
+import { getDelta } from "@/lib/utils/deltaGenerator";
 import { toast } from "sonner";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useMarketplace } from "@/contexts/MarketplaceContext";
@@ -58,6 +60,13 @@ const breadcrumbItems = [
   { label: "Advertising", href: "/advertising/targeting" },
   { label: "Targeting Actions" },
 ];
+
+const NumCell = ({ formatted, id, metric, show, className }: { formatted: string; id: string; metric: string; show: boolean; className?: string }) => (
+  <div className="flex flex-col items-end">
+    <span className={cn("text-foreground", className)}>{formatted}</span>
+    {show && <DeltaBadge value={getDelta(id, metric)} />}
+  </div>
+);
 
 export default function TargetingActions() {
   const [actionType, setActionType] = useState("auto-manual");
@@ -305,16 +314,16 @@ export default function TargetingActions() {
                           onChange={(next) => setMatchTypeState((s) => ({ ...s, [action.id]: next }))}
                         />
                       </TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatNumber(action.impressions)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatNumber(action.clicks)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatPercent(action.ctr)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatCurrency(action.cpc)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatCurrency(action.adSpend)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatCurrency(action.adSales)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatNumber(action.adUnits)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatPercent(action.cvr)}</TableCell>
-                      <TableCell className="text-right tabular-nums font-medium text-foreground">{action.roas.toFixed(2)}</TableCell>
-                      <TableCell className="text-right tabular-nums text-foreground">{formatPercent(acos)}</TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatNumber(action.impressions)} id={action.id} metric="impressions" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatNumber(action.clicks)} id={action.id} metric="clicks" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatPercent(action.ctr)} id={action.id} metric="ctr" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatCurrency(action.cpc)} id={action.id} metric="cpc" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatCurrency(action.adSpend)} id={action.id} metric="adSpend" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatCurrency(action.adSales)} id={action.id} metric="adSales" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatNumber(action.adUnits)} id={action.id} metric="adUnits" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatPercent(action.cvr)} id={action.id} metric="cvr" show={showDeltas} /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={action.roas.toFixed(2)} id={action.id} metric="roas" show={showDeltas} className="font-medium" /></TableCell>
+                      <TableCell className="text-right tabular-nums"><NumCell formatted={formatPercent(acos)} id={action.id} metric="acos" show={showDeltas} /></TableCell>
                       <TableCell className="text-center">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>

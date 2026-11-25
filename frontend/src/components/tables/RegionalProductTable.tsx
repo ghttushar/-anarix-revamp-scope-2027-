@@ -1,3 +1,5 @@
+import { DeltaBadge } from "@/components/ui/delta-badge";
+import { getDelta } from "@/lib/utils/deltaGenerator";
 import { useState } from "react";
 import {
   Table, TableBody, TableCell, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
@@ -9,6 +11,8 @@ import { SortableTableHead, sortData, usePinning } from "@/components/tables/Sor
 
 interface RegionalProductTableProps {
   searchValue?: string;
+  /** The toolbar's Delta toggle: show each value's period change under it. */
+  showDeltas?: boolean;
   sortField?: string | null;
   sortDirection?: "asc" | "desc";
 }
@@ -24,7 +28,13 @@ const regionAssignments = [
 const PINNABLE = ["units", "gmv", "authSales", "adSpend", "netProfit", "margin"];
 const FIXED_OFFSET = 300;
 
-export function RegionalProductTable({ searchValue = "", sortField: externalSortField = null, sortDirection: externalSortDirection = "asc" }: RegionalProductTableProps) {
+export function RegionalProductTable({ searchValue = "", showDeltas = false, sortField: externalSortField = null, sortDirection: externalSortDirection = "asc" }: RegionalProductTableProps) {
+  const withDelta = (formatted: string, id: string, metric: string) => (
+    <div className="flex flex-col items-end">
+      <span>{formatted}</span>
+      {showDeltas && <DeltaBadge value={getDelta(id, metric)} />}
+    </div>
+  );
   const { formatCurrency } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -101,12 +111,12 @@ export function RegionalProductTable({ searchValue = "", sortField: externalSort
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell style={ps("units")} className={cn("text-right text-foreground", pc("units"))}>{formatNumber(product.units)}</TableCell>
-                  <TableCell style={ps("gmv")} className={cn("text-right text-foreground", pc("gmv"))}>{formatCurrency(product.gmv)}</TableCell>
-                  <TableCell style={ps("authSales")} className={cn("text-right text-foreground", pc("authSales"))}>{formatCurrency(product.authSales)}</TableCell>
-                  <TableCell style={ps("adSpend")} className={cn("text-right text-foreground", pc("adSpend"))}>{formatCurrency(product.adSpend)}</TableCell>
-                  <TableCell style={ps("netProfit")} className={cn("text-right font-medium text-foreground", pc("netProfit"))}>{formatCurrency(product.netProfit)}</TableCell>
-                  <TableCell style={ps("margin")} className={cn("text-right text-foreground", pc("margin"))}>{margin.toFixed(1)}%</TableCell>
+                  <TableCell style={ps("units")} className={cn("text-right text-foreground", pc("units"))}>{withDelta(formatNumber(product.units), product.id, "units")}</TableCell>
+                  <TableCell style={ps("gmv")} className={cn("text-right text-foreground", pc("gmv"))}>{withDelta(formatCurrency(product.gmv), product.id, "gmv")}</TableCell>
+                  <TableCell style={ps("authSales")} className={cn("text-right text-foreground", pc("authSales"))}>{withDelta(formatCurrency(product.authSales), product.id, "authSales")}</TableCell>
+                  <TableCell style={ps("adSpend")} className={cn("text-right text-foreground", pc("adSpend"))}>{withDelta(formatCurrency(product.adSpend), product.id, "adSpend")}</TableCell>
+                  <TableCell style={ps("netProfit")} className={cn("text-right font-medium text-foreground", pc("netProfit"))}>{withDelta(formatCurrency(product.netProfit), product.id, "netProfit")}</TableCell>
+                  <TableCell style={ps("margin")} className={cn("text-right text-foreground", pc("margin"))}>{withDelta(`${margin.toFixed(1)}%`, product.id, "margin")}</TableCell>
                 </TableRow>
               );
             })}

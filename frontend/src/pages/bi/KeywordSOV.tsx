@@ -10,7 +10,15 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { TablePagination } from "@/components/tables/TablePagination";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
+import { DeltaBadge } from "@/components/ui/delta-badge";
+import { getDelta } from "@/lib/utils/deltaGenerator";
 
+const NumCell = ({ formatted, id, metric, show }: { formatted: string; id: string; metric: string; show: boolean }) => (
+  <div className="flex flex-col items-end">
+    <span>{formatted}</span>
+    {show && <DeltaBadge value={getDelta(id, metric)} />}
+  </div>
+);
 
 const breadcrumbItems = [
   { label: "Business Intelligence", href: "/bi/keyword-sov" },
@@ -72,10 +80,10 @@ export default function KeywordSOV() {
               {paginatedKeywords.map((kw) => (
                 <TableRow key={kw.id}>
                   <TableCell className="font-medium">{kw.keyword}</TableCell>
-                  <TableCell className="text-right">{kw.searchVolume.toLocaleString()}</TableCell>
-                  <TableCell className="text-right">{kw.organicSOV.toFixed(1)}%</TableCell>
-                  <TableCell className="text-right">{kw.sponsoredSOV.toFixed(1)}%</TableCell>
-                  <TableCell className="text-right font-medium">{kw.totalSOV.toFixed(1)}%</TableCell>
+                  <TableCell className="text-right"><NumCell formatted={kw.searchVolume.toLocaleString()} id={kw.id} metric="searchVolume" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right"><NumCell formatted={`${kw.organicSOV.toFixed(1)}%`} id={kw.id} metric="organicSOV" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right"><NumCell formatted={`${kw.sponsoredSOV.toFixed(1)}%`} id={kw.id} metric="sponsoredSOV" show={showDeltas} /></TableCell>
+                  <TableCell className="text-right font-medium"><NumCell formatted={`${kw.totalSOV.toFixed(1)}%`} id={kw.id} metric="totalSOV" show={showDeltas} /></TableCell>
                   <TableCell className="text-center">
                     <div className="flex items-center justify-center gap-1">
                       {getTrendIcon(kw.trend)}

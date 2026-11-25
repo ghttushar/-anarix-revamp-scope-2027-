@@ -197,7 +197,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                             <img src={cat.image} alt={cat.key} className="h-9 w-9 rounded-md border border-border object-cover flex-shrink-0" />
                           )}
                           <div className="flex flex-col min-w-0">
-                            <span className="font-medium text-foreground text-sm line-clamp-1">{cat.key}</span>
+                            <span className="font-medium text-foreground line-clamp-1">{cat.key}</span>
                             <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
                               <span className="font-medium">{cat.parentAsin}</span>
                               <span>·</span>
@@ -210,9 +210,12 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         const val = (cat.agg as any)[col.id] || 0;
                         return (
                           <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
-                            <span className="text-foreground text-sm font-medium">
-                              {col.isUnit ? formatNumber(val) : formatCurrency(val)}
-                            </span>
+                            <div className="flex flex-col items-end">
+                              <span className="text-foreground font-medium">
+                                {col.isUnit ? formatNumber(val) : formatCurrency(val)}
+                              </span>
+                              {showDeltas && <DeltaBadge value={getDelta(`cat-${cat.key}`, col.id)} />}
+                            </div>
                           </TableCell>
                         );
                       })}
@@ -256,7 +259,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         {cols.map((col) => (
                           <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
                             <div className="flex flex-col items-end">
-                              <span className="text-foreground text-sm">{col.getValue(product)}</span>
+                              <span className="text-foreground">{col.getValue(product)}</span>
                               {showDeltas && <DeltaBadge value={getDelta(product.id, col.id)} />}
                             </div>
                           </TableCell>
@@ -365,7 +368,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                           {isExpanded ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
                         </button>
                         <div className="flex flex-col min-w-0">
-                          <span className="font-medium text-foreground text-sm">{order.orderId}</span>
+                          <span className="font-medium text-foreground">{order.orderId}</span>
                           <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
                             <span>{order.flag} {order.country}</span>
                             <span>·</span>
@@ -386,7 +389,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                     {cols.map((col) => (
                       <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
                         <div className="flex flex-col items-end">
-                          <span className="text-sm">{getOrderColumnValue(order, col.id)}</span>
+                          <span>{getOrderColumnValue(order, col.id)}</span>
                           {showDeltas && <DeltaBadge value={getDelta(order.id, col.id)} />}
                         </div>
                       </TableCell>

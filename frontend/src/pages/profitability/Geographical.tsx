@@ -121,9 +121,9 @@ export default function Geographical() {
 
           <div className="rounded-lg border border-border bg-card">
             {viewLevel === "state" ? (
-              <RegionalTable data={geographicalData} searchValue={searchValue} />
+              <RegionalTable data={geographicalData} searchValue={searchValue} showDeltas={showDeltas} />
             ) : (
-              <RegionalProductTable searchValue={searchValue} />
+              <RegionalProductTable searchValue={searchValue} showDeltas={showDeltas} />
             )}
           </div>
         </div>

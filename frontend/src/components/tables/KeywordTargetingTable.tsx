@@ -93,7 +93,8 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
               <SortableTableHead field="adSpend" {...sp} className={cn("text-right", pc("adSpend", true))} style={ps("adSpend")} align="right">Ad Spend</SortableTableHead>
             </TableRow>
             <TableTotalsRow>
-              <TableCell colSpan={9} className="font-semibold">Total ({filteredKeywords.length} keywords)</TableCell>
+              <TableCell colSpan={2} className="sticky z-10 bg-card">Total ({filteredKeywords.length} keywords)</TableCell>
+              <TableCell colSpan={7} />
               <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.impressions)} metric="impressions" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatNumber(keywordsTotals.clicks)} metric="clicks" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatPercent(keywordsTotals.ctr)} metric="ctr" /></TableCell>

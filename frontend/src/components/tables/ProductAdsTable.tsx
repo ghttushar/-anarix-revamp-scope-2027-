@@ -118,7 +118,8 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
                 <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
               </TableRow>
               <TableTotalsRow>
-                <TableCell colSpan={5} className="font-semibold">Total ({filteredAds.length} product ads)</TableCell>
+                <TableCell colSpan={3} className="sticky z-10 bg-card">Total ({filteredAds.length} product ads)</TableCell>
+              <TableCell colSpan={2} />
                 <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.impressions)} metric="impressions" /></TableCell>
                 <TableCell className="text-right"><TotalCell value={formatNumber(productAdsTotals.clicks)} metric="clicks" /></TableCell>
                 <TableCell className="text-right"><TotalCell value={formatPercent(productAdsTotals.ctr)} metric="ctr" /></TableCell>

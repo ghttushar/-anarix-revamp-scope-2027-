@@ -36,59 +36,76 @@ export function SortableTableHead({
   const isPinned = pinnedColumns?.has(field) ?? false;
   const isSorted = sortField === field;
 
+  const sortButton = onSort && (
+    <button
+      onClick={(e) => { e.stopPropagation(); onSort(field); }}
+      className={cn(
+        "shrink-0 cursor-pointer p-0.5 rounded hover:bg-muted transition-colors",
+        isSorted ? "opacity-100" : "opacity-40 hover:opacity-80"
+      )}
+      title={isSorted ? (sortDirection === "asc" ? "Sort descending" : "Clear sort") : "Sort ascending"}
+    >
+      {isSorted ? (
+        sortDirection === "asc" ? (
+          <ArrowUp className="h-3.5 w-3.5 text-primary" />
+        ) : (
+          <ArrowDown className="h-3.5 w-3.5 text-primary" />
+        )
+      ) : (
+        <ArrowUpDown className="h-3.5 w-3.5" />
+      )}
+    </button>
+  );
+
+  // Pin icon — only on non-fixed columns when onPinToggle is provided
+  const pinButton = !isFixed && onPinToggle && (
+    <button
+      onClick={(e) => { e.stopPropagation(); onPinToggle(field); }}
+      className={cn(
+        "shrink-0 cursor-pointer p-0.5 rounded transition-all",
+        isPinned
+          ? "text-primary opacity-100 hover:bg-primary/10"
+          : "opacity-40 hover:!opacity-80 hover:bg-muted text-muted-foreground"
+      )}
+      title={isPinned ? "Unpin column" : "Pin column"}
+    >
+      <Pin className={cn("h-3.5 w-3.5", isPinned && "fill-primary")} />
+    </button>
+  );
+
+  // Active controls (sorted / pinned) sit in the row. Inactive ones take no width: they float over the cell's
+  // free side on hover, so a column is only as wide as its label and values.
+  const idleSort = onSort && !isSorted ? sortButton : null;
+  const idlePin = pinButton && !isPinned ? pinButton : null;
+
   return (
     <TableHead
-      className={cn("group/sort select-none", isSorted && "text-primary", className)}
+      className={cn("group/sort relative select-none", isSorted && "text-primary", className)}
       style={style}
       aria-sort={isSorted ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}
     >
       <div
         className={cn(
-          "flex items-center gap-1.5",
+          "flex items-center gap-1",
           align === "right" && "justify-end",
           align === "center" && "justify-center"
         )}
       >
-        {/* Sort icon */}
-        {onSort && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onSort(field); }}
-            className={cn(
-              "shrink-0 cursor-pointer p-0.5 rounded hover:bg-muted transition-colors",
-              isSorted ? "opacity-100" : "opacity-0 group-hover/sort:opacity-40"
-            )}
-            title={isSorted ? (sortDirection === "asc" ? "Sort descending" : "Clear sort") : "Sort ascending"}
-          >
-            {isSorted ? (
-              sortDirection === "asc" ? (
-                <ArrowUp className="h-3.5 w-3.5 text-primary" />
-              ) : (
-                <ArrowDown className="h-3.5 w-3.5 text-primary" />
-              )
-            ) : (
-              <ArrowUpDown className="h-3.5 w-3.5" />
-            )}
-          </button>
-        )}
-
+        {isSorted && sortButton}
         <span>{children}</span>
-
-        {/* Pin icon — only on non-fixed columns when onPinToggle is provided */}
-        {!isFixed && onPinToggle && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onPinToggle(field); }}
-            className={cn(
-              "shrink-0 cursor-pointer p-0.5 rounded transition-all",
-              isPinned
-                ? "text-primary opacity-100 hover:bg-primary/10"
-                : "opacity-0 group-hover/sort:opacity-40 hover:!opacity-70 hover:bg-muted text-muted-foreground"
-            )}
-            title={isPinned ? "Unpin column" : "Pin column"}
-          >
-            <Pin className={cn("h-3.5 w-3.5", isPinned && "fill-primary")} />
-          </button>
-        )}
+        {isPinned && pinButton}
       </div>
+      {(idleSort || idlePin) && (
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 flex items-center gap-0.5 bg-card opacity-0 transition-opacity group-hover/sort:pointer-events-auto group-hover/sort:opacity-100",
+            align === "right" ? "left-1" : "right-1"
+          )}
+        >
+          {idleSort}
+          {idlePin}
+        </div>
+      )}
     </TableHead>
   );
 }

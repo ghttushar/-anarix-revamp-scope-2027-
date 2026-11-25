@@ -23,6 +23,15 @@ import { useFilter } from "@/contexts/FilterContext";
 import { SortableTableHead, usePinning, sortData, getSortHandler } from "@/components/tables/SortableTableHead";
 import { TablePagination } from "@/components/tables/TablePagination";
 import { format } from "date-fns";
+import { DeltaBadge } from "@/components/ui/delta-badge";
+import { getDelta } from "@/lib/utils/deltaGenerator";
+
+const NumCell = ({ formatted, id, metric, show, className }: { formatted: string; id: string; metric: string; show: boolean; className?: string }) => (
+  <div className="flex flex-col items-end">
+    <span className={className}>{formatted}</span>
+    {show && <DeltaBadge value={getDelta(id, metric)} />}
+  </div>
+);
 
 const AVAILABLE_METRICS = [
   { key: "spend", label: "Spend", format: (v: number) => `$${v.toLocaleString("en-US", { minimumFractionDigits: 2 })}` },
@@ -303,11 +312,11 @@ export default function HourlyData() {
                               {row.status}
                             </Badge>
                           </TableCell>
-                          <TableCell style={ps("budget")} className={cn("text-right", pc("budget"))}>{formatCurrency(row.budget)}</TableCell>
-                          <TableCell style={ps("spend")} className={cn("text-right", pc("spend"))}>{formatCurrency(row.spend)}</TableCell>
-                          <TableCell style={ps("revenue")} className={cn("text-right", pc("revenue"))}>{formatCurrency(row.revenue)}</TableCell>
+                          <TableCell style={ps("budget")} className={cn("text-right", pc("budget"))}><NumCell formatted={formatCurrency(row.budget)} id={row.id} metric="budget" show={showDeltas} /></TableCell>
+                          <TableCell style={ps("spend")} className={cn("text-right", pc("spend"))}><NumCell formatted={formatCurrency(row.spend)} id={row.id} metric="spend" show={showDeltas} /></TableCell>
+                          <TableCell style={ps("revenue")} className={cn("text-right", pc("revenue"))}><NumCell formatted={formatCurrency(row.revenue)} id={row.id} metric="revenue" show={showDeltas} /></TableCell>
                           <TableCell style={ps("roas")} className={cn("text-right", pc("roas"))}>
-                            <span className={cn(row.roas >= 3 ? "text-success" : "text-foreground")}>{row.roas.toFixed(2)}x</span>
+                            <NumCell formatted={`${row.roas.toFixed(2)}x`} id={row.id} metric="roas" show={showDeltas} className={row.roas >= 3 ? "text-success" : "text-foreground"} />
                           </TableCell>
                           <TableCell style={ps("action")} className={cn("text-center", pc("action"))}>
                             {row.scheduleId ? (

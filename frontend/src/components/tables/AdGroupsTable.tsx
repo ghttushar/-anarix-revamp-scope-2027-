@@ -88,7 +88,8 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
               <SortableTableHead field="acos" {...sp} className={cn("text-right", pc("acos", true))} style={ps("acos")} align="right">ACOS</SortableTableHead>
             </TableRow>
             <TableTotalsRow>
-              <TableCell colSpan={4} className="font-semibold">Total ({filteredGroups.length} ad groups)</TableCell>
+              <TableCell colSpan={2} className="sticky z-10 bg-card">Total ({filteredGroups.length} ad groups)</TableCell>
+              <TableCell colSpan={2} />
               <TableCell className="text-right" colSpan={3} />
               <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.impressions)} metric="impressions" /></TableCell>
               <TableCell className="text-right"><TotalCell value={formatNumber(adGroupsTotals.clicks)} metric="clicks" /></TableCell>
