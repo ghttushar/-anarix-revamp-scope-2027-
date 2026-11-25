@@ -34,14 +34,19 @@ The live reference, captured from the running app, is `public/design-inventory/b
 
 ## 2. Table toolbar
 
-`DataTableToolbar` in `components/advertising/DataTableToolbar.tsx`. It sits directly above the table, outside the
-table card, with an 8px gap.
+`DataTableToolbar` in `components/advertising/DataTableToolbar.tsx`. Rendered directly before a table frame
+(`data-table-frame`), it becomes that card's top band: toolbar and table share one card (CSS adjacency, no props).
 
 ```
-[view] [search]   or   [n selected · Clear · actions]   ·····   ✎ | Δ ⇅ ⏷ ▥ | ⤒ ⤓ | [Primary]
+[view] [🔍 Search]   or   [n selected · Clear · actions]   ·····   [Primary] | [ ✎ Edit | Δ Delta  ⇅ Group  ⏷ Filter  ▥ Columns | ⤒ Upload  ⤓ Export ]
 ```
 
-**Icon actions** are icon-only with a tooltip. They always come in this order (`TABLE_TOOLBAR_ORDER`):
+**Search** is a magnifier that opens into a field (Esc or leaving it empty closes it; a query keeps it open). The
+page's long description goes in `searchPlaceholder` and shows as the tooltip; the field itself says "Search…".
+
+**The primary action** (Create / Add / Save) comes first on the right. **The actions** follow in one grouped strip
+(`.k-group`), each an icon with a short visible name (`BarIconButton name=`) and a tooltip, using the Anarix icons
+(`components/icons`). They always come in this order (`TABLE_TOOLBAR_ORDER`):
 
 | Group | Actions, in order | Props |
 |---|---|---|
@@ -54,7 +59,7 @@ A table only switches an action on or off. It never reorders them or adds its ow
 **Slots:**
 
 - `view` is a segmented switch before the search, such as Products | Orders.
-- `primaryAction` is the only labelled button, at the far right: Create campaign, Add keyword and so on.
+- `primaryAction` is the first thing on the right side (before the named actions): Create campaign, Add keyword and so on.
 - `selection` takes over the left zone while rows are selected: the count, Clear and actions on the selection. Those
   actions are `BarIconButton`s.
 
@@ -107,3 +112,13 @@ These are in `components/bars`. Every control in a bar is `h-8` (2rem).
 - **`BarSegmented`:** a segmented switch, labelled or `iconOnly`.
 - **`BarDivider`:** the line between groups.
 - **Buttons:** `Button size="xs"` (h-8) and `size="icon-sm"` (h-8 square).
+
+## Grouping, headers, icons
+
+- **Grouped controls:** the table toolbar's actions sit in one inset strip (`k-group`). The page bar's settings stay
+  separate chips (inset wells), not one merged strip.
+- **Breadcrumb (level pages):** a small faint caption line above the page bar's controls, not a control.
+- **Column headers:** sort hugs the label on its free side, pin sits at the cell's far edge; both appear on hover and
+  take no width; an active one stays visible.
+- **Deltas:** `DeltaBadge` is a small tinted pill (11px).
+- **Icons:** draw new icons into `components/icons` (16px grid, 1.7 stroke, round joins) instead of mixing libraries.

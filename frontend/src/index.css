@@ -275,7 +275,20 @@
    States are real periwinkle steps that read on white and never equal the canvas. ==== */
 @layer base {
   [data-kit="pro"] {
-    --radius: 0.4444rem;                 /* 8px sheets / menus; md = 6px controls; sm = 4px */
+    --radius: 0.5rem;                    /* 9px cards / menus (as the product website); md 7px controls; sm 5px */
+    /* Text: four tones like the website's app mockups (and dark mode), not two. */
+    --muted-foreground: 219 8% 43%;      /* #646A76 muted: subtitles, meta, table headers */
+    --text-body: 216 10% 27%;            /* #3D424B body: table cells, descriptions */
+    --text-faint: 219 9% 64%;            /* #9AA0AB faint: tertiary meta ("Prev 7 days", timestamps) */
+    --line-2: 220 15% 94%;               /* #ECEEF1 inner hairline: table rows, dividers inside a card */
+    --tint: 230 82% 96%;                 /* #EFF1FD primary tint: selection, icon tiles */
+    --tint-line: 231 83% 88%;            /* #C8CFF9 */
+    --k-shadow-card: 0 1px 2px rgb(20 22 33 / 0.04), 0 24px 48px -28px rgb(20 22 60 / 0.28);
+    /* Motion */
+    --dur-micro: 160ms;
+    --dur-ui: 320ms;
+    --ease-arrive: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-soft: cubic-bezier(0.23, 1, 0.32, 1);
     --field: var(--haze-125);            /* inset well: a clear step below the white sheet, never the canvas */
     --input: var(--haze-125);            /* wells have no outline (border = fill); focus shows the ring */
     --track: var(--haze-125);
@@ -303,6 +316,13 @@
   }
   .dark[data-kit="pro"],
   .dark [data-kit="pro"] {
+    --muted-foreground: 230 20% 64%;
+    --text-body: 233 26% 82%;            /* #C6C9DD */
+    --text-faint: 231 14% 50%;           /* #6C7190 */
+    --line-2: 240 12% 15%;
+    --tint: 231 30% 18%;
+    --tint-line: 231 40% 32%;
+    --k-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 24px 48px -28px rgb(0 0 0 / 0.6);
     --field: 240 12% 16%;
     --input: 240 12% 16%;
     --track: 240 12% 16%;
@@ -1009,26 +1029,88 @@ html[data-view="mobile"] [data-island] {
 /* Dense rows: 32px header, ~34px rows. */
 [data-kit="pro"] .pulse-table thead tr:first-child > th { height: 32px; padding-top: 4px; padding-bottom: 4px; }
 [data-kit="pro"] .pulse-table tbody td { padding-top: 7px; padding-bottom: 7px; }
+
+/* ---- Vibe pass: text tones, depth, grouping, motion (website app-mockup language + Signals) ---- */
+@keyframes k-fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes k-row-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes k-pop-in { from { opacity: 0; transform: scale(0.96) translateY(-4px); } to { opacity: 1; transform: none; } }
+/* Tables read in the body tone; names, links and emphasised figures stay strong. Rows use the inner hairline. */
+[data-kit="pro"] .pulse-table tbody td { color: hsl(var(--text-body)); }
+[data-kit="pro"] .pulse-table tbody td .text-foreground:not(.font-medium):not(.font-semibold):not(.font-bold) { color: hsl(var(--text-body)); }
+[data-kit="pro"] .pulse-table tbody tr { border-color: hsl(var(--line-2)); }
+/* Selected rows carry a primary bar, like a selected Signals card. */
+[data-kit="pro"] .pulse-table tbody tr[data-state="selected"] > td:first-child { box-shadow: inset 3px 0 0 hsl(var(--primary)), inset -1px 0 0 hsl(var(--border) / 0.6); }
+/* Section cards get the website's soft depth instead of reading as flat boxes. */
+[data-kit="pro"] :is([data-table-frame], [data-chart-card], [data-app-taskbar], [data-inline-kpi-strip]),
+[data-kit="pro"] main .rounded-lg.border.bg-card { box-shadow: var(--k-shadow-card); }
+/* Toolbar + table share one card: the toolbar is the card's top band, the table its body. */
+[data-kit="pro"] [data-table-toolbar]:has(+ [data-table-frame]) {
+  background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-bottom: 0;
+  border-radius: var(--radius) var(--radius) 0 0; padding: 8px 10px 8px 10px;
+}
+[data-kit="pro"] [data-table-toolbar] + [data-table-frame] {
+  margin-top: 0 !important; border-top-left-radius: 0; border-top-right-radius: 0; border-top-color: hsl(var(--line-2));
+}
+/* A group of related controls sits in one inset strip; the controls inside go ghost. */
+[data-kit="pro"] .k-group {
+  display: inline-flex; align-items: center; gap: 2px; padding: 2px; border-radius: var(--radius);
+  background: hsl(var(--field)); --control-alpha: 0; --control-border-alpha: 0;
+}
+[data-kit="pro"] .k-group:empty { display: none; }
+/* Primary actions: the website's light streak on hover. */
+[data-kit="pro"] .k-primary { position: relative; overflow: hidden; isolation: isolate; }
+[data-kit="pro"] .k-primary::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.32) 50%, transparent 65%);
+  transform: translateX(-130%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-kit="pro"] .k-primary:hover::after { transform: translateX(130%); transition: transform 700ms var(--ease-arrive); }
+  /* Content arrives instead of appearing: cards fade up in reading order, rows settle in. */
+  [data-kit="pro"] main :is([data-app-taskbar], [data-inline-kpi-strip], [data-chart-card], [data-table-toolbar], [data-table-frame]) {
+    animation: k-fade-up var(--dur-ui) var(--ease-arrive) both;
+  }
+  [data-kit="pro"] main [data-inline-kpi-strip] { animation-delay: 40ms; }
+  [data-kit="pro"] main [data-chart-card] { animation-delay: 80ms; }
+  [data-kit="pro"] main :is([data-table-toolbar], [data-table-frame]) { animation-delay: 110ms; }
+  [data-kit="pro"] .pulse-table tbody tr { animation: k-row-in var(--dur-ui) var(--ease-arrive) both; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(2) { animation-delay: 15ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(3) { animation-delay: 30ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(4) { animation-delay: 45ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(5) { animation-delay: 60ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(6) { animation-delay: 75ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(7) { animation-delay: 90ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(8) { animation-delay: 105ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(9) { animation-delay: 120ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(10) { animation-delay: 135ms; }
+  [data-kit="pro"] .pulse-table tbody tr:nth-child(n+11) { animation-delay: 150ms; }
+  /* Menus, popovers and selects pop in from their trigger. */
+  [data-kit="pro"] [data-radix-popper-content-wrapper] > [data-state="open"]:not(.k-tooltip),
+  [data-kit="pro"] [data-radix-popper-content-wrapper] > [data-state="delayed-open"]:not(.k-tooltip) {
+    animation: k-pop-in var(--dur-micro) var(--ease-out-soft) both;
+    transform-origin: var(--radix-dropdown-menu-content-transform-origin, var(--radix-popover-content-transform-origin, var(--radix-select-content-transform-origin, top)));
+  }
+}
 /* Table cards clip to their rounded corners (header and totals fills used to square them off). */
 [data-kit="pro"] [data-table-frame] { overflow: hidden; }
 /* A chart inside a zone is the zone: no card of its own. */
 [data-kit="pro"] [data-zone] [data-chart-card] { border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 0; }
-/* Floating things are raised (elevation), not outlined. */
+/* Floating things are raised (elevation), not outlined. Tooltips are light cards like menus. */
 [data-kit="pro"] .k-island { border-color: transparent; box-shadow: var(--k-shadow-e2); }
 [data-kit="pro"] [data-radix-popper-content-wrapper] > :not(.k-tooltip) { border-color: transparent; box-shadow: var(--k-shadow-e2); }
 [data-kit="pro"] [role="dialog"] { border-color: transparent; box-shadow: var(--k-shadow-e3); }
-[data-kit="pro"] .k-tooltip { background: hsl(var(--haze-900)); color: hsl(var(--grey-0)); border-color: transparent; font-size: 0.6722rem; }
+[data-kit="pro"] .k-tooltip { background: hsl(var(--popover)); color: hsl(var(--foreground)); border-color: transparent; box-shadow: var(--k-shadow-e2); font-size: 0.6722rem; }
 /* Inset wells instead of white-on-white: Aan's composer, model pill, artifact cards and generating card; the sidebar's Ask Aan pill. */
 [data-kit="pro"] .k-inset { background: hsl(var(--field)); border-color: transparent; box-shadow: none; }
 [data-kit="pro"] .k-inset:focus-within { border-color: hsl(var(--primary) / 0.45); }
 /* Aan messages: the assistant speaks in plain text (no box); the user's own messages are a tinted bubble. */
 [data-kit="pro"] .k-msg-ai { background: transparent; border-color: transparent; padding-left: 0; padding-right: 0; }
 [data-kit="pro"] .k-msg-user { background: hsl(var(--selected)); color: hsl(var(--foreground)); }
-/* Statuses are a dot and a label, not a pill per cell. */
-[data-kit="pro"] .k-status { background: transparent; padding-left: 0; padding-right: 0; gap: 6px; }
+/* Statuses: a tinted pill with a dot in the tone's colour (as Signals and the website). */
+[data-kit="pro"] .k-status { gap: 6px; padding-left: 8px; padding-right: 8px; }
 [data-kit="pro"] .k-status::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; flex-shrink: 0; }
 /* The active nav item carries an indicator, not just a tint. */
-[data-kit="pro"] .k-nav-active { box-shadow: inset 2px 0 0 hsl(var(--primary)); }
+[data-kit="pro"] .k-nav-active { box-shadow: inset 3px 0 0 hsl(var(--primary)); }
 
 /* ---- Pulse tables (components/ui/table.tsx) ----
    Column dividers: a hairline on each cell's right edge, softer than the row lines. An inset shadow rather than a

@@ -1,7 +1,13 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutGrid, TrendingUp, FileText, MapPin, Megaphone, Target, MousePointerClick, Package, Database, Search, BarChart3, Clock, CalendarClock, Settings, Users, ChevronDown, ChevronRight, FlaskConical, User, LogOut, PanelLeft, Link, LayoutDashboard, ShieldCheck, Plug, CreditCard, BellRing, Wand2, ScrollText, ScanEye } from "lucide-react";
+  AnxGlance, AnxSignals, AnxProfitLoss, AnxDashboard, AnxTrends, AnxGeo, AnxAdvertising, AnxCampaignManager,
+  AnxCampaignCreator, AnxImpact, AnxTargeting, AnxRules, AnxRuleAgents, AnxCatalog, AnxAmc, AnxLogs, AnxSchedule,
+  AnxTeam, AnxBi, AnxSearch, AnxDayParting,
+  AnxSidebarToggle as PanelLeft, AnxChevronDown as ChevronDown, AnxChevronRight as ChevronRight, AnxSettings as Settings,
+  AnxLink as Link, AnxIntegrations as Plug, AnxTeam as Users, AnxBilling as CreditCard, AnxLogs as ScrollText,
+  AnxUser as User, AnxLogout as LogOut,
+} from "@/components/icons";
 import { cn } from "@/lib/utils";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -35,66 +41,66 @@ interface NavGroup {
 
 /** Pages that stand on their own at the top of the nav, outside any group. */
 const standaloneItems: NavItem[] = [
-  { title: "Glance", url: "/glance", icon: ScanEye },
-  { title: "Signals", url: "/signals", icon: BellRing },
+  { title: "Glance", url: "/glance", icon: AnxGlance },
+  { title: "Signals", url: "/signals", icon: AnxSignals },
 ];
 
 const navigationGroups: NavGroup[] = [{
   label: "Profitability",
-  icon: TrendingUp,
+  icon: AnxProfitLoss,
   items: [
-    { title: "Dashboard", url: "/profitability/dashboard", icon: LayoutDashboard },
-    { title: "Trends", url: "/profitability/trends", icon: TrendingUp },
-    { title: "Profit & Loss", url: "/profitability/pnl", icon: FileText },
-    { title: "Geographical Data", url: "/profitability/geo", icon: MapPin },
+    { title: "Dashboard", url: "/profitability/dashboard", icon: AnxDashboard },
+    { title: "Trends", url: "/profitability/trends", icon: AnxTrends },
+    { title: "Profit & Loss", url: "/profitability/pnl", icon: AnxProfitLoss },
+    { title: "Geographical Data", url: "/profitability/geo", icon: AnxGeo },
   ]
 }, {
   label: "Advertising",
-  icon: Megaphone,
+  icon: AnxAdvertising,
   items: [
-    { title: "Campaign Manager", url: "/advertising/campaigns", icon: Megaphone },
-    { title: "Campaign Creator", url: "/advertising/campaign-creator", icon: Wand2 },
-    { title: "Impact Analysis", url: "/advertising/impact", icon: Target },
-    { title: "Targeting Actions", url: "/advertising/targeting", icon: MousePointerClick },
+    { title: "Campaign Manager", url: "/advertising/campaigns", icon: AnxCampaignManager },
+    { title: "Campaign Creator", url: "/advertising/campaign-creator", icon: AnxCampaignCreator },
+    { title: "Impact Analysis", url: "/advertising/impact", icon: AnxImpact },
+    { title: "Targeting Actions", url: "/advertising/targeting", icon: AnxTargeting },
   ]
 }, {
   label: "Rules",
-  icon: ShieldCheck,
+  icon: AnxRules,
   items: [
-    { title: "Rule Agents", url: "/advertising/rules/agents", icon: FlaskConical },
-    { title: "Applied Rules", url: "/advertising/rules/applied", icon: ShieldCheck },
+    { title: "Rule Agents", url: "/advertising/rules/agents", icon: AnxRuleAgents },
+    { title: "Applied Rules", url: "/advertising/rules/applied", icon: AnxRules },
   ]
 }, {
   label: "Catalog",
-  icon: Package,
+  icon: AnxCatalog,
   items: [
-    { title: "Products", url: "/catalog/products", icon: Package },
+    { title: "Products", url: "/catalog/products", icon: AnxCatalog },
   ]
 }, {
   label: "AMC",
-  icon: Database,
+  icon: AnxAmc,
   items: [
-    { title: "Queries", url: "/amc/queries", icon: Database },
-    { title: "Executed Queries", url: "/amc/executed", icon: FileText },
-    { title: "Schedules", url: "/amc/schedules", icon: CalendarClock },
-    { title: "Audiences", url: "/amc/audiences", icon: Users },
-    { title: "Created Audiences", url: "/amc/created-audiences", icon: Users },
-    { title: "Instances", url: "/amc/instances", icon: LayoutGrid },
+    { title: "Queries", url: "/amc/queries", icon: AnxAmc },
+    { title: "Executed Queries", url: "/amc/executed", icon: AnxLogs },
+    { title: "Schedules", url: "/amc/schedules", icon: AnxSchedule },
+    { title: "Audiences", url: "/amc/audiences", icon: AnxTeam },
+    { title: "Created Audiences", url: "/amc/created-audiences", icon: AnxTeam },
+    { title: "Instances", url: "/amc/instances", icon: AnxDashboard },
   ]
 }, {
   label: "Business Intelligence",
-  icon: BarChart3,
+  icon: AnxBi,
   items: [
-    { title: "Brand SOV", url: "/bi/brand-sov", icon: BarChart3 },
-    { title: "Keyword Tracker", url: "/bi/keyword-tracker", icon: Search },
-    { title: "Keyword SOV", url: "/bi/keyword-sov", icon: BarChart3 },
-    { title: "Product SOV", url: "/bi/product-sov", icon: Package },
+    { title: "Brand SOV", url: "/bi/brand-sov", icon: AnxBi },
+    { title: "Keyword Tracker", url: "/bi/keyword-tracker", icon: AnxSearch },
+    { title: "Keyword SOV", url: "/bi/keyword-sov", icon: AnxBi },
+    { title: "Product SOV", url: "/bi/product-sov", icon: AnxCatalog },
   ]
 }, {
   label: "Day Parting",
-  icon: Clock,
+  icon: AnxDayParting,
   items: [
-    { title: "Day Parting", url: "/dayparting", icon: Clock },
+    { title: "Day Parting", url: "/dayparting", icon: AnxDayParting },
   ]
 }];
 

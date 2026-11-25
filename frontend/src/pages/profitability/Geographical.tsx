@@ -119,13 +119,12 @@ export default function Geographical() {
             onSortChange={(f, d) => { setSortField(f); setSortDirection(d); }}
           />
 
-          <div className="rounded-lg border border-border bg-card">
-            {viewLevel === "state" ? (
-              <RegionalTable data={geographicalData} searchValue={searchValue} showDeltas={showDeltas} />
-            ) : (
-              <RegionalProductTable searchValue={searchValue} showDeltas={showDeltas} />
-            )}
-          </div>
+          {/* Each table brings its own frame; with nothing in between, the toolbar joins it as one card. */}
+          {viewLevel === "state" ? (
+            <RegionalTable data={geographicalData} searchValue={searchValue} showDeltas={showDeltas} />
+          ) : (
+            <RegionalProductTable searchValue={searchValue} showDeltas={showDeltas} />
+          )}
         </div>
       </div>
 </AppLayout>

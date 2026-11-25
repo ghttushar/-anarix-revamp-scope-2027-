@@ -40,19 +40,19 @@ export function SortableTableHead({
     <button
       onClick={(e) => { e.stopPropagation(); onSort(field); }}
       className={cn(
-        "shrink-0 cursor-pointer p-0.5 rounded hover:bg-hover transition-colors",
+        "shrink-0 cursor-pointer rounded p-[3px] hover:bg-hover transition-colors",
         isSorted ? "opacity-100" : "opacity-40 hover:opacity-80"
       )}
       title={isSorted ? (sortDirection === "asc" ? "Sort descending" : "Clear sort") : "Sort ascending"}
     >
       {isSorted ? (
         sortDirection === "asc" ? (
-          <ArrowUp className="h-3.5 w-3.5 text-primary" />
+          <ArrowUp className="h-3 w-3 text-primary" />
         ) : (
-          <ArrowDown className="h-3.5 w-3.5 text-primary" />
+          <ArrowDown className="h-3 w-3 text-primary" />
         )
       ) : (
-        <ArrowUpDown className="h-3.5 w-3.5" />
+        <ArrowUpDown className="h-3 w-3" />
       )}
     </button>
   );
@@ -62,21 +62,24 @@ export function SortableTableHead({
     <button
       onClick={(e) => { e.stopPropagation(); onPinToggle(field); }}
       className={cn(
-        "shrink-0 cursor-pointer p-0.5 rounded transition-all",
+        "shrink-0 cursor-pointer rounded p-[3px] transition-all",
         isPinned
           ? "text-primary opacity-100 hover:bg-primary/10"
           : "opacity-40 hover:!opacity-80 hover:bg-hover text-muted-foreground"
       )}
       title={isPinned ? "Unpin column" : "Pin column"}
     >
-      <Pin className={cn("h-3.5 w-3.5", isPinned && "fill-primary")} />
+      <Pin className={cn("h-3 w-3", isPinned && "fill-primary")} />
     </button>
   );
 
-  // Active controls (sorted / pinned) sit in the row. Inactive ones take no width: they float over the cell's
-  // free side on hover, so a column is only as wide as its label and values.
-  const idleSort = onSort && !isSorted ? sortButton : null;
-  const idlePin = pinButton && !isPinned ? pinButton : null;
+  // Sort and pin sit on opposite sides of the label, so they can never crowd each other:
+  //   right-aligned:  [⇅ LABEL 📌]        left-aligned:  [📌 LABEL ⇅]
+  // Sort takes the label's free side (where the column's empty space is), pin the other. Neither takes width: they
+  // overlay on hover (on a card-coloured chip so they read over neighbouring text); an active one stays visible.
+  const right = align === "right";
+  const reveal = "transition-opacity duration-150 group-hover/sort:pointer-events-auto group-hover/sort:opacity-100";
+  const side = (before: boolean) => (before ? "right-full mr-0.5" : "left-full ml-0.5");
 
   return (
     <TableHead
@@ -86,26 +89,37 @@ export function SortableTableHead({
     >
       <div
         className={cn(
-          "flex items-center gap-1",
-          align === "right" && "justify-end",
+          "flex items-center",
+          right && "justify-end",
           align === "center" && "justify-center"
         )}
       >
-        {isSorted && sortButton}
-        <span>{children}</span>
-        {isPinned && pinButton}
-      </div>
-      {(idleSort || idlePin) && (
-        <div
-          className={cn(
-            "pointer-events-none absolute inset-y-0 flex items-center gap-0.5 bg-card opacity-0 transition-opacity group-hover/sort:pointer-events-auto group-hover/sort:opacity-100",
-            align === "right" ? "left-1" : "right-1"
+        <span className="relative inline-flex items-center">
+          {children}
+          {sortButton && (
+            <span
+              className={cn(
+                "absolute top-1/2 z-[1] flex -translate-y-1/2 items-center rounded bg-card",
+                side(right),
+                isSorted ? "opacity-100" : cn("pointer-events-none opacity-0", reveal)
+              )}
+            >
+              {sortButton}
+            </span>
           )}
-        >
-          {idleSort}
-          {idlePin}
-        </div>
-      )}
+          {pinButton && (
+            <span
+              className={cn(
+                "absolute top-1/2 z-[1] flex -translate-y-1/2 items-center rounded bg-card",
+                side(!right),
+                isPinned ? "opacity-100" : cn("pointer-events-none opacity-0", reveal)
+              )}
+            >
+              {pinButton}
+            </span>
+          )}
+        </span>
+      </div>
     </TableHead>
   );
 }

@@ -256,14 +256,12 @@ export default function ProfitLoss() {
                 setSortDirection(d);
               }}
             />
-            <div className="rounded-lg border border-border bg-card">
-              <ProductsPnLTable
-                products={filteredProducts}
-                visibleColumns={columns.filter((c) => c.visible).map((c) => c.id)}
-                showDeltas={showDeltas}
-                onMoreClick={handleOpenDetail}
-              />
-            </div>
+            <ProductsPnLTable
+              products={filteredProducts}
+              visibleColumns={columns.filter((c) => c.visible).map((c) => c.id)}
+              showDeltas={showDeltas}
+              onMoreClick={handleOpenDetail}
+            />
           </div>
         </div>
 

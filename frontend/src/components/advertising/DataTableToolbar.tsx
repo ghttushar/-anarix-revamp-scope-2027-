@@ -1,5 +1,10 @@
-import { useState, type ReactNode } from "react";
-import { Search, Filter, Download, Columns, X, Pencil, Plus, Trash2, TrendingUp, Upload, Pin, PinOff, ArrowUpDown, ArrowUp, ArrowDown, type LucideIcon } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Trash2, type LucideIcon } from "lucide-react";
+import {
+  AnxSearch as Search, AnxFilter as Filter, AnxExport as Download, AnxColumns as Columns, AnxClose as X, AnxEdit as Pencil,
+  AnxPlus as Plus, AnxDelta as TrendingUp, AnxUpload as Upload, AnxPin as Pin, AnxPinOff as PinOff, AnxSort as ArrowUpDown,
+  AnxSortUp as ArrowUp, AnxSortDown as ArrowDown, type AnxIcon,
+} from "@/components/icons";
 import { BarDivider, BarIconButton, BarSegmented, type SegmentItem } from "@/components/bars";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -81,7 +86,7 @@ interface DataTableToolbarProps {
 
 export interface TablePrimaryAction {
   label: string;
-  icon?: LucideIcon;
+  icon?: LucideIcon | AnxIcon;
   onClick?: () => void;
   disabled?: boolean;
   /** Tooltip, e.g. why it is disabled. */
@@ -225,20 +230,30 @@ export function DataTableToolbar({
           ) : (
             <>
               {view && <BarSegmented value={view.value} onChange={view.onChange} items={view.items} aria-label="View" />}
-              <div className="relative min-w-0 max-w-xs flex-1">
-                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  value={searchValue}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  placeholder={searchPlaceholder}
-                  className="h-[var(--k-control-h)] w-full border-input bg-field pl-8 text-xs shadow-none focus-visible:ring-1 focus-visible:ring-offset-0"
-                />
-              </div>
+              <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
             </>
           )}
         </div>
 
         <div className="flex shrink-0 items-center gap-0.5" data-tb-actions>
+          {/* Create / Add / Save is the first thing on the right, then the named actions. */}
+          {primaryAction && (
+            <>
+              <Button
+                size="xs"
+                className="gap-1.5"
+                onClick={primaryAction.onClick}
+                disabled={primaryAction.disabled}
+                title={primaryAction.hint}
+                data-write-action={primaryAction.write || undefined}
+                data-tb-primary
+              >
+                {primaryAction.icon ? <primaryAction.icon /> : <Plus />}
+                {primaryAction.label}
+              </Button>
+              <BarDivider />
+            </>
+          )}
           {(() => {
             const groups: ReactNode[][] = [
               [
@@ -247,6 +262,7 @@ export function DataTableToolbar({
                     key="edit"
                     data-write-action
                     icon={Pencil}
+                    name="Edit"
                     label={viewMode === "edit" ? "Save & exit edit mode" : "Edit table"}
                     active={viewMode === "edit"}
                     tone="danger"
@@ -259,6 +275,7 @@ export function DataTableToolbar({
                   <BarIconButton
                     key="delta"
                     icon={TrendingUp}
+                    name="Delta"
                     label={showDeltas ? "Hide deltas" : "Show deltas"}
                     hint="Change vs the previous period"
                     active={!!showDeltas}
@@ -270,6 +287,7 @@ export function DataTableToolbar({
                     <PopoverTrigger asChild>
                       <BarIconButton
                         icon={!sortField ? ArrowUpDown : sortDirection === "asc" ? ArrowUp : ArrowDown}
+                        name="Group"
                         label="Group by"
                         hint={sortField ? `By ${sortableFields.find((s) => s.id === sortField)?.label ?? sortField}` : undefined}
                         active={!!sortField}
@@ -305,6 +323,7 @@ export function DataTableToolbar({
                     <PopoverTrigger asChild>
                       <BarIconButton
                         icon={Filter}
+                        name="Filter"
                         label="Filter"
                         hint={activeFilters.length > 0 ? `${activeFilters.length} applied` : undefined}
                         active={activeFilters.length > 0}
@@ -359,6 +378,7 @@ export function DataTableToolbar({
                     <DropdownMenuTrigger asChild>
                       <BarIconButton
                         icon={Columns}
+                        name="Columns"
                         label="Columns"
                         hint={pinnedColumns.length > 0 ? `${pinnedColumns.length} pinned` : "Show, hide and pin columns"}
                       />
@@ -423,38 +443,27 @@ export function DataTableToolbar({
                     key="upload"
                     data-write-action
                     icon={Upload}
+                    name="Upload"
                     label={uploadTitle}
                     onClick={() => (onUploadClick ? onUploadClick() : setUploadOpen(true))}
                   />
                 ),
-                onDownload && <BarIconButton key="export" data-write-action icon={Download} label="Export CSV" onClick={onDownload} />,
+                onDownload && <BarIconButton key="export" data-write-action icon={Download} name="Export" label="Export CSV" onClick={onDownload} />,
               ],
             ].map((g) => g.filter(Boolean)).filter((g) => g.length > 0);
-            return groups.map((g, i) => (
-              <div key={i} className="flex items-center gap-0.5">
-                {i > 0 && <BarDivider />}
-                {g}
+            // One grouped strip: related actions read as a set, divided by hairlines between groups.
+            return groups.length > 0 ? (
+              <div className="k-group">
+                {groups.map((g, i) => (
+                  <div key={i} className="flex items-center gap-0.5">
+                    {i > 0 && <BarDivider className="mx-0.5" />}
+                    {g}
+                  </div>
+                ))}
               </div>
-            ));
+            ) : null;
           })()}
 
-          {primaryAction && (
-            <>
-              <BarDivider />
-              <Button
-                size="xs"
-                className="gap-1.5"
-                onClick={primaryAction.onClick}
-                disabled={primaryAction.disabled}
-                title={primaryAction.hint}
-                data-write-action={primaryAction.write || undefined}
-                data-tb-primary
-              >
-                {primaryAction.icon ? <primaryAction.icon /> : <Plus />}
-                {primaryAction.label}
-              </Button>
-            </>
-          )}
         </div>
       </div>
 
@@ -501,6 +510,65 @@ export function DataTableToolbar({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </div>
+  );
+}
+
+
+/**
+ * Search as a magnifier: a quiet icon until you need it, then it opens into a field (width animates) with focus.
+ * Esc or leaving it empty closes it again; with a query it stays open so the filter stays visible. The page's
+ * longer description ("Search by Product Name / Item ID / SKU…") becomes the tooltip, not the placeholder.
+ */
+function ToolbarSearch({ value, onChange, hint }: { value: string; onChange: (v: string) => void; hint?: string }) {
+  const [open, setOpen] = useState(!!value);
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (value) setOpen(true);
+  }, [value]);
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+  const label = hint && hint !== "Search..." ? hint.replace(/(\.\.\.|…)$/, "") : "Search";
+  if (!open) return <BarIconButton icon={Search} name="Search" label={label} hint="Click to search" onClick={() => setOpen(true)} />;
+  return (
+    <div className="relative h-[var(--k-control-h)] w-60 shrink-0 overflow-hidden rounded-md bg-field animate-in fade-in-0 slide-in-from-left-1 duration-200">
+      <Search
+        aria-hidden
+        className={cn("pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground transition-opacity", open ? "opacity-100" : "opacity-0")}
+      />
+      <Input
+        ref={inputRef}
+        value={value}
+        tabIndex={open ? 0 : -1}
+        aria-label={label}
+        title={label}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={() => { if (!value) setOpen(false); }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            onChange("");
+            setOpen(false);
+            (e.target as HTMLInputElement).blur();
+          }
+        }}
+        placeholder="Search…"
+        className={cn(
+          "h-full w-60 border-transparent bg-transparent pl-8 pr-7 text-xs shadow-none transition-opacity focus-visible:ring-1 focus-visible:ring-offset-0",
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        )}
+      />
+      {open && value && (
+        <button
+          type="button"
+          aria-label="Clear search"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => { onChange(""); inputRef.current?.focus(); }}
+          className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded text-muted-foreground hover:bg-hover hover:text-foreground"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      )}
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { AreaChart, BarChart3, Info, LineChart, Maximize2, ScatterChart } from "lucide-react";
+import {
+  AnxChartArea as AreaChart, AnxChartBar as BarChart3, AnxInfo as Info, AnxChartLine as LineChart, AnxExpand as Maximize2,
+  AnxChartScatter as ScatterChart,
+} from "@/components/icons";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { BarChip, BarDensity, BarIconButton, CHART_HEIGHT, CHART_TYPE_ORDER, type ChartHeight } from "@/components/bars";

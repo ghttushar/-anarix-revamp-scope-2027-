@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
  */
 
 export const AXIS = {
-  tick: { fontSize: 11, fill: "hsl(var(--muted-foreground))" },
+  tick: { fontSize: 11, fill: "hsl(var(--text-faint, var(--muted-foreground)))" },
   axisLine: false,
   tickLine: false,
   tickMargin: 8,
@@ -28,9 +28,9 @@ export const GRID = {
 } as const;
 
 /** The hover guide for line and area charts (pass to <Tooltip cursor={…} />). */
-export const CURSOR_LINE = { stroke: "hsl(var(--muted-foreground))", strokeOpacity: 0.4, strokeWidth: 1, strokeDasharray: "4 4" };
+export const CURSOR_LINE = { stroke: "hsl(var(--primary))", strokeOpacity: 0.45, strokeWidth: 1, strokeDasharray: "4 4" };
 /** The hover band for bar charts. */
-export const CURSOR_BAND = { fill: "hsl(var(--muted))", fillOpacity: 0.6 };
+export const CURSOR_BAND = { fill: "hsl(var(--primary))", fillOpacity: 0.07 };
 
 export const lineSeries = (color: string) => ({
   type: "monotone" as const,

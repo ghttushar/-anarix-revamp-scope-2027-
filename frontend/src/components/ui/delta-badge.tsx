@@ -6,6 +6,10 @@ interface DeltaBadgeProps {
   className?: string;
 }
 
+/**
+ * A period change: a small tinted pill (gain / risk), as on Signals and the product website. 11px is the type
+ * scale's floor, so it stays readable while sitting quietly under the value it describes.
+ */
 export function DeltaBadge({ value, className }: DeltaBadgeProps) {
   if (value === 0) return null;
 
@@ -14,16 +18,12 @@ export function DeltaBadge({ value, className }: DeltaBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 text-xs font-medium leading-none px-1 py-0.5",
-        isPositive ? "text-success" : "text-destructive",
+        "mt-0.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-px text-2xs font-medium leading-tight tabular-nums",
+        isPositive ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive",
         className
       )}
     >
-      {isPositive ? (
-        <ArrowUp className="h-3.5 w-3.5" />
-      ) : (
-        <ArrowDown className="h-3.5 w-3.5" />
-      )}
+      {isPositive ? <ArrowUp className="h-2.5 w-2.5" strokeWidth={2.5} /> : <ArrowDown className="h-2.5 w-2.5" strokeWidth={2.5} />}
       {isPositive ? "+" : ""}
       {value.toFixed(1)}%
     </span>

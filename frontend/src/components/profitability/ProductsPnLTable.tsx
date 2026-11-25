@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, TrendingUp, ChevronDown, ChevronRight } from "lucide-react";
+import { ExternalLink, TrendingUp, ChevronRight } from "lucide-react";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { DeltaBadge } from "@/components/ui/delta-badge";
@@ -188,10 +188,10 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                             type="button"
                             data-cat-toggle
                             onClick={(e) => { e.stopPropagation(); toggleCategory(cat.key); }}
-                            className="flex items-center justify-center h-8 w-8 rounded border border-border bg-muted flex-shrink-0 hover:bg-hover"
+                            className="-ml-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-hover hover:text-foreground"
                             aria-label={isExpanded ? "Collapse category" : "Expand category"}
                           >
-                            {isExpanded ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+                            <ChevronRight className={cn("h-4 w-4 transition-transform duration-200 ease-out", isExpanded && "rotate-90")} />
                           </button>
                           {cat.image && (
                             <img src={cat.image} alt={cat.key} className="h-9 w-9 rounded-md border border-border object-cover flex-shrink-0" />
@@ -220,7 +220,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         );
                       })}
                       <TableCell data-info-col className="text-center">
-                        <span className="text-2xs text-muted-foreground">{isExpanded ? "Open" : "Tap to expand"}</span>
+                        
                       </TableCell>
                     </TableRow>
 
@@ -362,10 +362,10 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                           type="button"
                           data-row-toggle
                           onClick={(e) => { e.stopPropagation(); toggleOrderExpand(order.id); }}
-                          className="flex items-center justify-center h-8 w-8 rounded border border-border bg-muted flex-shrink-0 hover:bg-hover"
+                          className="-ml-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-hover hover:text-foreground"
                           aria-label={isExpanded ? "Collapse order" : "Expand order"}
                         >
-                          {isExpanded ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+                          <ChevronRight className={cn("h-4 w-4 transition-transform duration-200 ease-out", isExpanded && "rotate-90")} />
                         </button>
                         <div className="flex flex-col min-w-0">
                           <span className="font-medium text-foreground">{order.orderId}</span>

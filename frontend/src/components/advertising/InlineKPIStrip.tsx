@@ -1,5 +1,12 @@
 import { ArrowDown, ArrowUp, Minus, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCountUp } from "@/hooks/useCountUp";
+
+/** The KPI figure counts up to its value when it arrives or changes (still the real number at rest). */
+function CountUpValue({ value, format }: { value: number; format: string }) {
+  const shown = useCountUp(value);
+  return <>{formatValue(shown, format)}</>;
+}
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -137,8 +144,8 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange, varian
               )}
             </div>
             <div className="flex items-baseline justify-between gap-2">
-              <span className="text-xl font-semibold text-foreground leading-tight">
-                {formatValue(item.value, item.format)}
+              <span className="text-xl font-semibold tabular-nums tracking-tight text-foreground leading-tight">
+                <CountUpValue value={item.value} format={item.format} />
               </span>
               <div
                 className={cn(
@@ -161,7 +168,7 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange, varian
                 <span>{Math.abs(delta).toFixed(1)}%</span>
               </div>
             </div>
-            <span className="text-2xs text-muted-foreground">
+            <span className="text-2xs text-faint">
               Prev 7 days: {formatPrevValue(item.previousValue, item.format)}
             </span>
           </div>

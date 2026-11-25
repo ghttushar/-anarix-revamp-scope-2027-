@@ -178,18 +178,16 @@ export default function ProfitabilityDashboard() {
               sortDirection={sortDirection}
               onSortChange={(f, d) => { setSortField(f); setSortDirection(d); }}
             />
-            <div className="rounded-lg border border-border bg-card">
-              <ProductsPnLTable
-                products={filteredProducts}
-                orders={filteredOrders}
-                mode={tableTab}
-                visibleColumns={columns.filter((c) => c.visible).map((c) => c.id)}
-                showDeltas={showDeltas}
-                onCogsClick={(product) => setCogsProduct(product)}
-                onTrendsClick={(product) => setTrendsProduct(product)}
-                onMoreClick={handleOpenDetail}
-              />
-            </div>
+            <ProductsPnLTable
+              products={filteredProducts}
+              orders={filteredOrders}
+              mode={tableTab}
+              visibleColumns={columns.filter((c) => c.visible).map((c) => c.id)}
+              showDeltas={showDeltas}
+              onCogsClick={(product) => setCogsProduct(product)}
+              onTrendsClick={(product) => setTrendsProduct(product)}
+              onMoreClick={handleOpenDetail}
+            />
           </div>
         </div>
 

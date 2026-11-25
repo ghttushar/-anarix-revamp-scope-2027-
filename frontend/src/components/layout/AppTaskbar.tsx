@@ -1,6 +1,9 @@
 import { useState, useEffect, ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CalendarIcon, ChevronRight, Play, Bell, Lightbulb, RefreshCw } from "lucide-react";
+import {
+  AnxCalendar as CalendarIcon, AnxChevronRight as ChevronRight, AnxRun as Play, AnxBell as Bell, AnxInsights as Lightbulb,
+  AnxRefresh as RefreshCw,
+} from "@/components/icons";
 import { AanGlyph } from "@/components/aan/AanGlyph";
 import { format, subDays, startOfWeek, endOfWeek, subWeeks, startOfMonth, endOfMonth, subMonths, startOfQuarter, endOfQuarter, subQuarters } from "date-fns";
 
@@ -191,33 +194,31 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
     <div
       data-app-taskbar
       data-tour-id="taskbar"
-      className="sticky top-0 z-30 flex min-h-12 shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-2 py-2 shadow-[0_1px_2px_rgba(16,24,40,0.04)]"
+      className="sticky top-0 z-30 flex min-h-12 shrink-0 flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-border bg-card px-2 py-2 shadow-[0_1px_2px_rgba(16,24,40,0.04)]"
     >
-      {/* Level pages: where you are, first. */}
+      {/* Level pages: where you are, as a small caption line above the controls (basis-full = its own line). */}
       {breadcrumbs && breadcrumbs.length > 1 && (
         <>
-          <nav aria-label="Breadcrumb" className="flex min-w-0 shrink items-center gap-1 pl-1.5 text-xs">
+          <nav aria-label="Breadcrumb" className="flex min-w-0 basis-full items-center gap-0.5 px-1 text-2xs leading-none">
             {breadcrumbs.map((c, i) => {
               const last = i === breadcrumbs.length - 1;
               return (
                 <span key={i} className="flex min-w-0 items-center gap-1">
-                  {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground/60" />}
+                  {i > 0 && <ChevronRight className="h-2.5 w-2.5 shrink-0 text-faint" />}
                   {c.href && !last ? (
-                    <Link to={c.href} title={c.label} className="min-w-0 max-w-[9rem] truncate rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-hover hover:text-foreground">{c.label}</Link>
+                    <Link to={c.href} title={c.label} className="min-w-0 max-w-[12rem] truncate rounded px-0.5 text-faint transition-colors hover:text-primary">{c.label}</Link>
                   ) : (
-                    <span title={c.label} aria-current={last ? "page" : undefined} className={cn("min-w-0 max-w-[14rem] truncate px-1", last ? "font-medium text-foreground" : "text-muted-foreground")}>{c.label}</span>
+                    <span title={c.label} aria-current={last ? "page" : undefined} className={cn("min-w-0 max-w-[20rem] truncate px-0.5", last ? "font-medium text-muted-foreground" : "text-faint")}>{c.label}</span>
                   )}
                 </span>
               );
             })}
           </nav>
-          <BarDivider />
         </>
       )}
 
       {/* Variable zone: the date range always first, then this page's settings. */}
-      {/* With a breadcrumb, the settings keep their width and the breadcrumb truncates instead. */}
-      <div className={cn("flex min-w-0 flex-wrap items-center gap-1.5", breadcrumbs && breadcrumbs.length > 1 ? "flex-[1_0_auto]" : "flex-1")}>
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
         {showDateRange && (
           <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
             <PopoverTrigger asChild>

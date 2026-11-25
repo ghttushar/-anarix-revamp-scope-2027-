@@ -13,7 +13,7 @@ export const BAR_CONTROL_HEIGHT = "var(--k-control-h)";
 
 /** The one style every dropdown chip in every bar uses. */
 export const BAR_CHIP_CLASS =
-  "inline-flex h-[var(--k-control-h)] max-w-full items-center gap-1.5 rounded-md border border-control-border bg-control px-2.5 text-xs whitespace-nowrap transition-colors hover:bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-selected disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex h-[var(--k-control-h)] max-w-full items-center gap-1.5 rounded-md border border-control-border bg-control px-2.5 text-xs whitespace-nowrap transition-[color,background-color,border-color,transform] duration-150 ease-out active:scale-[0.97] hover:bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-selected disabled:pointer-events-none disabled:opacity-50";
 
 /**
  * The fixed order of the table toolbar's icon actions, grouped. A table only switches actions on or off; it never

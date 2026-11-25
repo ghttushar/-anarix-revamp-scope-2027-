@@ -1,5 +1,5 @@
 import { forwardRef, useMemo, useState, type ReactNode } from "react";
-import { Check, ChevronDown, Search } from "lucide-react";
+import { AnxCheck as Check, AnxChevronDown as ChevronDown, AnxSearch as Search } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { BAR_CHIP_CLASS } from "./tokens";

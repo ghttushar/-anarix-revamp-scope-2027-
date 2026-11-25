@@ -1,12 +1,13 @@
 import { forwardRef, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import type { AnxIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useBarDensity } from "./density";
 
 interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  icon: LucideIcon;
+  icon: LucideIcon | AnxIcon;
   /** The action's name: the tooltip and the accessible label. */
   label: string;
   /** Extra tooltip line, e.g. a shortcut or "3 filters applied". */
@@ -17,6 +18,8 @@ interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "chi
   badge?: number | boolean;
   tone?: "default" | "danger";
   tooltipSide?: "top" | "bottom" | "left" | "right";
+  /** A short visible name next to the icon (the table toolbar names its actions); the tooltip keeps label + hint. */
+  name?: string;
 }
 
 /**
@@ -24,7 +27,7 @@ interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "chi
  * button in a bar is its primary action (Run, Create…).
  */
 export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIconButton(
-  { icon: Icon, label, hint, active, badge, tone = "default", tooltipSide = "bottom", className, ...props },
+  { icon: Icon, label, hint, active, badge, tone = "default", tooltipSide = "bottom", name, className, ...props },
   ref,
 ) {
   const compact = useBarDensity() === "compact";
@@ -35,11 +38,12 @@ export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIc
           ref={ref}
           type="button"
           variant="ghost"
-          size="icon-sm"
+          size={name ? "xs" : "icon-sm"}
           aria-label={label}
           aria-pressed={active}
           className={cn(
-            compact && "h-7 w-7 [&_svg]:size-3.5",
+            compact && (name ? "h-7 [&_svg]:size-3.5" : "h-7 w-7 [&_svg]:size-3.5"),
+            name && "gap-1.5 px-2 text-xs font-medium",
             "relative text-muted-foreground hover:bg-hover hover:text-foreground data-[state=open]:bg-selected data-[state=open]:text-foreground",
             active && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
             tone === "danger" && active && "bg-destructive/10 text-destructive hover:bg-destructive/15 hover:text-destructive",
@@ -48,6 +52,7 @@ export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIc
           {...props}
         >
           <Icon />
+          {name && <span>{name}</span>}
           {badge !== undefined && badge !== false && badge !== 0 && (
             <span
               className={cn(

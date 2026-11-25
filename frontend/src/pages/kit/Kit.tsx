@@ -20,6 +20,7 @@ import { InlineKPIStrip } from "@/components/advertising/InlineKPIStrip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import { IconGallery } from "@/components/icons";
 
 /** A labelled specimen. */
 function Spec({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
@@ -99,6 +100,14 @@ export default function Kit() {
               <Spec label="shadow-e1 (sheet)"><div className="h-10 w-16 rounded-lg bg-card shadow-e1" /></Spec>
               <Spec label="shadow-e2 (menus)"><div className="h-10 w-16 rounded-lg bg-card shadow-e2" /></Spec>
               <Spec label="shadow-e3 (dialogs)"><div className="h-10 w-16 rounded-lg bg-card shadow-e3" /></Spec>
+            </div>
+          </Zone>
+          <Zone header={<ZoneHeader title="Text tones" context="strong · body · muted · faint (as dark mode and the website)" />}>
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-sm">
+              <span className="text-foreground font-medium">Strong — names, values</span>
+              <span className="text-body">Body — table cells, descriptions</span>
+              <span className="text-muted-foreground">Muted — subtitles, headers</span>
+              <span className="text-faint">Faint — tertiary meta</span>
             </div>
           </Zone>
           <Zone header={<ZoneHeader title="Type" context="old-design scale" />}>
@@ -220,6 +229,13 @@ export default function Kit() {
                 </TableBody>
               </Table>
             </div>
+          </Zone>
+        </Workspace>
+
+        {/* Icons */}
+        <Workspace>
+          <Zone header={<ZoneHeader title="Anarix icons" context="16px grid · 1.7 stroke · round joins (components/icons)" />}>
+            <IconGallery />
           </Zone>
         </Workspace>
 

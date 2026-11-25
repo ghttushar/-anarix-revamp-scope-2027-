@@ -1,6 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RefreshCw, Lightbulb, GripVertical, Bell, Sun, Moon, Inbox } from "lucide-react";
+import {
+  AnxRefresh as RefreshCw, AnxInsights as Lightbulb, AnxGrip as GripVertical, AnxBell as Bell, AnxSun as Sun, AnxMoon as Moon,
+  AnxInbox as Inbox,
+} from "@/components/icons";
 import { useTheme } from "@/contexts/ThemeContext";
 
 import { AanGlyph } from "@/components/aan/AanGlyph";

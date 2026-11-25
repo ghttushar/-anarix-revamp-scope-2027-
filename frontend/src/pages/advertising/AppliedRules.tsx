@@ -107,7 +107,7 @@ export default function AppliedRules() {
           primaryAction={{ label: "Create rule", write: true, onClick: () => navigate("/advertising/rules/agents") }}
         />
 
-        <div className="rounded-lg border border-border">
+        <div data-table-frame className="rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow className="bg-card hover:bg-card">
