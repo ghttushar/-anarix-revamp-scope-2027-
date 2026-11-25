@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
 import { IntegrationsBanner } from "@/components/integrations/IntegrationsBanner";
 import { InlineKPIStrip } from "@/components/advertising/InlineKPIStrip";
+import { Workspace, Zone } from "@/components/kit";
 import { UnderlineTabs } from "@/components/advertising/UnderlineTabs";
 import { DataTableToolbar } from "@/components/advertising/DataTableToolbar";
 import { PerformanceChart } from "@/components/charts/PerformanceChart";
@@ -277,7 +278,7 @@ function CampaignManagerInner() {
   return (
     <AppLayout>
       <div className="flex flex-1 min-h-0 min-w-0">
-        <div className="flex-1 min-w-0 space-y-6">
+        <div className="flex-1 min-w-0 space-y-4">
         <PageHeader
             title="Campaign Manager"
             subtitle="Manage and optimize your advertising campaigns"
@@ -285,7 +286,12 @@ function CampaignManagerInner() {
           <IntegrationsBanner />
           <AppTaskbar showDateRange showAdType showFrequency showRunButton onRun={() => toast.info("Refreshing data...")} />
 
-          <InlineKPIStrip items={kpiItems} availableMetrics={AVAILABLE_METRICS} onMetricChange={handleKPISwap} />
+          {/* "Pro" kit pilot: one workspace sheet, zones split by dividers (no card per section). */}
+          <Workspace>
+          <Zone flush>
+            <InlineKPIStrip variant="zone" items={kpiItems} availableMetrics={AVAILABLE_METRICS} onMetricChange={handleKPISwap} />
+          </Zone>
+          <Zone>
           <PerformanceChart
             data={mockChartData}
             showImpact={showImpact}
@@ -306,8 +312,12 @@ function CampaignManagerInner() {
               setSelectedKPIs(next.map((k) => keyToLabel[k] || k));
             }}
           />
-          <UnderlineTabs tabs={tabs} value={activeTab} onChange={(v) => setActiveTab(v as TabValue)} />
-
+          </Zone>
+          <Zone flush>
+          <div className="px-4 pt-1">
+            <UnderlineTabs tabs={tabs} value={activeTab} onChange={(v) => setActiveTab(v as TabValue)} />
+          </div>
+          <div className="px-4 py-2.5">
           <DataTableToolbar
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}
@@ -345,10 +355,10 @@ function CampaignManagerInner() {
               ? { label: "Save changes", icon: Check, write: true, onClick: () => { saveEdits(); setViewMode("view"); } }
               : { label: "Create campaign", write: true, onClick: () => navigate("/advertising/campaign-creator") }}
           />
-
-
-
+          </div>
           {renderTable()}
+          </Zone>
+          </Workspace>
         </div>
 
         <CreateCampaignPanel onSubmit={handleCreateCampaign} />

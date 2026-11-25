@@ -144,7 +144,7 @@ export function CampaignTable({
   };
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div data-table-frame className="rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>

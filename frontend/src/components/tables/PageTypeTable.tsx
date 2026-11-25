@@ -64,7 +64,7 @@ export function PageTypeTable({ searchQuery = "", showDeltas = false }: PageType
   const sp = { sortField, sortDirection, onSort: handleSort, pinnedColumns, onPinToggle: handlePinToggle };
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div data-table-frame className="rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>

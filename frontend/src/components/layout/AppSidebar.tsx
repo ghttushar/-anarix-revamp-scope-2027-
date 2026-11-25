@@ -211,7 +211,7 @@ export function AppSidebar() {
           {!collapsed ? (
             <button
               onClick={e => { e.stopPropagation(); e.preventDefault(); navigate("/aan"); }}
-              className="group relative w-full flex items-center gap-2 h-9 rounded-full border border-border/60 bg-surface px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
+              className="k-inset group relative w-full flex items-center gap-2 h-9 rounded-full border border-border/60 bg-surface px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
             >
               <div className="absolute inset-0 rounded-full aan-gradient opacity-0 group-hover:opacity-[0.06] transition-opacity" />
               <AanGlyph className="h-4 w-4 shrink-0 aan-gradient-text" staticEyes />
@@ -244,7 +244,7 @@ export function AppSidebar() {
                 className={cn(
                   "flex items-center gap-2.5 rounded-md mx-1 px-3 py-2 text-sm font-semibold transition-colors",
                   isActive(item.url)
-                    ? "bg-selected text-primary"
+                    ? "k-nav-active bg-selected text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
                 )}
               >

@@ -376,7 +376,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
           )}
 
           {/* Input container */}
-          <div className="relative flex items-end gap-0 rounded-lg border border-border bg-card focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20 transition-all">
+          <div className="k-inset relative flex items-end gap-0 rounded-lg border border-border bg-card focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20 transition-all">
             {/* Attachment button */}
             <button
               onClick={() => fileInputRef.current?.click()}
@@ -423,7 +423,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
         <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <Popover open={modelOpen} onOpenChange={setModelOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors">
+              <button className="k-inset inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors">
                 <currentModel.icon className="h-3 w-3" />
                 <span className="font-medium">{currentModel.name}</span>
                 <ChevronDown className="h-3 w-3" />

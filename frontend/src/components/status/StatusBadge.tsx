@@ -56,7 +56,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       <TooltipTrigger asChild>
         <span
           className={cn(
-            "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
+            "k-status inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
             config.className,
             className
           )}

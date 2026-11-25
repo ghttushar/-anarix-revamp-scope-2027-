@@ -85,8 +85,8 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
                 "rounded-2xl text-sm whitespace-pre-wrap break-words",
                 compact ? "px-3 py-2" : "px-4 py-2.5",
                 message.role === "assistant"
-                  ? "bg-card text-foreground border border-border"
-                  : "bg-primary text-primary-foreground"
+                  ? "k-msg-ai bg-card text-foreground border border-border"
+                  : "k-msg-user bg-primary text-primary-foreground"
               )}
             >
               {message.content}
@@ -133,7 +133,7 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
             <AanMascot size={compact ? 16 : 20} state="anchor" interactive={false} />
           </div>
           <div className={cn("flex flex-col gap-2 items-start min-w-0", compact ? "max-w-[88%]" : "max-w-[80%]")}>
-            <div className={cn("flex flex-row items-center rounded-2xl border border-border bg-card shadow-sm w-fit", compact ? "gap-3 px-3 py-3" : "gap-4 px-5 py-4 min-w-[280px]")}>
+            <div className={cn("k-inset flex flex-row items-center rounded-2xl border border-border bg-card shadow-sm w-fit", compact ? "gap-3 px-3 py-3" : "gap-4 px-5 py-4 min-w-[280px]")}>
               <div
                 ref={setGenerationAnchorEl}
                 aria-hidden

@@ -94,7 +94,7 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
         </div>
       )}
 
-      <div className="rounded-lg border border-border bg-card">
+      <div data-table-frame className="rounded-lg border border-border bg-card">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

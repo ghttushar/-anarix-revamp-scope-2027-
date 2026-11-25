@@ -26,6 +26,9 @@ interface InlineKPIStripProps {
   items: KPIItem[];
   availableMetrics?: AvailableMetric[];
   onMetricChange?: (index: number, metricKey: string) => void;
+  /** "cards" (default): tinted tiles with a coloured left bar. "zone": the dense kit row (cells split by dividers, a
+   *  colour dot per metric, plain-text deltas), for use inside a kit Workspace zone. */
+  variant?: "cards" | "zone";
 }
 
 function formatValue(value: number, format: string): string {
@@ -65,6 +68,14 @@ function calculateDelta(current: number, previous: number): number {
   return ((current - previous) / previous) * 100;
 }
 
+const accentDots: Record<string, string> = {
+  primary: "bg-primary",
+  success: "bg-success",
+  warning: "bg-warning",
+  destructive: "bg-destructive",
+  accent: "bg-accent",
+};
+
 const accentColors: Record<string, string> = {
   primary: "border-l-primary",
   success: "border-l-success",
@@ -73,11 +84,15 @@ const accentColors: Record<string, string> = {
   accent: "border-l-accent",
 };
 
-export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: InlineKPIStripProps) {
+export function InlineKPIStrip({ items, availableMetrics, onMetricChange, variant = "cards" }: InlineKPIStripProps) {
   const isSwappable = !!(availableMetrics && onMetricChange);
+  const zone = variant === "zone";
 
   return (
-    <div data-inline-kpi-strip className="flex gap-1 rounded-lg bg-card p-1 overflow-x-auto">
+    <div
+      data-inline-kpi-strip
+      className={cn("flex overflow-x-auto", zone ? "divide-x divide-border" : "gap-1 rounded-lg bg-card p-1")}
+    >
       {items.map((item, index) => {
         const delta = calculateDelta(item.value, item.previousValue);
         const isPositive = delta > 0;
@@ -87,8 +102,8 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
         const cardContent = (
           <div
             className={cn(
-              "flex flex-1 flex-col gap-0.5 border-l-4 bg-surface/50 px-3 py-2.5 first:rounded-l-md last:rounded-r-md min-w-0",
-              colorClass,
+              "flex flex-1 flex-col gap-0.5 min-w-0",
+              zone ? "px-4 py-3" : cn("border-l-4 bg-surface/50 px-3 py-2.5 first:rounded-l-md last:rounded-r-md", colorClass),
               isSwappable && "cursor-pointer hover:bg-hover transition-colors"
             )}
           >
@@ -97,6 +112,7 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-1 text-2xs font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                      {zone && <span className={cn("mr-0.5 h-1.5 w-1.5 rounded-full", accentDots[item.accentColor || "primary"])} />}
                       {item.label}
                       <ChevronDown className="h-2.5 w-2.5" />
                     </button>
@@ -114,7 +130,8 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <span className="text-2xs font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="flex items-center gap-1 text-2xs font-medium uppercase tracking-wider text-muted-foreground">
+                  {zone && <span className={cn("mr-0.5 h-1.5 w-1.5 rounded-full", accentDots[item.accentColor || "primary"])} />}
                   {item.label}
                 </span>
               )}
@@ -125,12 +142,13 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
               </span>
               <div
                 className={cn(
-                  "flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-2xs font-medium shrink-0",
+                  "flex items-center gap-0.5 text-2xs font-medium shrink-0",
+                  !zone && "rounded-full px-1.5 py-0.5",
                   isNeutral
-                    ? "bg-muted text-muted-foreground"
+                    ? cn("text-muted-foreground", !zone && "bg-muted")
                     : isPositive
-                    ? "bg-success/10 text-success"
-                    : "bg-destructive/10 text-destructive"
+                    ? cn("text-success", !zone && "bg-success/10")
+                    : cn("text-destructive", !zone && "bg-destructive/10")
                 )}
               >
                 {isNeutral ? (

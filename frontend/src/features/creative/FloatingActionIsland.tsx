@@ -160,7 +160,7 @@ export function FloatingActionIsland() {
           data-island
           data-tour-id="island"
           className={cn(
-            "bg-card/95 backdrop-blur-md border border-primary/60 rounded-full shadow-lg transition-all duration-300 ease-out",
+            "k-island bg-card/95 backdrop-blur-md border border-primary/60 rounded-full shadow-lg transition-all duration-300 ease-out",
             isExpanded ? "px-2 py-2" : "px-3 py-2",
             isDragging && "cursor-grabbing"
           )}
@@ -192,7 +192,7 @@ export function FloatingActionIsland() {
               <button
                 type="button"
                 onClick={openCopilot}
-                className="group flex items-center gap-1.5 h-9 pl-1 pr-3 rounded-full bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
+                className="k-inset group flex items-center gap-1.5 h-9 pl-1 pr-3 rounded-full bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
                 title="Ask Aan"
               >
                 <AanMascot size={32} state="idle" interactive floating />

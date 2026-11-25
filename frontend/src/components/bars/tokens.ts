@@ -5,15 +5,15 @@
  *  - ChartCard's bar, on top of every chart
  *
  * Constant controls sit at fixed ends and never move; variable controls go in the middle slot as dropdown chips.
- * Every control in a bar is h-8 (2rem: 36px at this app's 18px root).
+ * Every control in a bar is --k-control-h tall (2rem = 36px by default; 30px in the dense "pro" kit).
  */
 
 /** Height of every control inside a bar (chips, icon buttons, segmented controls, primary buttons): Tailwind h-8. */
-export const BAR_CONTROL_HEIGHT = "2rem";
+export const BAR_CONTROL_HEIGHT = "var(--k-control-h)";
 
 /** The one style every dropdown chip in every bar uses. */
 export const BAR_CHIP_CLASS =
-  "inline-flex h-8 max-w-full items-center gap-1.5 rounded-md border border-control-border bg-control px-2.5 text-xs whitespace-nowrap transition-colors hover:bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-selected disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex h-[var(--k-control-h)] max-w-full items-center gap-1.5 rounded-md border border-control-border bg-control px-2.5 text-xs whitespace-nowrap transition-colors hover:bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-selected disabled:pointer-events-none disabled:opacity-50";
 
 /**
  * The fixed order of the table toolbar's icon actions, grouped. A table only switches actions on or off; it never

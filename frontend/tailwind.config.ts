@@ -49,7 +49,10 @@ export default {
         /* palette:end */
         hover: "hsl(var(--hover))",
         selected: "hsl(var(--selected))",
-        control: { DEFAULT: "hsl(var(--control))", border: "hsl(var(--control-border))" },
+        // Chips: fill / outline opacity come from --control-alpha / --control-border-alpha (0 inside a kit sheet = ghost).
+        control: { DEFAULT: "hsl(var(--control) / var(--control-alpha))", border: "hsl(var(--control-border) / var(--control-border-alpha))" },
+        field: "hsl(var(--field))",
+        track: "hsl(var(--track))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -99,6 +102,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      boxShadow: {
+        e1: "var(--k-shadow-e1)",
+        e2: "var(--k-shadow-e2)",
+        e3: "var(--k-shadow-e3)",
       },
       borderRadius: {
         lg: "var(--radius)",

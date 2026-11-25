@@ -29,7 +29,7 @@ export function BarSegmented<V extends string>({ value, onChange, items, iconOnl
     <div
       role="radiogroup"
       aria-label={rest["aria-label"]}
-      className={cn("inline-flex h-8 shrink-0 items-center gap-0.5 rounded-md bg-hover p-0.5", className)}
+      className={cn("inline-flex h-[var(--k-control-h)] shrink-0 items-center gap-0.5 rounded-md bg-track p-0.5", className)}
     >
       {items.map((it) => {
         const on = it.value === value;
@@ -43,8 +43,8 @@ export function BarSegmented<V extends string>({ value, onChange, items, iconOnl
             aria-label={it.label}
             onClick={() => onChange(it.value)}
             className={cn(
-              "inline-flex h-7 items-center justify-center gap-1.5 rounded-[5px] text-xs font-medium transition-colors",
-              iconOnly && Icon ? "w-7" : "px-2.5",
+              "inline-flex h-[calc(var(--k-control-h)-4px)] items-center justify-center gap-1.5 rounded-[5px] text-xs font-medium transition-colors",
+              iconOnly && Icon ? "w-[calc(var(--k-control-h)-4px)]" : "px-2.5",
               on ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
             )}
           >

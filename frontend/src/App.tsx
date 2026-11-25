@@ -68,6 +68,7 @@ import AMCInstances from "./pages/amc/Instances";
 // Day Parting
 import HourlyData from "./pages/dayparting/HourlyData";
 import Glance from "./pages/glance/Glance";
+import Kit from "./pages/kit/Kit";
 
 // Aan
 import AanWorkspacePage from "./pages/aan/Workspace";
@@ -158,6 +159,8 @@ function AppRoutes() {
       <Route path="/workspace" element={<Navigate to="/glance" replace />} />
       <Route path="/workspace/*" element={<Navigate to="/glance" replace />} />
       <Route path="/dashboard" element={<Navigate to="/glance" replace />} />
+      {/* The "pro" UI kit showcase (pilot) */}
+      <Route path="/kit" element={<Kit />} />
 
       {/* Profitability */}
       <Route path="/profitability/dashboard" element={<ProfitabilityDashboard />} />
