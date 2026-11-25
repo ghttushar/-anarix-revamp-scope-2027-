@@ -27,7 +27,7 @@ interface ActionItem {
   alwaysShowLabel?: boolean;
 }
 
-const hiddenRoutes = ["/login", "/onboarding", "/settings", "/advertising/campaign-creator"];
+const hiddenRoutes = ["/login", "/onboarding", "/settings", "/advertising/campaign-creator", "/advertising/rules/create"];
 
 export function FloatingActionIsland() {
   const isTabletView = false;

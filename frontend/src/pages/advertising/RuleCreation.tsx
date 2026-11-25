@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { StepFooter } from "@/components/kit";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AppTaskbar } from "@/components/layout/AppTaskbar";
@@ -11,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Copy, Trash2, ChevronDown, ChevronRight, Info, Home, ArrowRight, X, Save } from "lucide-react";
+import { Plus, Copy, Trash2, ChevronDown, ChevronRight, Info, Home, X, Save } from "lucide-react";
 import { ruleTemplates, metricOptions, operatorOptions, actionOptions, lookbackOptions, frequencyOptions, dateRangeOptions, type RuleCriteria, type RuleCondition } from "@/data/mockRules";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -256,17 +257,12 @@ export default function RuleCreation() {
               </CardContent>
             </Card>
 
-            {/* Footer Actions */}
-            <div className="flex items-center justify-between rounded-lg border border-border bg-card px-5 py-3">
-              <Button variant="outline" size="sm" onClick={addCriteria}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                Add Criteria
-              </Button>
-              <Button size="sm" onClick={() => setStep("campaigns")}>
-                {isEdit ? "Update Campaigns" : "Select Campaigns"}
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-              </Button>
-            </div>
+            {/* Flow footer, as in the Campaign Creator: Back on the left, the next step on the right. */}
+            <StepFooter
+              onBack={() => (window.history.length > 1 ? navigate(-1) : navigate("/advertising/rules/applied"))}
+              onNext={() => setStep("campaigns")}
+              nextLabel={isEdit ? "Update Campaigns" : "Select Campaigns"}
+            />
           </>
         ) : (
           <RuleCampaignSelector

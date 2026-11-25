@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { StepFooter } from "@/components/kit";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Filter, Plus, Trash2, ArrowLeft, ArrowRight, X } from "lucide-react";
+import { Search, Filter, Plus, Trash2, X } from "lucide-react";
 import { mockCampaigns } from "@/data/mockCampaigns";
 import { Campaign } from "@/types/campaign";
 import { cn } from "@/lib/utils";
@@ -102,12 +103,8 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
 
   return (
     <div className="space-y-4">
-      {/* Header bar */}
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" onClick={onBack} className="gap-1.5">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to Rule
-        </Button>
+      {/* Header bar (Back lives in the footer, as in the Campaign Creator) */}
+      <div className="flex items-center justify-end">
         <span className="text-xs text-muted-foreground">
           Applying rule: <span className="font-medium text-foreground">{ruleName || "Untitled Rule"}</span>
         </span>
@@ -301,13 +298,14 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-end gap-3 rounded-lg border border-border bg-card px-5 py-3">
-        <Button size="sm" onClick={onApplyRule} disabled={addedIds.size === 0}>
-          {isEdit ? "Update Campaigns" : "Apply Rule"}
-          <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-        </Button>
-      </div>
+      {/* Flow footer, as in the Campaign Creator */}
+      <StepFooter
+        onBack={onBack}
+        backLabel="Back to rule"
+        onNext={onApplyRule}
+        nextDisabled={addedIds.size === 0}
+        nextLabel={isEdit ? "Update Campaigns" : "Apply Rule"}
+      />
     </div>
   );
 }

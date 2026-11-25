@@ -73,13 +73,20 @@ export function SortableTableHead({
     </button>
   );
 
-  // Sort and pin sit on opposite sides of the label, so they can never crowd each other:
+  // Sort and pin sit on opposite sides of the label, so they never crowd each other:
   //   right-aligned:  [⇅ LABEL 📌]        left-aligned:  [📌 LABEL ⇅]
-  // Sort takes the label's free side (where the column's empty space is), pin the other. Neither takes width: they
-  // overlay on hover (on a card-coloured chip so they read over neighbouring text); an active one stays visible.
+  // Both sit in the flow (not overlaid), so the column is always wide enough for label + controls and nothing
+  // spills into the next column. An idle control keeps its slot but is invisible until the header is hovered.
   const right = align === "right";
   const reveal = "transition-opacity duration-150 group-hover/sort:pointer-events-auto group-hover/sort:opacity-100";
-  const side = (before: boolean) => (before ? "right-full mr-0.5" : "left-full ml-0.5");
+  const slot = (node: ReactNode, active: boolean) =>
+    node && (
+      <span className={cn("flex shrink-0 items-center", active ? "opacity-100" : cn("pointer-events-none opacity-0", reveal))}>
+        {node}
+      </span>
+    );
+  const sortSlot = slot(sortButton, isSorted);
+  const pinSlot = slot(pinButton, isPinned);
 
   return (
     <TableHead
@@ -89,36 +96,14 @@ export function SortableTableHead({
     >
       <div
         className={cn(
-          "flex items-center",
+          "flex items-center gap-0.5",
           right && "justify-end",
           align === "center" && "justify-center"
         )}
       >
-        <span className="relative inline-flex items-center">
-          {children}
-          {sortButton && (
-            <span
-              className={cn(
-                "absolute top-1/2 z-[1] flex -translate-y-1/2 items-center rounded bg-card",
-                side(right),
-                isSorted ? "opacity-100" : cn("pointer-events-none opacity-0", reveal)
-              )}
-            >
-              {sortButton}
-            </span>
-          )}
-          {pinButton && (
-            <span
-              className={cn(
-                "absolute top-1/2 z-[1] flex -translate-y-1/2 items-center rounded bg-card",
-                side(!right),
-                isPinned ? "opacity-100" : cn("pointer-events-none opacity-0", reveal)
-              )}
-            >
-              {pinButton}
-            </span>
-          )}
-        </span>
+        {right ? sortSlot : pinSlot}
+        <span className="inline-flex items-center">{children}</span>
+        {right ? pinSlot : sortSlot}
       </div>
     </TableHead>
   );

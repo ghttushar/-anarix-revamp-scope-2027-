@@ -62,6 +62,11 @@ export function MarketplaceSelector() {
 
   const [hoveredMp, setHoveredMp] = useState<Marketplace | null>(null);
   const [pinnedMp, setPinnedMp] = useState<Marketplace | null>(null);
+  // The list rests collapsed to the selected marketplace; hovering (or focusing) the section opens the rest.
+  // It stays open while an account popup is showing, so the row you came from doesn't vanish under it.
+  const [sectionHover, setSectionHover] = useState(false);
+  const [sectionFocus, setSectionFocus] = useState(false);
+  const listOpen = sectionHover || sectionFocus || hoveredMp !== null || pinnedMp !== null;
   const [triggerRects, setTriggerRects] = useState<Record<string, DOMRect | null>>({});
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -129,10 +134,28 @@ export function MarketplaceSelector() {
   };
 
   return (
-    <div className={cn("shrink-0", collapsed ? "px-1 py-2" : "px-3 py-2")}>
+    <div
+      className={cn("shrink-0", collapsed ? "px-1 py-2" : "px-3 py-2")}
+      onMouseEnter={() => setSectionHover(true)}
+      onMouseLeave={() => setSectionHover(false)}
+      onFocus={() => setSectionFocus(true)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setSectionFocus(false); }}
+    >
       {!collapsed && (
-        <div className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground px-2 mb-1.5">
-          Marketplace
+        <div className="mb-1.5 flex items-center justify-between px-2 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <span>Marketplace</span>
+          <svg
+            aria-hidden
+            viewBox="0 0 16 16"
+            className={cn("h-3 w-3 text-faint transition-transform duration-200 ease-out", listOpen && "rotate-180")}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.6}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 6l4 4 4-4" />
+          </svg>
         </div>
       )}
 
@@ -160,7 +183,7 @@ export function MarketplaceSelector() {
                       className={cn(
                         "flex items-center justify-center rounded-md h-8 w-8 transition-colors",
                         isSelected
-                          ? "bg-selected dark:bg-sidebar-accent"
+                          ? "hover:bg-sidebar-accent"
                           : "text-muted-foreground hover:bg-sidebar-accent"
                       )}
                     >
@@ -184,9 +207,19 @@ export function MarketplaceSelector() {
             );
           }
 
+          const shown = isSelected || listOpen;
           return (
-            <div key={opt.id}>
+            <div
+              key={opt.id}
+              aria-hidden={!shown || undefined}
+              className={cn(
+                "grid transition-[grid-template-rows,opacity] duration-200 ease-out",
+                shown ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              )}
+            >
+              <div className="min-h-0 overflow-hidden">
               <button
+                tabIndex={shown ? undefined : -1}
                 ref={(el) => { triggerRefs.current[opt.id] = el; }}
                 data-mp-trigger
                 onClick={() => handleTriggerClick(opt.id)}
@@ -195,7 +228,7 @@ export function MarketplaceSelector() {
                 className={cn(
                   "flex items-center gap-2.5 rounded-md px-2 py-1.5 w-full text-sm transition-colors",
                   isSelected
-                    ? "bg-selected dark:bg-sidebar-accent font-medium"
+                    ? "font-medium hover:bg-sidebar-accent"
                     : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
                 )}
                 style={isSelected ? { color: opt.id === "tiktok" ? (resolvedTheme === "dark" ? "#FFFFFF" : "#000000") : opt.brandColor } : undefined}
@@ -203,6 +236,7 @@ export function MarketplaceSelector() {
                 {renderLogo(opt, isSelected, "h-4 w-4")}
                 <span>{opt.label}</span>
               </button>
+              </div>
 
               <MarketplaceHoverPopup
                 marketplace={opt.id}

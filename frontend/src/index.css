@@ -275,6 +275,7 @@
    States are real periwinkle steps that read on white and never equal the canvas. ==== */
 @layer base {
   [data-kit="pro"] {
+    --background: 240 20% 97.5%;         /* #F7F7FA app shell: a white shade used nowhere else (cards are #FFF) */
     --radius: 0.5rem;                    /* 9px cards / menus (as the product website); md 7px controls; sm 5px */
     /* Text: four tones like the website's app mockups (and dark mode), not two. */
     --muted-foreground: 219 8% 43%;      /* #646A76 muted: subtitles, meta, table headers */
@@ -316,6 +317,7 @@
   }
   .dark[data-kit="pro"],
   .dark [data-kit="pro"] {
+    --background: 240 12% 8%;            /* dark shell unchanged */
     --muted-foreground: 230 20% 64%;
     --text-body: 233 26% 82%;            /* #C6C9DD */
     --text-faint: 231 14% 50%;           /* #6C7190 */

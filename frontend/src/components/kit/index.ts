@@ -5,3 +5,4 @@
  */
 export { Workspace, Zone, ZoneHeader } from "./Workspace";
 export { StatusDot, type StatusTone } from "./StatusDot";
+export { StepFooter } from "./StepFooter";

@@ -443,7 +443,7 @@ export function DataTableToolbar({
                     key="upload"
                     data-write-action
                     icon={Upload}
-                    name="Upload"
+                    name={uploadTitle.replace(/^Upload\s+/i, "") || "Upload"}
                     label={uploadTitle}
                     onClick={() => (onUploadClick ? onUploadClick() : setUploadOpen(true))}
                   />
