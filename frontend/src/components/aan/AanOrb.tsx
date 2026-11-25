@@ -30,7 +30,7 @@ function useIsDark() {
 /** The library is hand-tuned at 20, 32 and 64px; pick the nearest and scale the canvas to the slot. */
 function presetFor(size: number): 20 | 32 | 64 {
   if (size <= 26) return 20;
-  if (size <= 48) return 32;
+  if (size <= 40) return 32;
   return 64;
 }
 

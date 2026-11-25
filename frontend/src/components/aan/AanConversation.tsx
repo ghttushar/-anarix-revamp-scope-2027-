@@ -10,9 +10,11 @@ import { FloatingDots } from "./FloatingDots";
 
 /** compact: the narrow side panel (nav width). Smaller gutters, no user avatar, wider bubbles. */
 export function AanConversation({ compact = false }: { compact?: boolean }) {
-  const { messages, openSplit, isGenerating, generationType, generationProgress, isThinking } = useAan();
+  const { messages, openSplit, isGenerating, generationType, generationProgress, replyPhase } = useAan();
   const { registerAnchor } = useAanPresence();
   const scrollRef = useRef<HTMLDivElement>(null);
+  // The panel scrolls in a parent (Radix ScrollArea), not in this div, so follow the conversation's end marker instead.
+  const endRef = useRef<HTMLDivElement>(null);
   const [pendingAnchorEl, setPendingAnchorEl] = useState<HTMLDivElement | null>(null);
   const [generationAnchorEl, setGenerationAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -20,14 +22,16 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isGenerating, generationProgress, isThinking]);
+    endRef.current?.scrollIntoView({ block: "nearest" });
+  }, [messages, isGenerating, generationProgress, replyPhase]);
 
-  // Register the thinking row's anchor - the travelling presence shows the searching orb there while Aan prepares a reply
+  // Register the reply-status row's anchor - the travelling presence shows the searching orb (thinking), then the
+  // solving orb (working) there while Aan prepares a reply
   useEffect(() => {
-    if (isThinking) registerAnchor("pending", pendingAnchorEl, 40);
+    if (replyPhase) registerAnchor("pending", pendingAnchorEl, 48);
     else registerAnchor("pending", null);
     return () => registerAnchor("pending", null);
-  }, [isThinking, pendingAnchorEl, registerAnchor]);
+  }, [replyPhase, pendingAnchorEl, registerAnchor]);
 
   // Register the generation card anchor - owns the live presence while generating
   useEffect(() => {
@@ -104,16 +108,16 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
         </div>
       ))}
 
-      {/* Thinking - Aan is preparing a reply; the presence docks here as the searching orb */}
-      {isThinking && !isGenerating && (
+      {/* Reply status - Aan is preparing a reply; the presence docks here as the searching, then solving orb */}
+      {replyPhase && !isGenerating && (
         <div className={cn("flex flex-row items-center", compact ? "gap-2" : "gap-3")}>
           <div
             ref={setPendingAnchorEl}
             aria-hidden
             data-aan-anchor="pending"
-            className="w-10 h-10 shrink-0 flex items-center justify-center"
+            className="w-12 h-12 shrink-0 flex items-center justify-center"
           />
-          <p className="text-sm text-muted-foreground">Thinking…</p>
+          <p className="text-sm text-muted-foreground">{replyPhase === "thinking" ? "Thinking…" : "Working…"}</p>
         </div>
       )}
 
@@ -146,6 +150,7 @@ export function AanConversation({ compact = false }: { compact?: boolean }) {
           </div>
         </div>
       )}
+      <div ref={endRef} aria-hidden />
     </div>
   );
 }

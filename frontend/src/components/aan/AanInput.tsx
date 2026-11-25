@@ -104,17 +104,12 @@ function formatFileSize(bytes: number): string {
 
 /** compact: the narrow side panel (nav width). */
 export function AanInput({ compact = false }: { compact?: boolean } = {}) {
-  const { addMessage, setGenerationState, messages, selectedModel, setSelectedModel, pendingPrompt, setPendingPrompt, isGenerating, generationType, setInputFocused, setIsThinking } = useAan();
+  const { addMessage, setGenerationState, messages, selectedModel, setSelectedModel, pendingPrompt, setPendingPrompt, isGenerating, generationType, setInputFocused, setReplyPhase } = useAan();
   const { fireScenario } = useAanEvents();
   const { setDataPanel } = useActivePanel();
   const { registerAnchor } = useAanPresence();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // The reply-preparing phase is Aan thinking: the conversation shows the searching orb meanwhile.
-  const setThinking = (thinking: boolean) => {
-    setIsLoading(thinking);
-    setIsThinking(thinking);
-  };
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [suggestionVisible, setSuggestionVisible] = useState(false);
@@ -126,6 +121,8 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const suggestionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Bumped by Stop (and unmount) so an in-flight prepareReply knows to drop its reply.
+  const replyTokenRef = useRef(0);
 
   // Register the top-left input slot as the resting anchor for the travelling Aan presence
   useEffect(() => {
@@ -138,7 +135,8 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
-      setIsThinking(false);
+      replyTokenRef.current++;
+      setReplyPhase(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -163,11 +161,30 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
       setPendingPrompt(null);
     }
   }, [pendingPrompt, setPendingPrompt]);
+  /** Every mock reply is staged: Aan thinks (searching orb) for 2s, works (solving orb) for 2s, then answers.
+   *  Resolves false when Stop interrupted it, so the caller drops the reply. */
+  const prepareReply = async () => {
+    const token = ++replyTokenRef.current;
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    setIsLoading(true);
+    setReplyPhase("thinking");
+    await wait(2000);
+    if (token !== replyTokenRef.current) return false;
+    setReplyPhase("working");
+    await wait(2000);
+    if (token !== replyTokenRef.current) return false;
+    setReplyPhase(null);
+    setIsLoading(false);
+    return true;
+  };
+
   const handleStop = () => {
+    replyTokenRef.current++;
+    setReplyPhase(null);
+    setIsLoading(false);
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
     if (progressIntervalRef.current) { clearInterval(progressIntervalRef.current); progressIntervalRef.current = null; }
     setGenerationState(false, null, 0);
-    setThinking(false);
     addMessage("Generation stopped.", "assistant");
   };
 
@@ -179,6 +196,9 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
     setSuggestionVisible(false);
     setAttachedFiles([]);
     addMessage(userMessage, "user");
+
+    // Aan thinks, then works, before any reply (Stop cancels it).
+    if (!(await prepareReply())) return;
 
     // Trigger console keywords: "trigger <scenario-id>" fires an autonomous scenario
     const triggerMatch = userMessage.match(/^\s*trigger\s+([\w-]+)\s*$/i);
@@ -223,10 +243,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
 
 
     if (isReportRequest(userMessage)) {
-      setThinking(true);
-      await new Promise((resolve) => setTimeout(resolve, 1200));
       addMessage(getReportSummary(), "assistant");
-      setThinking(false);
       setGenerationState(true, "report", 0);
       let progress = 0;
       progressIntervalRef.current = setInterval(() => {
@@ -248,10 +265,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
     }
 
     if (isAuditRequest(userMessage)) {
-      setThinking(true);
-      await new Promise((resolve) => setTimeout(resolve, 1200));
       addMessage(getAuditSummary(), "assistant");
-      setThinking(false);
       setGenerationState(true, "audit", 0);
       let progress = 0;
       progressIntervalRef.current = setInterval(() => {
@@ -272,11 +286,8 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
       return;
     }
 
-    setThinking(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
     const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
     addMessage(randomResponse.content, "assistant", randomResponse.draft);
-    setThinking(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
