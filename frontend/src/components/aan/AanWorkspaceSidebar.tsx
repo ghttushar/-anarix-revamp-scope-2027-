@@ -71,7 +71,7 @@ export function AanWorkspaceSidebar() {
         <div className="flex justify-center py-2">
           <button
             onClick={() => setIsCollapsed(false)}
-            className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-hover transition-colors cursor-pointer"
             title="Expand sidebar"
           >
             <PanelLeft className="h-4 w-4" />
@@ -82,7 +82,7 @@ export function AanWorkspaceSidebar() {
         <div className="flex justify-center py-1">
           <button
             onClick={startNewConversation}
-            className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-hover transition-colors cursor-pointer"
             title="New Chat"
           >
             <Plus className="h-4 w-4" />
@@ -100,7 +100,7 @@ export function AanWorkspaceSidebar() {
                   onClick={() => setActiveFilter(isActive ? "all" : section.id)}
                   className={cn(
                     "flex items-center justify-center h-8 w-8 rounded-md transition-colors cursor-pointer",
-                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-hover"
                   )}
                   title={section.label}
                 >
@@ -124,7 +124,7 @@ export function AanWorkspaceSidebar() {
         </div>
         <button
           onClick={() => setIsCollapsed(true)}
-          className="flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+          className="flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-hover transition-colors cursor-pointer"
           title="Collapse sidebar"
         >
           <PanelLeft className="h-4 w-4" />
@@ -150,7 +150,7 @@ export function AanWorkspaceSidebar() {
               onClick={() => setActiveFilter(isActive ? "all" : section.id)}
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all cursor-pointer",
-                isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-hover hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -200,7 +200,7 @@ export function AanWorkspaceSidebar() {
                               "flex flex-col w-full text-left rounded-md px-2 py-2 transition-colors cursor-pointer",
                               currentConversation?.id === conv.id
                                 ? "bg-primary/10 text-foreground"
-                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                : "text-muted-foreground hover:bg-hover hover:text-foreground"
                             )}
                           >
                             <span className="text-sm font-medium truncate">{conv.title}</span>

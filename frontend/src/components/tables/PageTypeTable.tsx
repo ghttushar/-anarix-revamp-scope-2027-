@@ -96,7 +96,7 @@ export function PageTypeTable({ searchQuery = "", showDeltas = false }: PageType
           <TableBody>
             {paginatedTypes.map((pageType) => (
               <TableRow key={pageType.id}>
-                <TableCell className="sticky z-10 bg-card font-medium text-foreground group-hover:bg-muted transition-colors">{pageType.pageType}</TableCell>
+                <TableCell className="sticky z-10 bg-card font-medium text-foreground group-hover:bg-hover transition-colors">{pageType.pageType}</TableCell>
                 <TableCell style={ps("bidModifier")} className={cn("text-right", pc("bidModifier"))}>
                   <div className="flex items-center justify-end gap-1">
                     <Input type="number" value={bidModifiers[pageType.id]} onChange={(e) => setBidModifiers((prev) => ({ ...prev, [pageType.id]: parseInt(e.target.value) || 0 }))} className="h-8 w-20 text-right" min={0} max={1000} />

@@ -285,7 +285,7 @@ export function DataTableToolbar({
                       onClick={() => handleSortFieldToggle(field.id)}
                       className={cn(
                         "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-xs transition-colors cursor-pointer",
-                        isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                        isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-hover"
                       )}
                     >
                       <span>{field.label}</span>
@@ -336,7 +336,7 @@ export function DataTableToolbar({
                         placeholder="Value..."
                         className="h-7 w-[110px] text-2xs"
                       />
-                      <button onClick={() => removeFilterRule(rule.id)} className="p-1 hover:bg-muted rounded cursor-pointer" title="Remove filter">
+                      <button onClick={() => removeFilterRule(rule.id)} className="p-1 hover:bg-hover rounded cursor-pointer" title="Remove filter">
                         <Trash2 className="h-3 w-3 text-muted-foreground" />
                       </button>
                     </div>
@@ -385,7 +385,7 @@ export function DataTableToolbar({
                     <>
                       <div className="px-2 py-1 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">Pinned</div>
                       {filteredColumns.filter(c => pinnedColumns.includes(c.id)).map((column) => (
-                        <div key={`pinned-${column.id}`} className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-xs hover:bg-muted transition-colors">
+                        <div key={`pinned-${column.id}`} className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-xs hover:bg-hover transition-colors">
                           <button onClick={() => onColumnToggle(column.id)} className="flex items-center gap-2 flex-1 cursor-pointer">
                             <Checkbox checked={column.visible} className="pointer-events-none h-3.5 w-3.5" />
                             <span className="text-foreground">{column.label}</span>
@@ -400,7 +400,7 @@ export function DataTableToolbar({
                     </>
                   )}
                   {filteredColumns.filter(c => !pinnedColumns.includes(c.id)).map((column) => (
-                    <div key={column.id} className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-xs hover:bg-muted transition-colors group">
+                    <div key={column.id} className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-xs hover:bg-hover transition-colors group">
                       <button onClick={() => onColumnToggle(column.id)} className="flex items-center gap-2 flex-1 cursor-pointer">
                         <Checkbox checked={column.visible} className="pointer-events-none h-3.5 w-3.5" />
                         <span className="text-foreground">{column.label}</span>

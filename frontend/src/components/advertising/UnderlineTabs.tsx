@@ -23,7 +23,7 @@ export function UnderlineTabs({ tabs, value, onChange }: UnderlineTabsProps) {
             "relative pb-2.5 px-3 text-sm font-medium transition-colors cursor-pointer rounded-t-md",
             value === tab.value
               ? "text-foreground"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+              : "text-muted-foreground hover:text-foreground hover:bg-hover"
           )}
         >
           <span>{tab.label}</span>

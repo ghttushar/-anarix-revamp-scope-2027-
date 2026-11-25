@@ -62,7 +62,7 @@ export function CampaignSettingsPanel({ campaign, onSave }: CampaignSettingsPane
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
         <h3 className="text-sm font-semibold text-foreground">Campaign Settings</h3>
-        <button onClick={closeDataPanel} className="p-1 rounded hover:bg-muted transition-colors cursor-pointer">
+        <button onClick={closeDataPanel} className="p-1 rounded hover:bg-hover transition-colors cursor-pointer">
           <X className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>
@@ -129,21 +129,21 @@ export function CampaignSettingsPanel({ campaign, onSave }: CampaignSettingsPane
           <div className="space-y-2">
             <Label className="text-xs">Bidding Strategy</Label>
             <RadioGroup value={biddingStrategy} onValueChange={(v) => setBiddingStrategy(v as BiddingStrategy)} className="space-y-2">
-              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/70 cursor-pointer transition-colors">
+              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-hover cursor-pointer transition-colors">
                 <RadioGroupItem value="Dynamic Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — down only</span>
                   <p className="text-2xs text-muted-foreground">Lowers bids when less likely to convert</p>
                 </div>
               </label>
-              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/70 cursor-pointer transition-colors">
+              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-hover cursor-pointer transition-colors">
                 <RadioGroupItem value="Dynamic Up/Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — up and down</span>
                   <p className="text-2xs text-muted-foreground">Raises bids for high-convert, lowers for unlikely</p>
                 </div>
               </label>
-              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/70 cursor-pointer transition-colors">
+              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-hover cursor-pointer transition-colors">
                 <RadioGroupItem value="Fixed" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Fixed bids</span>

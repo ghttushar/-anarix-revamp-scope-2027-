@@ -40,7 +40,7 @@ export function SortableTableHead({
     <button
       onClick={(e) => { e.stopPropagation(); onSort(field); }}
       className={cn(
-        "shrink-0 cursor-pointer p-0.5 rounded hover:bg-muted transition-colors",
+        "shrink-0 cursor-pointer p-0.5 rounded hover:bg-hover transition-colors",
         isSorted ? "opacity-100" : "opacity-40 hover:opacity-80"
       )}
       title={isSorted ? (sortDirection === "asc" ? "Sort descending" : "Clear sort") : "Sort ascending"}
@@ -65,7 +65,7 @@ export function SortableTableHead({
         "shrink-0 cursor-pointer p-0.5 rounded transition-all",
         isPinned
           ? "text-primary opacity-100 hover:bg-primary/10"
-          : "opacity-40 hover:!opacity-80 hover:bg-muted text-muted-foreground"
+          : "opacity-40 hover:!opacity-80 hover:bg-hover text-muted-foreground"
       )}
       title={isPinned ? "Unpin column" : "Pin column"}
     >
@@ -151,7 +151,7 @@ export function usePinning(allFields: string[], fixedOffset: number = 0, columnW
     getPinnedStyle(field, pinnedColumns, allFields, fixedOffset, columnWidth);
   const pc = (field: string, isHeader: boolean = false): string => {
     if (!pinnedColumns.has(field)) return "";
-    return isHeader ? "bg-card" : "bg-card group-hover:bg-muted transition-colors";
+    return isHeader ? "bg-card" : "bg-card group-hover:bg-hover transition-colors";
   };
   return { pinnedColumns, handlePinToggle, ps, pc };
 }

@@ -20,7 +20,7 @@ export function MeetingActionsCard({ defaultOpen = false }: { defaultOpen?: bool
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-muted/30 rounded-lg"
+        className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-hover rounded-lg"
       >
         <Video className="h-3.5 w-3.5 text-primary shrink-0" />
         <div className="flex-1 min-w-0">

@@ -54,7 +54,7 @@ export function KeywordTrackerTable({ keywords, onStatusChange, onDelete }: Keyw
         </TableHeader>
         <TableBody>
           {paginatedKeywords.map((keyword) => (
-            <TableRow key={keyword.id} className="hover:bg-muted/30 group">
+            <TableRow key={keyword.id} className="hover:bg-hover group">
               <TableCell style={ps("keyword")} className={cn("font-medium", pc("keyword"))}>{keyword.keyword}</TableCell>
               <TableCell style={ps("addedAt")} className={cn("text-muted-foreground text-sm", pc("addedAt"))}>{formatDate(keyword.addedAt)}</TableCell>
               <TableCell style={ps("updatedAt")} className={cn("text-muted-foreground text-sm", pc("updatedAt"))}>{formatDate(keyword.updatedAt)}</TableCell>

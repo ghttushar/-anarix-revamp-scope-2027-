@@ -105,7 +105,7 @@ export default function Billing() {
                 </thead>
                 <tbody>
                   {mockInvoices.map((inv) => (
-                    <tr key={inv.id} className="border-b border-border/60 last:border-b-0 hover:bg-muted/20">
+                    <tr key={inv.id} className="border-b border-border/60 last:border-b-0 hover:bg-hover">
                       <td className="py-3 px-4 text-foreground whitespace-nowrap">{new Date(inv.date).toLocaleDateString()}</td>
                       <td className="py-3 px-4 text-foreground font-mono text-xs">{inv.number}</td>
                       <td className="py-3 px-4 text-foreground">{inv.plan}</td>

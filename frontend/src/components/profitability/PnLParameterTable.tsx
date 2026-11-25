@@ -67,11 +67,11 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
         <TableRow
           key={row.id}
           className={cn(
-            "hover:bg-muted/30 group",
+            "hover:bg-hover group",
             row.isParent && "font-medium bg-muted/70"
           )}
         >
-          <TableCell className={cn("sticky left-0 z-10 group-hover:bg-muted/30 transition-colors", row.isParent ? "bg-muted/70" : "bg-card")}>
+          <TableCell className={cn("sticky left-0 z-10 group-hover:bg-hover transition-colors", row.isParent ? "bg-muted/70" : "bg-card")}>
             <div
               className="flex items-center gap-2"
               style={{ paddingLeft: `${row.indent * 20}px` }}
@@ -79,7 +79,7 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
               {hasChildren ? (
                 <button
                   onClick={() => toggleRow(row.id)}
-                  className="p-0.5 hover:bg-muted rounded cursor-pointer"
+                  className="p-0.5 hover:bg-hover rounded cursor-pointer"
                 >
                   {isExpanded ? (
                     <ChevronDown className="h-3.5 w-3.5" />

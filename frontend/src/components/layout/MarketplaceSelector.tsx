@@ -160,7 +160,7 @@ export function MarketplaceSelector() {
                       className={cn(
                         "flex items-center justify-center rounded-md h-8 w-8 transition-colors",
                         isSelected
-                          ? "bg-sidebar-accent"
+                          ? "bg-selected dark:bg-sidebar-accent"
                           : "text-muted-foreground hover:bg-sidebar-accent"
                       )}
                     >
@@ -195,7 +195,7 @@ export function MarketplaceSelector() {
                 className={cn(
                   "flex items-center gap-2.5 rounded-md px-2 py-1.5 w-full text-sm transition-colors",
                   isSelected
-                    ? "bg-sidebar-accent font-medium"
+                    ? "bg-selected dark:bg-sidebar-accent font-medium"
                     : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
                 )}
                 style={isSelected ? { color: opt.id === "tiktok" ? (resolvedTheme === "dark" ? "#FFFFFF" : "#000000") : opt.brandColor } : undefined}

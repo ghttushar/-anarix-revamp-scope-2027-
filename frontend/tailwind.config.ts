@@ -38,6 +38,18 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         surface: "hsl(var(--surface))",
+        /* palette:start */
+        peri: { "25": "hsl(var(--peri-25))", "50": "hsl(var(--peri-50))", "100": "hsl(var(--peri-100))", "150": "hsl(var(--peri-150))", "200": "hsl(var(--peri-200))", "300": "hsl(var(--peri-300))", "400": "hsl(var(--peri-400))", "500": "hsl(var(--peri-500))", "600": "hsl(var(--peri-600))", "700": "hsl(var(--peri-700))", "800": "hsl(var(--peri-800))", "900": "hsl(var(--peri-900))" },
+        haze: { "25": "hsl(var(--haze-25))", "50": "hsl(var(--haze-50))", "75": "hsl(var(--haze-75))", "100": "hsl(var(--haze-100))", "125": "hsl(var(--haze-125))", "150": "hsl(var(--haze-150))", "175": "hsl(var(--haze-175))", "200": "hsl(var(--haze-200))", "225": "hsl(var(--haze-225))", "250": "hsl(var(--haze-250))", "300": "hsl(var(--haze-300))", "350": "hsl(var(--haze-350))", "400": "hsl(var(--haze-400))", "450": "hsl(var(--haze-450))", "500": "hsl(var(--haze-500))", "550": "hsl(var(--haze-550))", "600": "hsl(var(--haze-600))", "650": "hsl(var(--haze-650))", "700": "hsl(var(--haze-700))", "750": "hsl(var(--haze-750))", "800": "hsl(var(--haze-800))", "850": "hsl(var(--haze-850))", "900": "hsl(var(--haze-900))" },
+        grey: { "0": "hsl(var(--grey-0))", "50": "hsl(var(--grey-50))", "100": "hsl(var(--grey-100))", "150": "hsl(var(--grey-150))", "200": "hsl(var(--grey-200))", "250": "hsl(var(--grey-250))", "300": "hsl(var(--grey-300))", "350": "hsl(var(--grey-350))", "400": "hsl(var(--grey-400))", "450": "hsl(var(--grey-450))", "500": "hsl(var(--grey-500))", "600": "hsl(var(--grey-600))", "700": "hsl(var(--grey-700))", "800": "hsl(var(--grey-800))", "900": "hsl(var(--grey-900))", "1000": "hsl(var(--grey-1000))" },
+        info: { "400": "hsl(var(--info-400))", "500": "hsl(var(--info-500))", "600": "hsl(var(--info-600))", "700": "hsl(var(--info-700))" },
+        danger: { "50": "hsl(var(--danger-50))", "300": "hsl(var(--danger-300))", "400": "hsl(var(--danger-400))", "500": "hsl(var(--danger-500))", "600": "hsl(var(--danger-600))" },
+        positive: { "50": "hsl(var(--positive-50))", "100": "hsl(var(--positive-100))", "150": "hsl(var(--positive-150))", "500": "hsl(var(--positive-500))", "600": "hsl(var(--positive-600))" },
+        caution: { "50": "hsl(var(--caution-50))", "300": "hsl(var(--caution-300))", "400": "hsl(var(--caution-400))", "500": "hsl(var(--caution-500))", "600": "hsl(var(--caution-600))" },
+        /* palette:end */
+        hover: "hsl(var(--hover))",
+        selected: "hsl(var(--selected))",
+        control: { DEFAULT: "hsl(var(--control))", border: "hsl(var(--control-border))" },
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

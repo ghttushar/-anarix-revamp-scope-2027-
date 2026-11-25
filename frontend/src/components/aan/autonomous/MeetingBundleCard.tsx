@@ -35,7 +35,7 @@ export function MeetingBundleCard({ bundle, onOpenDetails }: Props) {
   const overflow = Math.max(0, bundle.participants.length - shownParticipants.length);
 
   return (
-    <div className="rounded-lg border border-l-4 border-l-primary bg-card px-5 py-4 transition-colors hover:bg-muted/20">
+    <div className="rounded-lg border border-l-4 border-l-primary bg-card px-5 py-4 transition-colors hover:bg-hover">
       {/* Meta strip */}
       <div className="flex items-center gap-1.5 mb-3">
         <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-primary" />

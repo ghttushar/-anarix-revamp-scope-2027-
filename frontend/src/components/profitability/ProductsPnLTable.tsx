@@ -175,20 +175,20 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                     {/* Parent / category row */}
                     <TableRow
                       key={`cat-${cat.key}`}
-                      className="hover:bg-muted/40 group cursor-pointer"
+                      className="hover:bg-hover group cursor-pointer"
                       onClick={(e) => {
                         const isTablet = typeof document !== "undefined" && document.documentElement.getAttribute("data-view") === "tablet";
                         if (isTablet && !(e.target as HTMLElement).closest("[data-cat-toggle]")) return;
                         toggleCategory(cat.key);
                       }}
                     >
-                      <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors border-r border-border/20">
+                      <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors border-r border-border/20">
                         <div className="flex items-center gap-3">
                           <button
                             type="button"
                             data-cat-toggle
                             onClick={(e) => { e.stopPropagation(); toggleCategory(cat.key); }}
-                            className="flex items-center justify-center h-8 w-8 rounded border border-border bg-muted flex-shrink-0 hover:bg-muted/70"
+                            className="flex items-center justify-center h-8 w-8 rounded border border-border bg-muted flex-shrink-0 hover:bg-hover"
                             aria-label={isExpanded ? "Collapse category" : "Expand category"}
                           >
                             {isExpanded ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -226,8 +226,8 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
 
                     {/* Child rows */}
                     {isExpanded && cat.items.map((product) => (
-                      <TableRow key={product.id} className="bg-card hover:bg-muted group">
-                        <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors border-r border-border/20 pl-14">
+                      <TableRow key={product.id} className="bg-card hover:bg-hover group">
+                        <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors border-r border-border/20 pl-14">
                           <div className="flex items-center gap-3">
                             <img src={product.image} alt={product.name} className="h-7 w-7 rounded border border-border object-cover flex-shrink-0" />
                             <div className="flex flex-col min-w-0">
@@ -347,7 +347,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                 <>
                   <TableRow
                     key={order.id}
-                    className="hover:bg-muted/30 group cursor-pointer"
+                    className="hover:bg-hover group cursor-pointer"
                     onClick={(e) => {
                       // On tablet, require explicit chevron tap so finger
                       // scrolling on the row doesn't toggle expand.
@@ -356,13 +356,13 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                       toggleOrderExpand(order.id);
                     }}
                   >
-                    <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors border-r border-border/20">
+                    <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors border-r border-border/20">
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
                           data-row-toggle
                           onClick={(e) => { e.stopPropagation(); toggleOrderExpand(order.id); }}
-                          className="flex items-center justify-center h-8 w-8 rounded border border-border bg-muted flex-shrink-0 hover:bg-muted/70"
+                          className="flex items-center justify-center h-8 w-8 rounded border border-border bg-muted flex-shrink-0 hover:bg-hover"
                           aria-label={isExpanded ? "Collapse order" : "Expand order"}
                         >
                           {isExpanded ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -400,7 +400,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                   </TableRow>
 
                   {isExpanded && order.products.map((product, idx) => (
-                    <TableRow key={`${order.id}-${product.id}-${idx}`} className="bg-card hover:bg-muted">
+                    <TableRow key={`${order.id}-${product.id}-${idx}`} className="bg-card hover:bg-hover">
                       <TableCell className="sticky left-0 z-10 bg-card pl-14 border-r border-border/20">
                         <div className="flex items-center gap-3">
                           <img src={product.image} alt={product.name} className="h-7 w-7 rounded border border-border object-cover flex-shrink-0" />

@@ -134,12 +134,12 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
             </TableHeader>
             <TableBody>
               {paginatedAds.map((ad) => (
-                <TableRow key={ad.id} className="group cursor-pointer hover:bg-muted/70 transition-colors" onClick={() => onRowClick?.(ad)}>
-                  <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
+                <TableRow key={ad.id} className="group cursor-pointer hover:bg-hover transition-colors" onClick={() => onRowClick?.(ad)}>
+                  <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors">
                     <Checkbox checked={selectedRows.has(ad.id)} onCheckedChange={() => toggleRow(ad.id)} />
                   </TableCell>
-                  <TableCell className="sticky left-[40px] z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={ad.status} /></TableCell>
-                  <TableCell className="sticky left-[136px] z-10 bg-card group-hover:bg-muted transition-colors">
+                  <TableCell className="sticky left-[40px] z-10 bg-card group-hover:bg-hover transition-colors"><StatusBadge status={ad.status} /></TableCell>
+                  <TableCell className="sticky left-[136px] z-10 bg-card group-hover:bg-hover transition-colors">
                     <div className="flex items-center gap-3">
                       <img src={ad.productImage} alt={ad.productName} className="h-10 w-10 rounded-md object-cover" />
                       <div className="flex flex-col">

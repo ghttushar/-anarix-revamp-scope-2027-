@@ -76,7 +76,7 @@ export function AddProductAdsPanel() {
             {selectedIds.size}/2,000
           </span>
         </h3>
-        <button onClick={closeDataPanel} className="p-1 rounded hover:bg-muted transition-colors cursor-pointer">
+        <button onClick={closeDataPanel} className="p-1 rounded hover:bg-hover transition-colors cursor-pointer">
           <X className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>
@@ -100,7 +100,7 @@ export function AddProductAdsPanel() {
           {filteredProducts.map((product) => (
             <label
               key={product.id}
-              className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/70 cursor-pointer transition-colors"
+              className="flex items-center gap-3 p-2 rounded-md hover:bg-hover cursor-pointer transition-colors"
             >
               <Checkbox
                 checked={selectedIds.has(product.id)}

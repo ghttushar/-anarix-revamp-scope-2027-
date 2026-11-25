@@ -98,8 +98,8 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
           </TableHeader>
           <TableBody>
             {paginated.map((product) => (
-              <TableRow key={product.id} className="hover:bg-muted/30 group">
-                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted min-w-[350px] transition-colors">
+              <TableRow key={product.id} className="hover:bg-hover group">
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover min-w-[350px] transition-colors">
                   <div className="flex items-center gap-3">
                     <img src={product.image} alt={product.name} className="h-10 w-10 rounded-md border border-border object-cover" />
                     <div className="flex flex-col">
@@ -143,7 +143,7 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
                 <TableCell style={ps("adSpend")} className={cn("text-right", pc("adSpend"))}><NumCell formatted={formatCurrency(product.adSpend)} id={product.id} metric="adSpend" /></TableCell>
               </TableRow>
             ))}
-            <TableRow className="bg-muted font-medium hover:bg-muted">
+            <TableRow className="bg-muted font-medium hover:bg-hover">
               <TableCell className="sticky left-0 z-10 bg-muted font-semibold">Total ({filtered.length} products)</TableCell>
               <TableCell>-</TableCell>
               <TableCell>-</TableCell>

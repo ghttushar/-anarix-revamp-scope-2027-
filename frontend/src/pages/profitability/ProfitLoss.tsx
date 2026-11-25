@@ -175,7 +175,7 @@ export default function ProfitLoss() {
                   {pickerProducts.map((p) => (
                     <label
                       key={p.id}
-                      className="flex items-center gap-2 px-2 py-1.5 text-xs rounded hover:bg-muted cursor-pointer"
+                      className="flex items-center gap-2 px-2 py-1.5 text-xs rounded hover:bg-hover cursor-pointer"
                     >
                       <Checkbox
                         checked={selectedProductIds.includes(p.id)}

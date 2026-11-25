@@ -112,9 +112,9 @@ export function ProductTargetingTable({ searchQuery = "", showDeltas = false }: 
           </TableHeader>
           <TableBody>
             {paginatedTargets.map((target) => (
-              <TableRow key={target.id} className="group cursor-pointer hover:bg-muted/70 transition-colors">
-                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={target.status} /></TableCell>
-                <TableCell className="sticky left-[96px] z-10 bg-card group-hover:bg-muted transition-colors">
+              <TableRow key={target.id} className="group cursor-pointer hover:bg-hover transition-colors">
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors"><StatusBadge status={target.status} /></TableCell>
+                <TableCell className="sticky left-[96px] z-10 bg-card group-hover:bg-hover transition-colors">
                   <div className="flex flex-col">
                     <span className="font-medium text-foreground">{target.targetLabel}</span>
                     <span className="text-xs text-muted-foreground">{target.targetValue}</span>

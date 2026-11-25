@@ -39,7 +39,7 @@ export function InsightCard({ insight, onActionClick }: InsightCardProps) {
   return (
     <div
       className={cn(
-        "rounded-lg border p-4 transition-colors hover:bg-muted/70",
+        "rounded-lg border p-4 transition-colors hover:bg-hover",
         config.borderClass
       )}
     >

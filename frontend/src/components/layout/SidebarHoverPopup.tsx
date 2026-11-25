@@ -87,7 +87,7 @@ export function SidebarHoverPopup({
               "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
               isActive(item.url)
                 ? "bg-primary/10 text-primary"
-                : "text-popover-foreground hover:bg-muted hover:text-foreground"
+                : "text-popover-foreground hover:bg-hover hover:text-foreground"
             )}
           >
             {item.icon && <item.icon className="h-4 w-4 shrink-0" />}

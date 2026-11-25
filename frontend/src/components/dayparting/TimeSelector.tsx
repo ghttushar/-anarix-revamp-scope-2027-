@@ -69,7 +69,7 @@ export function TimeSelector({ selectedHours, onHoursChange, disabled }: TimeSel
           type="button"
           onClick={() => selectRange(0, 5)}
           disabled={disabled}
-          className="text-xs px-2 py-1 rounded border border-border hover:bg-muted disabled:opacity-50"
+          className="text-xs px-2 py-1 rounded border border-border hover:bg-hover disabled:opacity-50"
         >
           Night (12AM-5AM)
         </button>
@@ -77,7 +77,7 @@ export function TimeSelector({ selectedHours, onHoursChange, disabled }: TimeSel
           type="button"
           onClick={() => selectRange(6, 11)}
           disabled={disabled}
-          className="text-xs px-2 py-1 rounded border border-border hover:bg-muted disabled:opacity-50"
+          className="text-xs px-2 py-1 rounded border border-border hover:bg-hover disabled:opacity-50"
         >
           Morning (6AM-11AM)
         </button>
@@ -85,7 +85,7 @@ export function TimeSelector({ selectedHours, onHoursChange, disabled }: TimeSel
           type="button"
           onClick={() => selectRange(12, 17)}
           disabled={disabled}
-          className="text-xs px-2 py-1 rounded border border-border hover:bg-muted disabled:opacity-50"
+          className="text-xs px-2 py-1 rounded border border-border hover:bg-hover disabled:opacity-50"
         >
           Afternoon (12PM-5PM)
         </button>
@@ -93,7 +93,7 @@ export function TimeSelector({ selectedHours, onHoursChange, disabled }: TimeSel
           type="button"
           onClick={() => selectRange(18, 23)}
           disabled={disabled}
-          className="text-xs px-2 py-1 rounded border border-border hover:bg-muted disabled:opacity-50"
+          className="text-xs px-2 py-1 rounded border border-border hover:bg-hover disabled:opacity-50"
         >
           Evening (6PM-11PM)
         </button>
@@ -115,7 +115,7 @@ export function TimeSelector({ selectedHours, onHoursChange, disabled }: TimeSel
                 "h-10 rounded-md text-sm font-medium transition-colors",
                 isSelected
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted hover:bg-muted/80 text-foreground",
+                  : "bg-muted hover:bg-hover text-foreground",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
             >

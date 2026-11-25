@@ -95,8 +95,8 @@ export function RegionalProductTable({ searchValue = "", showDeltas = false, sor
             {paginated.map((product) => {
               const margin = product.gmv > 0 ? (product.netProfit / product.gmv) * 100 : 0;
               return (
-                <TableRow key={product.id} className="hover:bg-muted/30 group">
-                  <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors border-r border-border">
+                <TableRow key={product.id} className="hover:bg-hover group">
+                  <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors border-r border-border">
                     <div className="flex items-center gap-3">
                       <img src={product.image} alt={product.name} className="h-10 w-10 rounded-md border border-border object-cover flex-shrink-0" />
                       <div className="flex flex-col min-w-0">

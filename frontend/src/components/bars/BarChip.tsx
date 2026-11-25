@@ -151,7 +151,7 @@ export function BarChip<V extends string = string>(props: BarChipProps<V>) {
                 className={cn(
                   "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-xs transition-colors",
                   selected ? "text-foreground" : "text-foreground/85",
-                  isDisabled ? "cursor-not-allowed opacity-40" : "hover:bg-muted",
+                  isDisabled ? "cursor-not-allowed opacity-40" : "hover:bg-hover",
                 )}
               >
                 {props.multiple ? (

@@ -52,7 +52,7 @@ export function AccountSelector({ selected, onChange }: Props) {
 
         return (
           <div key={mp.key} className="border border-border rounded-lg bg-card overflow-hidden">
-            <div className="flex items-center justify-between px-3 py-2.5 hover:bg-muted/40">
+            <div className="flex items-center justify-between px-3 py-2.5 hover:bg-hover">
               <button
                 type="button"
                 onClick={() => setExpanded((p) => ({ ...p, [mp.key]: !p[mp.key] }))}
@@ -83,7 +83,7 @@ export function AccountSelector({ selected, onChange }: Props) {
                     <li key={a.id}>
                       <label
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-muted/30",
+                          "flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-hover",
                           isOn && "bg-primary/[0.08]"
                         )}
                       >

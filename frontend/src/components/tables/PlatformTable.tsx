@@ -96,7 +96,7 @@ export function PlatformTable({ searchQuery = "", showDeltas = false }: Platform
           <TableBody>
             {paginatedPlatforms.map((platform) => (
               <TableRow key={platform.id}>
-                <TableCell className="sticky z-10 bg-card font-medium text-foreground group-hover:bg-muted transition-colors">{platform.platform}</TableCell>
+                <TableCell className="sticky z-10 bg-card font-medium text-foreground group-hover:bg-hover transition-colors">{platform.platform}</TableCell>
                 <TableCell style={ps("bidModifier")} className={cn("text-right", pc("bidModifier"))}>
                   <div className="flex items-center justify-end gap-1">
                     <Input type="number" value={bidModifiers[platform.id]} onChange={(e) => setBidModifiers((prev) => ({ ...prev, [platform.id]: parseInt(e.target.value) || 0 }))} className="h-8 w-20 text-right" min={0} max={1000} />

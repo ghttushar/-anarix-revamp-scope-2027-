@@ -140,7 +140,7 @@ export default function ProfitabilityTrends() {
                   return (
                     <label
                       key={p.id}
-                      className="flex items-center gap-2 px-2 py-1.5 text-xs rounded hover:bg-muted cursor-pointer"
+                      className="flex items-center gap-2 px-2 py-1.5 text-xs rounded hover:bg-hover cursor-pointer"
                     >
                       <Checkbox checked={checked} onCheckedChange={() => toggleProduct(p.id)} />
                       <span className="line-clamp-1 flex-1">{p.name}</span>
@@ -260,8 +260,8 @@ export default function ProfitabilityTrends() {
                       0
                     );
                     return (
-                      <TableRow key={product.id} className="hover:bg-muted/30 group">
-                        <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
+                      <TableRow key={product.id} className="hover:bg-hover group">
+                        <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors">
                           <div className="flex items-start gap-3">
                             <img
                               src={product.image}

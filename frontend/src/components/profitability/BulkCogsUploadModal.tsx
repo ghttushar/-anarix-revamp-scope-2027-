@@ -204,7 +204,7 @@ function UploadView({
           "flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-12 cursor-pointer transition-colors",
           isDragging
             ? "border-primary bg-primary/[0.08]"
-            : "border-border bg-muted/30 hover:bg-muted/70"
+            : "border-border bg-muted/30 hover:bg-hover"
         )}
       >
         <input

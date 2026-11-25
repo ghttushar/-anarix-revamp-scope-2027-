@@ -60,7 +60,7 @@ export function BrandCoverageTable({ brands, onViewTrend, showDeltas = false }: 
         </TableHeader>
         <TableBody>
           {paginatedBrands.map((brand, index) => (
-            <TableRow key={brand.id} className="hover:bg-muted/30 group">
+            <TableRow key={brand.id} className="hover:bg-hover group">
               <TableCell className="font-medium">{(currentPage - 1) * pageSize + index + 1}</TableCell>
               <TableCell style={ps("name")} className={cn("font-medium", pc("name"))}>{brand.name}</TableCell>
               <TableCell style={ps("productCount")} className={cn("text-right", pc("productCount"))}><NumCell formatted={String(brand.productCount)} id={brand.id} metric="productCount" show={showDeltas} /></TableCell>

@@ -67,11 +67,11 @@ export function RegionalTable({ data, searchValue = "", showDeltas = false }: Re
     const isExpanded = expandedRows.has(region.id);
     return (
       <>
-        <TableRow key={region.id} className={cn("hover:bg-muted/30 group cursor-pointer transition-colors", isChild && "bg-muted/10")}>
-          <TableCell className={cn("sticky left-0 z-10 border-r border-border transition-colors", isChild ? "bg-muted group-hover:bg-muted" : "bg-card group-hover:bg-muted")}>
+        <TableRow key={region.id} className={cn("hover:bg-hover group cursor-pointer transition-colors", isChild && "bg-muted/10")}>
+          <TableCell className={cn("sticky left-0 z-10 border-r border-border transition-colors", isChild ? "bg-muted group-hover:bg-hover" : "bg-card group-hover:bg-hover")}>
             <div className={cn("flex items-center gap-2", isChild && "pl-8")}>
               {hasChildren ? (
-                <button onClick={() => toggleRow(region.id)} className="p-0.5 hover:bg-muted rounded">
+                <button onClick={() => toggleRow(region.id)} className="p-0.5 hover:bg-hover rounded">
                   {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
               ) : (<span className="w-5" />)}

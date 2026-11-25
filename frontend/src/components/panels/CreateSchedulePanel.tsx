@@ -78,7 +78,7 @@ export function CreateSchedulePanel() {
                 return (
                   <Badge key={id} variant="secondary" className="gap-1 pr-1 text-2xs h-5">
                     {camp?.name || id}
-                    <button onClick={() => removeCampaign(id)} className="rounded-full p-0.5 hover:bg-muted"><X className="h-2 w-2" /></button>
+                    <button onClick={() => removeCampaign(id)} className="rounded-full p-0.5 hover:bg-hover"><X className="h-2 w-2" /></button>
                   </Badge>
                 );
               })}
@@ -123,7 +123,7 @@ export function CreateSchedulePanel() {
                     onClick={() => toggleDay(d.value)}
                     className={cn(
                       "h-6 w-7 rounded text-2xs font-medium transition-colors cursor-pointer",
-                      selectedDays.includes(d.value) ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      selectedDays.includes(d.value) ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-hover"
                     )}
                   >{d.label}</button>
                 ))}
@@ -168,7 +168,7 @@ export function CreateSchedulePanel() {
                       <SelectContent>{Array.from({ length: 24 }, (_, i) => <SelectItem key={i} value={i.toString().padStart(2, "0")} className="text-xs">{i.toString().padStart(2, "0")}:00</SelectItem>)}</SelectContent>
                     </Select>
                     {timeRanges.length > 1 && (
-                      <button onClick={() => removeTimeRange(idx)} className="p-0.5 hover:bg-muted rounded cursor-pointer"><X className="h-2.5 w-2.5 text-muted-foreground" /></button>
+                      <button onClick={() => removeTimeRange(idx)} className="p-0.5 hover:bg-hover rounded cursor-pointer"><X className="h-2.5 w-2.5 text-muted-foreground" /></button>
                     )}
                   </div>
                 ))}

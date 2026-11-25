@@ -42,7 +42,7 @@ export function MetricSelector({ selectedMetrics, onToggle, maxMetrics }: Metric
                   "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
                   isSelected
                     ? "bg-primary/10 text-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    : "text-muted-foreground hover:bg-hover hover:text-foreground",
                   isDisabled && "cursor-not-allowed opacity-50"
                 )}
               >

@@ -122,7 +122,7 @@ export function PeriodBreakdownPanel({ summary, isOpen, onClose }: PeriodBreakdo
             const open = openSections[section.id] ?? !!section.defaultOpen;
             return (
               <Collapsible key={section.id} open={open} onOpenChange={() => toggle(section.id)}>
-                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 hover:bg-muted/70 transition-colors">
+                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 hover:bg-hover transition-colors">
                   <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
                     {section.title}
                   </span>

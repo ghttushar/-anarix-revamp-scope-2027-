@@ -53,7 +53,7 @@ export function ConnectionRow({ integration, onToggle, onEdit, onDelete }: Props
         <Switch checked={integration.enabled} onCheckedChange={onToggle} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="h-8 w-8 rounded-md flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors" title="More">
+            <button className="h-8 w-8 rounded-md flex items-center justify-center text-muted-foreground hover:bg-hover hover:text-foreground transition-colors" title="More">
               <MoreVertical className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>

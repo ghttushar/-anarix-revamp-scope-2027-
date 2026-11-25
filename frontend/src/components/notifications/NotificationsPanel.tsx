@@ -74,7 +74,7 @@ export function NotificationsPanel() {
               <div
                 key={notification.id}
                 className={cn(
-                  "rounded-lg p-3 transition-colors hover:bg-muted/70 cursor-pointer",
+                  "rounded-lg p-3 transition-colors hover:bg-hover cursor-pointer",
                   !notification.read && "bg-primary/[0.08] border border-primary/10"
                 )}
               >

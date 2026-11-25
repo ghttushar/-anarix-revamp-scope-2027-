@@ -350,7 +350,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
                 </button>
                 <button
                   onClick={handleDismissSuggestion}
-                  className="ml-2 p-0.5 rounded hover:bg-muted text-muted-foreground transition-colors"
+                  className="ml-2 p-0.5 rounded hover:bg-hover text-muted-foreground transition-colors"
                   aria-label="Dismiss suggestion"
                 >
                   <X className="h-3 w-3" />
@@ -440,7 +440,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
                       onClick={() => { setSelectedModel(model.id); setModelOpen(false); }}
                       className={cn(
                         "w-full flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors",
-                        isSelected ? "bg-primary/10 text-foreground" : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                        isSelected ? "bg-primary/10 text-foreground" : "hover:bg-hover text-muted-foreground hover:text-foreground"
                       )}
                     >
                       <Icon className="h-4 w-4 shrink-0" />

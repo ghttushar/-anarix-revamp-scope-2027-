@@ -203,7 +203,7 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
                 <span key={i} className="flex min-w-0 items-center gap-1">
                   {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground/60" />}
                   {c.href && !last ? (
-                    <Link to={c.href} title={c.label} className="min-w-0 max-w-[9rem] truncate rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">{c.label}</Link>
+                    <Link to={c.href} title={c.label} className="min-w-0 max-w-[9rem] truncate rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-hover hover:text-foreground">{c.label}</Link>
                   ) : (
                     <span title={c.label} aria-current={last ? "page" : undefined} className={cn("min-w-0 max-w-[14rem] truncate px-1", last ? "font-medium text-foreground" : "text-muted-foreground")}>{c.label}</span>
                   )}
@@ -245,7 +245,7 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
                               onClick={() => setDraftRange(preset.getRange())}
                               className={cn(
                                 "w-full text-left text-xs px-3 py-2 rounded-md transition-colors cursor-pointer font-medium",
-                                isSelected ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                                isSelected ? "bg-primary/10 text-primary" : "text-foreground hover:bg-hover"
                               )}
                             >
                               {preset.label}

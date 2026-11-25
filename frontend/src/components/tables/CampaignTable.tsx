@@ -188,7 +188,7 @@ export function CampaignTable({
                   <TableRow
                     className={cn(
                       "group transition-colors",
-                      onRowClick && "cursor-pointer hover:bg-muted/70"
+                      onRowClick && "cursor-pointer hover:bg-hover"
                     )}
                     onClick={() => onRowClick?.(campaign.id)}
                   >
@@ -209,8 +209,8 @@ export function CampaignTable({
                         <Switch checked={campaign.isActive} onCheckedChange={(checked) => onActiveToggle?.(campaign.id, checked)} disabled={campaign.status === "archived" || campaign.status === "completed"} />
                       </TableCell>
                     )}
-                    {show("status") && <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={campaign.status} /></TableCell>}
-                    {show("name") && <TableCell className="font-medium sticky z-10 bg-card group-hover:bg-muted transition-colors">
+                    {show("status") && <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors"><StatusBadge status={campaign.status} /></TableCell>}
+                    {show("name") && <TableCell className="font-medium sticky z-10 bg-card group-hover:bg-hover transition-colors">
                       <div className="space-y-1 min-w-[170px]">
                         {isEdit ? (
                           <Input defaultValue={campaign.name} className="h-8 text-sm" onBlur={(e) => onCampaignUpdate?.(campaign.id, { name: e.target.value })} onClick={(e) => e.stopPropagation()} />

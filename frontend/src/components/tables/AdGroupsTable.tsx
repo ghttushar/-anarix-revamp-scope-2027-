@@ -105,9 +105,9 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
           </TableHeader>
           <TableBody>
             {paginatedGroups.map((group) => (
-              <TableRow key={group.id} className="group cursor-pointer hover:bg-muted/70 transition-colors" onClick={() => onRowClick?.(group)}>
-                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={group.status} /></TableCell>
-                <TableCell className="font-medium sticky left-[96px] z-10 bg-card group-hover:bg-muted transition-colors"><span className="text-primary hover:underline">{group.name}</span></TableCell>
+              <TableRow key={group.id} className="group cursor-pointer hover:bg-hover transition-colors" onClick={() => onRowClick?.(group)}>
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors"><StatusBadge status={group.status} /></TableCell>
+                <TableCell className="font-medium sticky left-[96px] z-10 bg-card group-hover:bg-hover transition-colors"><span className="text-primary hover:underline">{group.name}</span></TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className={cn("text-xs", group.campaignType === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>

@@ -244,7 +244,7 @@ export function AppSidebar() {
                 className={cn(
                   "flex items-center gap-2.5 rounded-md mx-1 px-3 py-2 text-sm font-semibold transition-colors",
                   isActive(item.url)
-                    ? "bg-primary/8 text-primary"
+                    ? "bg-selected text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
                 )}
               >
@@ -295,7 +295,7 @@ export function AppSidebar() {
                                 className={cn(
                                   "flex items-center gap-2.5 rounded-md pl-6 pr-2 py-1.5 text-sm transition-colors",
                                   isActive(item.url)
-                                    ? "bg-primary/8 text-primary border-l-2 border-primary ml-0 pl-[25px]"
+                                    ? "bg-selected text-primary border-l-2 border-primary ml-0 pl-[25px]"
                                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                 )}
                               >

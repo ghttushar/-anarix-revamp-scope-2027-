@@ -57,7 +57,7 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
   return (
     <div
       className={cn(
-        "rounded-lg border border-l-4 bg-card px-5 py-4 transition-colors hover:bg-muted/20",
+        "rounded-lg border border-l-4 bg-card px-5 py-4 transition-colors hover:bg-hover",
         isMeeting ? "border-l-primary" : severityAccent[s.severity],
         isRejected && "opacity-70"
       )}

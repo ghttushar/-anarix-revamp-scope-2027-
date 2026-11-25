@@ -169,7 +169,7 @@ export function FloatingActionIsland() {
             <button
               onPointerDown={handleDragStart}
               style={{ touchAction: "none" }}
-              className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-grab active:cursor-grabbing shrink-0"
+              className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-hover transition-colors cursor-grab active:cursor-grabbing shrink-0"
               title="Drag to reposition"
             >
               <GripVertical className="h-3.5 w-3.5" />
@@ -178,7 +178,7 @@ export function FloatingActionIsland() {
               <button
                 type="button"
                 onClick={toggleTabletExpand}
-                className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
+                className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-hover transition-colors shrink-0"
                 title={isExpanded ? "Collapse" : "Expand"}
                 aria-label={isExpanded ? "Collapse action island" : "Expand action island"}
               >

@@ -52,7 +52,7 @@ export function AdGroupSettingsPanel({ adGroup, onSave }: AdGroupSettingsPanelPr
     <div className="w-[320px] shrink-0 border-l border-border bg-card flex flex-col h-full">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
         <h3 className="text-sm font-semibold text-foreground">Ad Group Settings</h3>
-        <button onClick={closeDataPanel} className="p-1 rounded hover:bg-muted transition-colors cursor-pointer">
+        <button onClick={closeDataPanel} className="p-1 rounded hover:bg-hover transition-colors cursor-pointer">
           <X className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>

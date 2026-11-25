@@ -11,7 +11,7 @@ interface ChipProps {
 }
 
 const variantClasses = {
-  default: "bg-muted text-muted-foreground hover:bg-muted/80",
+  default: "bg-muted text-muted-foreground hover:bg-hover",
   primary: "bg-primary/10 text-primary hover:bg-primary/20",
   success: "bg-success/10 text-success hover:bg-success/20",
   warning: "bg-warning/10 text-warning hover:bg-warning/20",

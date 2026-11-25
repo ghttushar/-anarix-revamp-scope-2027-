@@ -90,7 +90,7 @@ export function DaySelector({ selectedDays, onDaysChange, disabled }: DaySelecto
                 "flex-1 h-10 rounded-md text-sm font-medium transition-colors",
                 isSelected
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted hover:bg-muted/80 text-foreground",
+                  : "bg-muted hover:bg-hover text-foreground",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
             >

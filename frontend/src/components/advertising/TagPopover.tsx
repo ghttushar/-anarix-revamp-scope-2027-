@@ -106,7 +106,7 @@ export function TagPopover({
               <div
                 key={tag}
                 className={cn(
-                  "group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs cursor-pointer hover:bg-muted",
+                  "group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs cursor-pointer hover:bg-hover",
                   isSelected && "bg-primary/[0.08]"
                 )}
               >
@@ -151,7 +151,7 @@ export function TagPopover({
                         e.stopPropagation();
                         startEdit(tag);
                       }}
-                      className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-muted cursor-pointer transition-opacity"
+                      className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-hover cursor-pointer transition-opacity"
                       title="Rename tag"
                     >
                       <Pencil className="h-3 w-3 text-muted-foreground" />

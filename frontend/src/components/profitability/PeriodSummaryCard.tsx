@@ -82,7 +82,7 @@ export function PeriodSummaryCard({ summary, accentColor = "hsl(var(--primary))"
                           onClick={() => handleMonthSelect(i)}
                           className={cn(
                             "px-3 py-2 text-xs rounded-md transition-colors",
-                            isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground"
+                            isSelected ? "bg-primary text-primary-foreground" : "hover:bg-hover text-foreground"
                           )}
                         >
                           {format(new Date(2024, i, 1), "MMM")}

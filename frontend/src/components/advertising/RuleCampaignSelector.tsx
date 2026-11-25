@@ -186,7 +186,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                 <div
                   key={campaign.id}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-2.5 border-b border-border/50 cursor-pointer hover:bg-muted/20 transition-colors",
+                    "flex items-center gap-3 px-4 py-2.5 border-b border-border/50 cursor-pointer hover:bg-hover transition-colors",
                     selectedLeft.has(campaign.id) && "bg-primary/[0.08]"
                   )}
                   onClick={() => toggleLeftSelect(campaign.id)}
@@ -265,7 +265,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                 <div
                   key={campaign.id}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-2.5 border-b border-border/50 cursor-pointer hover:bg-muted/20 transition-colors",
+                    "flex items-center gap-3 px-4 py-2.5 border-b border-border/50 cursor-pointer hover:bg-hover transition-colors",
                     selectedRight.has(campaign.id) && "bg-destructive/5"
                   )}
                   onClick={() => toggleRightSelect(campaign.id)}

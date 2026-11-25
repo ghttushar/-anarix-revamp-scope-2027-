@@ -140,7 +140,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                   const allExpanded = allIds.every((id) => expandedSections.has(id));
                   setExpandedSections(allExpanded ? new Set() : new Set(allIds));
                 }}
-                className="flex items-center gap-1 rounded px-1.5 py-0.5 text-2xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                className="flex items-center gap-1 rounded px-1.5 py-0.5 text-2xs font-medium text-muted-foreground hover:bg-hover hover:text-foreground transition-colors cursor-pointer"
                 title="Expand or collapse all sections"
               >
                 <ChevronsUpDown className="h-3 w-3" />
@@ -157,7 +157,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                       onClick={() => hasChildren && toggleSection(section.id)}
                       className={cn(
                         "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                        hasChildren ? "cursor-pointer hover:bg-muted/70" : "cursor-default",
+                        hasChildren ? "cursor-pointer hover:bg-hover" : "cursor-default",
                         isExpanded && "bg-muted/30"
                       )}
                     >

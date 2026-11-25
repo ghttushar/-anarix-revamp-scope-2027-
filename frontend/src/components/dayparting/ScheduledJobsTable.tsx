@@ -78,7 +78,7 @@ export function ScheduledJobsTable({ schedules, onPauseResume, onDelete }: Sched
         </TableHeader>
         <TableBody>
           {paginatedSchedules.map((schedule) => (
-            <TableRow key={schedule.id} className="hover:bg-muted/30 group">
+            <TableRow key={schedule.id} className="hover:bg-hover group">
               <TableCell style={ps("name")} className={cn("font-medium", pc("name"))}>{schedule.name}</TableCell>
               <TableCell style={ps("campaignNames")} className={cn(pc("campaignNames"))}>
                 <div className="max-w-[200px]">

@@ -120,11 +120,11 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
           </TableHeader>
           <TableBody>
             {paginatedTerms.map((term) => (
-              <TableRow key={term.id} className="group cursor-pointer hover:bg-muted/70 transition-colors">
-                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
+              <TableRow key={term.id} className="group cursor-pointer hover:bg-hover transition-colors">
+                <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors">
                   <Checkbox checked={selectedRows.has(term.id)} onCheckedChange={() => toggleRow(term.id)} />
                 </TableCell>
-                <TableCell className="font-medium text-foreground sticky left-[40px] z-10 bg-card group-hover:bg-muted transition-colors">{term.searchTerm}</TableCell>
+                <TableCell className="font-medium text-foreground sticky left-[40px] z-10 bg-card group-hover:bg-hover transition-colors">{term.searchTerm}</TableCell>
                 <TableCell style={ps("keyword")} className={cn("text-foreground", pc("keyword"))}>{term.keyword}</TableCell>
                 <TableCell><Badge variant="outline" className={cn("text-xs uppercase", matchTypeColors[term.matchType])}>{term.matchType}</Badge></TableCell>
                 <TableCell style={ps("adGroupName")} className={cn("text-foreground", pc("adGroupName"))}>{term.adGroupName}</TableCell>

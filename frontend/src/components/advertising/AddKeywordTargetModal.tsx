@@ -171,7 +171,7 @@ export function AddKeywordTargetModal({ isOpen, onClose, onAdd }: AddKeywordTarg
                     />
                     <button
                       onClick={() => removeRow(kw.id)}
-                      className="p-1 hover:bg-muted rounded cursor-pointer"
+                      className="p-1 hover:bg-hover rounded cursor-pointer"
                       title="Remove keyword"
                       disabled={keywords.length <= 1}
                     >

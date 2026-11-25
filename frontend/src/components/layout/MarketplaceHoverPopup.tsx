@@ -92,7 +92,7 @@ export function MarketplaceHoverPopup({
                 "flex items-center gap-2.5 rounded-md px-3 py-2.5 min-h-11 text-sm w-full text-left transition-colors",
                 currentAccountId === acc.id
                   ? "bg-primary/10 text-primary font-medium"
-                  : "text-popover-foreground hover:bg-muted hover:text-foreground"
+                  : "text-popover-foreground hover:bg-hover hover:text-foreground"
               )}
             >
               <StatusDot status={acc.status} />
@@ -110,7 +110,7 @@ export function MarketplaceHoverPopup({
       <div className="border-t border-border p-1.5">
         <NavLink
           to={connectUrl}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-hover transition-colors"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Connect Account</span>

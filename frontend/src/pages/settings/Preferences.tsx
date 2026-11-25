@@ -529,7 +529,7 @@ export default function Preferences() {
             <button
               type="button"
               onClick={() => setHowAanOpen((v) => !v)}
-              className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-muted/30 rounded-lg"
+              className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-hover rounded-lg"
             >
               <Shield className="h-4 w-4 text-muted-foreground shrink-0" />
               <div className="flex-1 min-w-0">

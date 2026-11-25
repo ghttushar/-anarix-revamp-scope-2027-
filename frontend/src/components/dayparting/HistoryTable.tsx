@@ -77,10 +77,10 @@ export function HistoryTable({ history, onRetry }: HistoryTableProps) {
             const hasDetails = item.actionDetails || item.errorMessage || item.budgetBefore !== undefined;
             return (
               <>
-                <TableRow key={item.id} className="hover:bg-muted/30 group">
+                <TableRow key={item.id} className="hover:bg-hover group">
                   <TableCell>
                     {hasDetails && (
-                      <button onClick={() => toggleRow(item.id)} className="p-1 hover:bg-muted rounded">
+                      <button onClick={() => toggleRow(item.id)} className="p-1 hover:bg-hover rounded">
                         {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                       </button>
                     )}

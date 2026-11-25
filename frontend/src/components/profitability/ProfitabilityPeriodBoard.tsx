@@ -123,7 +123,7 @@ function PeriodRow({
   const headerTone = selected
     ? "bg-primary/[0.07] text-primary border-b border-primary/20"
     : "bg-card text-foreground border-b border-border";
-  const hoverTone = selected ? "hover:bg-primary/10" : "hover:bg-muted hover:text-primary";
+  const hoverTone = selected ? "hover:bg-primary/10" : "hover:bg-hover hover:text-primary";
 
   return (
     <div
@@ -265,7 +265,7 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
             <button
               type="button"
               onClick={() => g.children && toggle(g.key)}
-              className={cn("flex w-full items-center gap-2 px-3 py-2 text-left", g.children ? "hover:bg-muted/40" : "cursor-default", open[g.key] && g.children && "bg-muted/40")}
+              className={cn("flex w-full items-center gap-2 px-3 py-2 text-left", g.children ? "hover:bg-hover" : "cursor-default", open[g.key] && g.children && "bg-muted/40")}
             >
               <span className="w-3.5 shrink-0 text-muted-foreground">
                 {g.children && (open[g.key] ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />)}

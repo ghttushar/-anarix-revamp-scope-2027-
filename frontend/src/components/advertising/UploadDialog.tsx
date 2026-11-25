@@ -102,7 +102,7 @@ export function UploadDialog({ isOpen, onClose, onUpload, accept = ".csv,.xlsx,.
                     {(file.size / 1024).toFixed(1)} KB
                   </span>
                 </div>
-                <button onClick={(e) => { e.stopPropagation(); removeFile(index); }} className="p-0.5 hover:bg-muted rounded cursor-pointer">
+                <button onClick={(e) => { e.stopPropagation(); removeFile(index); }} className="p-0.5 hover:bg-hover rounded cursor-pointer">
                   <X className="h-3 w-3 text-muted-foreground" />
                 </button>
               </div>
