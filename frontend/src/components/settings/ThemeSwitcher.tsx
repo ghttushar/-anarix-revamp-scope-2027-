@@ -1,4 +1,5 @@
 import { useTheme } from "@/contexts/ThemeContext";
+import { originFromEvent } from "@/lib/theme-transition";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +39,7 @@ export function ThemeSwitcher() {
       {themeOptions.map((option) => (
         <button
           key={option.value}
-          onClick={() => setTheme(option.value)}
+          onClick={(e) => setTheme(option.value, originFromEvent(e))}
           className={cn(
             "group relative flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all",
             theme === option.value

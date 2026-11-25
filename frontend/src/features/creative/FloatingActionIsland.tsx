@@ -5,6 +5,7 @@ import {
   AnxInbox as Inbox,
 } from "@/components/icons";
 import { useTheme } from "@/contexts/ThemeContext";
+import { originFromEvent } from "@/lib/theme-transition";
 
 import { AanGlyph } from "@/components/aan/AanGlyph";
 import { AanMascot } from "@/components/aan/AanMascot";
@@ -21,7 +22,7 @@ import { LegacyNotificationsDrawer, useLegacyUnreadNotifications } from "@legacy
 interface ActionItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  onClick: () => void;
+  onClick: (e?: React.MouseEvent<HTMLElement>) => void;
   highlight?: boolean;
   badge?: number;
   alwaysShowLabel?: boolean;
@@ -124,7 +125,7 @@ export function FloatingActionIsland() {
   const themeAction: ActionItem = {
     icon: isDark ? Sun : Moon,
     label: isDark ? "Light mode" : "Dark mode",
-    onClick: () => setTheme(isDark ? "light" : "dark"),
+    onClick: (e) => setTheme(isDark ? "light" : "dark", originFromEvent(e)),
   };
 
   // anarix-ui's notification centre (Signals has its own place in the sidebar).
@@ -209,7 +210,7 @@ export function FloatingActionIsland() {
                   key={index}
                   variant="ghost"
                   size="sm"
-                  onClick={() => { action.onClick(); scheduleTabletCollapse(); }}
+                  onClick={(e) => { action.onClick(e); scheduleTabletCollapse(); }}
                   className={cn(
                     "rounded-full transition-all duration-200 relative h-8",
                     (isExpanded || action.alwaysShowLabel) ? "px-3 gap-1.5" : "px-2",

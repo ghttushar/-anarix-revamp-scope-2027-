@@ -1217,3 +1217,42 @@ html[data-view="mobile"] [data-island] {
 /* (:not(#_) lifts it above the column rule's :has() specificity.) */
 .pulse-table tbody tr:not(#_) > td:hover { background-image: linear-gradient(hsl(var(--primary) / 0.09), hsl(var(--primary) / 0.09)); }
 .pulse-table tbody tr[data-totals] td, .pulse-table thead tr[data-totals] td { background-image: none; }
+
+/* ---- Theme switch: the "ink" reveal (lib/theme-transition) ----
+   During a theme switch <html data-theme-ink="ink|circle|fade"> drives a view transition: the new theme's snapshot
+   is masked by a procedural ink blot (paint(ink-reveal)) spreading from the toggle, over the untouched old one. */
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+
+@keyframes k-ink { from { --ink-progress: 0; } to { --ink-progress: 1; } }
+@keyframes k-ink-circle {
+  from { clip-path: circle(0px at calc(var(--ink-x) * 1px) calc(var(--ink-y) * 1px)); }
+  to { clip-path: circle(var(--ink-r, 150vmax) at calc(var(--ink-x) * 1px) calc(var(--ink-y) * 1px)); }
+}
+
+html[data-theme-ink]::view-transition-old(root),
+html[data-theme-ink]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html[data-theme-ink]::view-transition-old(root) { z-index: 1; }
+html[data-theme-ink]::view-transition-new(root) { z-index: 2; }
+
+html[data-theme-ink="ink"]::view-transition-new(root) {
+  -webkit-mask-image: paint(ink-reveal);
+  mask-image: paint(ink-reveal);
+  animation: k-ink 1400ms cubic-bezier(0.37, 0, 0.63, 1) both; /* ease-in-out sine: the front sweeps steadily, like the reference */
+}
+html[data-theme-ink="circle"]::view-transition-new(root) {
+  animation: k-ink-circle 900ms cubic-bezier(0.55, 0.05, 0.25, 1) both;
+}
+/* Reduced motion: a short cross-fade (fade in, don't flash). */
+html[data-theme-ink="fade"]::view-transition-old(root) { animation: 200ms ease-out both k-ink-fade-out; }
+html[data-theme-ink="fade"]::view-transition-new(root) { animation: 200ms ease-out both k-ink-fade-in; }
+@keyframes k-ink-fade-out { to { opacity: 0; } }
+@keyframes k-ink-fade-in { from { opacity: 0; } }
+
+/* While the new state is captured, nothing fades on its own (no staggered "white, then dark"). */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after { transition: none !important; }

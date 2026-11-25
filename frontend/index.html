@@ -11,9 +11,15 @@
           var t = localStorage.getItem("anarix-theme") || "light";
           if (t === "system") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
           document.documentElement.classList.add(t);
+          document.documentElement.style.colorScheme = t;
         } catch (e) {}
       })();
     </script>
+    <!-- The page canvas colour before the CSS bundle arrives, so a slow load is never a white flash in dark mode. -->
+    <style>
+      html { background: #f7f7fa; }
+      html.dark { background: #121217; }
+    </style>
     <!-- TODO: Set the document title to the name of your application -->
     <title>Lovable App</title>
     <meta name="description" content="Lovable Generated Project" />

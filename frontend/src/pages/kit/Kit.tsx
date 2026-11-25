@@ -19,6 +19,7 @@ import { UnderlineTabs } from "@/components/advertising/UnderlineTabs";
 import { InlineKPIStrip } from "@/components/advertising/InlineKPIStrip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
 import { useTheme } from "@/contexts/ThemeContext";
+import { originFromEvent } from "@/lib/theme-transition";
 import { cn } from "@/lib/utils";
 import { IconGallery } from "@/components/icons";
 
@@ -68,7 +69,7 @@ export default function Kit() {
       <div className="space-y-4">
         <PageHeader title="UI kit" subtitle="The app kit: rounded cards per section, inset wells for fields and bar chips, ghost chips on charts, real state colours." />
         <AppTaskbar showDateRange showAdType showFrequency showRunButton>
-          <Button size="xs" variant="ghost" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+          <Button size="xs" variant="ghost" onClick={(e) => setTheme(resolvedTheme === "dark" ? "light" : "dark", originFromEvent(e))}>
             {resolvedTheme === "dark" ? <Sun /> : <Moon />} {resolvedTheme === "dark" ? "Light" : "Dark"}
           </Button>
         </AppTaskbar>
