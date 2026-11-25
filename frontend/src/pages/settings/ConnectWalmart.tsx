@@ -32,7 +32,7 @@ const connectionOptions = [
     title: "Walmart Marketplace",
     description: "Connect your Walmart Marketplace seller account to sync orders, inventory, and catalog data.",
     icon: ShoppingCart,
-    color: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400",
+    color: "bg-success/10 text-success",
     accountType: "marketplace" as const,
   },
 ];

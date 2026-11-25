@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,7 +20,7 @@ interface KeywordTargetingTableProps {
 
 const matchTypeColors: Record<string, string> = {
   broad: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  exact: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+  exact: "bg-success/10 text-success border-success/20",
   phrase: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
 };
 
@@ -113,9 +114,7 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
                 <TableCell style={ps("adGroupName")} className={cn("text-foreground", pc("adGroupName"))}>{keyword.adGroupName}</TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={cn("text-xs", keyword.campaignType === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
-                      {keyword.campaignType === "auto" ? "Auto" : "Manual"}
-                    </Badge>
+                    <CampaignTypeMark type={keyword.campaignType} />
                     <span className="text-foreground">{keyword.campaignName}</span>
                   </div>
                 </TableCell>

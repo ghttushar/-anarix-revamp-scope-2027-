@@ -42,7 +42,7 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
 
   const getStatusBadge = (status: CatalogProduct["status"]) => {
     const variants = {
-      published: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+      published: "bg-success/10 text-success",
       unpublished: "bg-muted text-muted-foreground",
       draft: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
     };

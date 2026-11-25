@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { StepFooter } from "@/components/kit";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -96,9 +97,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
   };
 
   const typeBadge = (type: Campaign["type"]) => (
-    <Badge variant="outline" className="text-2xs px-1.5 py-0 h-5 font-medium">
-      {type === "auto" ? "Auto" : "Manual"}
-    </Badge>
+    <CampaignTypeMark type={type} />
   );
 
   return (

@@ -1,4 +1,5 @@
-import { Plus, X } from "lucide-react";
+import { X } from "lucide-react";
+import { AnxPlus, AnxTag } from "@/components/icons";
 import { TagPopover } from "./TagPopover";
 import { useTags } from "@/contexts/TagsContext";
 import { cn } from "@/lib/utils";
@@ -6,27 +7,25 @@ import { cn } from "@/lib/utils";
 interface CampaignTagBarProps {
   campaignId: string;
   isEdit: boolean;
+  /** Prefix a "·" separator (when it renders), for use inside a meta line. */
+  separator?: boolean;
 }
 
 /**
- * Renders the inline tag list below a Campaign Name.
- * In view mode it's read-only chips.
- * In edit mode each chip gets a remove button and a "+ Tag" trigger opens TagPopover.
+ * A campaign's tag, inline in the meta line under its name: a small tag glyph and the name in 11px text, no chip.
+ * Edit mode adds a remove ✕ on the tag, or a quiet "+ Tag" that opens TagPopover. One tag per campaign.
+ * Renders nothing in view mode when untagged.
  */
-export function CampaignTagBar({ campaignId, isEdit }: CampaignTagBarProps) {
+export function CampaignTagBar({ campaignId, isEdit, separator }: CampaignTagBarProps) {
   const { getEffectiveTags, toggleTag, removeTag, draftTags } = useTags();
   const tags = getEffectiveTags(campaignId);
   const isDraft = draftTags[campaignId] !== undefined;
+  const tag = tags[0];
 
-  if (!isEdit && tags.length === 0) return null;
+  if (!isEdit && !tag) return null;
 
-  // One-tag enforcement: render at most the first tag; selecting a new tag
-  // replaces the existing one. The "+ Tag" trigger is hidden once a tag exists.
-  const visibleTags = tags.slice(0, 1);
-
+  // One-tag enforcement: picking a new tag replaces the current one; picking the current one removes it.
   const handleToggle = (t: string) => {
-    // If the selected tag is already applied → remove it.
-    // Otherwise clear any existing tag first, then apply the new one.
     if (tags.includes(t)) {
       removeTag(campaignId, t);
       return;
@@ -36,45 +35,45 @@ export function CampaignTagBar({ campaignId, isEdit }: CampaignTagBarProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-1 mt-1" onClick={(e) => e.stopPropagation()}>
-      {visibleTags.map((tag) => (
+    <span className="inline-flex min-w-0 items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+      {separator && <span aria-hidden className="text-2xs leading-none text-faint">·</span>}
+      {tag ? (
         <span
-          key={tag}
           className={cn(
-            "inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-2xs font-medium",
-            isDraft
-              ? "border-dashed border-primary/50 bg-primary/[0.08] text-primary"
-              : "border-border bg-muted text-foreground"
+            "inline-flex min-w-0 items-center gap-1 text-2xs font-medium leading-none",
+            isDraft ? "text-primary" : "text-body",
           )}
+          title={isDraft ? `${tag} (unsaved)` : tag}
         >
-          {tag}
+          <AnxTag className="h-3 w-3 shrink-0 opacity-70" />
+          <span className="max-w-[110px] truncate">{tag}</span>
           {isEdit && (
             <button
+              type="button"
               onClick={() => removeTag(campaignId, tag)}
-              className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5 cursor-pointer"
+              className="rounded p-px text-muted-foreground hover:bg-hover hover:text-foreground"
               title="Remove tag"
             >
-              <X className="h-2 w-2" />
+              <X className="h-2.5 w-2.5" />
             </button>
           )}
         </span>
-      ))}
-      {isEdit && visibleTags.length === 0 && (
+      ) : (
         <TagPopover
           selectedTags={tags}
           onToggle={handleToggle}
           trigger={
             <button
-              className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-muted-foreground/40 px-1.5 py-0.5 text-2xs text-muted-foreground hover:text-primary hover:border-primary/50 cursor-pointer transition-colors"
+              type="button"
+              className="inline-flex items-center gap-0.5 rounded px-0.5 text-2xs leading-4 text-muted-foreground transition-colors hover:bg-hover hover:text-primary"
               title="Add tag"
             >
-              <Plus className="h-2.5 w-2.5" />
+              <AnxPlus className="h-2.5 w-2.5" />
               Tag
             </button>
           }
         />
       )}
-    </div>
+    </span>
   );
 }
-

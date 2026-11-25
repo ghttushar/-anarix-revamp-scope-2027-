@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableTotalsRow } from "@/components/ui/table";
@@ -155,9 +156,7 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
                       return (
                         <div className="flex items-center gap-2">
                           {ct && (
-                            <Badge variant="outline" className={cn("text-xs", ct === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
-                              {ct === "auto" ? "Auto" : "Manual"}
-                            </Badge>
+                            <CampaignTypeMark type={ct} />
                           )}
                           <span className="text-foreground">{ad.campaignName}</span>
                         </div>

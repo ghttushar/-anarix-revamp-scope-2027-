@@ -383,3 +383,46 @@ export const AnxSparkle = createIcon(
   "AnxSparkle",
   <path d="M7 4c.45 2.7 1.8 4.05 4.5 4.5-2.7.45-4.05 1.8-4.5 4.5-.45-2.7-1.8-4.05-4.5-4.5 2.7-.45 4.05-1.8 4.5-4.5zM12.25 2v3.25M10.63 3.63h3.25" />,
 );
+
+/* ------------------------------------------------------------ bulk edits */
+export const AnxPlay = createIcon(
+  "AnxPlay",
+  <>
+    <circle cx="8" cy="8" r="5.75" />
+    <path d="M6.9 5.9v4.2l3.2-2.1z" />
+  </>,
+);
+
+export const AnxPause = createIcon(
+  "AnxPause",
+  <>
+    <circle cx="8" cy="8" r="5.75" />
+    <path d="M6.6 6v4M9.4 6v4" />
+  </>,
+);
+
+export const AnxTag = createIcon(
+  "AnxTag",
+  <>
+    <path d="M2.75 3.75v3.6c0 .4.16.78.44 1.06l4.4 4.4c.59.59 1.54.59 2.12 0l2.85-2.85c.59-.59.59-1.54 0-2.12l-4.4-4.4a1.5 1.5 0 0 0-1.06-.44h-3.1a1.25 1.25 0 0 0-1.25 1.25z" />
+    {dot(5.6, 5.6)}
+  </>,
+);
+
+/** Daily budget: a coin. */
+export const AnxBudget = createIcon(
+  "AnxBudget",
+  <>
+    <circle cx="8" cy="8" r="5.75" />
+    <path d="M9.75 6.1c-.3-.5-.95-.85-1.75-.85-1 0-1.75.55-1.75 1.3 0 1.65 3.5.8 3.5 2.6 0 .75-.8 1.35-1.75 1.35-.85 0-1.5-.35-1.8-.9M8 4.4v.85M8 10.5v1.1" />
+  </>,
+);
+
+/** Total budget: a stack of coins. */
+export const AnxBudgetTotal = createIcon(
+  "AnxBudgetTotal",
+  <>
+    <ellipse cx="8" cy="4.5" rx="4.75" ry="1.75" />
+    <path d="M3.25 4.5v3.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75V4.5M3.25 8v3.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75V8" />
+  </>,
+);

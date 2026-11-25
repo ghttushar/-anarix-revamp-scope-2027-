@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 import { Plus } from "lucide-react";
 
 function StatusDot({ status }: { status: ConnectedAccount["status"] }) {
-  const colors = { connected: "bg-emerald-500", syncing: "bg-amber-500", error: "bg-red-500" };
+  const colors = { connected: "bg-success", syncing: "bg-amber-500", error: "bg-destructive" };
   return <div className={cn("h-2 w-2 rounded-full shrink-0", colors[status])} />;
 }
 

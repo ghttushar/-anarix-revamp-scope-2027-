@@ -28,7 +28,7 @@ import { Check, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useActivePanel } from "@/contexts/ActivePanelContext";
 import { TagsProvider, useTags } from "@/contexts/TagsContext";
-import { CampaignBulkActions } from "@/components/advertising/CampaignBulkActionsBar";
+import { CampaignBulkActions, type CampaignBulkUpdate } from "@/components/advertising/CampaignBulkActionsBar";
 import { useCurrency } from "@/contexts/CurrencyContext";
 type TabValue = "campaigns" | "ad-groups" | "product-ads" | "keywords" | "product-targeting" | "search-terms" | "page-type" | "platform";
 
@@ -52,7 +52,7 @@ const tabs = [
 
 const COLUMN_DEFS: Record<string, { id: string; label: string }[]> = {
   campaigns: [
-    { id: "active", label: "Active" }, { id: "status", label: "Status" },
+    { id: "active", label: "Active" },
     { id: "name", label: "Campaign Name" },
     { id: "startDate", label: "Start Date" }, { id: "endDate", label: "End Date" },
     { id: "biddingStrategy", label: "Bidding Strategy" }, { id: "dailyBudget", label: "Budget" },
@@ -237,6 +237,12 @@ function CampaignManagerInner() {
     );
   };
 
+  const handleBulkUpdate = (update: CampaignBulkUpdate) => {
+    setCampaigns((prev) =>
+      prev.map((c) => (selectedIds.has(c.id) ? { ...c, ...(typeof update === "function" ? update(c) : update) } : c))
+    );
+  };
+
   const handleKPISwap = (index: number, newMetricKey: string) => {
     const metric = AVAILABLE_METRICS.find((m) => m.key === newMetricKey);
     if (!metric) return;
@@ -333,14 +339,12 @@ function CampaignManagerInner() {
             onEditDiscard={discardEdits}
             selection={viewMode === "edit" && activeTab === "campaigns" ? {
               count: selectedIds.size,
+              total: campaigns.length,
               onClear: () => setSelectedIds(new Set()),
-              actions: (
-                <CampaignBulkActions
-                  selectedIds={Array.from(selectedIds)}
-                  onBulkUpdate={(updates) => selectedIds.forEach((id) => handleCampaignUpdate(id, updates))}
-                />
-              ),
             } : undefined}
+            editActions={activeTab === "campaigns" ? (
+              <CampaignBulkActions selectedIds={Array.from(selectedIds)} onBulkUpdate={handleBulkUpdate} />
+            ) : undefined}
             primaryAction={viewMode === "edit"
               ? { label: "Save changes", icon: Check, write: true, onClick: () => { saveEdits(); setViewMode("view"); } }
               : { label: "Create campaign", write: true, onClick: () => navigate("/advertising/campaign-creator") }}

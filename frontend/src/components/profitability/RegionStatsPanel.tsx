@@ -58,7 +58,7 @@ export function RegionStatsPanel({ region, dateRange }: RegionStatsPanelProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">% Refunds</span>
-            <span className={cn("font-medium", refundRate > 10 ? "text-red-500" : "text-foreground")}>
+            <span className={cn("font-medium", refundRate > 10 ? "text-destructive" : "text-foreground")}>
               {formatPercent(refundRate)}
             </span>
           </div>

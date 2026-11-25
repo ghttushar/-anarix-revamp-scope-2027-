@@ -22,9 +22,9 @@ const breadcrumbItems = [
 
 function StatusBadge({ status }: { status: Invoice["status"] }) {
   const variants: Record<Invoice["status"], string> = {
-    paid: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    paid: "bg-success/10 text-success border-success/20",
     pending: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-    failed: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+    failed: "bg-destructive/10 text-destructive border-destructive/20",
     refunded: "bg-muted text-muted-foreground border-border",
   };
   return (

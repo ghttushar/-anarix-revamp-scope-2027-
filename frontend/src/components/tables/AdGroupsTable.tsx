@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -110,9 +111,7 @@ export function AdGroupsTable({ searchQuery = "", showDeltas = false, onRowClick
                 <TableCell className="font-medium sticky left-[96px] z-10 bg-card group-hover:bg-hover transition-colors"><span className="text-primary hover:underline">{group.name}</span></TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={cn("text-xs", group.campaignType === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
-                      {group.campaignType === "auto" ? "Auto" : "Manual"}
-                    </Badge>
+                    <CampaignTypeMark type={group.campaignType} />
                     <span className="text-foreground">{group.campaignName}</span>
                   </div>
                 </TableCell>

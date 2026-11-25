@@ -65,7 +65,13 @@ interface DataTableToolbarProps {
   /** The one labelled button, fixed at the far right (Create campaign, Add keyword…). */
   primaryAction?: TablePrimaryAction;
   /** While rows are selected the left zone shows the count, Clear and these actions instead of the view and search. */
-  selection?: { count: number; onClear: () => void; actions?: ReactNode };
+  selection?: { count: number; onClear: () => void; actions?: ReactNode; total?: number };
+  /**
+   * Edit mode's bulk actions (Active, Pause, Tag, End date, budgets, Bulk upload). While the table is in edit mode they
+   * replace the view actions (Delta, Group, Filter, Columns, Upload, Export) on the right, after the Edit toggle, and
+   * the left zone keeps search plus an "n of N selected" count.
+   */
+  editActions?: ReactNode;
   showDeltas?: boolean;
   onShowDeltasChange?: (show: boolean) => void;
   onUpload?: (files: File[]) => void;
@@ -121,6 +127,7 @@ export function DataTableToolbar({
   view,
   primaryAction,
   selection,
+  editActions,
   showDeltas,
   onShowDeltasChange,
   onUpload,
@@ -176,6 +183,8 @@ export function DataTableToolbar({
     setDraftFilters([]);
   };
 
+  const editing = viewMode === "edit" && editActions !== undefined;
+
   const handleEditToggle = () => {
     if (viewMode === "edit") {
       setEditConfirmOpen(true);
@@ -221,7 +230,22 @@ export function DataTableToolbar({
           The icon actions keep this order on every table; a table only switches them on or off. */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          {selection && selection.count > 0 ? (
+          {editing ? (
+            <>
+              <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
+              {selection && (
+                <div className="flex h-7 items-center gap-1 text-xs text-muted-foreground" data-tb-selection>
+                  <span>
+                    <span className={cn("font-medium tabular-nums", selection.count > 0 ? "text-primary" : "text-foreground")}>{selection.count}</span>
+                    {selection.total !== undefined && <> of {selection.total}</>} selected
+                  </span>
+                  {selection.count > 0 && (
+                    <Button variant="ghost" size="xs" className="h-6 px-1.5 text-muted-foreground" onClick={selection.onClear}>Clear</Button>
+                  )}
+                </div>
+              )}
+            </>
+          ) : selection && selection.count > 0 ? (
             <div className="flex h-8 items-center gap-1 rounded-md bg-primary/[0.08] pl-2.5 pr-1 text-xs">
               <span className="font-medium text-primary">{selection.count} selected</span>
               <Button variant="ghost" size="xs" className="h-6 px-2 text-muted-foreground" onClick={selection.onClear}>Clear</Button>
@@ -255,7 +279,19 @@ export function DataTableToolbar({
             </>
           )}
           {(() => {
-            const groups: ReactNode[][] = [
+            const editToggle = showViewToggle && onViewModeChange && (
+              <BarIconButton
+                key="edit"
+                data-write-action
+                icon={Pencil}
+                name="Edit"
+                label={viewMode === "edit" ? "Save & exit edit mode" : "Edit table"}
+                active={viewMode === "edit"}
+                tone="danger"
+                onClick={handleEditToggle}
+              />
+            );
+            const groups: ReactNode[][] = editing ? [[editToggle], [<div key="bulk" className="flex items-center gap-0.5" data-tb-bulk>{editActions}</div>]] : [
               [
                 showViewToggle && onViewModeChange && (
                   <BarIconButton

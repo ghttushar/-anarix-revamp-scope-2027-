@@ -457,10 +457,10 @@ function niceStep(span: number, target: number) {
 }
 
 const quadrantColors = {
-  winners: "hsl(142, 65%, 42%)",
-  grow: "hsl(142, 65%, 65%)",
+  winners: "hsl(var(--positive-500))",
+  grow: "hsl(162, 40%, 62%)",
   optimize: "hsl(35, 92%, 55%)",
-  review: "hsl(0, 72%, 58%)",
+  review: "hsl(var(--danger-500))",
 };
 const quadrantLabels = {
   winners: { title: "Winners" },

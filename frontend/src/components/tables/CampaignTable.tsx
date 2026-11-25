@@ -20,6 +20,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CampaignTagBar } from "@/components/advertising/CampaignTagBar";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { format, parse } from "date-fns";
 
 interface CampaignTableProps {
@@ -150,7 +151,7 @@ export function CampaignTable({
           <TableHeader>
               <TableRow className="bg-card">
               {isEdit && onSelectionChange && (
-                <TableHead className="w-10">
+                <TableHead className="sticky z-10 w-10 bg-card">
                   <Checkbox
                     checked={paginatedCampaigns.length > 0 && paginatedCampaigns.every((c) => selectedIds?.has(c.id))}
                     onCheckedChange={(checked) => {
@@ -161,9 +162,8 @@ export function CampaignTable({
                   />
                 </TableHead>
               )}
-              {isEdit && show("active") && <TableHead className="w-16">Active</TableHead>}
-              {show("status") && <TableHead className="w-28 sticky left-0 z-10 bg-card">Status</TableHead>}
-              {show("name") && <TableHead className="min-w-[180px] sticky z-10 bg-card">
+              {isEdit && show("active") && <TableHead className="sticky z-10 w-16 bg-card">Active</TableHead>}
+              {show("name") && <TableHead className="min-w-[220px] sticky z-10 bg-card">
                 Campaign Name
               </TableHead>}
               {show("startDate") && <TableHead>Start Date</TableHead>}
@@ -193,7 +193,7 @@ export function CampaignTable({
                     onClick={() => onRowClick?.(campaign.id)}
                   >
                     {isEdit && onSelectionChange && (
-                      <TableCell onClick={(e) => e.stopPropagation()}>
+                      <TableCell className="sticky z-10 bg-card transition-colors group-hover:bg-hover" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selectedIds?.has(campaign.id) || false}
                           onCheckedChange={(checked) => {
@@ -205,42 +205,35 @@ export function CampaignTable({
                       </TableCell>
                     )}
                     {isEdit && show("active") && (
-                      <TableCell onClick={(e) => e.stopPropagation()}>
+                      <TableCell className="sticky z-10 bg-card transition-colors group-hover:bg-hover" onClick={(e) => e.stopPropagation()}>
                         <Switch checked={campaign.isActive} onCheckedChange={(checked) => onActiveToggle?.(campaign.id, checked)} disabled={campaign.status === "archived" || campaign.status === "completed"} />
                       </TableCell>
                     )}
-                    {show("status") && <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-hover transition-colors"><StatusBadge status={campaign.status} /></TableCell>}
                     {show("name") && <TableCell className="font-medium sticky z-10 bg-card group-hover:bg-hover transition-colors">
-                      <div className="space-y-1 min-w-[170px]">
+                      <div className="min-w-[200px] space-y-1">
                         {isEdit ? (
-                          <Input defaultValue={campaign.name} className="h-8 text-sm" onBlur={(e) => onCampaignUpdate?.(campaign.id, { name: e.target.value })} onClick={(e) => e.stopPropagation()} />
+                          <Input defaultValue={campaign.name} className="h-7 text-xs" onBlur={(e) => onCampaignUpdate?.(campaign.id, { name: e.target.value })} onClick={(e) => e.stopPropagation()} />
                         ) : (
                           <div className="flex items-center gap-1.5">
-                            <span className="max-w-[180px] truncate text-primary hover:underline cursor-pointer" title={campaign.name}>{campaign.name}</span>
+                            <span className="max-w-[220px] truncate text-primary hover:underline cursor-pointer" title={campaign.name}>{campaign.name}</span>
                             {(campaign.acos > 30 || campaign.status === "out_of_budget") && (
                               <button
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); }}
                                 title="Open campaign insights"
-                                className="inline-flex items-center justify-center h-5 w-5 rounded-full text-warning hover:bg-warning/10 cursor-pointer"
+                                className="inline-flex items-center justify-center h-4 w-4 rounded-full text-warning hover:bg-warning/10 cursor-pointer"
                               >
-                                <AlertCircle className="h-3.5 w-3.5" />
+                                <AlertCircle className="h-3 w-3" />
                               </button>
                             )}
                           </div>
                         )}
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className={cn(
-                            "rounded-full px-2 py-0.5 text-2xs font-medium border whitespace-nowrap",
-                            campaign.type === "auto"
-                              ? "border-primary/30 text-primary bg-primary/[0.08]"
-                              : "border-border text-muted-foreground bg-muted"
-                          )}>
-                            {campaign.type === "auto" ? "Auto" : "Manual"}
-                          </span>
-                          <div onClick={(e) => e.stopPropagation()}>
-                            <CampaignTagBar campaignId={campaign.id} isEdit={isEdit} />
-                          </div>
+                        {/* Meta line: status · targeting type · tag, all 11px, no pills. */}
+                        <div className="flex items-center gap-1.5 font-normal">
+                          <StatusBadge status={campaign.status} variant="mark" />
+                          <span aria-hidden className="text-2xs leading-none text-faint">·</span>
+                          <CampaignTypeMark type={campaign.type} variant="text" />
+                          <CampaignTagBar campaignId={campaign.id} isEdit={isEdit} separator />
                         </div>
                       </div>
                     </TableCell>}

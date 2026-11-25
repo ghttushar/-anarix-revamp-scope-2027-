@@ -8,8 +8,19 @@ import {
 
 interface StatusBadgeProps {
   status: CampaignStatus;
+  /** "pill" (default, compact tinted pill) or "mark": a dot and coloured label with no background, for meta lines. */
+  variant?: "pill" | "mark";
   className?: string;
 }
+
+const markTone: Record<CampaignStatus, string> = {
+  live: "text-success",
+  paused: "text-muted-foreground",
+  archived: "text-faint",
+  scheduled: "text-primary",
+  out_of_budget: "text-warning",
+  completed: "text-muted-foreground",
+};
 
 const statusConfig: Record<CampaignStatus, { 
   label: string; 
@@ -48,7 +59,7 @@ const statusConfig: Record<CampaignStatus, {
   },
 };
 
-export function StatusBadge({ status, className }: StatusBadgeProps) {
+export function StatusBadge({ status, variant = "pill", className }: StatusBadgeProps) {
   const config = statusConfig[status];
 
   return (
@@ -56,11 +67,13 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       <TooltipTrigger asChild>
         <span
           className={cn(
-            "k-status inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-            config.className,
+            variant === "pill"
+              ? cn("k-status inline-flex h-[18px] items-center whitespace-nowrap rounded-full px-1.5 text-2xs font-medium leading-none", config.className)
+              : cn("inline-flex items-center gap-1 whitespace-nowrap text-2xs font-medium leading-none", markTone[status]),
             className
           )}
         >
+          {variant === "mark" && <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-current" />}
           {config.label}
         </span>
       </TooltipTrigger>

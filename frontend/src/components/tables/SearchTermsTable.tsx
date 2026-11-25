@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -19,7 +20,7 @@ interface SearchTermsTableProps {
 
 const matchTypeColors: Record<string, string> = {
   broad: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  exact: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+  exact: "bg-success/10 text-success border-success/20",
   phrase: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
 };
 
@@ -134,9 +135,7 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
                     return (
                       <div className="flex items-center gap-2">
                         {ct && (
-                          <Badge variant="outline" className={cn("text-xs", ct === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
-                            {ct === "auto" ? "Auto" : "Manual"}
-                          </Badge>
+                          <CampaignTypeMark type={ct} />
                         )}
                         <span className="text-foreground">{term.campaignName}</span>
                       </div>

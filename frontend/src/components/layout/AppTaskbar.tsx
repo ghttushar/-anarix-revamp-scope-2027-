@@ -101,7 +101,7 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 function StatusDot({ status, className }: { status: "connected" | "syncing" | "error"; className?: string }) {
-  const colors = { connected: "bg-emerald-500", syncing: "bg-amber-500", error: "bg-red-500" };
+  const colors = { connected: "bg-success", syncing: "bg-amber-500", error: "bg-destructive" };
   return <div className={cn("h-2 w-2 rounded-full", colors[status], className)} />;
 }
 

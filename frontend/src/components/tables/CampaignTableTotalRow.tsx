@@ -46,14 +46,14 @@ export function CampaignTableTotalRow({ campaigns, showTotalBudget = true, viewM
     </div>
   );
 
-  // Edit mode adds columns before Status: the selection checkbox (when selectable) and Active. They stay empty; the
-  // label spans the sticky Status + Campaign Name columns and pins with them on horizontal scroll.
+  // Edit mode adds sticky columns before Campaign Name: the selection checkbox (when selectable) and Active. They stay
+  // empty (sticky, so they cover what scrolls under them); the label sits in the sticky Campaign Name column.
   const leadColumns = isEdit ? (selectable ? 2 : 1) : 0;
 
   return (
     <TableTotalsRow>
-      {leadColumns > 0 && <TableCell colSpan={leadColumns} />}
-      <TableCell colSpan={2} className="sticky z-10 bg-card">Total ({campaigns.length} campaigns)</TableCell>
+      {leadColumns > 0 && <TableCell colSpan={leadColumns} className="sticky z-10 bg-card" />}
+      <TableCell className="sticky z-10 bg-card">Total ({campaigns.length} campaigns)</TableCell>
       {/* Start Date, End Date, Bidding Strategy — empty for totals */}
       <TableCell />
       <TableCell />

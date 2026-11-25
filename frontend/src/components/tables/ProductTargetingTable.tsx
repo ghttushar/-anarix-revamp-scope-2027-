@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { CampaignTypeMark } from "@/components/advertising/CampaignTypeMark";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -124,9 +125,7 @@ export function ProductTargetingTable({ searchQuery = "", showDeltas = false }: 
                 <TableCell style={ps("adGroupName")} className={cn("text-foreground", pc("adGroupName"))}>{target.adGroupName}</TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={cn("text-xs", target.campaignType === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
-                      {target.campaignType === "auto" ? "Auto" : "Manual"}
-                    </Badge>
+                    <CampaignTypeMark type={target.campaignType} />
                     <span className="text-foreground">{target.campaignName}</span>
                   </div>
                 </TableCell>
