@@ -65,7 +65,7 @@ interface DataTableToolbarProps {
   /** The one labelled button (Create campaign, Add keyword…). */
   primaryAction?: TablePrimaryAction;
   /** Where the primary sits: "actions" (default) = first on the right, before the named actions; "search" = on the
-   *  left, right after the search (and the selection count in edit mode). */
+   *  left, just before the search. */
   primaryPlacement?: "actions" | "search";
   /** While rows are selected the left zone shows the count, Clear and these actions instead of the view and search. */
   selection?: { count: number; onClear: () => void; actions?: ReactNode; total?: number };
@@ -252,6 +252,7 @@ export function DataTableToolbar({
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {editing ? (
             <>
+              {primaryAtSearch}
               <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
               {selection && (
                 <div className="flex h-7 items-center gap-1 text-xs text-muted-foreground" data-tb-selection>
@@ -264,7 +265,6 @@ export function DataTableToolbar({
                   )}
                 </div>
               )}
-              {primaryAtSearch}
             </>
           ) : selection && selection.count > 0 ? (
             <div className="flex h-8 items-center gap-1 rounded-md bg-primary/[0.08] pl-2.5 pr-1 text-xs">
@@ -275,8 +275,8 @@ export function DataTableToolbar({
           ) : (
             <>
               {view && <BarSegmented value={view.value} onChange={view.onChange} items={view.items} aria-label="View" />}
-              <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
               {primaryAtSearch}
+              <ToolbarSearch value={searchValue} onChange={onSearchChange} hint={searchPlaceholder} />
             </>
           )}
         </div>
