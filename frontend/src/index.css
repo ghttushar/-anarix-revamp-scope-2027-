@@ -1207,5 +1207,13 @@ html[data-view="mobile"] [data-island] {
 .pulse-table:has(thead tr:first-child > th:nth-child(38)[aria-sort]) :is(tbody td:nth-child(38), thead tr:first-child > th:nth-child(38)),
 .pulse-table:has(thead tr:first-child > th:nth-child(39)[aria-sort]) :is(tbody td:nth-child(39), thead tr:first-child > th:nth-child(39)),
 .pulse-table:has(thead tr:first-child > th:nth-child(40)[aria-sort]) :is(tbody td:nth-child(40), thead tr:first-child > th:nth-child(40)) { background-image: linear-gradient(hsl(var(--primary) / 0.05), hsl(var(--primary) / 0.05)); }
-.pulse-table tbody td:hover { background-image: linear-gradient(hsl(var(--primary) / 0.09), hsl(var(--primary) / 0.09)); }
+/* Row hover uses the same light primary wash as the column, so the crosshair reads as one colour. The row's own
+   fill (hover:bg-hover on the row, group-hover:bg-hover on sticky cells) is swapped for the card colour + that wash;
+   sticky cells stay opaque. Selected rows keep their selected fill. */
+[data-kit="pro"] .pulse-table tbody tr:not([data-state="selected"]):not([data-totals]):hover { background-color: transparent; }
+[data-kit="pro"] .pulse-table tbody tr:not([data-state="selected"]):not([data-totals]):hover > td[class*="bg-hover"] { background-color: hsl(var(--card)); }
+[data-kit="pro"] .pulse-table tbody tr:not([data-totals]):hover > td { background-image: linear-gradient(hsl(var(--primary) / 0.045), hsl(var(--primary) / 0.045)); }
+/* The cell under the pointer, where row and column cross, is a step deeper. */
+/* (:not(#_) lifts it above the column rule's :has() specificity.) */
+.pulse-table tbody tr:not(#_) > td:hover { background-image: linear-gradient(hsl(var(--primary) / 0.09), hsl(var(--primary) / 0.09)); }
 .pulse-table tbody tr[data-totals] td, .pulse-table thead tr[data-totals] td { background-image: none; }
