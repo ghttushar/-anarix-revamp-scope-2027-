@@ -275,7 +275,7 @@ export default function TargetingActions() {
                         <div className="space-y-1">
                           <span className="font-medium text-sm text-foreground">{action.searchTerm}</span>
                           <Select defaultValue={action.termType}>
-                            <SelectTrigger className="h-6 w-24 text-[11px] border-dashed"><SelectValue /></SelectTrigger>
+                            <SelectTrigger className="h-6 w-24 text-2xs border-dashed"><SelectValue /></SelectTrigger>
                             <SelectContent>
                               <SelectItem value="generic">Generic</SelectItem>
                               <SelectItem value="branded">Branded</SelectItem>

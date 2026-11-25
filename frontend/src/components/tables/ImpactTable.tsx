@@ -63,7 +63,7 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
     return (
       <div className="flex items-center justify-end gap-1.5">
         <span className="text-muted-foreground">{fmtVal(baseline, format)}</span>
-        <span className="text-[10px] text-muted-foreground/40">→</span>
+        <span className="text-2xs text-muted-foreground/40">→</span>
         <span className="font-medium text-foreground">{fmtVal(impact, format)}</span>
         <span className={cn(
           "inline-flex items-center gap-0.5 text-xs font-medium rounded-full px-1.5 py-0.5",
@@ -129,9 +129,9 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
               <TableHead className="h-6" />
               {["impressions", "clicks", "ctr", "adSpend", "adSales", "roas", "acos"].map((field) => (
                 <TableHead key={field} className={cn("h-6 text-center", pc(field, true))} style={ps(field)}>
-                  <span className="text-[10px] text-muted-foreground">previous</span>
-                  <span className="text-[10px] text-muted-foreground/40 mx-1">→</span>
-                  <span className="text-[10px] text-foreground">Impact</span>
+                  <span className="text-2xs text-muted-foreground">previous</span>
+                  <span className="text-2xs text-muted-foreground/40 mx-1">→</span>
+                  <span className="text-2xs text-foreground">Impact</span>
                 </TableHead>
               ))}
             </TableRow>

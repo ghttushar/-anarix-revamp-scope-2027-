@@ -56,7 +56,7 @@ export function NotificationsPanel() {
             </div>
             <div>
               <h2 className="font-heading text-sm font-semibold text-foreground">Notifications</h2>
-              <p className="text-[10px] text-muted-foreground">{unreadCount} unread</p>
+              <p className="text-2xs text-muted-foreground">{unreadCount} unread</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={closeDataPanel} className="h-7 w-7" title="Close notifications">
@@ -87,8 +87,8 @@ export function NotificationsPanel() {
                       <h4 className="font-medium text-xs text-foreground leading-tight line-clamp-1">{notification.title}</h4>
                       {!notification.read && <div className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />}
                     </div>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{notification.description}</p>
-                    <span className="mt-1 text-[10px] text-muted-foreground/60">{formatTimeAgo(notification.timestamp)}</span>
+                    <p className="mt-0.5 text-2xs text-muted-foreground leading-relaxed line-clamp-2">{notification.description}</p>
+                    <span className="mt-1 text-2xs text-muted-foreground/60">{formatTimeAgo(notification.timestamp)}</span>
                   </div>
                 </div>
               </div>

@@ -26,7 +26,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse",
         head_row: "flex",
-        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-xs",
         row: "flex w-full mt-1",
         // Continuous range fill via cell background; corners rounded on edges only.
         cell: cn(

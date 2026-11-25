@@ -38,7 +38,7 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
                   <button
                     type="button"
                     onClick={() => onViewDetails(p)}
-                    className="shrink-0 text-primary hover:underline text-[10px]"
+                    className="shrink-0 text-primary hover:underline text-2xs"
                   >
                     Details
                   </button>
@@ -46,10 +46,10 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
               </li>
             ))}
             {points.length > 6 && (
-              <li className="text-[11px] text-muted-foreground">+ {points.length - 6} more</li>
+              <li className="text-2xs text-muted-foreground">+ {points.length - 6} more</li>
             )}
           </ul>
-          <p className="text-[11px] text-muted-foreground">Click bubble to zoom into this cluster.</p>
+          <p className="text-2xs text-muted-foreground">Click bubble to zoom into this cluster.</p>
         </>
       ) : (
         <>
@@ -57,16 +57,16 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
             <div className="h-10 w-10 shrink-0 rounded-md bg-muted" />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-foreground">{head.name}</p>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-2xs text-muted-foreground">
                 ID: {head.id} · SKU: {head.id.toUpperCase()}
               </p>
             </div>
           </div>
           <div className="mb-2 flex flex-wrap gap-1.5">
-            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-2xs font-medium text-primary">
               Profit Margin: {head.profitMargin.toFixed(1)}%
             </span>
-            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-2xs font-medium text-primary">
               Ad Spend: ${head.adSpend.toLocaleString()}
             </span>
           </div>
@@ -75,7 +75,7 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
               <button
                 type="button"
                 onClick={() => onViewDetails(head)}
-                className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-[11px] font-medium text-primary-foreground hover:opacity-90"
+                className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-2xs font-medium text-primary-foreground hover:opacity-90"
               >
                 <ExternalLink className="h-3 w-3" />
                 View details
@@ -84,7 +84,7 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
             <button
               type="button"
               onClick={() => onAskAan(head)}
-              className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/5 px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/10"
+              className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/5 px-2 py-1 text-2xs font-medium text-primary hover:bg-primary/10"
             >
               <Sparkles className="h-3 w-3" />
               Ask Aan

@@ -59,7 +59,7 @@ export function CreateCampaignPanel({ onSubmit }: CreateCampaignPanelProps) {
           <div className="space-y-1.5">
             <Label className="text-xs">Campaign Name</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter name" className="h-7 text-xs" />
-            {errors.name && <p className="text-[10px] text-destructive">{errors.name}</p>}
+            {errors.name && <p className="text-2xs text-destructive">{errors.name}</p>}
           </div>
 
           <div className="space-y-1.5">
@@ -89,13 +89,13 @@ export function CreateCampaignPanel({ onSubmit }: CreateCampaignPanelProps) {
           <div className="space-y-1.5">
             <Label className="text-xs">Daily Budget ($)</Label>
             <Input type="number" value={dailyBudget} onChange={(e) => setDailyBudget(e.target.value)} placeholder="0.00" className="h-7 text-xs" min="0" step="0.01" />
-            {errors.dailyBudget && <p className="text-[10px] text-destructive">{errors.dailyBudget}</p>}
+            {errors.dailyBudget && <p className="text-2xs text-destructive">{errors.dailyBudget}</p>}
           </div>
 
           <div className="space-y-1.5">
             <Label className="text-xs">Start Date</Label>
             <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-7 text-xs" />
-            {errors.startDate && <p className="text-[10px] text-destructive">{errors.startDate}</p>}
+            {errors.startDate && <p className="text-2xs text-destructive">{errors.startDate}</p>}
           </div>
 
           <div className="space-y-1.5">

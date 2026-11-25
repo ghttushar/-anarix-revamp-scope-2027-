@@ -76,14 +76,14 @@ export function CreateSchedulePanel() {
               {selectedCampaigns.map((id) => {
                 const camp = dayPartingCampaigns.find((c) => c.id === id);
                 return (
-                  <Badge key={id} variant="secondary" className="gap-1 pr-1 text-[10px] h-5">
+                  <Badge key={id} variant="secondary" className="gap-1 pr-1 text-2xs h-5">
                     {camp?.name || id}
                     <button onClick={() => removeCampaign(id)} className="rounded-full p-0.5 hover:bg-muted"><X className="h-2 w-2" /></button>
                   </Badge>
                 );
               })}
               <Select onValueChange={(v) => { if (!selectedCampaigns.includes(v)) setSelectedCampaigns((prev) => [...prev, v]); }}>
-                <SelectTrigger className="h-5 w-16 text-[9px] border-dashed"><SelectValue placeholder="+ Add" /></SelectTrigger>
+                <SelectTrigger className="h-5 w-16 text-2xs border-dashed"><SelectValue placeholder="+ Add" /></SelectTrigger>
                 <SelectContent>{dayPartingCampaigns.map((c) => <SelectItem key={c.id} value={c.id} className="text-xs">{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
@@ -102,7 +102,7 @@ export function CreateSchedulePanel() {
               <Input type="date" value={schedStartDate} onChange={(e) => setSchedStartDate(e.target.value)} className="h-7 text-xs" />
               <Input type="date" value={schedEndDate} onChange={(e) => setSchedEndDate(e.target.value)} className="h-7 text-xs" disabled={noEndDate} />
             </div>
-            <label className="flex items-center gap-1.5 text-[10px] text-muted-foreground cursor-pointer">
+            <label className="flex items-center gap-1.5 text-2xs text-muted-foreground cursor-pointer">
               <Checkbox checked={noEndDate} onCheckedChange={(v) => setNoEndDate(!!v)} className="h-3 w-3" />
               No End Date
             </label>
@@ -122,7 +122,7 @@ export function CreateSchedulePanel() {
                     key={d.value}
                     onClick={() => toggleDay(d.value)}
                     className={cn(
-                      "h-6 w-7 rounded text-[9px] font-medium transition-colors cursor-pointer",
+                      "h-6 w-7 rounded text-2xs font-medium transition-colors cursor-pointer",
                       selectedDays.includes(d.value) ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
                     )}
                   >{d.label}</button>
@@ -136,14 +136,14 @@ export function CreateSchedulePanel() {
             <Label className="text-xs">Bid Adjustment</Label>
             <div className="flex items-center gap-1.5">
               <Select value={bidAction} onValueChange={setBidAction}>
-                <SelectTrigger className="h-7 w-[110px] text-[10px]"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-7 w-[110px] text-2xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="increase" className="text-xs">Increase by %</SelectItem>
                   <SelectItem value="decrease" className="text-xs">Decrease by %</SelectItem>
                 </SelectContent>
               </Select>
               <Input type="number" value={bidPercent} onChange={(e) => setBidPercent(e.target.value)} className="h-7 w-14 text-xs" min="0" max="100" />
-              <span className="text-[10px] text-muted-foreground">%</span>
+              <span className="text-2xs text-muted-foreground">%</span>
             </div>
           </div>
 
@@ -159,12 +159,12 @@ export function CreateSchedulePanel() {
                 {timeRanges.map((range, idx) => (
                   <div key={idx} className="flex items-center gap-1.5">
                     <Select value={range.start} onValueChange={(v) => { const next = [...timeRanges]; next[idx] = { ...next[idx], start: v }; setTimeRanges(next); }}>
-                      <SelectTrigger className="h-6 w-16 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-6 w-16 text-2xs"><SelectValue /></SelectTrigger>
                       <SelectContent>{Array.from({ length: 24 }, (_, i) => <SelectItem key={i} value={i.toString().padStart(2, "0")} className="text-xs">{i.toString().padStart(2, "0")}:00</SelectItem>)}</SelectContent>
                     </Select>
-                    <span className="text-[10px] text-muted-foreground">to</span>
+                    <span className="text-2xs text-muted-foreground">to</span>
                     <Select value={range.end} onValueChange={(v) => { const next = [...timeRanges]; next[idx] = { ...next[idx], end: v }; setTimeRanges(next); }}>
-                      <SelectTrigger className="h-6 w-16 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-6 w-16 text-2xs"><SelectValue /></SelectTrigger>
                       <SelectContent>{Array.from({ length: 24 }, (_, i) => <SelectItem key={i} value={i.toString().padStart(2, "0")} className="text-xs">{i.toString().padStart(2, "0")}:00</SelectItem>)}</SelectContent>
                     </Select>
                     {timeRanges.length > 1 && (
@@ -172,7 +172,7 @@ export function CreateSchedulePanel() {
                     )}
                   </div>
                 ))}
-                <button onClick={addTimeRange} className="text-[10px] text-primary hover:underline cursor-pointer">+ Add Time Range</button>
+                <button onClick={addTimeRange} className="text-2xs text-primary hover:underline cursor-pointer">+ Add Time Range</button>
               </div>
             )}
           </div>

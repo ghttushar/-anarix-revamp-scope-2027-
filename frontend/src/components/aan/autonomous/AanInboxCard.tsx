@@ -67,22 +67,22 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
         <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", isMeeting ? "bg-primary" : severityDot[s.severity])} />
         {channelLabel && (
           <span className={cn(
-            "text-[9.5px] uppercase tracking-wider font-semibold",
+            "text-2xs uppercase tracking-wider font-semibold",
             isMeeting ? "text-primary" : "text-muted-foreground"
           )}>
             {channelLabel}
           </span>
         )}
-        <span className="text-[9px] text-muted-foreground/60">·</span>
+        <span className="text-2xs text-muted-foreground/60">·</span>
         <Icon className="h-3 w-3 text-muted-foreground" />
-        <span className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground truncate">
+        <span className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground truncate">
           {s.domain === "campaign" ? "Advertising" : s.domain === "retail" ? "Listing" : s.domain}
         </span>
         {event.autoApproved && (
-          <span className="ml-auto text-[9.5px] uppercase tracking-wider font-semibold text-primary shrink-0">Auto</span>
+          <span className="ml-auto text-2xs uppercase tracking-wider font-semibold text-primary shrink-0">Auto</span>
         )}
         {isExecuting && (
-          <span className="ml-auto text-[9.5px] uppercase tracking-wider font-semibold text-primary shrink-0 animate-pulse">Executing</span>
+          <span className="ml-auto text-2xs uppercase tracking-wider font-semibold text-primary shrink-0 animate-pulse">Executing</span>
         )}
       </div>
 
@@ -90,20 +90,20 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
       <div className="grid grid-cols-1 md:grid-cols-[1fr_220px] gap-3 items-start">
         {/* Insight */}
         <div className="min-w-0">
-          <h3 className="text-[15px] font-semibold text-foreground leading-snug">
+          <h3 className="text-sm font-semibold text-foreground leading-snug">
             {s.title}
           </h3>
-          <p className="mt-0.5 text-[12px] text-muted-foreground leading-snug line-clamp-2">
+          <p className="mt-0.5 text-caption text-muted-foreground leading-snug line-clamp-2">
             {s.subtitle}
           </p>
         </div>
 
         {/* Value — highlighted band, right column */}
         <div className={cn("rounded-md border-l-2 px-3 py-2", valueBand)}>
-          <div className={cn("text-[9.5px] uppercase tracking-wider font-semibold mb-0.5", valueLabelTone)}>
+          <div className={cn("text-2xs uppercase tracking-wider font-semibold mb-0.5", valueLabelTone)}>
             {valueLabel}
           </div>
-          <div className="text-[13.5px] font-semibold text-foreground leading-snug">
+          <div className="text-xs font-semibold text-foreground leading-snug">
             {valueText}
           </div>
         </div>
@@ -115,7 +115,7 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
         <button
           type="button"
           onClick={onOpenDetails}
-          className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] text-primary hover:underline"
+          className="mt-2.5 inline-flex items-center gap-1.5 text-2xs text-primary hover:underline"
         >
           <Video className="h-3 w-3" />
           From: {s.meetingRef.title} · {s.meetingRef.actionItems.length} action items
@@ -125,10 +125,10 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
       {/* Action — instruction, only when pending */}
       {!isFulfilled && !isRejected && (
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground shrink-0">
+          <span className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground shrink-0">
             Action
           </span>
-          <span className="text-[13px] text-foreground/80 leading-snug line-clamp-2">
+          <span className="text-xs text-foreground/80 leading-snug line-clamp-2">
             {s.recommendation}
           </span>
         </div>
@@ -142,7 +142,7 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
               <Button
                 size="sm"
                 onClick={(e) => { e.stopPropagation(); approve(event.eventId); }}
-                className="h-7 px-3 text-[11.5px] shadow-none"
+                className="h-7 px-3 text-caption shadow-none"
               >
                 <Check className="h-3 w-3 mr-1" />
                 {s.actionLabel ?? "Accept"}
@@ -151,7 +151,7 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
                 size="sm"
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); reject(event.eventId); }}
-                className="h-7 px-2.5 text-[11.5px] text-muted-foreground hover:text-destructive"
+                className="h-7 px-2.5 text-caption text-muted-foreground hover:text-destructive"
               >
                 <X className="h-3 w-3 mr-1" />
                 Reject
@@ -161,7 +161,7 @@ export function AanEventCard({ event, onOpenDetails, channelLabel, channel }: Pr
         </div>
         <button
           onClick={onOpenDetails}
-          className="text-[11.5px] text-primary hover:underline inline-flex items-center gap-0.5 font-medium"
+          className="text-caption text-primary hover:underline inline-flex items-center gap-0.5 font-medium"
         >
           View more <ArrowRight className="h-3 w-3" />
         </button>

@@ -103,7 +103,7 @@ export function MiniSidebar() {
       {/* Footer */}
       <div className="shrink-0 border-t border-border/30 py-2 flex flex-col items-center gap-2">
         <Avatar className="h-7 w-7">
-          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">JD</AvatarFallback>
+          <AvatarFallback className="bg-primary/10 text-primary text-2xs font-semibold">JD</AvatarFallback>
         </Avatar>
       </div>
 

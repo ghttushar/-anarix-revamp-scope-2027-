@@ -51,7 +51,7 @@ export const BarIconButton = forwardRef<HTMLButtonElement, Props>(function BarIc
           {badge !== undefined && badge !== false && badge !== 0 && (
             <span
               className={cn(
-                "absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full bg-primary text-[9px] font-bold leading-none text-primary-foreground ring-2 ring-card",
+                "absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full bg-primary text-2xs font-bold leading-none text-primary-foreground ring-2 ring-card",
                 typeof badge === "number" ? "h-3.5 min-w-[14px] px-1" : "h-2 w-2",
               )}
             >

@@ -131,7 +131,7 @@ export function MarketplaceSelector() {
   return (
     <div className={cn("shrink-0", collapsed ? "px-1 py-2" : "px-3 py-2")}>
       {!collapsed && (
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-2 mb-1.5">
+        <div className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground px-2 mb-1.5">
           Marketplace
         </div>
       )}

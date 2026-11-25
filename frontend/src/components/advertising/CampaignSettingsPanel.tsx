@@ -133,21 +133,21 @@ export function CampaignSettingsPanel({ campaign, onSave }: CampaignSettingsPane
                 <RadioGroupItem value="Dynamic Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — down only</span>
-                  <p className="text-[11px] text-muted-foreground">Lowers bids when less likely to convert</p>
+                  <p className="text-2xs text-muted-foreground">Lowers bids when less likely to convert</p>
                 </div>
               </label>
               <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
                 <RadioGroupItem value="Dynamic Up/Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — up and down</span>
-                  <p className="text-[11px] text-muted-foreground">Raises bids for high-convert, lowers for unlikely</p>
+                  <p className="text-2xs text-muted-foreground">Raises bids for high-convert, lowers for unlikely</p>
                 </div>
               </label>
               <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
                 <RadioGroupItem value="Fixed" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Fixed bids</span>
-                  <p className="text-[11px] text-muted-foreground">Uses your exact bid for all opportunities</p>
+                  <p className="text-2xs text-muted-foreground">Uses your exact bid for all opportunities</p>
                 </div>
               </label>
             </RadioGroup>

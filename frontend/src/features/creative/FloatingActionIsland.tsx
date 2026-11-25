@@ -218,7 +218,7 @@ export function FloatingActionIsland() {
                     <span className="text-xs whitespace-nowrap animate-in fade-in duration-200">{action.label}</span>
                   )}
                   {action.badge && action.badge > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-2xs font-bold text-destructive-foreground">
                       {action.badge}
                     </span>
                   )}
@@ -235,7 +235,7 @@ export function FloatingActionIsland() {
                   title="Keyboard shortcuts — click to rebind"
                   className="text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
-                  <kbd className="px-1.5 py-0.5 rounded bg-muted hover:bg-primary/10 font-mono text-[10px] transition-colors">⌘K</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded bg-muted hover:bg-primary/10 font-mono text-2xs transition-colors">⌘K</kbd>
                 </button>
               </div>
             )}

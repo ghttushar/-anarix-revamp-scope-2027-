@@ -160,11 +160,11 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
         <div className="grid grid-cols-[60px_repeat(24,1fr)_60px] gap-1 mb-1">
           <div className="text-xs font-medium text-muted-foreground"></div>
           {HOURS.map((hour) => (
-            <div key={hour} className="text-[10px] font-medium text-muted-foreground text-center py-1">
+            <div key={hour} className="text-2xs font-medium text-muted-foreground text-center py-1">
               {hour.toString().padStart(2, "0")}
             </div>
           ))}
-          <div className="text-[10px] font-medium text-muted-foreground text-center py-1">Total</div>
+          <div className="text-2xs font-medium text-muted-foreground text-center py-1">Total</div>
         </div>
 
         {/* Data rows */}
@@ -194,7 +194,7 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
                     >
                       {point && (
                         <span className={cn(
-                          "text-[7px] font-medium leading-none select-none",
+                          "text-2xs font-medium leading-none select-none",
                           getTextColor(intensity, isHigherBetter)
                         )}>
                           {formatCellValue(value, metric)}
@@ -218,7 +218,7 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
             })}
             {/* Daily Total */}
             <div className="h-8 rounded bg-muted/50 flex items-center justify-center">
-              <span className="text-[7px] font-semibold text-foreground">{formatCellValue(dayTotals[dayIndex], metric)}</span>
+              <span className="text-2xs font-semibold text-foreground">{formatCellValue(dayTotals[dayIndex], metric)}</span>
             </div>
           </div>
         ))}
@@ -228,11 +228,11 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
           <div className="text-xs font-medium text-muted-foreground flex items-center">Total</div>
           {HOURS.map((hour) => (
             <div key={hour} className="h-8 rounded bg-muted/50 flex items-center justify-center">
-              <span className="text-[7px] font-semibold text-foreground">{formatCellValue(hourTotals[hour], metric)}</span>
+              <span className="text-2xs font-semibold text-foreground">{formatCellValue(hourTotals[hour], metric)}</span>
             </div>
           ))}
           <div className="h-8 rounded bg-muted flex items-center justify-center">
-            <span className="text-[7px] font-bold text-foreground">
+            <span className="text-2xs font-bold text-foreground">
               {formatCellValue(Object.values(hourTotals).reduce((a, b) => a + b, 0), metric)}
             </span>
           </div>

@@ -13,9 +13,9 @@ interface ProgressRingProps {
 }
 
 const sizeConfig = {
-  sm: { size: 40, fontSize: "text-xs", labelSize: "text-[8px]" },
-  md: { size: 64, fontSize: "text-sm", labelSize: "text-[10px]" },
-  lg: { size: 96, fontSize: "text-lg", labelSize: "text-xs" },
+  sm: { size: 40, fontSize: "text-xs", labelSize: "text-2xs" },
+  md: { size: 64, fontSize: "text-sm", labelSize: "text-2xs" },
+  lg: { size: 96, fontSize: "text-xl", labelSize: "text-xs" },
   xl: { size: 128, fontSize: "text-2xl", labelSize: "text-sm" },
 };
 

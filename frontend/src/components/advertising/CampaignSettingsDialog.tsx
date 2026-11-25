@@ -113,21 +113,21 @@ export function CampaignSettingsDialog({ campaign, open, onOpenChange, onSave }:
                 <RadioGroupItem value="Dynamic Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — down only</span>
-                  <p className="text-[11px] text-muted-foreground">Amazon lowers bids when a click is less likely to convert</p>
+                  <p className="text-2xs text-muted-foreground">Amazon lowers bids when a click is less likely to convert</p>
                 </div>
               </label>
               <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
                 <RadioGroupItem value="Dynamic Up/Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — up and down</span>
-                  <p className="text-[11px] text-muted-foreground">Amazon raises bids for high-convert clicks, lowers for unlikely ones</p>
+                  <p className="text-2xs text-muted-foreground">Amazon raises bids for high-convert clicks, lowers for unlikely ones</p>
                 </div>
               </label>
               <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
                 <RadioGroupItem value="Fixed" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Fixed bids</span>
-                  <p className="text-[11px] text-muted-foreground">Amazon uses your exact bid for all opportunities</p>
+                  <p className="text-2xs text-muted-foreground">Amazon uses your exact bid for all opportunities</p>
                 </div>
               </label>
             </RadioGroup>

@@ -78,7 +78,7 @@ export function ImpactDateRangePair({ previous, impact, onChange }: ImpactDateRa
         range={previous}
         onApply={(r) => onChange(pairShift("previous", r))}
       />
-      <span className="text-[11px] font-medium text-muted-foreground">vs</span>
+      <span className="text-2xs font-medium text-muted-foreground">vs</span>
       <RangePill
         label="Impact"
         range={impact}

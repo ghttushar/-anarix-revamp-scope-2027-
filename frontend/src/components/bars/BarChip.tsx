@@ -36,7 +36,7 @@ export const BarChipTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functi
 ) {
   const compact = useBarDensity() === "compact";
   return (
-    <button ref={ref} type="button" className={cn(BAR_CHIP_CLASS, compact && "h-7 gap-1 px-2 text-[11px]", className)} {...props}>
+    <button ref={ref} type="button" className={cn(BAR_CHIP_CLASS, compact && "h-7 gap-1 px-2 text-2xs", className)} {...props}>
       {icon && <span className={cn("flex shrink-0 text-muted-foreground", compact ? "[&_svg]:h-3 [&_svg]:w-3" : "[&_svg]:h-3.5 [&_svg]:w-3.5")}>{icon}</span>}
       {label && <span className="bar-chip-label shrink-0 text-muted-foreground">{label}</span>}
       {/* A long value (a campaign name) truncates so the bar stays one row; the full text is in the menu. */}
@@ -123,7 +123,7 @@ export function BarChip<V extends string = string>(props: BarChipProps<V>) {
       </PopoverTrigger>
       <PopoverContent align={align} className="w-auto min-w-[180px] max-w-[280px] p-1">
         {headingText && (
-          <p className="px-2 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{headingText}</p>
+          <p className="px-2 pb-1 pt-1.5 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">{headingText}</p>
         )}
         {searchable && (
           <div className="mb-1 flex items-center gap-1.5 border-b border-border px-2 pb-1.5 pt-1">
@@ -168,7 +168,7 @@ export function BarChip<V extends string = string>(props: BarChipProps<V>) {
                 {o.icon && <span className="flex shrink-0 text-muted-foreground [&_svg]:h-3.5 [&_svg]:w-3.5">{o.icon}</span>}
                 <span className="min-w-0 flex-1">
                   <span className={cn("block truncate", selected && "font-medium")}>{o.label}</span>
-                  {o.description && <span className="block text-[10px] text-muted-foreground">{o.description}</span>}
+                  {o.description && <span className="block text-2xs text-muted-foreground">{o.description}</span>}
                 </span>
                 {!props.multiple && selected && <Check className="h-3.5 w-3.5 shrink-0 text-primary" />}
               </button>

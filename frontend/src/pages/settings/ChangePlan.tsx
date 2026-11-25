@@ -58,8 +58,8 @@ export default function ChangePlan({ mode }: { mode: "change" | "downgrade" }) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {options.map((p) => (
               <div key={p.id} className="rounded-xl border border-border bg-card p-5">
-                <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{p.sectionLabel}</p>
-                <h3 className="text-lg font-bold text-foreground">{p.name}</h3>
+                <p className="text-2xs uppercase tracking-wider text-muted-foreground mb-1">{p.sectionLabel}</p>
+                <h3 className="text-xl font-bold text-foreground">{p.name}</h3>
                 <p className="text-sm text-muted-foreground mb-4 min-h-[40px]">{p.description}</p>
                 <p className="text-2xl font-bold text-foreground mb-4">
                   {p.monthly !== null ? `$${p.monthly}` : "Custom"}

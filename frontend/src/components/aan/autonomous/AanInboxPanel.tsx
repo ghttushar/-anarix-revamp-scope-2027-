@@ -85,12 +85,12 @@ export function AanInboxPanel({ standalone = false, focusScenarioId, onlyMorning
             <AanMascot size={22} state={liveMode ? "listening" : "idle"} interactive={false} />
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="font-heading text-[15px] font-semibold text-foreground truncate">Aan Inbox</h2>
-            <p className="text-[11px] text-muted-foreground truncate">
+            <h2 className="font-heading text-sm font-semibold text-foreground truncate">Aan Inbox</h2>
+            <p className="text-2xs text-muted-foreground truncate">
               {pendingCount} awaiting · {fulfilled.length} executed today
             </p>
           </div>
-          <label className="flex items-center gap-1.5 text-[10px] text-muted-foreground cursor-pointer shrink-0">
+          <label className="flex items-center gap-1.5 text-2xs text-muted-foreground cursor-pointer shrink-0">
             <span>Live</span>
             <Switch checked={liveMode} onCheckedChange={setLiveMode} className="scale-75 origin-right" />
           </label>
@@ -134,7 +134,7 @@ export function AanInboxPanel({ standalone = false, focusScenarioId, onlyMorning
                 {approval.length > APPROVAL_PREVIEW && (
                   <button
                     onClick={() => setShowAllApproval((v) => !v)}
-                    className="w-full text-[11px] text-primary hover:underline py-1.5"
+                    className="w-full text-2xs text-primary hover:underline py-1.5"
                   >
                     {showAllApproval ? "Show fewer" : `Show ${approval.length - APPROVAL_PREVIEW} more`}
                   </button>
@@ -171,7 +171,7 @@ export function AanInboxPanel({ standalone = false, focusScenarioId, onlyMorning
                   <AanInboxCard key={evt.eventId} event={evt} onOpenDetails={() => setDetailFor(evt)} />
                 ))}
                 {fulfilled.length > 0 && (
-                  <button onClick={clearFulfilled} className="w-full text-[10.5px] text-muted-foreground hover:text-foreground py-1">
+                  <button onClick={clearFulfilled} className="w-full text-2xs text-muted-foreground hover:text-foreground py-1">
                     Clear executed history
                   </button>
                 )}
@@ -235,7 +235,7 @@ function Section({
         )}
         <span
           className={cn(
-            "text-[11px] font-semibold uppercase tracking-wider",
+            "text-2xs font-semibold uppercase tracking-wider",
             muted ? "text-muted-foreground/70" : "text-foreground/80"
           )}
         >
@@ -244,7 +244,7 @@ function Section({
         {count !== null && count > 0 && (
           <span
             className={cn(
-              "text-[10px] rounded-full px-1.5 py-0.5 font-medium shrink-0",
+              "text-2xs rounded-full px-1.5 py-0.5 font-medium shrink-0",
               tone === "critical" ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"
             )}
           >
@@ -258,5 +258,5 @@ function Section({
 }
 
 function EmptyLine({ text }: { text: string }) {
-  return <div className="text-[11.5px] text-muted-foreground/70 italic pl-5">{text}</div>;
+  return <div className="text-caption text-muted-foreground/70 italic pl-5">{text}</div>;
 }

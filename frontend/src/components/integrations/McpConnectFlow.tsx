@@ -67,7 +67,7 @@ function Timeline({ items }: { items: ReactNode[] }) {
     <ol className="space-y-3">
       {items.map((item, i) => (
         <li key={i} className="flex gap-3">
-          <span className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center">
+          <span className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-primary/10 text-primary text-2xs font-semibold flex items-center justify-center">
             {i + 1}
           </span>
           <div className="flex-1 min-w-0 text-sm text-foreground">{item}</div>

@@ -135,7 +135,7 @@ export function AddProductAdsPanel() {
                   <img src={product.image} alt={product.name} className="h-6 w-6 rounded object-cover bg-muted shrink-0" />
                   <div className="flex-1 min-w-0">
                     <span className="text-xs text-foreground truncate block">{product.name}</span>
-                    <span className="text-[10px] text-muted-foreground">{product.itemId}</span>
+                    <span className="text-2xs text-muted-foreground">{product.itemId}</span>
                   </div>
                   <button onClick={() => removeStaged(product.id)} className="text-muted-foreground hover:text-foreground cursor-pointer shrink-0">
                     <X className="h-3.5 w-3.5" />

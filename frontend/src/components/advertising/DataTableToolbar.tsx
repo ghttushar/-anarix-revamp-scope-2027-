@@ -276,7 +276,7 @@ export function DataTableToolbar({
                       />
                     </PopoverTrigger>
                     <PopoverContent align="end" className="w-[220px] p-2 space-y-0.5">
-                <p className="text-[11px] font-medium text-muted-foreground px-2 pb-1">Group by</p>
+                <p className="text-2xs font-medium text-muted-foreground px-2 pb-1">Group by</p>
                 {sortableFields.map((field) => {
                   const isActive = sortField === field.id;
                   return (
@@ -317,15 +317,15 @@ export function DataTableToolbar({
                 <div className="space-y-1.5">
                   {draftFilters.map((rule, idx) => (
                     <div key={rule.id} className="flex items-center gap-1.5">
-                      <span className="text-[11px] text-muted-foreground w-10 shrink-0">{idx === 0 ? "Where" : "And"}</span>
+                      <span className="text-2xs text-muted-foreground w-10 shrink-0">{idx === 0 ? "Where" : "And"}</span>
                       <Select value={rule.field} onValueChange={(v) => updateFilterRule(rule.id, "field", v)}>
-                        <SelectTrigger className="h-7 w-[130px] text-[11px]"><SelectValue placeholder="Field" /></SelectTrigger>
+                        <SelectTrigger className="h-7 w-[130px] text-2xs"><SelectValue placeholder="Field" /></SelectTrigger>
                         <SelectContent>
                           {filterFields.map((f) => (<SelectItem key={f} value={f} className="text-xs">{f}</SelectItem>))}
                         </SelectContent>
                       </Select>
                       <Select value={rule.operator} onValueChange={(v) => updateFilterRule(rule.id, "operator", v)}>
-                        <SelectTrigger className="h-7 w-[160px] text-[11px]"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="h-7 w-[160px] text-2xs"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {OPERATORS.map((op) => (<SelectItem key={op} value={op} className="text-xs">{op}</SelectItem>))}
                         </SelectContent>
@@ -334,7 +334,7 @@ export function DataTableToolbar({
                         value={rule.value}
                         onChange={(e) => updateFilterRule(rule.id, "value", e.target.value)}
                         placeholder="Value..."
-                        className="h-7 w-[110px] text-[11px]"
+                        className="h-7 w-[110px] text-2xs"
                       />
                       <button onClick={() => removeFilterRule(rule.id)} className="p-1 hover:bg-muted rounded cursor-pointer" title="Remove filter">
                         <Trash2 className="h-3 w-3 text-muted-foreground" />
@@ -343,7 +343,7 @@ export function DataTableToolbar({
                   ))}
                 </div>
                 <div className="flex items-center justify-between pt-1">
-                  <button onClick={addFilterRule} className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer">
+                  <button onClick={addFilterRule} className="flex items-center gap-1 text-2xs text-primary hover:underline cursor-pointer">
                     <Plus className="h-3 w-3" />Add Filter
                   </button>
                   <div className="flex items-center gap-1.5">
@@ -383,7 +383,7 @@ export function DataTableToolbar({
                 <div className="max-h-[240px] overflow-auto p-1">
                   {pinnedColumns.length > 0 && onPinColumn && (
                     <>
-                      <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Pinned</div>
+                      <div className="px-2 py-1 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">Pinned</div>
                       {filteredColumns.filter(c => pinnedColumns.includes(c.id)).map((column) => (
                         <div key={`pinned-${column.id}`} className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-xs hover:bg-muted transition-colors">
                           <button onClick={() => onColumnToggle(column.id)} className="flex items-center gap-2 flex-1 cursor-pointer">
@@ -396,7 +396,7 @@ export function DataTableToolbar({
                         </div>
                       ))}
                       <div className="h-px bg-border mx-1 my-1" />
-                      <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">All Columns</div>
+                      <div className="px-2 py-1 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">All Columns</div>
                     </>
                   )}
                   {filteredColumns.filter(c => !pinnedColumns.includes(c.id)).map((column) => (
@@ -462,7 +462,7 @@ export function DataTableToolbar({
       {activeFilters.length > 0 && !filterOpen && (
         <div className="flex flex-wrap items-center gap-1.5 py-1.5">
           {activeFilters.map((filter) => (
-            <Badge key={filter.id} variant="outline" className="gap-1 pr-1 text-[11px] h-6 bg-muted/50 border-border">
+            <Badge key={filter.id} variant="outline" className="gap-1 pr-1 text-2xs h-6 bg-muted/50 border-border">
               <span className="font-medium text-foreground">{filter.field}:</span>
               <span className="text-muted-foreground">{filter.operator}</span>
               <span className="text-foreground">{filter.value}</span>
@@ -471,7 +471,7 @@ export function DataTableToolbar({
               </button>
             </Badge>
           ))}
-          <button onClick={clearAllFilters} className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer">
+          <button onClick={clearAllFilters} className="text-2xs text-muted-foreground hover:text-foreground cursor-pointer">
             Clear all
           </button>
         </div>

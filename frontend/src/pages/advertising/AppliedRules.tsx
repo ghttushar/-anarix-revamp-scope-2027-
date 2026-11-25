@@ -83,7 +83,7 @@ export default function AppliedRules() {
     >
       <span className="flex items-center gap-1">
         {label}
-        {sortKey === field && <span className="text-[10px]">{sortDir === "asc" ? "▲" : "▼"}</span>}
+        {sortKey === field && <span className="text-2xs">{sortDir === "asc" ? "▲" : "▼"}</span>}
       </span>
     </TableHead>
   );

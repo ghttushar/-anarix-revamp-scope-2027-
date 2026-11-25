@@ -51,7 +51,7 @@ export function BarSegmented<V extends string>({ value, onChange, items, iconOnl
             {Icon && <Icon className="h-3.5 w-3.5" />}
             {!(iconOnly && Icon) && it.label}
             {it.count !== undefined && (
-              <span className={cn("rounded px-1 text-[10px] tabular-nums", on ? "bg-muted text-muted-foreground" : "text-muted-foreground/80")}>
+              <span className={cn("rounded px-1 text-2xs tabular-nums", on ? "bg-muted text-muted-foreground" : "text-muted-foreground/80")}>
                 {it.count}
               </span>
             )}

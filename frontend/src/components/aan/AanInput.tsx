@@ -343,7 +343,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
                   onClick={handleSuggestionClick}
                   className="group inline-flex max-w-full items-center gap-2 text-left"
                 >
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 shrink-0">Suggested</span>
+                  <span className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground/70 shrink-0">Suggested</span>
                   <span className="text-xs font-medium text-primary group-hover:underline truncate">
                     {PROMPT_SUGGESTIONS[suggestionIndex]}
                   </span>
@@ -446,7 +446,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
                       <Icon className="h-4 w-4 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-medium">{model.name}</div>
-                        <div className="text-[10px] text-muted-foreground">{model.description}</div>
+                        <div className="text-2xs text-muted-foreground">{model.description}</div>
                       </div>
                       {isSelected && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
                     </button>
@@ -455,7 +455,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
               </div>
             </PopoverContent>
           </Popover>
-          <p className="whitespace-nowrap text-[10px] text-muted-foreground font-thin mx-0">
+          <p className="whitespace-nowrap text-2xs text-muted-foreground font-thin mx-0">
             Aan can make mistakes.
           </p>
         </div>

@@ -15,7 +15,7 @@ export function IntegrationCard({ count, onConnect }: Props) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-medium text-foreground">WhatsApp</h3>
-          <span className="text-[10px] uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5">
+          <span className="text-2xs uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5">
             Alerts
           </span>
         </div>

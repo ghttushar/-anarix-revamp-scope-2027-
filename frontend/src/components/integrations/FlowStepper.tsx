@@ -18,7 +18,7 @@ export function FlowStepper({ steps, current }: { steps: string[]; current: numb
             >
               <span
                 className={cn(
-                  "h-5 w-5 rounded-full flex items-center justify-center text-[10px] border",
+                  "h-5 w-5 rounded-full flex items-center justify-center text-2xs border",
                   isCurrent
                     ? "bg-primary text-primary-foreground border-primary"
                     : isDone

@@ -222,7 +222,7 @@ export function IntegrationWhatsAppFlow({ open, onOpenChange, editId }: Props) {
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Enter the 6-digit code sent to {countryCode} {phone}.
                   </p>
-                  <p className="text-[11px] text-muted-foreground mt-1 italic">
+                  <p className="text-2xs text-muted-foreground mt-1 italic">
                     (Demo: use <span className="font-mono">123456</span>)
                   </p>
                 </div>

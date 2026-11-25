@@ -78,7 +78,7 @@ interface BentoCardTitleProps {
 
 export function BentoCardTitle({ children, className }: BentoCardTitleProps) {
   return (
-    <h3 className={cn("text-lg font-heading font-semibold text-foreground", className)}>
+    <h3 className={cn("text-base font-heading font-semibold text-foreground", className)}>
       {children}
     </h3>
   );

@@ -47,7 +47,7 @@ export function MatchTypePicker({ value, onChange }: MatchTypePickerProps) {
               type="button"
               onClick={() => toggle(mt)}
               className={cn(
-                "h-7 w-full rounded-md border text-[10px] uppercase tracking-wide font-semibold transition-colors cursor-pointer",
+                "h-7 w-full rounded-md border text-2xs uppercase tracking-wide font-semibold transition-colors cursor-pointer",
                 state.selected
                   ? "border-primary/40 bg-primary/10 text-primary"
                   : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30"
@@ -63,7 +63,7 @@ export function MatchTypePicker({ value, onChange }: MatchTypePickerProps) {
                   : "border-border bg-background"
               )}
             >
-              <span className="text-[11px] text-muted-foreground select-none">{symbol}</span>
+              <span className="text-2xs text-muted-foreground select-none">{symbol}</span>
               <Input
                 type="number"
                 value={state.bid}

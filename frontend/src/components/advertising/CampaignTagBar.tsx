@@ -41,7 +41,7 @@ export function CampaignTagBar({ campaignId, isEdit }: CampaignTagBarProps) {
         <span
           key={tag}
           className={cn(
-            "inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px] font-medium",
+            "inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-2xs font-medium",
             isDraft
               ? "border-dashed border-primary/50 bg-primary/5 text-primary"
               : "border-border bg-muted text-foreground"
@@ -65,7 +65,7 @@ export function CampaignTagBar({ campaignId, isEdit }: CampaignTagBarProps) {
           onToggle={handleToggle}
           trigger={
             <button
-              className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-muted-foreground/40 px-1.5 py-0.5 text-[10px] text-muted-foreground hover:text-primary hover:border-primary/50 cursor-pointer transition-colors"
+              className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-muted-foreground/40 px-1.5 py-0.5 text-2xs text-muted-foreground hover:text-primary hover:border-primary/50 cursor-pointer transition-colors"
               title="Add tag"
             >
               <Plus className="h-2.5 w-2.5" />

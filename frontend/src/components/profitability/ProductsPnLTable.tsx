@@ -198,7 +198,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                           )}
                           <div className="flex flex-col min-w-0">
                             <span className="font-medium text-foreground text-sm line-clamp-1">{cat.key}</span>
-                            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
                               <span className="font-medium">{cat.parentAsin}</span>
                               <span>·</span>
                               <span>{childCount} {childCount === 1 ? "product" : "products"}</span>
@@ -217,7 +217,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         );
                       })}
                       <TableCell data-info-col className="text-center">
-                        <span className="text-[10px] text-muted-foreground">{isExpanded ? "Open" : "Tap to expand"}</span>
+                        <span className="text-2xs text-muted-foreground">{isExpanded ? "Open" : "Tap to expand"}</span>
                       </TableCell>
                     </TableRow>
 
@@ -229,7 +229,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                             <img src={product.image} alt={product.name} className="h-7 w-7 rounded border border-border object-cover flex-shrink-0" />
                             <div className="flex flex-col min-w-0">
                               <span className="text-xs font-medium text-foreground line-clamp-1">{product.name}</span>
-                              <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                              <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
                                 <span>ASIN: {product.itemId}</span>
                                 <span>·</span>
                                 <span>SKU: {product.sku}</span>
@@ -240,12 +240,12 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                               </div>
                               <div className="flex items-center gap-2 mt-0.5">
                                 {onCogsClick && (
-                                  <button onClick={(e) => { e.stopPropagation(); onCogsClick(product); }} className="text-[11px] text-primary hover:underline flex items-center gap-0.5 cursor-pointer">
+                                  <button onClick={(e) => { e.stopPropagation(); onCogsClick(product); }} className="text-2xs text-primary hover:underline flex items-center gap-0.5 cursor-pointer">
                                     <ExternalLink className="h-2.5 w-2.5" />Edit COGS
                                   </button>
                                 )}
                                 {onTrendsClick && (
-                                  <button onClick={(e) => { e.stopPropagation(); onTrendsClick(product); }} className="text-[11px] text-primary hover:underline flex items-center gap-0.5 cursor-pointer">
+                                  <button onClick={(e) => { e.stopPropagation(); onTrendsClick(product); }} className="text-2xs text-primary hover:underline flex items-center gap-0.5 cursor-pointer">
                                     <TrendingUp className="h-2.5 w-2.5" />Trends
                                   </button>
                                 )}
@@ -366,7 +366,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         </button>
                         <div className="flex flex-col min-w-0">
                           <span className="font-medium text-foreground text-sm">{order.orderId}</span>
-                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
                             <span>{order.flag} {order.country}</span>
                             <span>·</span>
                             <span>{order.date}</span>
@@ -374,11 +374,11 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                             <span>{order.time}</span>
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 h-4 capitalize", STATUS_STYLES[order.status])}>
+                            <Badge variant="outline" className={cn("text-2xs px-1.5 py-0 h-4 capitalize", STATUS_STYLES[order.status])}>
                               {order.status}
                             </Badge>
                             <span className="text-xs font-medium text-foreground">{formatCurrency(order.price)}</span>
-                            <span className="text-[10px] text-muted-foreground">{order.products.length} item{order.products.length !== 1 ? "s" : ""}</span>
+                            <span className="text-2xs text-muted-foreground">{order.products.length} item{order.products.length !== 1 ? "s" : ""}</span>
                           </div>
                         </div>
                       </div>
@@ -403,7 +403,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                           <img src={product.image} alt={product.name} className="h-7 w-7 rounded border border-border object-cover flex-shrink-0" />
                           <div className="flex flex-col min-w-0">
                             <span className="text-xs font-medium text-foreground line-clamp-1">{product.name}</span>
-                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                            <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
                               <span>{product.itemId}</span>
                               <span>·</span>
                               <span>{product.sku}</span>

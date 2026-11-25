@@ -172,22 +172,22 @@ function PeriodRow({
       <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1.05fr)_minmax(0,1.15fr)_minmax(0,0.85fr)_minmax(0,0.9fr)_minmax(0,0.9fr)] divide-x divide-border">
         {cells.map((c) => (
           <div key={c.label.join("|")} className="px-1 py-2.5 text-center min-w-0">
-            <Pair a={c.label[0]} b={c.label[1]} className="text-[10.5px] text-muted-foreground" />
+            <Pair a={c.label[0]} b={c.label[1]} className="text-2xs text-muted-foreground" />
             <Pair
               a={c.value[0]}
               b={c.value[1]}
-              className="mt-1 text-[12px] font-semibold tabular-nums text-foreground"
+              className="mt-1 text-caption font-semibold tabular-nums text-foreground"
             />
           </div>
         ))}
       </div>
       {row.forecast && (
         <div className="flex items-center gap-2 border-t border-border/60 px-4 py-1.5">
-          <span className="text-[10px] text-muted-foreground">Confidence</span>
+          <span className="text-2xs text-muted-foreground">Confidence</span>
           <div className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
             <div className="h-full rounded-full bg-primary/60" style={{ width: `${FORECAST_CONFIDENCE}%` }} />
           </div>
-          <span className="text-[10px] font-medium text-foreground">{FORECAST_CONFIDENCE}% · {FORECAST_MULTIPLIER}x</span>
+          <span className="text-2xs font-medium text-foreground">{FORECAST_CONFIDENCE}% · {FORECAST_MULTIPLIER}x</span>
         </div>
       )}
     </div>

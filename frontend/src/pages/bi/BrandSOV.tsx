@@ -60,7 +60,7 @@ export default function BrandSOV() {
         <SOVChart data={sovTrendData} title="Share of Voice Trend" subtitle={`Jan 31 (${frequency})`} />
 
         <div>
-          <h2 className="text-lg font-semibold mb-4">Brand Coverage</h2>
+          <h2 className="text-base font-semibold mb-4">Brand Coverage</h2>
           <DataTableToolbar
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}

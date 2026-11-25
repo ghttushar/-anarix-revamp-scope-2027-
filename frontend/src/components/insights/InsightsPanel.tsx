@@ -31,7 +31,7 @@ export function InsightsPanel() {
             </div>
             <div>
               <h2 className="font-heading text-sm font-semibold text-foreground">Insights</h2>
-              <p className="text-[10px] text-muted-foreground">{criticalCount + attentionCount + positiveCount} active</p>
+              <p className="text-2xs text-muted-foreground">{criticalCount + attentionCount + positiveCount} active</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={closePanel} className="h-7 w-7" title="Close insights">
@@ -39,15 +39,15 @@ export function InsightsPanel() {
           </Button>
         </div>
         <div className="flex items-center gap-2 border-t border-border/50 bg-muted/30 px-3 py-1.5">
-          <div className="flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px]">
+          <div className="flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-2xs">
             <AlertTriangle className="h-2.5 w-2.5 text-destructive" />
             <span className="font-medium text-destructive">{criticalCount}</span>
           </div>
-          <div className="flex items-center gap-1 rounded-full bg-warning/10 px-2 py-0.5 text-[10px]">
+          <div className="flex items-center gap-1 rounded-full bg-warning/10 px-2 py-0.5 text-2xs">
             <AlertCircle className="h-2.5 w-2.5 text-warning" />
             <span className="font-medium text-warning">{attentionCount}</span>
           </div>
-          <div className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px]">
+          <div className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-2xs">
             <CheckCircle2 className="h-2.5 w-2.5 text-success" />
             <span className="font-medium text-success">{positiveCount}</span>
           </div>

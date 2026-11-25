@@ -29,7 +29,7 @@ export function ConnectionRow({ integration, onToggle, onEdit, onDelete }: Props
           <p className="text-sm font-medium text-foreground">
             {integration.countryCode} {integration.phoneNumber}
           </p>
-          <Badge variant={integration.enabled ? "default" : "secondary"} className="text-[10px]">
+          <Badge variant={integration.enabled ? "default" : "secondary"} className="text-2xs">
             {integration.enabled ? "Active" : "Paused"}
           </Badge>
         </div>
@@ -37,7 +37,7 @@ export function ConnectionRow({ integration, onToggle, onEdit, onDelete }: Props
           {integration.services.map((s) => (
             <span
               key={s}
-              className="text-[10px] uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5"
+              className="text-2xs uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5"
             >
               {SERVICE_META[s].label}
             </span>

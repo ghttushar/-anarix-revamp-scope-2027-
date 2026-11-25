@@ -102,7 +102,7 @@ export default function Team() {
 
           <TabsContent value="invitations" className="space-y-4">
             <div className="rounded-lg border border-border bg-card p-4 space-y-4">
-              <h2 className="font-heading text-lg font-medium text-foreground">Send Invitation</h2>
+              <h2 className="font-heading text-base font-medium text-foreground">Send Invitation</h2>
               <div className="flex gap-3">
                 <Input placeholder="Email address" type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} className="flex-1" />
                 <Select value={inviteRole} onValueChange={setInviteRole}>

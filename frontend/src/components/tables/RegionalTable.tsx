@@ -75,7 +75,7 @@ export function RegionalTable({ data, searchValue = "", showDeltas = false }: Re
                   {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
               ) : (<span className="w-5" />)}
-              {region.flag && <span className="text-lg">{region.flag}</span>}
+              {region.flag && <span className="text-base">{region.flag}</span>}
               <span className="font-medium text-foreground">{region.region}</span>
             </div>
           </TableCell>

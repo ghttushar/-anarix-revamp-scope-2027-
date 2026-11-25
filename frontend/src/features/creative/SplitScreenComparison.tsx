@@ -70,7 +70,7 @@ export function SplitScreenComparison({
     <div className={cn("fixed inset-0 z-50 bg-background", className)}>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-6 py-4">
-        <h2 className="text-lg font-heading font-semibold">Period Comparison</h2>
+        <h2 className="text-base font-heading font-semibold">Period Comparison</h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-5 w-5" />
         </Button>

@@ -126,7 +126,7 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
         </div>
         <div className="pt-2 mt-2 border-t border-border space-y-1.5">
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Top 3 campaigns</p>
+            <p className="text-2xs uppercase tracking-wide text-muted-foreground mb-1">Top 3 campaigns</p>
             {contributors.top3.map((c) => (
               <div key={c.id} className="flex items-center justify-between gap-2">
                 <span className="truncate text-foreground max-w-[170px]">{c.name}</span>
@@ -135,7 +135,7 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
             ))}
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">Bottom 2 campaigns</p>
+            <p className="text-2xs uppercase tracking-wide text-muted-foreground mb-1">Bottom 2 campaigns</p>
             {contributors.bottom2.map((c) => (
               <div key={c.id} className="flex items-center justify-between gap-2">
                 <span className="truncate text-foreground max-w-[170px]">{c.name}</span>
@@ -147,7 +147,7 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); navigate(`/advertising/impact?date=${encodeURIComponent(label)}`); }}
-          className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+          className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-2 py-1 text-2xs font-medium text-primary hover:bg-primary/10 transition-colors cursor-pointer"
         >
           <ExternalLink className="h-3 w-3" /> View in Table
         </button>

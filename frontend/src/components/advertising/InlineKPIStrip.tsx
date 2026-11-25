@@ -96,7 +96,7 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
               {isSwappable ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    <button className="flex items-center gap-1 text-2xs font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                       {item.label}
                       <ChevronDown className="h-2.5 w-2.5" />
                     </button>
@@ -114,18 +114,18 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="text-2xs font-medium uppercase tracking-wider text-muted-foreground">
                   {item.label}
                 </span>
               )}
             </div>
             <div className="flex items-baseline justify-between gap-2">
-              <span className="text-lg font-semibold text-foreground leading-tight">
+              <span className="text-xl font-semibold text-foreground leading-tight">
                 {formatValue(item.value, item.format)}
               </span>
               <div
                 className={cn(
-                  "flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium shrink-0",
+                  "flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-2xs font-medium shrink-0",
                   isNeutral
                     ? "bg-muted text-muted-foreground"
                     : isPositive
@@ -143,7 +143,7 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
                 <span>{Math.abs(delta).toFixed(1)}%</span>
               </div>
             </div>
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-2xs text-muted-foreground">
               Prev 7 days: {formatPrevValue(item.previousValue, item.format)}
             </span>
           </div>

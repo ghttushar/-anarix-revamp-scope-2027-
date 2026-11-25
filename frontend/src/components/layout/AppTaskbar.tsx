@@ -232,7 +232,7 @@ export function AppTaskbar({ breadcrumbs, showAdType = false, showFrequency = fa
                 <div className="w-[200px] border-r border-border py-3 space-y-4 max-h-[420px] overflow-auto bg-muted/30">
                   {DATE_PRESET_GROUPS.map((group) => (
                     <div key={group.label}>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-4 mb-1.5">{group.label}</p>
+                      <p className="text-2xs font-bold text-muted-foreground uppercase tracking-widest px-4 mb-1.5">{group.label}</p>
                       <div className="space-y-0.5 px-2">
                         {group.presets.map((preset) => {
                           const presetRange = preset.getRange();

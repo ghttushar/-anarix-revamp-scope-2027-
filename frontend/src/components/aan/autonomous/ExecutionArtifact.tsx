@@ -77,8 +77,8 @@ function ConfidenceGauge({ value }: { value: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-[13px] font-semibold text-foreground leading-none">{clamped}</div>
-        <div className="text-[7.5px] uppercase tracking-wider text-muted-foreground mt-0.5">conf</div>
+        <div className="text-xs font-semibold text-foreground leading-none">{clamped}</div>
+        <div className="text-2xs uppercase tracking-wider text-muted-foreground mt-0.5">conf</div>
       </div>
     </div>
   );
@@ -91,12 +91,12 @@ function EvidenceBar({ label, value, delta, deltaTone }: { label: string; value:
   return (
     <div className="rounded-md bg-muted/40 px-3 py-2">
       <div className="flex items-center justify-between gap-2 mb-1">
-        <span className="text-[11px] text-muted-foreground">{label}</span>
+        <span className="text-2xs text-muted-foreground">{label}</span>
         <div className="flex items-center gap-2">
-          <span className="text-[12px] font-medium text-foreground">{value}</span>
+          <span className="text-caption font-medium text-foreground">{value}</span>
           {delta && (
             <span className={cn(
-              "text-[10px] font-medium",
+              "text-2xs font-medium",
               deltaTone === "positive" && "text-success",
               deltaTone === "negative" && "text-destructive",
               !deltaTone && "text-muted-foreground"
@@ -117,7 +117,7 @@ function Section({ label, children, right }: { label: string; children: React.Re
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-wider font-semibold text-primary">{label}</div>
+        <div className="text-2xs uppercase tracking-wider font-semibold text-primary">{label}</div>
         {right}
       </div>
       {children}
@@ -131,7 +131,7 @@ function CollapseSection({ label, defaultOpen = false, badge, children }: { labe
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger className="w-full flex items-center justify-between rounded-md border border-border bg-card px-3 py-2 hover:bg-muted/40 transition-colors">
         <div className="flex items-center gap-2">
-          <div className="text-[10px] uppercase tracking-wider font-semibold text-primary">{label}</div>
+          <div className="text-2xs uppercase tracking-wider font-semibold text-primary">{label}</div>
           {badge}
         </div>
         <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform", open && "rotate-180")} />
@@ -196,13 +196,13 @@ export function ExecutionArtifact({ event, onClose }: Props) {
         <div className="flex items-start justify-between border-b border-border px-6 py-4 shrink-0 gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <div className="text-[10px] uppercase tracking-wider font-semibold text-primary/80">Aan · Action Item</div>
-              <span className={cn("text-[9.5px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded border", pill.tone)}>
+              <div className="text-2xs uppercase tracking-wider font-semibold text-primary/80">Aan · Action Item</div>
+              <span className={cn("text-2xs uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded border", pill.tone)}>
                 {pill.label}
               </span>
             </div>
-            <h2 className="font-heading text-[17px] font-semibold text-foreground leading-snug">{s.title}</h2>
-            <p className="text-[11.5px] text-muted-foreground mt-0.5">{s.marketplace}</p>
+            <h2 className="font-heading text-base font-semibold text-foreground leading-snug">{s.title}</h2>
+            <p className="text-caption text-muted-foreground mt-0.5">{s.marketplace}</p>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
             <Button variant="ghost" size="icon" onClick={handleEditAlert} className="h-8 w-8 text-muted-foreground hover:text-primary" title="Edit alert rule">
@@ -221,28 +221,28 @@ export function ExecutionArtifact({ event, onClose }: Props) {
               <div className={cn("rounded-lg border-l-4 px-4 py-3.5 flex items-start gap-4", snapshotTone)}>
                 <ConfidenceGauge value={s.confidence} />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground">
+                  <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground">
                     {event.lifecycle === "fulfilled" ? "Result" : event.lifecycle === "rejected" ? "Status" : "Projected value"}
                   </div>
-                  <div className="text-[15px] font-semibold text-foreground leading-snug mt-0.5">
+                  <div className="text-sm font-semibold text-foreground leading-snug mt-0.5">
                     {event.lifecycle === "fulfilled"
                       ? s.fulfillmentNote
                       : event.lifecycle === "rejected"
                       ? "I've stood down. I won't repeat this for 24h."
                       : s.impact}
                   </div>
-                  <div className="text-[12px] text-muted-foreground mt-1 leading-snug">{s.subtitle}</div>
+                  <div className="text-caption text-muted-foreground mt-1 leading-snug">{s.subtitle}</div>
                 </div>
               </div>
             </section>
 
             {/* INSIGHT + evidence bars */}
             <Section label="What I noticed" right={s.evidence.length > 3 && (
-              <button onClick={() => setShowAllEvidence(v => !v)} className="text-[10.5px] text-primary hover:underline">
+              <button onClick={() => setShowAllEvidence(v => !v)} className="text-2xs text-primary hover:underline">
                 {showAllEvidence ? "Show less" : `Show all ${s.evidence.length}`}
               </button>
             )}>
-              <div className="text-[12.5px] text-foreground/85 leading-relaxed mb-3">{s.signal}</div>
+              <div className="text-caption text-foreground/85 leading-relaxed mb-3">{s.signal}</div>
               <div className="space-y-1.5">
                 {evidenceShown.map((row, i) => (
                   <EvidenceBar key={i} label={row.label} value={row.value} delta={row.delta} deltaTone={row.deltaTone} />
@@ -250,7 +250,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 {s.sources.map((src) => (
-                  <span key={src} className="text-[9.5px] uppercase tracking-wider font-medium text-muted-foreground bg-muted rounded px-1.5 py-0.5">
+                  <span key={src} className="text-2xs uppercase tracking-wider font-medium text-muted-foreground bg-muted rounded px-1.5 py-0.5">
                     {src}
                   </span>
                 ))}
@@ -259,13 +259,13 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
             {/* REASONING — collapsible after first */}
             <Section label="My reasoning" right={s.reasoning.length > 1 && (
-              <button onClick={() => setShowAllReasoning(v => !v)} className="text-[10.5px] text-primary hover:underline">
+              <button onClick={() => setShowAllReasoning(v => !v)} className="text-2xs text-primary hover:underline">
                 {showAllReasoning ? "Collapse" : `Show my full reasoning (${s.reasoning.length})`}
               </button>
             )}>
               <ul className="space-y-1.5">
                 {reasoningShown.map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12.5px] leading-relaxed">
+                  <li key={i} className="flex items-start gap-2 text-caption leading-relaxed">
                     <span className="mt-1.5 h-1 w-1 rounded-full bg-primary shrink-0" />
                     <span className="text-foreground/85">{r}</span>
                   </li>
@@ -279,7 +279,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                 label="From meeting"
                 defaultOpen={false}
                 badge={
-                  <span className="text-[10.5px] text-foreground/70 font-medium truncate max-w-[260px]">
+                  <span className="text-2xs text-foreground/70 font-medium truncate max-w-[260px]">
                     {s.meetingRef.title} · {s.meetingRef.when} · {s.meetingRef.attendees.length} people
                   </span>
                 }
@@ -287,16 +287,16 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                 <div className="rounded-md border border-primary/25 bg-primary/[0.03] p-3.5 space-y-3.5">
                   {/* Attendees */}
                   <div>
-                    <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
+                    <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
                       <Users className="h-3 w-3" /> Attendees
                     </div>
                     <div className="flex flex-wrap items-center gap-1.5">
                       {s.meetingRef.attendees.map((a) => (
                         <div key={a} className="flex items-center gap-1.5 rounded-full bg-muted pl-0.5 pr-2 py-0.5">
-                          <span className="h-4 w-4 rounded-full bg-primary/15 text-primary text-[8.5px] font-semibold flex items-center justify-center">
+                          <span className="h-4 w-4 rounded-full bg-primary/15 text-primary text-2xs font-semibold flex items-center justify-center">
                             {initials(a)}
                           </span>
-                          <span className="text-[10.5px] text-foreground/80">{a}</span>
+                          <span className="text-2xs text-foreground/80">{a}</span>
                         </div>
                       ))}
                     </div>
@@ -304,10 +304,10 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
                   {s.meetingRef.decisions.length > 0 && (
                     <div>
-                      <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1">Decisions</div>
+                      <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1">Decisions</div>
                       <ul className="space-y-1">
                         {s.meetingRef.decisions.map((d, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-[11.5px] leading-snug text-foreground/85">
+                          <li key={i} className="flex items-start gap-1.5 text-caption leading-snug text-foreground/85">
                             <Check className="h-3 w-3 text-success mt-0.5 shrink-0" />
                             <span>{d}</span>
                           </li>
@@ -318,16 +318,16 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
                   {s.meetingRef.actionItems.length > 0 && (
                     <div>
-                      <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1">Action items</div>
+                      <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1">Action items</div>
                       <ul className="space-y-1">
                         {s.meetingRef.actionItems.map((it, i) => (
-                          <li key={i} className="flex items-start gap-2 text-[11.5px] leading-snug rounded bg-background/60 px-2 py-1.5">
+                          <li key={i} className="flex items-start gap-2 text-caption leading-snug rounded bg-background/60 px-2 py-1.5">
                             <span className={cn("mt-0.5 h-3 w-3 rounded-full border shrink-0 flex items-center justify-center", it.done ? "bg-success/15 border-success" : "border-muted-foreground/40")}>
                               {it.done && <Check className="h-2 w-2 text-success" />}
                             </span>
                             <div className="min-w-0 flex-1">
                               <div className={cn(it.done && "text-muted-foreground line-through")}>{it.task}</div>
-                              <div className="text-[10px] text-muted-foreground mt-0.5">
+                              <div className="text-2xs text-muted-foreground mt-0.5">
                                 <span className="font-medium">{it.owner}</span> · due {it.due}
                               </div>
                             </div>
@@ -339,12 +339,12 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
                   {s.meetingRef.callouts.length > 0 && (
                     <div>
-                      <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1 flex items-center gap-1">
+                      <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1 flex items-center gap-1">
                         <Sparkles className="h-3 w-3" /> Callouts
                       </div>
                       <ul className="space-y-1">
                         {s.meetingRef.callouts.map((c, i) => (
-                          <li key={i} className="text-[11.5px] italic text-foreground/80 border-l-2 border-primary/40 pl-2 leading-snug">
+                          <li key={i} className="text-caption italic text-foreground/80 border-l-2 border-primary/40 pl-2 leading-snug">
                             "{c}"
                           </li>
                         ))}
@@ -354,8 +354,8 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
                   {s.meetingRef.notes && (
                     <div>
-                      <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1">Notes</div>
-                      <p className="text-[11.5px] text-foreground/75 leading-relaxed">{s.meetingRef.notes}</p>
+                      <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1">Notes</div>
+                      <p className="text-caption text-foreground/75 leading-relaxed">{s.meetingRef.notes}</p>
                     </div>
                   )}
                 </div>
@@ -366,11 +366,11 @@ export function ExecutionArtifact({ event, onClose }: Props) {
             {s.workspaceContext && ContextIcon && (
               <Section label="Workspace context">
                 <div className="rounded-md border border-border bg-muted/30 p-3">
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1">
+                  <div className="flex items-center gap-1.5 text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1">
                     <ContextIcon className="h-3 w-3" />
                     {s.workspaceContext.who} · {s.workspaceContext.when}
                   </div>
-                  <div className="text-[12px] italic text-foreground/80">"{s.workspaceContext.quote}"</div>
+                  <div className="text-caption italic text-foreground/80">"{s.workspaceContext.quote}"</div>
                 </div>
               </Section>
             )}
@@ -378,22 +378,22 @@ export function ExecutionArtifact({ event, onClose }: Props) {
             {/* RECOMMENDATION */}
             <Section label="What I recommend">
               <div className="rounded-md border border-primary/30 bg-primary/5 p-3.5">
-                <div className="text-[12.5px] text-foreground mb-3">{s.recommendation}</div>
+                <div className="text-caption text-foreground mb-3">{s.recommendation}</div>
                 {s.editable && event.lifecycle === "awaiting_approval" && (
                   <div>
-                    <Label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+                    <Label className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground">
                       {s.editable.label}
                     </Label>
                     {s.editable.kind === "select" && s.editable.options ? (
                       <select
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
-                        className="mt-1 w-full h-8 rounded-md border border-border bg-background text-[12px] px-2"
+                        className="mt-1 w-full h-8 rounded-md border border-border bg-background text-caption px-2"
                       >
                         {s.editable.options.map((o) => <option key={o}>{o}</option>)}
                       </select>
                     ) : (
-                      <Input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="mt-1 h-8 text-[12px]" />
+                      <Input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="mt-1 h-8 text-caption" />
                     )}
                   </div>
                 )}
@@ -403,7 +403,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
             {/* EXECUTION — vertical stepper with progress */}
             {(event.lifecycle === "executing" || event.lifecycle === "fulfilled") && (
               <Section label="Progress" right={
-                <span className="text-[10.5px] font-medium text-muted-foreground">
+                <span className="text-2xs font-medium text-muted-foreground">
                   {Math.min(progress, totalSteps)} of {totalSteps} · {stepPct}%
                 </span>
               }>
@@ -423,10 +423,10 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                         )}>
                           {done ? <Check className="h-2.5 w-2.5 text-success-foreground" /> : active ? <Loader2 className="h-2.5 w-2.5 animate-spin text-primary-foreground" /> : null}
                         </span>
-                        <div className={cn("text-[12.5px] leading-snug", done && "text-muted-foreground line-through", active && "text-foreground font-medium")}>
+                        <div className={cn("text-caption leading-snug", done && "text-muted-foreground line-through", active && "text-foreground font-medium")}>
                           {step.label}
                         </div>
-                        {step.detail && <div className="text-[10.5px] font-mono text-muted-foreground/80 mt-0.5">{step.detail}</div>}
+                        {step.detail && <div className="text-2xs font-mono text-muted-foreground/80 mt-0.5">{step.detail}</div>}
                       </li>
                     );
                   })}
@@ -441,7 +441,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                   "rounded-md border p-3.5",
                   event.lifecycle === "fulfilled" ? "border-success/30 bg-success/5" : "border-border bg-muted/30"
                 )}>
-                  <div className="flex items-start gap-2 text-[12.5px] text-foreground mb-3">
+                  <div className="flex items-start gap-2 text-caption text-foreground mb-3">
                     <ShieldCheck className={cn("h-4 w-4 mt-0.5 shrink-0", event.lifecycle === "fulfilled" ? "text-success" : "text-muted-foreground")} />
                     <span>
                       {event.lifecycle === "fulfilled"
@@ -451,18 +451,18 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                   </div>
                   {event.lifecycle === "fulfilled" && s.diff.length > 0 && (
                     <>
-                      <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-2">Before → After</div>
+                      <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-2">Before → After</div>
                       <div className="space-y-1.5">
                         {s.diff.map((d, i) => (
                           <div key={i} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded bg-background/60 px-2.5 py-1.5">
                             <div>
-                              <div className="text-[9px] uppercase tracking-wider text-muted-foreground">{d.field}</div>
-                              <div className="text-[11.5px] text-muted-foreground line-through">{d.before}</div>
+                              <div className="text-2xs uppercase tracking-wider text-muted-foreground">{d.field}</div>
+                              <div className="text-caption text-muted-foreground line-through">{d.before}</div>
                             </div>
                             <ArrowRight className="h-3 w-3 text-muted-foreground" />
                             <div className="text-right">
-                              <div className="text-[9px] uppercase tracking-wider text-success">now</div>
-                              <div className="text-[11.5px] text-foreground font-medium">{d.after}</div>
+                              <div className="text-2xs uppercase tracking-wider text-success">now</div>
+                              <div className="text-caption text-foreground font-medium">{d.after}</div>
                             </div>
                           </div>
                         ))}
@@ -471,26 +471,26 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                   )}
                   {/* Share group */}
                   <div className="mt-3 pt-3 border-t border-border/60">
-                    <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
+                    <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
                       <Share2 className="h-3 w-3" /> Share this verification
                     </div>
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <button onClick={() => shareTo("Slack")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={() => shareTo("Slack")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <Slack className="h-3 w-3" /> Slack
                       </button>
-                      <button onClick={() => shareTo("Teams")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={() => shareTo("Teams")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <Video className="h-3 w-3" /> Teams
                       </button>
-                      <button onClick={() => shareTo("Email")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={() => shareTo("Email")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <Mail className="h-3 w-3" /> Email
                       </button>
-                      <button onClick={copyLink} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={copyLink} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <LinkIcon className="h-3 w-3" /> Copy link
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="mt-2 text-[10px] font-mono text-muted-foreground">
+                <div className="mt-2 text-2xs font-mono text-muted-foreground">
                   audit_log · evt_{event.eventId.slice(-8)} · {new Date(event.updatedAt).toLocaleString()} · actor:aan · policy:{event.policyId ?? "user_approval"}
                 </div>
               </Section>
@@ -501,12 +501,12 @@ export function ExecutionArtifact({ event, onClose }: Props) {
         {/* Sticky action bar (when awaiting) */}
         {event.lifecycle === "awaiting_approval" && (
           <div className="border-t border-border bg-background/95 backdrop-blur px-6 py-3 shrink-0 flex items-center justify-between gap-2">
-            <div className="text-[11px] text-muted-foreground">You have 30s to undo after either action.</div>
+            <div className="text-2xs text-muted-foreground">You have 30s to undo after either action.</div>
             <div className="flex items-center gap-2">
-              <Button size="sm" variant="ghost" onClick={() => reject(event.eventId)} className="h-8 px-3 text-[12px] text-muted-foreground hover:text-destructive">
+              <Button size="sm" variant="ghost" onClick={() => reject(event.eventId)} className="h-8 px-3 text-caption text-muted-foreground hover:text-destructive">
                 Reject
               </Button>
-              <Button size="sm" onClick={() => approve(event.eventId, s.editable ? { [s.editable.label]: editValue } : undefined)} className="h-8 px-4 text-[12px]">
+              <Button size="sm" onClick={() => approve(event.eventId, s.editable ? { [s.editable.label]: editValue } : undefined)} className="h-8 px-4 text-caption">
                 <Check className="h-3.5 w-3.5 mr-1" />
                 {s.actionLabel}
               </Button>
@@ -518,10 +518,10 @@ export function ExecutionArtifact({ event, onClose }: Props) {
         <div className="border-t-2 border-border shrink-0 bg-card flex flex-col max-h-[42%]">
           <div className="px-5 pt-3 pb-1.5 flex items-center gap-2 shrink-0 border-b border-border/50">
             <AanMascot size={18} state="idle" interactive={false} />
-            <div className="text-[11px] uppercase tracking-wider font-semibold text-foreground/80">
+            <div className="text-2xs uppercase tracking-wider font-semibold text-foreground/80">
               Talk to me about this
             </div>
-            <span className="ml-auto text-[10px] text-muted-foreground">First-person, in context</span>
+            <span className="ml-auto text-2xs text-muted-foreground">First-person, in context</span>
           </div>
           {chatMsgs.length > 0 && (
             <ScrollArea className="flex-1 min-h-0 px-5">
@@ -530,7 +530,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                   <div
                     key={m.id}
                     className={cn(
-                      "text-[12.5px] leading-relaxed rounded-lg px-3 py-2 max-w-[85%]",
+                      "text-caption leading-relaxed rounded-lg px-3 py-2 max-w-[85%]",
                       m.role === "user"
                         ? "ml-auto bg-primary text-primary-foreground"
                         : "mr-auto bg-background border border-border text-foreground"
@@ -549,7 +549,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
               onChange={(e) => setChatDraft(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") handleAskAan(); }}
               placeholder="Ask me anything — why, what if, alternatives…"
-              className="h-10 text-[13px] flex-1 rounded-lg bg-background shadow-sm border-border focus-visible:ring-1 focus-visible:ring-primary/40"
+              className="h-10 text-xs flex-1 rounded-lg bg-background shadow-sm border-border focus-visible:ring-1 focus-visible:ring-primary/40"
             />
             <Button size="sm" onClick={handleAskAan} disabled={!chatDraft.trim()} className="h-10 w-10 p-0 rounded-lg">
               <Send className="h-4 w-4" />

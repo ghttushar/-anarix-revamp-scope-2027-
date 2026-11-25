@@ -95,7 +95,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
   };
 
   const typeBadge = (type: Campaign["type"]) => (
-    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 font-medium">
+    <Badge variant="outline" className="text-2xs px-1.5 py-0 h-5 font-medium">
       {type === "auto" ? "Auto" : "Manual"}
     </Badge>
   );
@@ -144,7 +144,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                 className="h-8 pl-8 text-xs"
               />
             </div>
-            <div className="inline-flex items-center rounded-md border border-border p-0.5 text-[11px]">
+            <div className="inline-flex items-center rounded-md border border-border p-0.5 text-2xs">
               {(["active", "all"] as const).map((opt) => (
                 <button
                   key={opt}
@@ -198,10 +198,10 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-foreground truncate">{campaign.name}</p>
-                    <p className="text-[10px] text-muted-foreground">Campaign ID: {campaign.id}</p>
+                    <p className="text-2xs text-muted-foreground">Campaign ID: {campaign.id}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 font-medium">SP</Badge>
+                    <Badge variant="outline" className="text-2xs px-1.5 py-0 h-5 font-medium">SP</Badge>
                     {typeBadge(campaign.type)}
                   </div>
                 </div>
@@ -258,7 +258,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                   <Filter className="h-4 w-4" />
                 </div>
                 <p className="text-xs">No campaigns added yet</p>
-                <p className="text-[10px] mt-0.5">Select campaigns from the left to add them</p>
+                <p className="text-2xs mt-0.5">Select campaigns from the left to add them</p>
               </div>
             ) : (
               addedCampaigns.map((campaign) => (
@@ -277,7 +277,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-foreground truncate">{campaign.name}</p>
-                    <p className="text-[10px] text-muted-foreground">Campaign ID: {campaign.id}</p>
+                    <p className="text-2xs text-muted-foreground">Campaign ID: {campaign.id}</p>
                   </div>
                   <Button
                     variant="ghost"

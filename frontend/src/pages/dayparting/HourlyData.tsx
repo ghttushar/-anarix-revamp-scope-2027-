@@ -241,7 +241,7 @@ export default function HourlyData() {
                       <div key={index} className="rounded-md border border-border bg-card px-3 py-2">
                         <div className="flex items-center justify-between mb-0.5">
                           <Select value={metricKey} onValueChange={(v) => handleBoxMetricChange(index, v)}>
-                            <SelectTrigger className="h-5 w-auto border-0 bg-transparent shadow-none p-0 text-[10px] font-medium text-muted-foreground uppercase gap-0.5 cursor-pointer">
+                            <SelectTrigger className="h-5 w-auto border-0 bg-transparent shadow-none p-0 text-2xs font-medium text-muted-foreground uppercase gap-0.5 cursor-pointer">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -251,7 +251,7 @@ export default function HourlyData() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <p className="text-lg font-semibold text-foreground">{metricDef.format(value)}</p>
+                        <p className="text-xl font-semibold text-foreground">{metricDef.format(value)}</p>
                       </div>
                     );
                   })}
@@ -313,7 +313,7 @@ export default function HourlyData() {
                             {row.scheduleId ? (
                               <div className="flex flex-col items-center gap-0.5">
                                 <span className="text-sm">{row.action}</span>
-                                <Badge variant="outline" className={cn("capitalize text-[10px] px-1.5 py-0", SCHEDULE_STATUS_STYLES[row.scheduleStatus])}>
+                                <Badge variant="outline" className={cn("capitalize text-2xs px-1.5 py-0", SCHEDULE_STATUS_STYLES[row.scheduleStatus])}>
                                   {row.scheduleStatus}
                                 </Badge>
                               </div>

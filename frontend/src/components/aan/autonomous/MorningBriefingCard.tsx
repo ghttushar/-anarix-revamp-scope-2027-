@@ -38,9 +38,9 @@ export function MorningBriefingCard() {
             <Coffee className="h-4 w-4 text-primary" />
           </div>
           <div className="min-w-0">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-primary/80">Morning Briefing</div>
+            <div className="text-2xs font-semibold uppercase tracking-wider text-primary/80">Morning Briefing</div>
             <div className="font-heading text-sm font-semibold text-foreground truncate">{BRIEFING.greeting}</div>
-            <div className="text-[11px] text-muted-foreground">{BRIEFING.subtitle}</div>
+            <div className="text-2xs text-muted-foreground">{BRIEFING.subtitle}</div>
           </div>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setExpanded((v) => !v)} className="h-7 w-7 shrink-0">
@@ -53,17 +53,17 @@ export function MorningBriefingCard() {
           {BRIEFING.bullets.map((b, i) => (
             <div key={i} className="flex items-start gap-2">
               <span className={cn("mt-1.5 h-1.5 w-1.5 rounded-full shrink-0", dotClass[b.severity])} />
-              <div className="min-w-0 text-[12px] leading-relaxed">
+              <div className="min-w-0 text-caption leading-relaxed">
                 <span className="font-medium text-foreground">{b.label}</span>
                 <span className="text-muted-foreground"> — {b.detail}</span>
               </div>
             </div>
           ))}
           <div className="pt-2 flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => navigate("/aan/feed")}>
+            <Button size="sm" variant="outline" className="h-7 text-2xs" onClick={() => navigate("/aan/feed")}>
               Open Aan Feed
             </Button>
-            <Button size="sm" variant="ghost" className="h-7 text-[11px] text-muted-foreground" onClick={() => navigate("/aan")}>
+            <Button size="sm" variant="ghost" className="h-7 text-2xs text-muted-foreground" onClick={() => navigate("/aan")}>
               Ask Aan a question
             </Button>
           </div>

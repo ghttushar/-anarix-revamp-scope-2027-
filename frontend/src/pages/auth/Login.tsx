@@ -57,7 +57,7 @@ export default function Login() {
             for your marketplace
           </h1>
 
-          <p className="text-lg text-white/80 max-w-md">
+          <p className="text-base text-white/80 max-w-md">
             Unify your Amazon and Walmart advertising, automate optimization, and unlock
             insights that drive profitable growth.
           </p>

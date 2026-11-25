@@ -57,10 +57,10 @@ export function CheckoutDialog({ plan, onClose, onPaid }: CheckoutDialogProps) {
         {plan && (
           <div className="rounded-lg border border-border bg-muted/30 p-4 flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{plan.sectionLabel}</p>
+              <p className="text-2xs uppercase tracking-wider text-muted-foreground">{plan.sectionLabel}</p>
               <p className="font-semibold text-foreground">{plan.name}</p>
             </div>
-            <p className="text-lg font-bold text-foreground shrink-0">{price}</p>
+            <p className="text-xl font-bold text-foreground shrink-0">{price}</p>
           </div>
         )}
 

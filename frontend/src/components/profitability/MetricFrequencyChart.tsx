@@ -54,12 +54,12 @@ function getDelta(curr: number, prev: number) {
 function DeltaPill({ value, trend }: { value: number; trend: "up" | "down" | "neutral" }) {
   if (trend === "neutral")
     return (
-      <span className="text-[10px] text-muted-foreground inline-flex items-center gap-0.5">
+      <span className="text-2xs text-muted-foreground inline-flex items-center gap-0.5">
         <Minus className="h-2.5 w-2.5" /> 0%
       </span>
     );
   return (
-    <span className={cn("text-[10px] font-medium inline-flex items-center gap-0.5", trend === "up" ? "text-success" : "text-destructive")}>
+    <span className={cn("text-2xs font-medium inline-flex items-center gap-0.5", trend === "up" ? "text-success" : "text-destructive")}>
       {trend === "up" ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
       {trend === "up" ? "+" : ""}{value.toFixed(1)}%
     </span>

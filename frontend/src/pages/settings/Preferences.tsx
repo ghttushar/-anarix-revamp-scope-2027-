@@ -274,7 +274,7 @@ export default function Preferences() {
         {/* Theme */}
         <section className="space-y-4">
           <div>
-            <h2 className="font-heading text-lg font-medium text-foreground">Theme</h2>
+            <h2 className="font-heading text-base font-medium text-foreground">Theme</h2>
             <p className="text-sm text-muted-foreground">Select your preferred color scheme</p>
           </div>
           <ThemeSwitcher />
@@ -287,7 +287,7 @@ export default function Preferences() {
         <section className="space-y-4">
           <div className="flex items-center gap-2">
             <Globe className="h-5 w-5 text-muted-foreground" />
-            <h2 className="font-heading text-lg font-medium text-foreground">Currency Display</h2>
+            <h2 className="font-heading text-base font-medium text-foreground">Currency Display</h2>
           </div>
           <div className="rounded-lg border border-border bg-card p-4 space-y-4">
             <div className="flex items-center justify-between">
@@ -345,7 +345,7 @@ export default function Preferences() {
         {/* Billing Flow */}
         <section className="space-y-4">
           <div>
-            <h2 className="font-heading text-lg font-medium text-foreground">Billing Flow</h2>
+            <h2 className="font-heading text-base font-medium text-foreground">Billing Flow</h2>
             <p className="text-sm text-muted-foreground">Enable the new trial, pricing, and in-app billing experience. When off, the app behaves exactly as today.</p>
           </div>
           <div className="rounded-lg border border-border bg-card divide-y divide-border">
@@ -397,7 +397,7 @@ export default function Preferences() {
         {/* Floating Action Island */}
         <section className="space-y-4">
           <div>
-            <h2 className="font-heading text-lg font-medium text-foreground">Floating Action Island</h2>
+            <h2 className="font-heading text-base font-medium text-foreground">Floating Action Island</h2>
             <p className="text-sm text-muted-foreground">
               Persistent action hub at the bottom of every screen. When off, all island actions
               (Insights, Notifications, Aan, Refresh, Export, Screenshot, Theme) move into the App Taskbar.
@@ -421,7 +421,7 @@ export default function Preferences() {
             <div>
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-muted-foreground" />
-                <h2 className="font-heading text-lg font-medium text-foreground">Edit Alerts</h2>
+                <h2 className="font-heading text-base font-medium text-foreground">Edit Alerts</h2>
               </div>
               <p className="text-sm text-muted-foreground mt-1">
                 Decide what Aan can act on without asking, and what still needs your approval. Every policy is
@@ -432,7 +432,7 @@ export default function Preferences() {
 
           <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 flex items-start gap-2">
             <AlertTriangle className="h-3.5 w-3.5 text-warning mt-0.5 shrink-0" />
-            <div className="text-[12px] text-foreground/80">
+            <div className="text-caption text-foreground/80">
               <span className="font-medium">Autonomy is opt-in.</span> Aan only auto-executes scenarios covered by an
               enabled policy. Everything else lands in Alerts for your approval.
             </div>
@@ -444,13 +444,13 @@ export default function Preferences() {
               <div className="flex items-center gap-2">
                 <h3 className="font-heading text-sm font-semibold text-foreground">Live mode</h3>
                 <span className={cn(
-                  "text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded",
+                  "text-2xs uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded",
                   liveMode ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"
                 )}>
                   {liveMode ? "On" : "Off"}
                 </span>
               </div>
-              <p className="text-[12.5px] text-muted-foreground mt-1 leading-relaxed">
+              <p className="text-caption text-muted-foreground mt-1 leading-relaxed">
                 Stream new alerts into the Alerts page in real time. Turn off to review at your own pace.
               </p>
             </div>
@@ -461,7 +461,7 @@ export default function Preferences() {
           <div className="rounded-lg border border-border bg-card p-4">
             <div className="mb-3">
               <h3 className="font-heading text-sm font-semibold text-foreground">Alert categories</h3>
-              <p className="text-[12px] text-muted-foreground mt-0.5">Choose which situations Aan surfaces in your Alerts stream. Off means silent — Aan still watches, but won't notify.</p>
+              <p className="text-caption text-muted-foreground mt-0.5">Choose which situations Aan surfaces in your Alerts stream. Off means silent — Aan still watches, but won't notify.</p>
             </div>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {ALERT_CATEGORIES.map(({ key, icon: CatIcon, label, description }) => {
@@ -472,8 +472,8 @@ export default function Preferences() {
                       <CatIcon className="h-3.5 w-3.5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[12.5px] font-medium text-foreground">{label}</div>
-                      <div className="text-[11px] text-muted-foreground leading-snug mt-0.5">{description}</div>
+                      <div className="text-caption font-medium text-foreground">{label}</div>
+                      <div className="text-2xs text-muted-foreground leading-snug mt-0.5">{description}</div>
                     </div>
                     <Switch checked={enabled} onCheckedChange={() => toggleCategory(key)} />
                   </li>
@@ -483,7 +483,7 @@ export default function Preferences() {
           </div>
 
           <div className="pt-1">
-            <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2">How Aan can act without asking</div>
+            <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-2">How Aan can act without asking</div>
           </div>
 
           <ul className="space-y-3">
@@ -499,22 +499,22 @@ export default function Preferences() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <h3 className="font-heading text-sm font-semibold text-foreground">{p.name}</h3>
-                      <span className={cn("text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded", p.enabled ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
+                      <span className={cn("text-2xs uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded", p.enabled ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
                         {p.enabled ? "Active" : "Off"}
                       </span>
                     </div>
-                    <p className="text-[12.5px] text-muted-foreground mt-1 leading-relaxed">{p.description}</p>
+                    <p className="text-caption text-muted-foreground mt-1 leading-relaxed">{p.description}</p>
                     <div className="mt-2">
-                      <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1">Guardrails</div>
+                      <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1">Guardrails</div>
                       <ul className="flex flex-wrap gap-1.5">
                         {p.guardrails.map((g, i) => (
-                          <li key={i} className="text-[10.5px] rounded bg-muted px-2 py-0.5 text-foreground/70">
+                          <li key={i} className="text-2xs rounded bg-muted px-2 py-0.5 text-foreground/70">
                             {g}
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="mt-2 text-[10.5px] text-muted-foreground">
+                    <div className="mt-2 text-2xs text-muted-foreground">
                       Triggered {p.timesTriggered} times{p.lastTriggered ? ` · last: ${p.lastTriggered}` : ""}
                     </div>
                   </div>
@@ -534,27 +534,27 @@ export default function Preferences() {
               <Shield className="h-4 w-4 text-muted-foreground shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-foreground">How Aan decides</div>
-                <div className="text-[11px] text-muted-foreground">Connected systems and decision model</div>
+                <div className="text-2xs text-muted-foreground">Connected systems and decision model</div>
               </div>
               <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform", howAanOpen && "rotate-180")} />
             </button>
             {howAanOpen && (
               <div className="border-t border-border/60 px-4 py-4 space-y-4">
-                <p className="text-[12px] text-muted-foreground leading-relaxed">
+                <p className="text-caption text-muted-foreground leading-relaxed">
                   Aan is an autonomous coworker, not a chatbot. It watches your channels, correlates that context
                   with your live business data, and never acts without your approval unless a policy above allows it.
                 </p>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2">Connected systems</div>
+                  <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-2">Connected systems</div>
                   <ul className="grid grid-cols-2 gap-y-1.5 gap-x-4">
                     {CONNECTED_SYSTEMS.map((sys) => (
-                      <li key={sys.id} className="flex items-center gap-2 text-[12px]">
+                      <li key={sys.id} className="flex items-center gap-2 text-caption">
                         <span className="relative flex h-2 w-2 shrink-0">
                           {sys.pulse && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />}
                           <span className={cn("relative inline-flex h-2 w-2 rounded-full", sys.status === "active" ? "bg-success" : "bg-muted-foreground/40")} />
                         </span>
                         <span className="text-foreground/80 flex-1 truncate">{sys.name}</span>
-                        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{sys.status}</span>
+                        <span className="text-2xs uppercase tracking-wider text-muted-foreground">{sys.status}</span>
                       </li>
                     ))}
                   </ul>
@@ -562,10 +562,10 @@ export default function Preferences() {
 
                 {/* Connect a workspace — mock connectors */}
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+                  <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
                     <Plug className="h-3 w-3" /> Connect a workspace
                   </div>
-                  <p className="text-[11.5px] text-muted-foreground mb-2 leading-relaxed">
+                  <p className="text-caption text-muted-foreground mb-2 leading-relaxed">
                     Give Aan access to the places your team already works. Aan reads context (decisions, action items,
                     threads) — it never posts without your approval unless a policy above allows it.
                   </p>
@@ -578,15 +578,15 @@ export default function Preferences() {
                             <WIcon className="h-3.5 w-3.5" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-[12.5px] font-medium text-foreground truncate">{name}</div>
-                            <div className={cn("text-[10px] uppercase tracking-wider font-semibold", connected ? "text-success" : "text-muted-foreground")}>
+                            <div className="text-caption font-medium text-foreground truncate">{name}</div>
+                            <div className={cn("text-2xs uppercase tracking-wider font-semibold", connected ? "text-success" : "text-muted-foreground")}>
                               {connected ? "Connected" : "Not connected"}
                             </div>
                           </div>
                           <Button
                             size="sm"
                             variant={connected ? "outline" : "default"}
-                            className="h-7 text-[11px] px-2.5 shrink-0"
+                            className="h-7 text-2xs px-2.5 shrink-0"
                             onClick={() => toggleWorkspace(key, name)}
                           >
                             {connected ? "Manage" : "Connect"}
@@ -610,7 +610,7 @@ export default function Preferences() {
         <section className="space-y-4" id="shortcuts">
           <div className="flex items-center gap-2">
             <Keyboard className="h-5 w-5 text-muted-foreground" />
-            <h2 className="font-heading text-lg font-medium text-foreground">Keyboard Shortcuts</h2>
+            <h2 className="font-heading text-base font-medium text-foreground">Keyboard Shortcuts</h2>
           </div>
           <p className="text-sm text-muted-foreground">
             Click <Pencil className="inline h-3 w-3" /> to rebind. Press <kbd className="px-1.5 py-0.5 rounded bg-muted text-xs font-mono">?</kbd> anywhere — or click the <kbd className="px-1.5 py-0.5 rounded bg-muted text-xs font-mono">⌘K</kbd> chip on the Floating Action Island — to see all shortcuts.

@@ -73,7 +73,7 @@ export default function UnderMaintenance() {
             <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-60 animate-ping" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
           </span>
-          <span className="text-[11px] uppercase tracking-widest font-semibold text-muted-foreground">
+          <span className="text-2xs uppercase tracking-widest font-semibold text-muted-foreground">
             Scheduled tune-up
           </span>
         </div>

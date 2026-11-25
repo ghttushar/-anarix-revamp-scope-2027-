@@ -39,13 +39,13 @@ export function MeetingBundleCard({ bundle, onOpenDetails }: Props) {
       {/* Meta strip */}
       <div className="flex items-center gap-1.5 mb-3">
         <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-primary" />
-        <span className="text-[9.5px] uppercase tracking-wider font-semibold text-primary">From meeting</span>
-        <span className="text-[9px] text-muted-foreground/60">·</span>
+        <span className="text-2xs uppercase tracking-wider font-semibold text-primary">From meeting</span>
+        <span className="text-2xs text-muted-foreground/60">·</span>
         <Video className="h-3 w-3 text-muted-foreground" />
-        <span className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground truncate">
+        <span className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground truncate">
           {bundle.meetingWhen}
         </span>
-        <span className="ml-auto text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground shrink-0">
+        <span className="ml-auto text-2xs uppercase tracking-wider font-semibold text-muted-foreground shrink-0">
           {bundle.duration}
         </span>
       </div>
@@ -53,24 +53,24 @@ export function MeetingBundleCard({ bundle, onOpenDetails }: Props) {
       {/* Title | Action items count */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_220px] gap-3 items-start">
         <div className="min-w-0">
-          <h3 className="text-[15px] font-semibold text-foreground leading-snug">
+          <h3 className="text-sm font-semibold text-foreground leading-snug">
             {bundle.meetingTitle}
           </h3>
-          <p className="mt-0.5 text-[12px] text-muted-foreground leading-snug line-clamp-2">
+          <p className="mt-0.5 text-caption text-muted-foreground leading-snug line-clamp-2">
             {bundle.summary}
           </p>
         </div>
 
         <div className="rounded-md border-l-2 border-primary bg-primary/[0.05] px-3 py-2">
-          <div className="text-[9.5px] uppercase tracking-wider font-semibold text-primary mb-0.5">
+          <div className="text-2xs uppercase tracking-wider font-semibold text-primary mb-0.5">
             Action items
           </div>
-          <div className="text-[13.5px] font-semibold text-foreground leading-snug">
+          <div className="text-xs font-semibold text-foreground leading-snug">
             {pending} pending
-            <span className="text-[11px] font-normal text-muted-foreground"> / {total} total</span>
+            <span className="text-2xs font-normal text-muted-foreground"> / {total} total</span>
           </div>
           {(approved > 0 || rejected > 0) && (
-            <div className="text-[10.5px] text-muted-foreground mt-0.5">
+            <div className="text-2xs text-muted-foreground mt-0.5">
               {approved > 0 && <span className="text-success">{approved} approved</span>}
               {approved > 0 && rejected > 0 && <span> · </span>}
               {rejected > 0 && <span>{rejected} rejected</span>}
@@ -87,18 +87,18 @@ export function MeetingBundleCard({ bundle, onOpenDetails }: Props) {
             <span
               key={p.name}
               title={`${p.name} — ${p.role}`}
-              className="h-6 w-6 rounded-full border-2 border-card bg-muted flex items-center justify-center text-[9.5px] font-semibold text-foreground/70"
+              className="h-6 w-6 rounded-full border-2 border-card bg-muted flex items-center justify-center text-2xs font-semibold text-foreground/70"
             >
               {initials(p.name)}
             </span>
           ))}
           {overflow > 0 && (
-            <span className="h-6 w-6 rounded-full border-2 border-card bg-muted flex items-center justify-center text-[9.5px] font-semibold text-muted-foreground">
+            <span className="h-6 w-6 rounded-full border-2 border-card bg-muted flex items-center justify-center text-2xs font-semibold text-muted-foreground">
               +{overflow}
             </span>
           )}
         </div>
-        <span className="text-[11px] text-muted-foreground truncate">
+        <span className="text-2xs text-muted-foreground truncate">
           {bundle.participants.map((p) => p.name.split(" ")[0]).join(", ")}
         </span>
       </div>
@@ -112,7 +112,7 @@ export function MeetingBundleCard({ bundle, onOpenDetails }: Props) {
               <Button
                 size="sm"
                 onClick={(e) => { e.stopPropagation(); approveAllMeetingItems(bundle.bundleId); }}
-                className="h-7 px-3 text-[11.5px] shadow-none"
+                className="h-7 px-3 text-caption shadow-none"
               >
                 <Check className="h-3 w-3 mr-1" />
                 Approve all
@@ -121,19 +121,19 @@ export function MeetingBundleCard({ bundle, onOpenDetails }: Props) {
                 size="sm"
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); rejectAllMeetingItems(bundle.bundleId); }}
-                className="h-7 px-2.5 text-[11.5px] text-muted-foreground hover:text-destructive"
+                className="h-7 px-2.5 text-caption text-muted-foreground hover:text-destructive"
               >
                 <X className="h-3 w-3 mr-1" />
                 Reject all
               </Button>
             </>
           ) : (
-            <span className="text-[11px] text-muted-foreground italic">All items resolved</span>
+            <span className="text-2xs text-muted-foreground italic">All items resolved</span>
           )}
         </div>
         <button
           onClick={onOpenDetails}
-          className="text-[11.5px] text-primary hover:underline inline-flex items-center gap-0.5 font-medium"
+          className="text-caption text-primary hover:underline inline-flex items-center gap-0.5 font-medium"
         >
           View more <ArrowRight className="h-3 w-3" />
         </button>

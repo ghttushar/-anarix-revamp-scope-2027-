@@ -94,7 +94,7 @@ export function ImpactLineChart({ items, previous, impact, metrics, height = 280
         </div>
         {point.contributors && point.contributors.length > 0 && (
           <div className="pt-1.5 mt-1.5 border-t border-border">
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">
+            <p className="text-2xs uppercase tracking-wide text-muted-foreground mb-1">
               Top contributors
             </p>
             <div className="space-y-0.5">
@@ -189,7 +189,7 @@ export function ImpactLegend({ metrics }: { metrics: ImpactMetricKey[] }) {
           return { key: m, label: o?.label ?? m, color: o?.color ?? "hsl(var(--primary))" };
         })}
       />
-      <span className="flex items-center gap-3 pt-2 text-[11px] text-muted-foreground">
+      <span className="flex items-center gap-3 pt-2 text-2xs text-muted-foreground">
         <span className="flex items-center gap-1.5"><span className="w-4 border-t border-dashed border-muted-foreground" />Previous</span>
         <span className="flex items-center gap-1.5"><span className="w-4 border-t-2 border-muted-foreground" />Impact</span>
       </span>

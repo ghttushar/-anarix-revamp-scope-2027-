@@ -17,49 +17,49 @@ export function AdGroupInfoCard({ adGroup, onUpdate }: AdGroupInfoCardProps) {
   return (
     <div className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-2.5 overflow-x-auto">
       <div className="flex flex-col gap-0.5 min-w-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Ad Group</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Ad Group</span>
         <span className="text-sm font-medium text-foreground truncate">{adGroup.name}</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Status</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Status</span>
         <StatusBadge status={adGroup.status} />
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Default Bid</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Default Bid</span>
         <span className="text-sm font-medium text-primary cursor-pointer hover:underline">{formatCurrency(adGroup.minBid)}</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Keyword Targeting</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Keyword Targeting</span>
         <span className="text-sm text-foreground">Bidded Value</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Min. Bid</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Min. Bid</span>
         <span className="text-sm font-medium text-primary cursor-pointer hover:underline">{formatCurrency(adGroup.minBid)}</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Max. Bid</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Max. Bid</span>
         <span className="text-sm font-medium text-primary cursor-pointer hover:underline">{formatCurrency(adGroup.maxBid)}</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">TRoAS</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">TRoAS</span>
         <span className="text-sm font-medium text-primary cursor-pointer hover:underline">{formatCurrency(adGroup.targetRoas)}</span>
       </div>
 

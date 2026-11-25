@@ -208,7 +208,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">Account Health Score</h3>
+                  <h3 className="text-base font-semibold text-foreground">Account Health Score</h3>
                   <p className="text-sm text-muted-foreground">
                     {getKpiValue("Optimization Score")} optimization grade • {getKpiValue("Campaigns Reviewed")} analyzed
                   </p>
@@ -222,7 +222,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
                     <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
                       {change.field}
                     </p>
-                    <p className="text-lg font-semibold text-foreground">{change.after}</p>
+                    <p className="text-xl font-semibold text-foreground">{change.after}</p>
                   </div>
                 ))}
               </div>
@@ -252,7 +252,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
           {/* Non-report/audit artifact content */}
           {artifact.type !== "report" && artifact.type !== "audit" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground mb-4">{artifact.title}</h3>
+              <h3 className="text-base font-semibold text-foreground mb-4">{artifact.title}</h3>
               <p className="text-sm text-muted-foreground mb-6">{artifact.description}</p>
               {artifact.changes.map((change, idx) => (
                 <div

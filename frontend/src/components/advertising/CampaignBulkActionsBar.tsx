@@ -81,7 +81,7 @@ export function CampaignBulkActions({ selectedIds, onBulkUpdate }: CampaignBulkA
 
   const budget = (label: string, value: string, set: (v: string) => void, onCancel: () => void, onApply: () => void) => (
     <PopoverContent className="w-56 space-y-2 p-3" align="start">
-      <label className="text-[11px] text-muted-foreground">{label}</label>
+      <label className="text-2xs text-muted-foreground">{label}</label>
       <div className="relative">
         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyConfig.symbol}</span>
         <Input type="number" min="0" step="0.01" value={value} onChange={(e) => set(e.target.value)} placeholder="0.00" className="h-8 pl-6 text-xs" autoFocus />
@@ -123,7 +123,7 @@ export function CampaignBulkActions({ selectedIds, onBulkUpdate }: CampaignBulkA
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <div className="border-b border-border p-2">
-            <p className="px-1 text-[11px] text-muted-foreground">{endDate ? `End: ${format(endDate, "PPP")}` : "Pick end date"}</p>
+            <p className="px-1 text-2xs text-muted-foreground">{endDate ? `End: ${format(endDate, "PPP")}` : "Pick end date"}</p>
           </div>
           <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus className="pointer-events-auto p-3" />
           <div className="flex justify-end gap-1 border-t border-border p-2">

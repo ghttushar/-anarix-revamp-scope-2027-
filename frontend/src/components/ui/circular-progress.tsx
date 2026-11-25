@@ -54,7 +54,7 @@ export function CircularProgress({
       </svg>
       {/* Center text */}
       <div className="absolute flex flex-col items-center">
-        <span className="text-lg font-bold text-foreground">{Math.round(progress)}%</span>
+        <span className="text-xl font-bold text-foreground">{Math.round(progress)}%</span>
         {label && <span className="text-xs text-muted-foreground">{label}</span>}
       </div>
     </div>

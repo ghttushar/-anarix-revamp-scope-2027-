@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div className="relative w-full overflow-auto">
-      <table ref={ref} className={cn("pulse-table w-full caption-bottom border-collapse text-[13px]", className)} {...props} />
+      <table ref={ref} className={cn("pulse-table w-full caption-bottom border-collapse text-xs", className)} {...props} />
     </div>
   ),
 );
@@ -60,8 +60,8 @@ const TableTotalsRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttribute
       data-totals
       className={cn(
         "border-b border-border bg-card hover:bg-card",
-        "[&>td]:bg-card [&>td]:pb-2.5 [&>td]:pt-0 [&>td]:align-top [&>td]:text-[15px] [&>td]:font-semibold [&>td]:leading-tight [&>td]:text-foreground",
-        "[&>td:first-child]:pt-0.5 [&>td:first-child]:text-[11px] [&>td:first-child]:font-medium [&>td:first-child]:text-muted-foreground",
+        "[&>td]:bg-card [&>td]:pb-2.5 [&>td]:pt-0 [&>td]:align-top [&>td]:text-sm [&>td]:font-semibold [&>td]:leading-tight [&>td]:text-foreground",
+        "[&>td:first-child]:pt-0.5 [&>td:first-child]:text-2xs [&>td:first-child]:font-medium [&>td:first-child]:text-muted-foreground",
         className,
       )}
       {...props}
@@ -75,7 +75,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        "h-10 px-4 py-2 text-left align-middle text-[11px] font-medium uppercase tracking-wider text-muted-foreground whitespace-nowrap [&:has([role=checkbox])]:pr-0",
+        "h-10 px-4 py-2 text-left align-middle text-caption font-medium uppercase tracking-wider text-muted-foreground whitespace-nowrap [&:has([role=checkbox])]:pr-0",
         className,
       )}
       {...props}

@@ -242,7 +242,7 @@ export function AppSidebar() {
                 key={item.url}
                 to={item.url}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-md mx-1 px-3 py-2 text-[13px] font-semibold transition-colors",
+                  "flex items-center gap-2.5 rounded-md mx-1 px-3 py-2 text-sm font-semibold transition-colors",
                   isActive(item.url)
                     ? "bg-primary/8 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
@@ -279,7 +279,7 @@ export function AppSidebar() {
               {!collapsed ? (
                 <Collapsible open={openSections.has(group.label)} onOpenChange={() => toggleSection(group.label)}>
                   <CollapsibleTrigger asChild>
-                    <SidebarGroupLabel className="flex cursor-pointer items-center justify-between px-3 py-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md mx-1">
+                    <SidebarGroupLabel className="flex cursor-pointer items-center justify-between px-3 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md mx-1">
                       <span>{group.label}</span>
                       {openSections.has(group.label) ? <ChevronDown className="h-3 w-3 opacity-50" /> : <ChevronRight className="h-3 w-3 opacity-50" />}
                     </SidebarGroupLabel>
@@ -344,7 +344,7 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <button className="flex flex-1 items-center gap-2 rounded-md px-1.5 py-1.5 text-sm hover:bg-sidebar-accent transition-colors min-w-0">
                     <Avatar className="h-7 w-7 shrink-0">
-                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">JD</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary text-2xs font-semibold">JD</AvatarFallback>
                     </Avatar>
                     <span className="text-sm font-medium text-foreground truncate">John Doe</span>
                   </button>
@@ -385,7 +385,7 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center justify-center rounded-md p-1.5 hover:bg-sidebar-accent transition-colors">
                     <Avatar className="h-7 w-7">
-                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">JD</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary text-2xs font-semibold">JD</AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>

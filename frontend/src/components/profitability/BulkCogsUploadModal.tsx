@@ -229,7 +229,7 @@ function UploadView({
           </button>{" "}
           for bulk COGs upload
         </p>
-        <p className="text-[11px] text-muted-foreground">XLSX format | 5 MB max</p>
+        <p className="text-2xs text-muted-foreground">XLSX format | 5 MB max</p>
       </div>
 
       <div className="flex items-center justify-between pt-1">
@@ -272,7 +272,7 @@ function SelectedView({
       </DialogHeader>
 
       <div className="rounded-lg border border-border p-4 min-h-[200px]">
-        <div className="grid grid-cols-[1fr_120px] gap-2 text-[11px] text-muted-foreground pb-2 border-b border-border">
+        <div className="grid grid-cols-[1fr_120px] gap-2 text-2xs text-muted-foreground pb-2 border-b border-border">
           <span>File Name:</span>
           <span className="text-right">File Size:</span>
         </div>
@@ -329,7 +329,7 @@ function AuditingView() {
           <br />
           Please wait for few seconds.
         </p>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-2xs text-muted-foreground">
           <span className="font-medium text-foreground">Note: </span>
           Do not switch page or close tab or the data will get lost.
         </p>
@@ -370,10 +370,10 @@ function SummaryView({
         <Table>
           <TableHeader>
             <TableRow className="bg-primary/10 hover:bg-primary/10">
-              <TableHead className="text-[11px]">Product Name</TableHead>
-              <TableHead className="text-[11px]">ASIN</TableHead>
-              <TableHead className="text-[11px]">COGs</TableHead>
-              <TableHead className="text-[11px]">Reason of Conflict</TableHead>
+              <TableHead className="text-2xs">Product Name</TableHead>
+              <TableHead className="text-2xs">ASIN</TableHead>
+              <TableHead className="text-2xs">COGs</TableHead>
+              <TableHead className="text-2xs">Reason of Conflict</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -389,7 +389,7 @@ function SummaryView({
         </Table>
       </div>
 
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-2xs text-muted-foreground">
         Report has been generated. You can download the report and make the
         changes in the file and upload again.
       </p>

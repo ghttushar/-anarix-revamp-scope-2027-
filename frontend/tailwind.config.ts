@@ -17,6 +17,12 @@ export default {
         heading: ["var(--font-heading)", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "system-ui", "sans-serif"],
       },
+      /* Type scale (18px root): 2xs 11 · caption 12 · xs 13.5 · sm 15.75 · base 18 · xl 22.5 · 2xl 27.
+         2xs and caption replace the one-off text-[Npx] sizes; 11px is the floor. */
+      fontSize: {
+        "2xs": ["0.6111rem", { lineHeight: "0.8889rem" }],
+        caption: ["0.6667rem", { lineHeight: "0.9444rem" }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -30,39 +30,39 @@ export function CampaignInfoCard({ campaign, onUpdate }: CampaignInfoCardProps) 
     <div className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-2.5 overflow-x-auto">
       {/* Campaign Name + Type Badges */}
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Campaign</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Campaign</span>
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium text-foreground truncate">{campaign.name}</span>
-          <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-primary/5 text-primary border-primary/20 shrink-0">{typeLabel}</Badge>
-          <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-muted text-muted-foreground shrink-0">{targetingLabel}</Badge>
+          <Badge variant="outline" className="text-2xs h-4 px-1.5 bg-primary/5 text-primary border-primary/20 shrink-0">{typeLabel}</Badge>
+          <Badge variant="outline" className="text-2xs h-4 px-1.5 bg-muted text-muted-foreground shrink-0">{targetingLabel}</Badge>
         </div>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Status</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Status</span>
         <StatusBadge status={campaign.status} />
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Daily Budget</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Daily Budget</span>
         <span className="text-sm font-medium text-primary cursor-pointer hover:underline">{formatCurrency(campaign.dailyBudget)}</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Bidding Strategy</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Bidding Strategy</span>
         <span className="text-sm text-foreground">{biddingLabel}</span>
       </div>
 
       <div className="h-8 w-px bg-border shrink-0" />
 
       <div className="flex flex-col gap-0.5 shrink-0">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Schedule</span>
+        <span className="text-2xs text-muted-foreground uppercase tracking-wider">Schedule</span>
         <span className="text-xs text-muted-foreground">{schedule}</span>
       </div>
 

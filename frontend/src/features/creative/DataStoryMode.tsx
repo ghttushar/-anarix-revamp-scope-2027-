@@ -172,7 +172,7 @@ export function DataStoryMode({ children }: { children: React.ReactNode }) {
             <div className="bg-card border border-border rounded-xl shadow-2xl p-6 mx-4">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <h3 className="font-heading font-semibold text-lg">{currentStepData.title}</h3>
+                  <h3 className="font-heading font-semibold text-base">{currentStepData.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{currentStepData.description}</p>
                 </div>
                 <Button variant="ghost" size="icon" onClick={stopStory}>

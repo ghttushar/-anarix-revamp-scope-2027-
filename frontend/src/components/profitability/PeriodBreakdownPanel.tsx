@@ -144,7 +144,7 @@ export function PeriodBreakdownPanel({ summary, isOpen, onClose }: PeriodBreakdo
                             {row.value}
                           </span>
                           {row.share !== undefined && isFinite(row.share) && (
-                            <span className="text-[10px] text-muted-foreground tabular-nums w-12 text-right">
+                            <span className="text-2xs text-muted-foreground tabular-nums w-12 text-right">
                               {row.share.toFixed(1)}%
                             </span>
                           )}

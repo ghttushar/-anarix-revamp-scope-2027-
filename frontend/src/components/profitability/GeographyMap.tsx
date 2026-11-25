@@ -177,18 +177,18 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
       footer={
           <div className="flex items-center justify-center gap-6 pt-3">
             <div className="flex items-center gap-3">
-              <span className="text-[10px] text-muted-foreground">Low</span>
+              <span className="text-2xs text-muted-foreground">Low</span>
               <div className="flex rounded overflow-hidden">
                 <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.2)" }} />
                 <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.35)" }} />
                 <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.5)" }} />
                 <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.8)" }} />
               </div>
-              <span className="text-[10px] text-muted-foreground">High</span>
+              <span className="text-2xs text-muted-foreground">High</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--muted-foreground) / 0.1)" }} />
-              <span className="text-[10px] text-muted-foreground">No data</span>
+              <span className="text-2xs text-muted-foreground">No data</span>
             </div>
           </div>
       }
@@ -296,7 +296,7 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
             </div>
     
             {/* Zoom indicator */}
-            <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-popover/80 text-[10px] text-muted-foreground">
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-popover/80 text-2xs text-muted-foreground">
               {Math.round(zoom * 100)}%
             </div>
           </div>

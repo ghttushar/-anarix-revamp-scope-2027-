@@ -35,10 +35,10 @@ export const IntegrationOption = forwardRef<HTMLDivElement, Props>(function Inte
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-medium text-foreground">{title}</h3>
           {tag && (
-            <span className="text-[10px] uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5">{tag}</span>
+            <span className="text-2xs uppercase tracking-wide text-muted-foreground border border-border rounded px-1.5 py-0.5">{tag}</span>
           )}
           {isNew && (
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">New</span>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-2xs font-semibold uppercase tracking-wide text-primary">New</span>
           )}
         </div>
         <p className="text-xs text-muted-foreground mt-0.5">{description}</p>

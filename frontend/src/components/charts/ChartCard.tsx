@@ -106,7 +106,7 @@ export function ChartLegend({ items, onToggle, className }: { items: LegendItem[
             key={it.key}
             {...(onToggle ? { type: "button" as const, onClick: () => onToggle(it.key), "aria-pressed": it.active !== false } : {})}
             className={cn(
-              "inline-flex items-center gap-1.5 text-[11px] text-muted-foreground transition-opacity",
+              "inline-flex items-center gap-1.5 text-2xs text-muted-foreground transition-opacity",
               onToggle && "hover:text-foreground",
               it.active === false && "opacity-40",
             )}

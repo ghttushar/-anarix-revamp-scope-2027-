@@ -24,10 +24,10 @@ export function MeetingActionsCard({ defaultOpen = false }: { defaultOpen?: bool
       >
         <Video className="h-3.5 w-3.5 text-primary shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-medium text-foreground truncate">Action items from your last meeting</div>
-          <div className="text-[11px] text-muted-foreground truncate">{MEETING.title} · {MEETING.when}</div>
+          <div className="text-xs font-medium text-foreground truncate">Action items from your last meeting</div>
+          <div className="text-2xs text-muted-foreground truncate">{MEETING.title} · {MEETING.when}</div>
         </div>
-        <span className="text-[10px] rounded-full bg-muted px-1.5 py-0.5 text-muted-foreground shrink-0">
+        <span className="text-2xs rounded-full bg-muted px-1.5 py-0.5 text-muted-foreground shrink-0">
           {MEETING.items.length}
         </span>
         {open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -35,13 +35,13 @@ export function MeetingActionsCard({ defaultOpen = false }: { defaultOpen?: bool
       {open && (
         <ul className="border-t border-border/60 px-3 py-2 space-y-1.5">
           {MEETING.items.map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-[12.5px]">
+            <li key={i} className="flex items-start gap-2 text-caption">
               <span className={cn("mt-1 h-3.5 w-3.5 rounded-full border shrink-0 flex items-center justify-center", item.done ? "bg-success/15 border-success" : "border-muted-foreground/40")}>
                 {item.done && <Check className="h-2.5 w-2.5 text-success" />}
               </span>
               <div className="min-w-0 flex-1">
                 <div className={cn("leading-snug", item.done && "text-muted-foreground line-through")}>{item.task}</div>
-                <div className="text-[10.5px] text-muted-foreground mt-0.5">{item.owner} · due {item.due}</div>
+                <div className="text-2xs text-muted-foreground mt-0.5">{item.owner} · due {item.due}</div>
               </div>
             </li>
           ))}

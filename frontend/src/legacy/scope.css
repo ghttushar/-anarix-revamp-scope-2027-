@@ -9,25 +9,12 @@
  * specificity it had there, and the pages' own class rules still win over it.
  */
 
-/* anarix-ui sizes everything in rem against an 11px root that steps down on narrower screens. The ported styles use
-   calc(N * var(--np-rem)) instead of Nrem, so they render at the same pixel size inside this app's 18px root. */
+/* anarix-ui sizes everything in rem against an 11px root. The ported styles use calc(N * var(--np-rem)) instead of
+   Nrem, so they render at the same pixel size inside this app's 18px root. anarix-ui stepped that root down to
+   10 / 9 / 7px below 1450 / 1350 / 1250px; here it holds at 11px so these pages keep the app's type scale (the rest
+   of the app never shrinks either) instead of dropping to 7px-based text on laptops. */
 :root {
   --np-rem: 11px;
-}
-@media screen and (max-width: 1450px) {
-  :root {
-    --np-rem: 10px;
-  }
-}
-@media screen and (max-width: 1350px) {
-  :root {
-    --np-rem: 9px;
-  }
-}
-@media screen and (max-width: 1250px) {
-  :root {
-    --np-rem: 7px;
-  }
 }
 
 /* What <body> gave the pages in anarix-ui: the root font size, its text color, and its background. */

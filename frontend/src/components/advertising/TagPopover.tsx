@@ -67,7 +67,7 @@ export function TagPopover({
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent align={align} className="w-[260px] p-2">
         {title && (
-          <p className="text-[11px] font-medium text-muted-foreground px-1.5 pb-1.5">
+          <p className="text-2xs font-medium text-muted-foreground px-1.5 pb-1.5">
             {title}
           </p>
         )}
@@ -95,7 +95,7 @@ export function TagPopover({
         )}
         <div className="max-h-[200px] overflow-y-auto">
           {filtered.length === 0 && !query.trim() && (
-            <p className="text-[11px] text-muted-foreground px-2 py-2">
+            <p className="text-2xs text-muted-foreground px-2 py-2">
               No tags here. Investment yet.
             </p>
           )}

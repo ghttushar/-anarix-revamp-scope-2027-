@@ -110,7 +110,7 @@ export function CatalogProductsTable({ products, searchQuery = "", showDeltas = 
                       {product.tags.length > 0 && (
                         <div className="flex items-center gap-1 mt-0.5 flex-wrap">
                           {product.tags.slice(0, 3).map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0">{tag}</Badge>
+                            <Badge key={tag} variant="outline" className="text-2xs px-1.5 py-0">{tag}</Badge>
                           ))}
                         </div>
                       )}

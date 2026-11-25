@@ -207,7 +207,7 @@ export default function ProfitLoss() {
                 const p = profitabilityProducts.find((x) => x.id === id);
                 if (!p) return null;
                 return (
-                  <Badge key={id} variant="secondary" className="gap-1 pr-1 text-[11px]">
+                  <Badge key={id} variant="secondary" className="gap-1 pr-1 text-2xs">
                     <span className="max-w-[160px] truncate">{p.name}</span>
                     <button
                       onClick={() => toggleProduct(id)}
@@ -219,7 +219,7 @@ export default function ProfitLoss() {
                   </Badge>
                 );
               })}
-              <Button variant="ghost" size="sm" className="h-6 text-[11px]" onClick={() => setSelectedProductIds([])}>
+              <Button variant="ghost" size="sm" className="h-6 text-2xs" onClick={() => setSelectedProductIds([])}>
                 Clear all
               </Button>
             </div>

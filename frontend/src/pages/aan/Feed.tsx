@@ -43,12 +43,12 @@ export default function AanFeedPage() {
             <AanMascot size={42} state={liveMode ? "listening" : "idle"} interactive={false} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] uppercase tracking-wider font-semibold text-primary">Aan Feed · Today</div>
+            <div className="text-2xs uppercase tracking-wider font-semibold text-primary">Aan Feed · Today</div>
             <h1 className="font-heading text-2xl font-semibold text-foreground">Aan's day</h1>
-            <p className="text-[13px] text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               A chronological log of everything Aan attended, listened to, detected, recommended, and executed today.
             </p>
-            <div className="mt-2 inline-flex items-center gap-2 text-[11px] text-foreground/80 rounded-full bg-primary/5 border border-primary/20 px-3 py-1">
+            <div className="mt-2 inline-flex items-center gap-2 text-2xs text-foreground/80 rounded-full bg-primary/5 border border-primary/20 px-3 py-1">
               <Activity className="h-3 w-3 text-primary" />
               <span>{AAN_PRESENCE_MESSAGES[presenceIndex]}</span>
             </div>
@@ -62,7 +62,7 @@ export default function AanFeedPage() {
             <h2 className="font-heading text-sm font-semibold">Timeline</h2>
             <button
               onClick={() => navigate("/settings/appearance#edit-alerts")}
-              className="text-[11px] text-primary hover:underline"
+              className="text-2xs text-primary hover:underline"
             >
               Edit alerts →
             </button>
@@ -82,16 +82,16 @@ export default function AanFeedPage() {
                       <Icon className="h-3 w-3" />
                     </div>
                     <div className="flex items-baseline gap-2 mb-0.5">
-                      <span className="text-[10px] font-mono text-muted-foreground">{entry.time}</span>
-                      <span className={cn("text-[9px] uppercase tracking-wider font-semibold", meta.color)}>{meta.label}</span>
-                      {entry.source && <span className="text-[9px] text-muted-foreground">· {entry.source}</span>}
+                      <span className="text-2xs font-mono text-muted-foreground">{entry.time}</span>
+                      <span className={cn("text-2xs uppercase tracking-wider font-semibold", meta.color)}>{meta.label}</span>
+                      {entry.source && <span className="text-2xs text-muted-foreground">· {entry.source}</span>}
                     </div>
-                    <div className="text-[13px] text-foreground font-medium">{entry.headline}</div>
-                    {entry.detail && <div className="text-[11.5px] text-muted-foreground mt-0.5">{entry.detail}</div>}
+                    <div className="text-xs text-foreground font-medium">{entry.headline}</div>
+                    {entry.detail && <div className="text-caption text-muted-foreground mt-0.5">{entry.detail}</div>}
                     {entry.scenarioId && (
                       <button
                         onClick={() => navigate("/advertising/rules/applied")}
-                        className="mt-1 text-[10px] text-primary hover:underline"
+                        className="mt-1 text-2xs text-primary hover:underline"
                       >
                         View linked artifact →
                       </button>
@@ -103,7 +103,7 @@ export default function AanFeedPage() {
                 <li className="pl-8 pt-2 border-t border-border/40 mt-2">
                   <button
                     onClick={() => setShowAmbient((v) => !v)}
-                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                    className="inline-flex items-center gap-1 text-2xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <ChevronDown className={cn("h-3 w-3 transition-transform", showAmbient && "rotate-180")} />
                     {showAmbient

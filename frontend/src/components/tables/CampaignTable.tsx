@@ -231,7 +231,7 @@ export function CampaignTable({
                         )}
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span className={cn(
-                            "rounded-full px-2 py-0.5 text-[10px] font-medium border whitespace-nowrap",
+                            "rounded-full px-2 py-0.5 text-2xs font-medium border whitespace-nowrap",
                             campaign.type === "auto"
                               ? "border-primary/30 text-primary bg-primary/5"
                               : "border-border text-muted-foreground bg-muted"

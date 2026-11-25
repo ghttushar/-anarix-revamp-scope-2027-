@@ -37,7 +37,7 @@ function Section({ label, children, right }: { label: string; children: React.Re
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-wider font-semibold text-primary">{label}</div>
+        <div className="text-2xs uppercase tracking-wider font-semibold text-primary">{label}</div>
         {right}
       </div>
       {children}
@@ -51,7 +51,7 @@ function CollapseSection({ label, defaultOpen = false, badge, children }: { labe
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger className="w-full flex items-center justify-between rounded-md border border-border bg-card px-3 py-2 hover:bg-muted/40 transition-colors">
         <div className="flex items-center gap-2">
-          <div className="text-[10px] uppercase tracking-wider font-semibold text-primary">{label}</div>
+          <div className="text-2xs uppercase tracking-wider font-semibold text-primary">{label}</div>
           {badge}
         </div>
         <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform", open && "rotate-180")} />
@@ -80,13 +80,13 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
         <div className="flex items-start justify-between gap-3 px-6 py-4 border-b border-border shrink-0">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <div className="text-[10px] uppercase tracking-wider font-semibold text-primary/80">Aan · From Meeting</div>
-              <span className="text-[9.5px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded border bg-primary/10 text-primary border-primary/30">
+              <div className="text-2xs uppercase tracking-wider font-semibold text-primary/80">Aan · From Meeting</div>
+              <span className="text-2xs uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded border bg-primary/10 text-primary border-primary/30">
                 {pendingCount > 0 ? `${pendingCount} waiting on you` : "All resolved"}
               </span>
             </div>
-            <h2 className="font-heading text-[17px] font-semibold text-foreground leading-snug truncate">{bundle.meetingTitle}</h2>
-            <p className="text-[11.5px] text-muted-foreground mt-0.5">
+            <h2 className="font-heading text-base font-semibold text-foreground leading-snug truncate">{bundle.meetingTitle}</h2>
+            <p className="text-caption text-muted-foreground mt-0.5">
               {bundle.meetingWhen} · {bundle.duration} · {bundle.participants.length} people
             </p>
           </div>
@@ -101,10 +101,10 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
             {/* SNAPSHOT with resolution progress */}
             <section>
               <div className="rounded-lg border-l-4 border-primary bg-primary/[0.04] px-4 py-3.5">
-                <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground">Summary</div>
-                <p className="text-[13.5px] text-foreground/90 leading-relaxed mt-1">{bundle.summary}</p>
+                <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground">Summary</div>
+                <p className="text-xs text-foreground/90 leading-relaxed mt-1">{bundle.summary}</p>
                 <div className="mt-3">
-                  <div className="flex items-center justify-between text-[10.5px] text-muted-foreground mb-1">
+                  <div className="flex items-center justify-between text-2xs text-muted-foreground mb-1">
                     <span>Resolution</span>
                     <span className="font-medium">{approvedCount + rejectedCount} of {total} · {resolvedPct}%</span>
                   </div>
@@ -120,12 +120,12 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
               <ul className="grid grid-cols-2 gap-1.5">
                 {bundle.participants.map((p) => (
                   <li key={p.name} className="flex items-center gap-2.5 rounded-md bg-muted/30 px-2.5 py-1.5">
-                    <span className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary shrink-0">
+                    <span className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-2xs font-semibold text-primary shrink-0">
                       {initials(p.name)}
                     </span>
                     <div className="min-w-0">
-                      <div className="text-[12.5px] font-medium text-foreground leading-tight truncate">{p.name}</div>
-                      <div className="text-[10.5px] text-muted-foreground leading-tight truncate">{p.role}</div>
+                      <div className="text-caption font-medium text-foreground leading-tight truncate">{p.name}</div>
+                      <div className="text-2xs text-muted-foreground leading-tight truncate">{p.role}</div>
                     </div>
                   </li>
                 ))}
@@ -136,11 +136,11 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
             <CollapseSection
               label="Transcript excerpt"
               defaultOpen={false}
-              badge={<span className="text-[10.5px] text-muted-foreground">{bundle.transcriptExcerpt.length} lines</span>}
+              badge={<span className="text-2xs text-muted-foreground">{bundle.transcriptExcerpt.length} lines</span>}
             >
               <div className="rounded-md border border-border bg-muted/30 px-3.5 py-3 space-y-1.5 max-h-[240px] overflow-auto">
                 {bundle.transcriptExcerpt.map((line, i) => (
-                  <div key={i} className="text-[12px] text-foreground/80 leading-relaxed font-mono">{line}</div>
+                  <div key={i} className="text-caption text-foreground/80 leading-relaxed font-mono">{line}</div>
                 ))}
               </div>
             </CollapseSection>
@@ -148,7 +148,7 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
             {/* Action items */}
             <Section
               label={`Action items · ${total}`}
-              right={pendingCount > 0 ? <span className="text-[10.5px] text-primary font-semibold">{pendingCount} pending</span> : null}
+              right={pendingCount > 0 ? <span className="text-2xs text-primary font-semibold">{pendingCount} pending</span> : null}
             >
               <ul className="space-y-2">
                 {bundle.actionItems.map((it) => {
@@ -170,23 +170,23 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
                         </span>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-baseline gap-2 flex-wrap">
-                            <span className="text-[13px] font-medium text-foreground leading-snug">{it.title}</span>
-                            <span className={cn("text-[9.5px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded border", statusBadge[it.status])}>
+                            <span className="text-xs font-medium text-foreground leading-snug">{it.title}</span>
+                            <span className={cn("text-2xs uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded border", statusBadge[it.status])}>
                               {it.status}
                             </span>
                           </div>
-                          <div className="mt-1 text-[11px] text-muted-foreground">
+                          <div className="mt-1 text-2xs text-muted-foreground">
                             {it.owner} · due {it.due}
                           </div>
-                          <p className="mt-1.5 text-[12px] text-foreground/75 leading-snug">{it.detail}</p>
+                          <p className="mt-1.5 text-caption text-foreground/75 leading-snug">{it.detail}</p>
                         </div>
                       </div>
                       {isPending && (
                         <div className="mt-2.5 flex items-center gap-1.5 pt-2 border-t border-border/40">
-                          <Button size="sm" onClick={() => approveMeetingItem(bundle.bundleId, it.id)} className="h-7 px-3 text-[11.5px] shadow-none">
+                          <Button size="sm" onClick={() => approveMeetingItem(bundle.bundleId, it.id)} className="h-7 px-3 text-caption shadow-none">
                             <Check className="h-3 w-3 mr-1" /> Approve
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => rejectMeetingItem(bundle.bundleId, it.id)} className="h-7 px-2.5 text-[11.5px] text-muted-foreground hover:text-destructive">
+                          <Button size="sm" variant="ghost" onClick={() => rejectMeetingItem(bundle.bundleId, it.id)} className="h-7 px-2.5 text-caption text-muted-foreground hover:text-destructive">
                             <X className="h-3 w-3 mr-1" /> Reject
                           </Button>
                         </div>
@@ -201,7 +201,7 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
             {(approvedCount > 0 || rejectedCount > 0) && (
               <Section label="Verification & share">
                 <div className="rounded-md border border-success/30 bg-success/5 p-3.5">
-                  <div className="flex items-start gap-2 text-[12.5px] text-foreground mb-3">
+                  <div className="flex items-start gap-2 text-caption text-foreground mb-3">
                     <ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-success" />
                     <span>
                       I've logged {approvedCount} approval{approvedCount === 1 ? "" : "s"}
@@ -209,20 +209,20 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
                     </span>
                   </div>
                   <div className="pt-3 border-t border-border/60">
-                    <div className="text-[9.5px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
+                    <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
                       <Share2 className="h-3 w-3" /> Share meeting summary
                     </div>
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <button onClick={() => shareTo("Slack")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={() => shareTo("Slack")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <Slack className="h-3 w-3" /> Slack
                       </button>
-                      <button onClick={() => shareTo("Teams")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={() => shareTo("Teams")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <Video className="h-3 w-3" /> Teams
                       </button>
-                      <button onClick={() => shareTo("Email")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={() => shareTo("Email")} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <Mail className="h-3 w-3" /> Email
                       </button>
-                      <button onClick={copyLink} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                      <button onClick={copyLink} className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
                         <LinkIcon className="h-3 w-3" /> Copy link
                       </button>
                     </div>
@@ -235,12 +235,12 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
 
         {/* Sticky footer */}
         <div className="border-t border-border px-6 py-3 flex items-center justify-between gap-2 bg-background shrink-0">
-          <div className="text-[11px] text-muted-foreground">You have 30s to undo after either action.</div>
+          <div className="text-2xs text-muted-foreground">You have 30s to undo after either action.</div>
           <div className="flex items-center gap-1.5">
-            <Button size="sm" variant="ghost" disabled={pendingCount === 0} onClick={() => rejectAllMeetingItems(bundle.bundleId)} className="h-8 px-3 text-[12px] text-muted-foreground hover:text-destructive">
+            <Button size="sm" variant="ghost" disabled={pendingCount === 0} onClick={() => rejectAllMeetingItems(bundle.bundleId)} className="h-8 px-3 text-caption text-muted-foreground hover:text-destructive">
               <Ban className="h-3.5 w-3.5 mr-1" /> Reject all
             </Button>
-            <Button size="sm" disabled={pendingCount === 0} onClick={() => approveAllMeetingItems(bundle.bundleId)} className="h-8 px-3 text-[12px] shadow-none">
+            <Button size="sm" disabled={pendingCount === 0} onClick={() => approveAllMeetingItems(bundle.bundleId)} className="h-8 px-3 text-caption shadow-none">
               <Check className="h-3.5 w-3.5 mr-1" /> Approve all pending
             </Button>
           </div>
