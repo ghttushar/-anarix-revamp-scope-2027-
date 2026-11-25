@@ -135,7 +135,7 @@ export default function ConnectAmazon() {
               className={cn(
                 "relative rounded-xl border-2 p-5 text-left transition-all duration-200",
                 selectedOption === option.id
-                  ? "border-primary bg-primary/5"
+                  ? "border-primary bg-primary/[0.08]"
                   : "border-border hover:border-primary/50"
               )}
             >

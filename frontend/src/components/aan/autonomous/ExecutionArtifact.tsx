@@ -190,7 +190,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
   return (
     <>
       <div className="fixed inset-0 z-40 bg-foreground/25 backdrop-blur-[1px]" onClick={onClose} aria-hidden />
-      <div className="fixed top-0 right-0 bottom-0 z-50 flex h-full w-[760px] max-w-[94vw] shrink-0 flex-col border-l border-border bg-background shadow-2xl animate-in slide-in-from-right duration-200">
+      <div className="fixed top-0 right-0 bottom-0 z-50 flex h-full w-[760px] max-w-[94vw] shrink-0 flex-col border-l border-border bg-surface shadow-2xl animate-in slide-in-from-right duration-200">
 
         {/* Header */}
         <div className="flex items-start justify-between border-b border-border px-6 py-4 shrink-0 gap-3">
@@ -321,7 +321,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                       <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-1">Action items</div>
                       <ul className="space-y-1">
                         {s.meetingRef.actionItems.map((it, i) => (
-                          <li key={i} className="flex items-start gap-2 text-caption leading-snug rounded bg-background/60 px-2 py-1.5">
+                          <li key={i} className="flex items-start gap-2 text-caption leading-snug rounded bg-surface/60 px-2 py-1.5">
                             <span className={cn("mt-0.5 h-3 w-3 rounded-full border shrink-0 flex items-center justify-center", it.done ? "bg-success/15 border-success" : "border-muted-foreground/40")}>
                               {it.done && <Check className="h-2 w-2 text-success" />}
                             </span>
@@ -377,7 +377,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
             {/* RECOMMENDATION */}
             <Section label="What I recommend">
-              <div className="rounded-md border border-primary/30 bg-primary/5 p-3.5">
+              <div className="rounded-md border border-primary/30 bg-primary/[0.08] p-3.5">
                 <div className="text-caption text-foreground mb-3">{s.recommendation}</div>
                 {s.editable && event.lifecycle === "awaiting_approval" && (
                   <div>
@@ -388,7 +388,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                       <select
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
-                        className="mt-1 w-full h-8 rounded-md border border-border bg-background text-caption px-2"
+                        className="mt-1 w-full h-8 rounded-md border border-border bg-surface text-caption px-2"
                       >
                         {s.editable.options.map((o) => <option key={o}>{o}</option>)}
                       </select>
@@ -454,7 +454,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                       <div className="text-2xs uppercase tracking-wider font-semibold text-muted-foreground mb-2">Before → After</div>
                       <div className="space-y-1.5">
                         {s.diff.map((d, i) => (
-                          <div key={i} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded bg-background/60 px-2.5 py-1.5">
+                          <div key={i} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded bg-surface/60 px-2.5 py-1.5">
                             <div>
                               <div className="text-2xs uppercase tracking-wider text-muted-foreground">{d.field}</div>
                               <div className="text-caption text-muted-foreground line-through">{d.before}</div>
@@ -500,7 +500,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
 
         {/* Sticky action bar (when awaiting) */}
         {event.lifecycle === "awaiting_approval" && (
-          <div className="border-t border-border bg-background/95 backdrop-blur px-6 py-3 shrink-0 flex items-center justify-between gap-2">
+          <div className="border-t border-border bg-surface/95 backdrop-blur px-6 py-3 shrink-0 flex items-center justify-between gap-2">
             <div className="text-2xs text-muted-foreground">You have 30s to undo after either action.</div>
             <div className="flex items-center gap-2">
               <Button size="sm" variant="ghost" onClick={() => reject(event.eventId)} className="h-8 px-3 text-caption text-muted-foreground hover:text-destructive">
@@ -533,7 +533,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
                       "text-caption leading-relaxed rounded-lg px-3 py-2 max-w-[85%]",
                       m.role === "user"
                         ? "ml-auto bg-primary text-primary-foreground"
-                        : "mr-auto bg-background border border-border text-foreground"
+                        : "mr-auto bg-surface border border-border text-foreground"
                     )}
                   >
                     {m.text}
@@ -549,7 +549,7 @@ export function ExecutionArtifact({ event, onClose }: Props) {
               onChange={(e) => setChatDraft(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") handleAskAan(); }}
               placeholder="Ask me anything — why, what if, alternatives…"
-              className="h-10 text-xs flex-1 rounded-lg bg-background shadow-sm border-border focus-visible:ring-1 focus-visible:ring-primary/40"
+              className="h-10 text-xs flex-1 rounded-lg bg-surface shadow-sm border-border focus-visible:ring-1 focus-visible:ring-primary/40"
             />
             <Button size="sm" onClick={handleAskAan} disabled={!chatDraft.trim()} className="h-10 w-10 p-0 rounded-lg">
               <Send className="h-4 w-4" />

@@ -217,7 +217,7 @@ export function DataTableToolbar({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {selection && selection.count > 0 ? (
-            <div className="flex h-8 items-center gap-1 rounded-md bg-primary/5 pl-2.5 pr-1 text-xs">
+            <div className="flex h-8 items-center gap-1 rounded-md bg-primary/[0.08] pl-2.5 pr-1 text-xs">
               <span className="font-medium text-primary">{selection.count} selected</span>
               <Button variant="ghost" size="xs" className="h-6 px-2 text-muted-foreground" onClick={selection.onClear}>Clear</Button>
               {selection.actions && <><BarDivider />{selection.actions}</>}
@@ -462,7 +462,7 @@ export function DataTableToolbar({
       {activeFilters.length > 0 && !filterOpen && (
         <div className="flex flex-wrap items-center gap-1.5 py-1.5">
           {activeFilters.map((filter) => (
-            <Badge key={filter.id} variant="outline" className="gap-1 pr-1 text-2xs h-6 bg-muted/50 border-border">
+            <Badge key={filter.id} variant="outline" className="gap-1 pr-1 text-2xs h-6 bg-muted/70 border-border">
               <span className="font-medium text-foreground">{filter.field}:</span>
               <span className="text-muted-foreground">{filter.operator}</span>
               <span className="text-foreground">{filter.value}</span>

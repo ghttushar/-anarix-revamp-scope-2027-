@@ -301,8 +301,8 @@ export default function HourlyData() {
                         <TableRow
                           key={row.id}
                           className={cn(
-                            "hover:bg-muted/50 cursor-pointer",
-                            selectedCampaigns.includes(row.id) && "bg-primary/5"
+                            "hover:bg-muted/70 cursor-pointer",
+                            selectedCampaigns.includes(row.id) && "bg-primary/[0.08]"
                           )}
                           onClick={() => setSelectedCampaigns([row.id])}
                         >

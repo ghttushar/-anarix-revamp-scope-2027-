@@ -19,7 +19,7 @@ function PanelFrame({ children, width = 380 }: { children: React.ReactNode; widt
   return (
     <div className="min-h-screen w-full bg-muted/40 flex items-start justify-center p-6">
       <div
-        className="bg-background border border-border rounded-lg shadow-sm overflow-hidden"
+        className="bg-surface border border-border rounded-lg shadow-sm overflow-hidden"
         style={{ width, height: "min(900px, 90vh)" }}
       >
         {children}

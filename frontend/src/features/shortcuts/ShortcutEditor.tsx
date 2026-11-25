@@ -50,7 +50,7 @@ function ShortcutRow({
       <span className="text-sm text-muted-foreground">{shortcut.description}</span>
       <div className="flex items-center gap-2">
         {isEditing ? (
-          <div className="flex items-center gap-1 px-2 py-1 rounded border-2 border-primary bg-primary/5 animate-pulse">
+          <div className="flex items-center gap-1 px-2 py-1 rounded border-2 border-primary bg-primary/[0.08] animate-pulse">
             {captured.length > 0 ? (
               captured.map((k, i) => (
                 <kbd

@@ -203,8 +203,8 @@ function UploadView({
         className={cn(
           "flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-12 cursor-pointer transition-colors",
           isDragging
-            ? "border-primary bg-primary/5"
-            : "border-border bg-muted/30 hover:bg-muted/50"
+            ? "border-primary bg-primary/[0.08]"
+            : "border-border bg-muted/30 hover:bg-muted/70"
         )}
       >
         <input
@@ -320,7 +320,7 @@ function AuditingView() {
       </DialogHeader>
       <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
         <div className="relative">
-          <div className="rounded-full border border-primary/20 bg-primary/5 p-4">
+          <div className="rounded-full border border-primary/20 bg-primary/[0.08] p-4">
             <Loader2 className="h-7 w-7 text-primary animate-spin" />
           </div>
         </div>

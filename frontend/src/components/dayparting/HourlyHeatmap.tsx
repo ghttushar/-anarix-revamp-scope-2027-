@@ -94,7 +94,7 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
 
   const getColor = (intensity: number, isGoodHigher: boolean): string => {
     const effectiveIntensity = isGoodHigher ? intensity : 1 - intensity;
-    if (effectiveIntensity < 0.2) return "bg-primary/5";
+    if (effectiveIntensity < 0.2) return "bg-primary/[0.08]";
     if (effectiveIntensity < 0.4) return "bg-primary/15";
     if (effectiveIntensity < 0.6) return "bg-primary/30";
     if (effectiveIntensity < 0.8) return "bg-primary/50";
@@ -141,7 +141,7 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
                 {isHigherBetter ? "Low" : "High"}
               </span>
               <div className="flex rounded overflow-hidden">
-                <div className="h-4 w-8 bg-primary/5" />
+                <div className="h-4 w-8 bg-primary/[0.08]" />
                 <div className="h-4 w-8 bg-primary/15" />
                 <div className="h-4 w-8 bg-primary/30" />
                 <div className="h-4 w-8 bg-primary/50" />
@@ -217,7 +217,7 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
               );
             })}
             {/* Daily Total */}
-            <div className="h-8 rounded bg-muted/50 flex items-center justify-center">
+            <div className="h-8 rounded bg-muted/70 flex items-center justify-center">
               <span className="text-2xs font-semibold text-foreground">{formatCellValue(dayTotals[dayIndex], metric)}</span>
             </div>
           </div>
@@ -227,7 +227,7 @@ export function HourlyHeatmap({ data, metric, onCellClick, selectedCells }: Hour
         <div className="grid grid-cols-[60px_repeat(24,1fr)_60px] gap-1 mt-1">
           <div className="text-xs font-medium text-muted-foreground flex items-center">Total</div>
           {HOURS.map((hour) => (
-            <div key={hour} className="h-8 rounded bg-muted/50 flex items-center justify-center">
+            <div key={hour} className="h-8 rounded bg-muted/70 flex items-center justify-center">
               <span className="text-2xs font-semibold text-foreground">{formatCellValue(hourTotals[hour], metric)}</span>
             </div>
           ))}

@@ -287,7 +287,7 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
         ))}
       </div>
 
-      <div className="bg-muted/50 border-t border-border px-3 py-2 shrink-0">
+      <div className="bg-muted/70 border-t border-border px-3 py-2 shrink-0">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Calculated Metrics</p>
         {calculated.map((c) => (
           <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-border/60 first:border-t-0">

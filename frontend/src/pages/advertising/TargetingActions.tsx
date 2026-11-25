@@ -276,11 +276,11 @@ export default function TargetingActions() {
                   const isSelected = selectedRowIds.has(action.id);
                   const isArchived = archivedIds.has(action.id);
                   return (
-                    <TableRow key={action.id} data-state={isSelected ? "selected" : undefined} className={cn("group data-[state=selected]:bg-primary/5")}>
-                      <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors">
+                    <TableRow key={action.id} data-state={isSelected ? "selected" : undefined} className={cn("group data-[state=selected]:bg-primary/[0.08]")}>
+                      <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/[0.08] transition-colors">
                         <Checkbox checked={isSelected} onCheckedChange={() => toggleRow(action.id)} aria-label={`Select ${action.searchTerm}`} />
                       </TableCell>
-                      <TableCell className="sticky left-10 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors">
+                      <TableCell className="sticky left-10 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/[0.08] transition-colors">
                         <div className="space-y-1">
                           <span className="font-medium text-sm text-foreground">{action.searchTerm}</span>
                           <Select defaultValue={action.termType}>

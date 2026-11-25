@@ -51,7 +51,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
   };
 
   return (
-    <div className="flex h-full w-[50%] min-w-[400px] flex-col border-l border-border bg-background">
+    <div className="flex h-full w-[50%] min-w-[400px] flex-col border-l border-border bg-surface">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-4">
@@ -171,7 +171,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
                     {artifact.changes.slice(4).map((change, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between rounded-md bg-muted/50 px-4 py-3"
+                        className="flex items-center justify-between rounded-md bg-muted/70 px-4 py-3"
                       >
                         <span className="text-sm font-medium">{change.field}</span>
                         <span className="text-sm text-primary font-medium">{change.after}</span>
@@ -237,7 +237,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
                     {artifact.changes.slice(5).map((change, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between rounded-md bg-muted/50 px-4 py-3"
+                        className="flex items-center justify-between rounded-md bg-muted/70 px-4 py-3"
                       >
                         <span className="text-sm font-medium">{change.field}</span>
                         <span className="text-sm text-primary font-medium">{change.after}</span>
@@ -257,7 +257,7 @@ export function AanArtifactViewer({ artifact, onClose }: AanArtifactViewerProps)
               {artifact.changes.map((change, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between rounded-md bg-muted/50 px-4 py-3"
+                  className="flex items-center justify-between rounded-md bg-muted/70 px-4 py-3"
                 >
                   <span className="text-sm font-medium">{change.field}</span>
                   <div className="flex items-center gap-2 text-sm">

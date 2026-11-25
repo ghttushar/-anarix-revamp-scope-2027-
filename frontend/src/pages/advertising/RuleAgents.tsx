@@ -86,7 +86,7 @@ export default function RuleAgents() {
               <Badge
                 key={i}
                 variant="outline"
-                className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs hover:bg-muted/50 transition-colors shrink-0"
+                className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs hover:bg-muted/70 transition-colors shrink-0"
                 onClick={() => setPrompt(chip)}
               >
                 {chip}

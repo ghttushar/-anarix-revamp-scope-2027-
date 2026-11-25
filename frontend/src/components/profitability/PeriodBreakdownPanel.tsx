@@ -99,7 +99,7 @@ export function PeriodBreakdownPanel({ summary, isOpen, onClose }: PeriodBreakdo
   const toggle = (id: string) => setOpenSections((p) => ({ ...p, [id]: !p[id] }));
 
   return (
-    <div data-app-panel="periodBreakdown" className="sticky top-0 self-start h-screen max-h-screen flex w-[360px] shrink-0 flex-col border-l border-border bg-background z-10">
+    <div data-app-panel="periodBreakdown" className="sticky top-0 self-start h-screen max-h-screen flex w-[360px] shrink-0 flex-col border-l border-border bg-surface z-10">
       {/* Header */}
       <div className="border-b border-border shrink-0">
         <div className="flex items-center justify-between px-4 py-4">
@@ -122,7 +122,7 @@ export function PeriodBreakdownPanel({ summary, isOpen, onClose }: PeriodBreakdo
             const open = openSections[section.id] ?? !!section.defaultOpen;
             return (
               <Collapsible key={section.id} open={open} onOpenChange={() => toggle(section.id)}>
-                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 hover:bg-muted/60 transition-colors">
+                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 hover:bg-muted/70 transition-colors">
                   <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
                     {section.title}
                   </span>
@@ -135,7 +135,7 @@ export function PeriodBreakdownPanel({ summary, isOpen, onClose }: PeriodBreakdo
                         key={row.label}
                         className={cn(
                           "flex items-center justify-between rounded-md px-3 py-2",
-                          row.highlight ? "bg-primary/5 border border-primary/20" : "bg-muted/40"
+                          row.highlight ? "bg-primary/[0.08] border border-primary/20" : "bg-muted/40"
                         )}
                       >
                         <span className="text-sm text-muted-foreground">{row.label}</span>

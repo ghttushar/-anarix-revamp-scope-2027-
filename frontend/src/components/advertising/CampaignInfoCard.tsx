@@ -33,7 +33,7 @@ export function CampaignInfoCard({ campaign, onUpdate }: CampaignInfoCardProps) 
         <span className="text-2xs text-muted-foreground uppercase tracking-wider">Campaign</span>
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium text-foreground truncate">{campaign.name}</span>
-          <Badge variant="outline" className="text-2xs h-4 px-1.5 bg-primary/5 text-primary border-primary/20 shrink-0">{typeLabel}</Badge>
+          <Badge variant="outline" className="text-2xs h-4 px-1.5 bg-primary/[0.08] text-primary border-primary/20 shrink-0">{typeLabel}</Badge>
           <Badge variant="outline" className="text-2xs h-4 px-1.5 bg-muted text-muted-foreground shrink-0">{targetingLabel}</Badge>
         </div>
       </div>

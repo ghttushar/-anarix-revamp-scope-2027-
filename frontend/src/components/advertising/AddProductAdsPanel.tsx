@@ -100,7 +100,7 @@ export function AddProductAdsPanel() {
           {filteredProducts.map((product) => (
             <label
               key={product.id}
-              className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+              className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/70 cursor-pointer transition-colors"
             >
               <Checkbox
                 checked={selectedIds.has(product.id)}

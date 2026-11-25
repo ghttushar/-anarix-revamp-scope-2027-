@@ -187,7 +187,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
                   key={campaign.id}
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 border-b border-border/50 cursor-pointer hover:bg-muted/20 transition-colors",
-                    selectedLeft.has(campaign.id) && "bg-primary/5"
+                    selectedLeft.has(campaign.id) && "bg-primary/[0.08]"
                   )}
                   onClick={() => toggleLeftSelect(campaign.id)}
                 >
@@ -254,7 +254,7 @@ export function RuleCampaignSelector({ onBack, onSaveDraft: _onSaveDraft, onAppl
           <ScrollArea className="flex-1 max-h-[400px]">
             {addedCampaigns.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center mb-2">
+                <div className="h-8 w-8 rounded-lg bg-muted/70 flex items-center justify-center mb-2">
                   <Filter className="h-4 w-4" />
                 </div>
                 <p className="text-xs">No campaigns added yet</p>

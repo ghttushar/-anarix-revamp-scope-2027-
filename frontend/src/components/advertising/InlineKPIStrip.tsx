@@ -87,9 +87,9 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange }: Inli
         const cardContent = (
           <div
             className={cn(
-              "flex flex-1 flex-col gap-0.5 border-l-4 bg-background/50 px-3 py-2.5 first:rounded-l-md last:rounded-r-md min-w-0",
+              "flex flex-1 flex-col gap-0.5 border-l-4 bg-surface/50 px-3 py-2.5 first:rounded-l-md last:rounded-r-md min-w-0",
               colorClass,
-              isSwappable && "cursor-pointer hover:bg-muted/50 transition-colors"
+              isSwappable && "cursor-pointer hover:bg-muted/70 transition-colors"
             )}
           >
             <div className="flex items-center justify-between">

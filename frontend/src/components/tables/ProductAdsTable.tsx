@@ -134,7 +134,7 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
             </TableHeader>
             <TableBody>
               {paginatedAds.map((ad) => (
-                <TableRow key={ad.id} className="group cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => onRowClick?.(ad)}>
+                <TableRow key={ad.id} className="group cursor-pointer hover:bg-muted/70 transition-colors" onClick={() => onRowClick?.(ad)}>
                   <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
                     <Checkbox checked={selectedRows.has(ad.id)} onCheckedChange={() => toggleRow(ad.id)} />
                   </TableCell>
@@ -155,7 +155,7 @@ export function ProductAdsTable({ searchQuery = "", showAddButton = false, showD
                       return (
                         <div className="flex items-center gap-2">
                           {ct && (
-                            <Badge variant="outline" className={cn("text-xs", ct === "auto" ? "border-primary/30 bg-primary/5 text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
+                            <Badge variant="outline" className={cn("text-xs", ct === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
                               {ct === "auto" ? "Auto" : "Manual"}
                             </Badge>
                           )}

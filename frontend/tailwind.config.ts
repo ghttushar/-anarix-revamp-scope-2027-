@@ -17,15 +17,27 @@ export default {
         heading: ["var(--font-heading)", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "system-ui", "sans-serif"],
       },
-      /* Type scale (18px root): 2xs 11 · caption 12 · xs 13.5 · sm 15.75 · base 18 · xl 22.5 · 2xl 27.
-         2xs and caption replace the one-off text-[Npx] sizes; 11px is the floor. */
+      /* Type scale = the old design's (new-page-old-design / anarix-ui: rem against an 11px root), so new screens
+         and the ported ones read the same. Expressed against this app's 18px root, so only type changes, not spacing:
+         2xs 11 (1rem) · caption 12.1 (1.1rem) · xs 13.2 (1.2rem, body/tables) · sm 14.3 (1.3rem) · base 15.4 (1.4rem)
+         · lg/xl 17.6 (1.6rem, section headings) · 2xl 22 (2rem, page titles) · 3xl 26.4 (2.4rem, big KPI values).
+         11px is the floor; no text-[Npx]. */
       fontSize: {
         "2xs": ["0.6111rem", { lineHeight: "0.8889rem" }],
-        caption: ["0.6667rem", { lineHeight: "0.9444rem" }],
+        caption: ["0.6722rem", { lineHeight: "0.9444rem" }],
+        xs: ["0.7333rem", { lineHeight: "1.0556rem" }],
+        sm: ["0.7944rem", { lineHeight: "1.1111rem" }],
+        base: ["0.8556rem", { lineHeight: "1.2222rem" }],
+        lg: ["0.9778rem", { lineHeight: "1.3333rem" }],
+        xl: ["0.9778rem", { lineHeight: "1.3333rem" }],
+        "2xl": ["1.2222rem", { lineHeight: "1.5556rem" }],
+        "3xl": ["1.4667rem", { lineHeight: "1.7778rem" }],
+        "4xl": ["1.8333rem", { lineHeight: "2.2222rem" }],
       },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
+        surface: "hsl(var(--surface))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

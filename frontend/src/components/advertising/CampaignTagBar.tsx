@@ -43,7 +43,7 @@ export function CampaignTagBar({ campaignId, isEdit }: CampaignTagBarProps) {
           className={cn(
             "inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-2xs font-medium",
             isDraft
-              ? "border-dashed border-primary/50 bg-primary/5 text-primary"
+              ? "border-dashed border-primary/50 bg-primary/[0.08] text-primary"
               : "border-border bg-muted text-foreground"
           )}
         >

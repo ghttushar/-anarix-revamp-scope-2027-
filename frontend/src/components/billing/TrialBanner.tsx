@@ -12,7 +12,7 @@ export function TrialBanner() {
   if (!billingFlowEnabled || trial !== "expired") return null;
 
   return (
-    <div className="rounded-lg border border-primary/40 bg-primary/5 px-4 py-3 flex items-center gap-3">
+    <div className="rounded-lg border border-primary/40 bg-primary/[0.08] px-4 py-3 flex items-center gap-3">
       <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
         <Sparkles className="h-4 w-4" />
       </div>

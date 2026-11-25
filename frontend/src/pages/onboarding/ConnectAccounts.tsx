@@ -180,7 +180,7 @@ export default function ConnectAccounts() {
               onClick={() => handleSelectMarketplace("amazon")}
               className={cn(
                 "flex flex-col items-center gap-4 p-6 rounded-xl border border-border",
-                "hover:border-primary hover:bg-primary/5 transition-all duration-200"
+                "hover:border-primary hover:bg-primary/[0.08] transition-all duration-200"
               )}
             >
               <div className="h-16 w-16 rounded-2xl bg-orange-100 dark:bg-orange-500/15 flex items-center justify-center">
@@ -193,7 +193,7 @@ export default function ConnectAccounts() {
               onClick={() => handleSelectMarketplace("walmart")}
               className={cn(
                 "flex flex-col items-center gap-4 p-6 rounded-xl border border-border",
-                "hover:border-primary hover:bg-primary/5 transition-all duration-200"
+                "hover:border-primary hover:bg-primary/[0.08] transition-all duration-200"
               )}
             >
               <div className="h-16 w-16 rounded-2xl bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center">

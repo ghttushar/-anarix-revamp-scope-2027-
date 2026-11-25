@@ -52,7 +52,7 @@ export default function BrandSOV() {
         >
           <div className="relative w-[200px]">
             <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search keyword…" value={keyword} onChange={(e) => setKeyword(e.target.value)} className="h-8 border-0 bg-muted/50 pl-8 text-xs shadow-none focus-visible:ring-1" />
+            <Input placeholder="Search keyword…" value={keyword} onChange={(e) => setKeyword(e.target.value)} className="h-8 border-0 bg-muted/70 pl-8 text-xs shadow-none focus-visible:ring-1" />
           </div>
         </AppTaskbar>
 

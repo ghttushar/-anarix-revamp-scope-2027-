@@ -107,7 +107,7 @@ export function TagPopover({
                 key={tag}
                 className={cn(
                   "group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs cursor-pointer hover:bg-muted",
-                  isSelected && "bg-primary/5"
+                  isSelected && "bg-primary/[0.08]"
                 )}
               >
                 {isEditing ? (

@@ -84,7 +84,7 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
             <button
               type="button"
               onClick={() => onAskAan(head)}
-              className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/5 px-2 py-1 text-2xs font-medium text-primary hover:bg-primary/10"
+              className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/[0.08] px-2 py-1 text-2xs font-medium text-primary hover:bg-primary/10"
             >
               <Sparkles className="h-3 w-3" />
               Ask Aan

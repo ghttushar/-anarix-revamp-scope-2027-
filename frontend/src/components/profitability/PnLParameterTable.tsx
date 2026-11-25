@@ -68,10 +68,10 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
           key={row.id}
           className={cn(
             "hover:bg-muted/30 group",
-            row.isParent && "font-medium bg-muted/50"
+            row.isParent && "font-medium bg-muted/70"
           )}
         >
-          <TableCell className={cn("sticky left-0 z-10 group-hover:bg-muted/30 transition-colors", row.isParent ? "bg-muted/50" : "bg-card")}>
+          <TableCell className={cn("sticky left-0 z-10 group-hover:bg-muted/30 transition-colors", row.isParent ? "bg-muted/70" : "bg-card")}>
             <div
               className="flex items-center gap-2"
               style={{ paddingLeft: `${row.indent * 20}px` }}

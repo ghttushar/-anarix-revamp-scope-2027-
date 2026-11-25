@@ -84,7 +84,7 @@ export function AccountSelector({ selected, onChange }: Props) {
                       <label
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-muted/30",
-                          isOn && "bg-primary/5"
+                          isOn && "bg-primary/[0.08]"
                         )}
                       >
                         <Checkbox checked={isOn} onCheckedChange={() => toggleId(a.id)} />

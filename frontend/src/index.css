@@ -49,6 +49,9 @@
     --foreground: 240 53% 9%; /* #0F1020 */
 
     --card: 0 0% 100%; /* #FFFFFF */
+    /* Component surfaces (inputs, panels, dialogs, menus). In light mode the page colour (--background) is the page's
+       alone, so surfaces are white; in dark mode they keep the page colour. */
+    --surface: 0 0% 100%;
     --card-foreground: 240 53% 9%; /* #0F1020 */
 
     --popover: 0 0% 100%;
@@ -114,6 +117,7 @@
     --foreground: 240 100% 97%; /* #ECEEFF */
 
     --card: 240 12% 12%;
+    --surface: 240 12% 8%; /* = --background */
     --card-foreground: 240 100% 97%;
 
     --popover: 240 12% 12%;
@@ -230,7 +234,7 @@
   }
   
   .status-archived {
-    @apply bg-muted/50 text-muted-foreground/70;
+    @apply bg-muted/70 text-muted-foreground/70;
   }
   
   .status-scheduled {

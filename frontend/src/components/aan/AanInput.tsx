@@ -320,7 +320,7 @@ export function AanInput({ compact = false }: { compact?: boolean } = {}) {
   const currentModel = AI_MODELS.find(m => m.id === selectedModel) || AI_MODELS[0];
 
   return (
-    <div className="shrink-0 bg-background">
+    <div className="shrink-0 bg-surface">
       <div className={compact ? "px-3 pb-3 pt-2" : "px-4 pb-4 pt-3"}>
         <div className="relative">
           {/* Aan presence slot - sits above the input, left-aligned. Reserves height even when no suggestion is active. */}

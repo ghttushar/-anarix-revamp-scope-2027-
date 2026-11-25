@@ -106,14 +106,14 @@ export function KeywordTargetingTable({ searchQuery = "", showDeltas = false }: 
           </TableHeader>
           <TableBody>
             {paginatedKeywords.map((keyword) => (
-              <TableRow key={keyword.id} className="group cursor-pointer hover:bg-muted/50 transition-colors">
+              <TableRow key={keyword.id} className="group cursor-pointer hover:bg-muted/70 transition-colors">
                 <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors"><StatusBadge status={keyword.status} /></TableCell>
                 <TableCell className="font-medium text-foreground sticky left-[96px] z-10 bg-card group-hover:bg-muted transition-colors">{keyword.keyword}</TableCell>
                 <TableCell><Badge variant="outline" className={cn("text-xs uppercase", matchTypeColors[keyword.matchType])}>{keyword.matchType}</Badge></TableCell>
                 <TableCell style={ps("adGroupName")} className={cn("text-foreground", pc("adGroupName"))}>{keyword.adGroupName}</TableCell>
                 <TableCell style={ps("campaignName")} className={cn(pc("campaignName"))}>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={cn("text-xs", keyword.campaignType === "auto" ? "border-primary/30 bg-primary/5 text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
+                    <Badge variant="outline" className={cn("text-xs", keyword.campaignType === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
                       {keyword.campaignType === "auto" ? "Auto" : "Manual"}
                     </Badge>
                     <span className="text-foreground">{keyword.campaignName}</span>

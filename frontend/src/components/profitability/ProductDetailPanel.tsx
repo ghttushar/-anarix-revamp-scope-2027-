@@ -83,7 +83,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
   return (
     <div
       data-app-panel="productDetail"
-      className="sticky top-0 self-start h-screen max-h-screen flex w-[360px] shrink-0 flex-col border-l border-border bg-background z-10"
+      className="sticky top-0 self-start h-screen max-h-screen flex w-[360px] shrink-0 flex-col border-l border-border bg-surface z-10"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
@@ -107,7 +107,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
       <ScrollArea className="flex-1 min-h-0">
         <div className="space-y-5 p-4">
           {/* Net Profit Hero + Sparkline */}
-          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+          <div className="rounded-lg border border-primary/20 bg-primary/[0.08] p-3">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xs text-muted-foreground font-medium">Net Profit</div>
@@ -157,7 +157,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                       onClick={() => hasChildren && toggleSection(section.id)}
                       className={cn(
                         "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                        hasChildren ? "cursor-pointer hover:bg-muted/50" : "cursor-default",
+                        hasChildren ? "cursor-pointer hover:bg-muted/70" : "cursor-default",
                         isExpanded && "bg-muted/30"
                       )}
                     >
@@ -186,7 +186,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
               })}
 
               {/* Net Profit total row */}
-              <div className="flex items-center justify-between rounded-md bg-primary/5 px-3 py-2 border border-primary/20 mt-2">
+              <div className="flex items-center justify-between rounded-md bg-primary/[0.08] px-3 py-2 border border-primary/20 mt-2">
                 <span className="text-sm font-semibold text-foreground">Net Profit</span>
                 <span className={cn("text-sm font-bold", product.netProfit >= 0 ? "text-success" : "text-destructive")}>
                   {fmt(product.netProfit)}
@@ -200,7 +200,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Units</h3>
             <div className="space-y-1">
               {unitsSections.map((item) => (
-                <div key={item.label} className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+                <div key={item.label} className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                   <span className="text-sm text-muted-foreground">{item.label}</span>
                   <span className="font-medium text-foreground">{item.value}</span>
                 </div>
@@ -212,23 +212,23 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Calculated Metrics</h3>
             <div className="space-y-1">
-              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+              <div className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                 <span className="text-sm text-muted-foreground">GMV</span>
                 <span className="font-medium text-foreground">{fmt(product.gmv)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+              <div className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                 <span className="text-sm text-muted-foreground">Est. Payout</span>
                 <span className="font-medium text-foreground">{fmt(product.authSales - product.commissionProduct - product.commissionShipping)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+              <div className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                 <span className="text-sm text-muted-foreground">Profit Margin</span>
                 <span className="font-medium text-foreground">{product.profitMargin ? `${product.profitMargin.toFixed(1)}%` : "-"}</span>
               </div>
-              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+              <div className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                 <span className="text-sm text-muted-foreground">COGS / Unit</span>
                 <span className="font-medium text-foreground">{fmt(product.cogs)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+              <div className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                 <span className="text-sm text-muted-foreground">Price</span>
                 <span className="font-medium text-foreground">{fmt(product.price)}</span>
               </div>

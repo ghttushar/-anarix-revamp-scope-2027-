@@ -30,7 +30,7 @@ function KPICard({ label, value, delta, highlight }: KPICardProps) {
     <div
       className={cn(
         "flex flex-col gap-1 rounded-lg border border-border bg-card p-4",
-        highlight && "border-primary/30 bg-primary/5"
+        highlight && "border-primary/30 bg-primary/[0.08]"
       )}
     >
       <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">

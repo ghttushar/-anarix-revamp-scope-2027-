@@ -75,7 +75,7 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
   return (
     <>
       <div className="fixed inset-0 z-40 bg-foreground/25 backdrop-blur-[1px]" onClick={onClose} aria-hidden />
-      <div className="fixed inset-y-0 right-0 z-50 w-[760px] max-w-[94vw] bg-background border-l border-border shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+      <div className="fixed inset-y-0 right-0 z-50 w-[760px] max-w-[94vw] bg-surface border-l border-border shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 px-6 py-4 border-b border-border shrink-0">
           <div className="min-w-0 flex-1">
@@ -163,7 +163,7 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
                           "mt-0.5 h-4 w-4 rounded-full border-2 shrink-0 flex items-center justify-center",
                           it.status === "approved" ? "bg-success border-success" :
                           it.status === "rejected" ? "bg-muted border-border" :
-                          "border-primary/40 bg-primary/5"
+                          "border-primary/40 bg-primary/[0.08]"
                         )}>
                           {it.status === "approved" && <Check className="h-2.5 w-2.5 text-success-foreground" />}
                           {it.status === "rejected" && <X className="h-2.5 w-2.5 text-muted-foreground" />}
@@ -234,7 +234,7 @@ export function MeetingBundleArtifact({ bundle, onClose }: Props) {
         </ScrollArea>
 
         {/* Sticky footer */}
-        <div className="border-t border-border px-6 py-3 flex items-center justify-between gap-2 bg-background shrink-0">
+        <div className="border-t border-border px-6 py-3 flex items-center justify-between gap-2 bg-surface shrink-0">
           <div className="text-2xs text-muted-foreground">You have 30s to undo after either action.</div>
           <div className="flex items-center gap-1.5">
             <Button size="sm" variant="ghost" disabled={pendingCount === 0} onClick={() => rejectAllMeetingItems(bundle.bundleId)} className="h-8 px-3 text-caption text-muted-foreground hover:text-destructive">

@@ -47,7 +47,7 @@ export function NotificationsPanel() {
   const unreadCount = mockNotifications.filter(n => !n.read).length;
 
   return (
-    <div data-app-panel="notifications" className="flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-background">
+    <div data-app-panel="notifications" className="flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-surface">
       <div className="border-b border-border shrink-0">
         <div className="flex items-center justify-between px-3 py-3">
           <div className="flex items-center gap-2">
@@ -74,8 +74,8 @@ export function NotificationsPanel() {
               <div
                 key={notification.id}
                 className={cn(
-                  "rounded-lg p-3 transition-colors hover:bg-muted/50 cursor-pointer",
-                  !notification.read && "bg-primary/5 border border-primary/10"
+                  "rounded-lg p-3 transition-colors hover:bg-muted/70 cursor-pointer",
+                  !notification.read && "bg-primary/[0.08] border border-primary/10"
                 )}
               >
                 <div className="flex items-start gap-2.5">

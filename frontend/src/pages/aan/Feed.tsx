@@ -48,7 +48,7 @@ export default function AanFeedPage() {
             <p className="text-xs text-muted-foreground mt-1">
               A chronological log of everything Aan attended, listened to, detected, recommended, and executed today.
             </p>
-            <div className="mt-2 inline-flex items-center gap-2 text-2xs text-foreground/80 rounded-full bg-primary/5 border border-primary/20 px-3 py-1">
+            <div className="mt-2 inline-flex items-center gap-2 text-2xs text-foreground/80 rounded-full bg-primary/[0.08] border border-primary/20 px-3 py-1">
               <Activity className="h-3 w-3 text-primary" />
               <span>{AAN_PRESENCE_MESSAGES[presenceIndex]}</span>
             </div>

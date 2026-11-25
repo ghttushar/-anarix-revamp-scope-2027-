@@ -50,7 +50,7 @@ export function MatchTypePicker({ value, onChange }: MatchTypePickerProps) {
                 "h-7 w-full rounded-md border text-2xs uppercase tracking-wide font-semibold transition-colors cursor-pointer",
                 state.selected
                   ? "border-primary/40 bg-primary/10 text-primary"
-                  : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                  : "border-border bg-surface text-muted-foreground hover:text-foreground hover:border-foreground/30"
               )}
             >
               {mt}
@@ -60,7 +60,7 @@ export function MatchTypePicker({ value, onChange }: MatchTypePickerProps) {
                 "flex items-center gap-1 h-7 rounded-md border px-1.5 transition-colors",
                 disabled
                   ? "border-border/60 bg-muted/30 opacity-60"
-                  : "border-border bg-background"
+                  : "border-border bg-surface"
               )}
             >
               <span className="text-2xs text-muted-foreground select-none">{symbol}</span>

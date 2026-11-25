@@ -188,7 +188,7 @@ export function CampaignTable({
                   <TableRow
                     className={cn(
                       "group transition-colors",
-                      onRowClick && "cursor-pointer hover:bg-muted/50"
+                      onRowClick && "cursor-pointer hover:bg-muted/70"
                     )}
                     onClick={() => onRowClick?.(campaign.id)}
                   >
@@ -233,7 +233,7 @@ export function CampaignTable({
                           <span className={cn(
                             "rounded-full px-2 py-0.5 text-2xs font-medium border whitespace-nowrap",
                             campaign.type === "auto"
-                              ? "border-primary/30 text-primary bg-primary/5"
+                              ? "border-primary/30 text-primary bg-primary/[0.08]"
                               : "border-border text-muted-foreground bg-muted"
                           )}>
                             {campaign.type === "auto" ? "Auto" : "Manual"}

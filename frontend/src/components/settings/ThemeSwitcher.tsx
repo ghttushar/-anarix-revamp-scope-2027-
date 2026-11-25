@@ -42,8 +42,8 @@ export function ThemeSwitcher() {
           className={cn(
             "group relative flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all",
             theme === option.value
-              ? "border-primary bg-primary/5"
-              : "border-border bg-card hover:border-primary/50 hover:bg-muted/50"
+              ? "border-primary bg-primary/[0.08]"
+              : "border-border bg-card hover:border-primary/50 hover:bg-muted/70"
           )}
         >
           <div

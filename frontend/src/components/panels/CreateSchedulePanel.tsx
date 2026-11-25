@@ -57,7 +57,7 @@ export function CreateSchedulePanel() {
   };
 
   return (
-    <div className="flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-background">
+    <div className="flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-surface">
       <div className="border-b border-border shrink-0">
         <div className="flex items-center justify-between px-3 py-3">
           <h2 className="font-heading text-sm font-semibold text-foreground">Create Day Parting Rule</h2>

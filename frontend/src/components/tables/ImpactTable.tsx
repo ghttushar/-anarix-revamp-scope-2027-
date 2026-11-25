@@ -147,13 +147,13 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
                   data-state={isSelected ? "selected" : undefined}
                   onClick={onRowClick ? () => onRowClick(item.id) : undefined}
                   className={cn(
-                    "group hover:bg-muted/50 transition-colors data-[state=selected]:bg-primary/5",
+                    "group hover:bg-muted/70 transition-colors data-[state=selected]:bg-primary/[0.08]",
                     onRowClick && "cursor-pointer"
                   )}
                 >
                   {!hideSelection && (
                     <TableCell
-                      className="sticky left-0 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors"
+                      className="sticky left-0 z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/[0.08] transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <Checkbox
@@ -163,7 +163,7 @@ export function ImpactTable({ data, searchQuery = "", selectedIds, onSelectionCh
                       />
                     </TableCell>
                   )}
-                  <TableCell className={cn("sticky z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/5 transition-colors", hideSelection ? "left-0" : "left-10")}>
+                  <TableCell className={cn("sticky z-10 bg-card group-hover:bg-muted group-data-[state=selected]:bg-primary/[0.08] transition-colors", hideSelection ? "left-0" : "left-10")}>
                     <span className={cn("font-medium", onRowClick && "text-primary hover:underline")}>{item.name}</span>
                   </TableCell>
                   <TableCell style={ps("impactPercentage")} className={cn("text-center", pc("impactPercentage"))}>

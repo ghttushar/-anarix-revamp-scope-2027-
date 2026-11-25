@@ -75,7 +75,7 @@ export function AanInboxPanel({ standalone = false, focusScenarioId, onlyMorning
       <div
         data-app-panel="aan-inbox"
         className={cn(
-          "flex h-full w-[380px] shrink-0 flex-col bg-background",
+          "flex h-full w-[380px] shrink-0 flex-col bg-surface",
           !standalone && "border-l border-border"
         )}
       >

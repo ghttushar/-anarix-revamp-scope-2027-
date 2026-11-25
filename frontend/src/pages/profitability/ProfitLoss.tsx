@@ -168,7 +168,7 @@ export default function ProfitLoss() {
                     value={productSearch}
                     onChange={(e) => setProductSearch(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full h-8 px-2 text-xs rounded border border-border bg-background outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full h-8 px-2 text-xs rounded border border-border bg-surface outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
                 <div className="max-h-[280px] overflow-y-auto p-1">
@@ -211,7 +211,7 @@ export default function ProfitLoss() {
                     <span className="max-w-[160px] truncate">{p.name}</span>
                     <button
                       onClick={() => toggleProduct(id)}
-                      className="rounded hover:bg-background/60 p-0.5"
+                      className="rounded hover:bg-surface/60 p-0.5"
                       aria-label={`Remove ${p.name}`}
                     >
                       <X className="h-3 w-3" />

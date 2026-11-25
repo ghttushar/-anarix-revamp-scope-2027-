@@ -120,7 +120,7 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
           </TableHeader>
           <TableBody>
             {paginatedTerms.map((term) => (
-              <TableRow key={term.id} className="group cursor-pointer hover:bg-muted/50 transition-colors">
+              <TableRow key={term.id} className="group cursor-pointer hover:bg-muted/70 transition-colors">
                 <TableCell className="sticky left-0 z-10 bg-card group-hover:bg-muted transition-colors">
                   <Checkbox checked={selectedRows.has(term.id)} onCheckedChange={() => toggleRow(term.id)} />
                 </TableCell>
@@ -134,7 +134,7 @@ export function SearchTermsTable({ searchQuery = "", showDeltas = false }: Searc
                     return (
                       <div className="flex items-center gap-2">
                         {ct && (
-                          <Badge variant="outline" className={cn("text-xs", ct === "auto" ? "border-primary/30 bg-primary/5 text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
+                          <Badge variant="outline" className={cn("text-xs", ct === "auto" ? "border-primary/30 bg-primary/[0.08] text-primary" : "border-secondary/30 bg-secondary/5 text-secondary-foreground")}>
                             {ct === "auto" ? "Auto" : "Manual"}
                           </Badge>
                         )}

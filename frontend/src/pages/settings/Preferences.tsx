@@ -114,7 +114,7 @@ function ShortcutRow({ shortcut, customKeys, onEdit, isEditing, onCaptured }: {
       <span className="text-sm text-muted-foreground">{shortcut.description}</span>
       <div className="flex items-center gap-2">
         {isEditing ? (
-          <div ref={captureRef} className="flex items-center gap-1 px-2 py-1 rounded border-2 border-primary bg-primary/5 animate-pulse">
+          <div ref={captureRef} className="flex items-center gap-1 px-2 py-1 rounded border-2 border-primary bg-primary/[0.08] animate-pulse">
             {captured.length > 0 ? captured.map((k, i) => (
               <kbd key={i} className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-mono font-medium">{k}</kbd>
             )) : (
@@ -312,7 +312,7 @@ export default function Preferences() {
             {displayCurrency !== "USD" && (
               <>
                 <Separator />
-                <div className="rounded-md bg-muted/50 p-3 space-y-2">
+                <div className="rounded-md bg-muted/70 p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-foreground font-medium">Current Rate</span>
                     <span className="text-sm font-mono text-foreground">
@@ -467,7 +467,7 @@ export default function Preferences() {
               {ALERT_CATEGORIES.map(({ key, icon: CatIcon, label, description }) => {
                 const enabled = categoryPrefs[key] ?? true;
                 return (
-                  <li key={key} className={cn("rounded-md border p-3 flex items-start gap-3 transition-colors", enabled ? "border-primary/25 bg-primary/[0.02]" : "border-border bg-background")}>
+                  <li key={key} className={cn("rounded-md border p-3 flex items-start gap-3 transition-colors", enabled ? "border-primary/25 bg-primary/[0.02]" : "border-border bg-surface")}>
                     <div className={cn("h-7 w-7 rounded-md flex items-center justify-center shrink-0", enabled ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
                       <CatIcon className="h-3.5 w-3.5" />
                     </div>
@@ -573,7 +573,7 @@ export default function Preferences() {
                     {WORKSPACE_CONNECTORS.map(({ key, icon: WIcon, name }) => {
                       const connected = !!connectedWorkspaces[key];
                       return (
-                        <li key={key} className={cn("rounded-md border p-2.5 flex items-center gap-2.5 transition-colors", connected ? "border-primary/25 bg-primary/[0.02]" : "border-border bg-background")}>
+                        <li key={key} className={cn("rounded-md border p-2.5 flex items-center gap-2.5 transition-colors", connected ? "border-primary/25 bg-primary/[0.02]" : "border-border bg-surface")}>
                           <div className={cn("h-7 w-7 rounded-md flex items-center justify-center shrink-0", connected ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
                             <WIcon className="h-3.5 w-3.5" />
                           </div>

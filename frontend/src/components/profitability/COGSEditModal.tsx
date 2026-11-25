@@ -60,7 +60,7 @@ export function COGSEditModal({ product, isOpen, onClose, onSave }: COGSEditModa
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+          <div className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
             <span className="text-sm text-muted-foreground">Current COGS</span>
             <span className="font-medium text-foreground">{formatCurrency(product.cogs)}</span>
           </div>

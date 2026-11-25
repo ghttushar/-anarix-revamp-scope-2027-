@@ -34,7 +34,7 @@ export function ServiceSelector({ selected, onChange }: Props) {
             className={cn(
               "text-left flex items-start gap-3 p-3 rounded-lg border transition-colors",
               isOn
-                ? "border-primary bg-primary/5"
+                ? "border-primary bg-primary/[0.08]"
                 : "border-border bg-card hover:border-primary/40"
             )}
           >

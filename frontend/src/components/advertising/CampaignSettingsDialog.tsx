@@ -66,7 +66,7 @@ export function CampaignSettingsDialog({ campaign, open, onOpenChange, onSave }:
           <div className="flex items-center gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs">Type of Ad</Label>
-              <Badge variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">{typeLabel}</Badge>
+              <Badge variant="outline" className="text-xs bg-primary/[0.08] text-primary border-primary/20">{typeLabel}</Badge>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Type of Targeting</Label>
@@ -109,21 +109,21 @@ export function CampaignSettingsDialog({ campaign, open, onOpenChange, onSave }:
           <div className="space-y-2">
             <Label className="text-xs">Bidding Strategy</Label>
             <RadioGroup value={biddingStrategy} onValueChange={(v) => setBiddingStrategy(v as BiddingStrategy)} className="space-y-2">
-              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
+              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/70 cursor-pointer transition-colors">
                 <RadioGroupItem value="Dynamic Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — down only</span>
                   <p className="text-2xs text-muted-foreground">Amazon lowers bids when a click is less likely to convert</p>
                 </div>
               </label>
-              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
+              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/70 cursor-pointer transition-colors">
                 <RadioGroupItem value="Dynamic Up/Down" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Dynamic bids — up and down</span>
                   <p className="text-2xs text-muted-foreground">Amazon raises bids for high-convert clicks, lowers for unlikely ones</p>
                 </div>
               </label>
-              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/50 cursor-pointer transition-colors">
+              <label className="flex items-start gap-2 p-2 rounded-md border border-border hover:bg-muted/70 cursor-pointer transition-colors">
                 <RadioGroupItem value="Fixed" className="mt-0.5" />
                 <div>
                   <span className="text-sm font-medium">Fixed bids</span>

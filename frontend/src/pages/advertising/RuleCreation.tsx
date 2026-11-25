@@ -225,7 +225,7 @@ export default function RuleCreation() {
                 <h3 className="font-heading text-sm font-semibold text-foreground">Criteria Information</h3>
 
                 {/* Info banner */}
-                <div className="flex items-start gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2.5">
+                <div className="flex items-start gap-2 rounded-md border border-primary/20 bg-primary/[0.08] px-3 py-2.5">
                   <Info className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Define criteria with conditions and actions. Criteria are evaluated in priority order — the first matching criteria's action will be executed.

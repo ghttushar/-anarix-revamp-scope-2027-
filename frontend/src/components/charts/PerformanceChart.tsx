@@ -147,7 +147,7 @@ export function PerformanceChart({ data, title = "Performance Overview", showImp
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); navigate(`/advertising/impact?date=${encodeURIComponent(label)}`); }}
-          className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-2 py-1 text-2xs font-medium text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+          className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/[0.08] px-2 py-1 text-2xs font-medium text-primary hover:bg-primary/10 transition-colors cursor-pointer"
         >
           <ExternalLink className="h-3 w-3" /> View in Table
         </button>

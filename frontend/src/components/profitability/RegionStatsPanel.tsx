@@ -32,19 +32,19 @@ export function RegionStatsPanel({ region, dateRange }: RegionStatsPanelProps) {
 
       {/* Key Metrics */}
       <div className="mb-4 grid grid-cols-2 gap-3">
-        <div className="rounded-md bg-muted/50 p-3">
+        <div className="rounded-md bg-muted/70 p-3">
           <p className="text-xs text-muted-foreground">Sales</p>
           <p className="text-xl font-semibold text-foreground">{formatCurrency(region.sales)}</p>
         </div>
-        <div className="rounded-md bg-muted/50 p-3">
+        <div className="rounded-md bg-muted/70 p-3">
           <p className="text-xs text-muted-foreground">Units</p>
           <p className="text-xl font-semibold text-foreground">{formatNumber(region.unitsSold)}</p>
         </div>
-        <div className="rounded-md bg-muted/50 p-3">
+        <div className="rounded-md bg-muted/70 p-3">
           <p className="text-xs text-muted-foreground">Orders</p>
           <p className="text-xl font-semibold text-foreground">{formatNumber(region.orders)}</p>
         </div>
-        <div className="rounded-md bg-muted/50 p-3">
+        <div className="rounded-md bg-muted/70 p-3">
           <p className="text-xs text-muted-foreground">Total Expenses</p>
           <p className="text-xl font-semibold text-foreground">{formatCurrency(region.amazonFees)}</p>
         </div>

@@ -75,7 +75,7 @@ export function UploadDialog({ isOpen, onClose, onUpload, accept = ".csv,.xlsx,.
           onClick={() => inputRef.current?.click()}
           className={cn(
             "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 cursor-pointer transition-colors",
-            isDragging ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/50"
+            isDragging ? "border-primary bg-primary/[0.08]" : "border-border hover:border-muted-foreground/50"
           )}
         >
           <Upload className="h-8 w-8 text-muted-foreground mb-2" />
@@ -94,7 +94,7 @@ export function UploadDialog({ isOpen, onClose, onUpload, accept = ".csv,.xlsx,.
         {files.length > 0 && (
           <div className="space-y-1.5 max-h-32 overflow-auto">
             {files.map((file, index) => (
-              <div key={index} className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+              <div key={index} className="flex items-center justify-between rounded-md bg-muted/70 px-3 py-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                   <span className="text-xs text-foreground truncate">{file.name}</span>

@@ -171,7 +171,7 @@ export function McpConnectFlow({ open, onOpenChange }: Props) {
                         onClick={() => setClient(key)}
                         className={cn(
                           "relative rounded-xl border p-4 text-left transition-colors",
-                          selected ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border bg-card hover:border-primary/40"
+                          selected ? "border-primary bg-primary/[0.08] ring-1 ring-primary" : "border-border bg-card hover:border-primary/40"
                         )}
                       >
                         {selected && (
@@ -292,7 +292,7 @@ export function McpConnectFlow({ open, onOpenChange }: Props) {
                     </div>
                   ))}
                 </div>
-                <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 flex gap-3">
+                <div className="rounded-lg border border-primary/20 bg-primary/[0.08] p-4 flex gap-3">
                   <Lightbulb className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Your MCP connection is almost complete</p>

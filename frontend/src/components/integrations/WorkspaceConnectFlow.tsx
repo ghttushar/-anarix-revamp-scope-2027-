@@ -29,7 +29,7 @@ function WorkspaceRow({ app, connected, onConnect, onDisconnect }: {
   };
   return (
     <li className="rounded-xl border border-border bg-card p-4 flex items-center gap-3">
-      <span className="h-10 w-10 rounded-lg bg-muted/60 flex items-center justify-center shrink-0">
+      <span className="h-10 w-10 rounded-lg bg-muted/70 flex items-center justify-center shrink-0">
         <Logo size={22} />
       </span>
       <div className="flex-1 min-w-0">
