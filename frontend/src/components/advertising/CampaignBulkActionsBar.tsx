@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { BarDivider, BarIconButton } from "@/components/bars";
-import { AnxBudget, AnxBudgetTotal, AnxCalendar, AnxPause, AnxPlay, AnxTag, AnxUpload } from "@/components/icons";
+import { AnxBudget, AnxBudgetTotal, AnxCalendar, AnxPause, AnxPlay, AnxStatus, AnxTag, AnxUpload } from "@/components/icons";
 import { TagPopover } from "./TagPopover";
 import { BulkUploadDialog } from "./BulkUploadDialog";
 import { useTags } from "@/contexts/TagsContext";
@@ -42,7 +43,7 @@ const adjust = (current: number, how: Adjustment, n: number) => {
 };
 
 /**
- * Campaign Manager's bulk edits, extracted from the old design's Bulk Actions bar (Active, Pause, Tag, End Date,
+ * Campaign Manager's bulk edits, extracted from the old design's Bulk Actions bar (Set status → Active / Pause, Tag, End Date,
  * Daily Budget, Total Budget, Bulk Edit Upload). In edit mode they replace the table toolbar's view actions.
  * Each acts on the selected rows (dimmed until a row is ticked) except Bulk upload, which works on files.
  */
@@ -53,7 +54,7 @@ export function CampaignBulkActions({ selectedIds, onBulkUpdate }: CampaignBulkA
   const none = count === 0;
   const noun = `${count} campaign${count === 1 ? "" : "s"}`;
 
-  const [open, setOpen] = useState<null | "active" | "pause" | "end" | "daily" | "total">(null);
+  const [open, setOpen] = useState<null | "status" | "end" | "daily" | "total">(null);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [how, setHow] = useState<Adjustment>("set");
   const [amount, setAmount] = useState("");
@@ -76,7 +77,7 @@ export function CampaignBulkActions({ selectedIds, onBulkUpdate }: CampaignBulkA
 
   const applyActive = (isActive: boolean) => {
     onBulkUpdate?.({ isActive, status: isActive ? "live" : "paused" });
-    toast.success(`${isActive ? "Activated" : "Paused"} ${noun}`);
+    toast.success(`${isActive ? "Set active on" : "Paused"} ${noun}`);
     setOpen(null);
   };
 
@@ -135,19 +136,23 @@ export function CampaignBulkActions({ selectedIds, onBulkUpdate }: CampaignBulkA
 
   return (
     <>
-      <Popover {...popover("active")}>
-        <PopoverTrigger asChild>
-          <BarIconButton data-write-action icon={AnxPlay} name="Active" label="Set active" hint={hint} aria-disabled={none} className={dim} />
-        </PopoverTrigger>
-        {panel(`Activate ${noun}?`, null, () => applyActive(true))}
-      </Popover>
-
-      <Popover {...popover("pause")}>
-        <PopoverTrigger asChild>
-          <BarIconButton data-write-action icon={AnxPause} name="Pause" label="Pause" hint={hint} aria-disabled={none} className={dim} />
-        </PopoverTrigger>
-        {panel(`Pause ${noun}?`, null, () => applyActive(false))}
-      </Popover>
+      {/* Active / Pause as one "Set status" menu. */}
+      <DropdownMenu {...popover("status")}>
+        <DropdownMenuTrigger asChild>
+          <BarIconButton data-write-action icon={AnxStatus} name="Set status" label="Set status" hint={hint} aria-disabled={none} className={dim} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-44">
+          <DropdownMenuLabel className="text-2xs font-normal text-muted-foreground">Set status on {noun}</DropdownMenuLabel>
+          <DropdownMenuItem className="gap-2 text-xs" onSelect={() => applyActive(true)}>
+            <AnxPlay className="h-3.5 w-3.5 text-success" />
+            Active
+          </DropdownMenuItem>
+          <DropdownMenuItem className="gap-2 text-xs" onSelect={() => applyActive(false)}>
+            <AnxPause className="h-3.5 w-3.5 text-muted-foreground" />
+            Pause
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {none ? (
         <BarIconButton data-write-action icon={AnxTag} name="Tag" label="Tag" hint={hint} aria-disabled className={dim} />

@@ -426,3 +426,12 @@ export const AnxBudgetTotal = createIcon(
     <path d="M3.25 4.5v3.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75V4.5M3.25 8v3.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75V8" />
   </>,
 );
+
+/** Set status: a toggle switch. */
+export const AnxStatus = createIcon(
+  "AnxStatus",
+  <>
+    <rect x="1.75" y="4.75" width="12.5" height="6.5" rx="3.25" />
+    <circle cx="10.75" cy="8" r="1.6" />
+  </>,
+);
