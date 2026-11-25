@@ -847,7 +847,13 @@ html[data-view="mobile"] [data-island] {
 
 
 /* ---- Pulse tables (components/ui/table.tsx) ----
-   Crosshair hover: the hovered cell's column lights up along with its row; the sorted column is tinted.
+   Column dividers: a hairline on each cell's right edge, softer than the row lines. An inset shadow rather than a
+   border, because with border-collapse a sticky cell's border stays behind while the cell scrolls. */
+.pulse-table :is(th, td):not(:last-child) {
+  box-shadow: inset -1px 0 0 hsl(var(--border) / 0.6);
+}
+
+/* Crosshair hover: the hovered cell's column lights up along with its row; the sorted column is tinted.
    Drawn as a background-image so cells with an opaque background (sticky columns) stay opaque. */
 .pulse-table:has(tbody td:nth-child(1):hover) :is(tbody td:nth-child(1), thead tr:first-child > th:nth-child(1)),
 .pulse-table:has(tbody td:nth-child(2):hover) :is(tbody td:nth-child(2), thead tr:first-child > th:nth-child(2)),
