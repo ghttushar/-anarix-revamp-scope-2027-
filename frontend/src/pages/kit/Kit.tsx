@@ -234,7 +234,7 @@ export default function Kit() {
 
         {/* Icons */}
         <Workspace>
-          <Zone header={<ZoneHeader title="Anarix icons" context="16px grid · 1.7 stroke · round joins (components/icons)" />}>
+          <Zone header={<ZoneHeader title="Anarix icons" context="16px grid · 1.3 stroke · round joins (components/icons)" />}>
             <IconGallery />
           </Zone>
         </Workspace>

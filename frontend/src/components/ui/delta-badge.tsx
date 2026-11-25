@@ -7,8 +7,8 @@ interface DeltaBadgeProps {
 }
 
 /**
- * A period change: a small tinted pill (gain / risk), as on Signals and the product website. 11px is the type
- * scale's floor, so it stays readable while sitting quietly under the value it describes.
+ * A period change: plain small coloured text (gain / risk), no chip, sitting quietly under the value it describes.
+ * 11px is the type scale's floor.
  */
 export function DeltaBadge({ value, className }: DeltaBadgeProps) {
   if (value === 0) return null;
@@ -18,8 +18,8 @@ export function DeltaBadge({ value, className }: DeltaBadgeProps) {
   return (
     <span
       className={cn(
-        "mt-0.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-px text-2xs font-medium leading-tight tabular-nums",
-        isPositive ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive",
+        "mt-0.5 inline-flex items-center gap-0.5 text-2xs font-medium leading-tight tabular-nums",
+        isPositive ? "text-success" : "text-destructive",
         className
       )}
     >

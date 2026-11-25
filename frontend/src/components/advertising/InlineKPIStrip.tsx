@@ -149,13 +149,8 @@ export function InlineKPIStrip({ items, availableMetrics, onMetricChange, varian
               </span>
               <div
                 className={cn(
-                  "flex items-center gap-0.5 text-2xs font-medium shrink-0",
-                  !zone && "rounded-full px-1.5 py-0.5",
-                  isNeutral
-                    ? cn("text-muted-foreground", !zone && "bg-muted")
-                    : isPositive
-                    ? cn("text-success", !zone && "bg-success/10")
-                    : cn("text-destructive", !zone && "bg-destructive/10")
+                  "flex items-center gap-0.5 text-2xs font-medium tabular-nums shrink-0",
+                  isNeutral ? "text-muted-foreground" : isPositive ? "text-success" : "text-destructive"
                 )}
               >
                 {isNeutral ? (

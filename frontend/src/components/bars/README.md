@@ -121,4 +121,4 @@ These are in `components/bars`. Every control in a bar is `h-8` (2rem).
 - **Column headers:** sort hugs the label on its free side, pin sits at the cell's far edge; both appear on hover and
   take no width; an active one stays visible.
 - **Deltas:** `DeltaBadge` is a small tinted pill (11px).
-- **Icons:** draw new icons into `components/icons` (16px grid, 1.7 stroke, round joins) instead of mixing libraries.
+- **Icons:** draw new icons into `components/icons` (16px grid, 1.3 stroke, round joins) instead of mixing libraries.
