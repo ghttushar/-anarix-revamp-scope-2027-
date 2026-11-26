@@ -41,6 +41,7 @@ import ProductAdDetail from "./pages/advertising/ProductAdDetail";
 import RuleAgents from "./pages/advertising/RuleAgents";
 import RuleCreation from "./pages/advertising/RuleCreation";
 import AppliedRules from "./pages/advertising/AppliedRules";
+import RulesHistory from "./pages/advertising/RulesHistory";
 
 // Profitability
 import ProfitabilityDashboard from "./pages/profitability/Dashboard";
@@ -181,6 +182,7 @@ function AppRoutes() {
       <Route path="/advertising/targeting" element={<TargetingActions />} />
       <Route path="/advertising/rules/agents" element={<RuleAgents />} />
       <Route path="/advertising/rules/applied" element={<AppliedRules />} />
+      <Route path="/advertising/rules/history" element={<RulesHistory />} />
       <Route path="/advertising/rules/create" element={<RuleCreation />} />
       <Route path="/advertising/rules/create/:templateId" element={<RuleCreation />} />
       <Route path="/advertising/rules/edit/:ruleId" element={<RuleCreation />} />

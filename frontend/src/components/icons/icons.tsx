@@ -435,3 +435,12 @@ export const AnxStatus = createIcon(
     <circle cx="10.75" cy="8" r="1.6" />
   </>,
 );
+
+/** History: a clock with a counter-clockwise arrow round it. */
+export const AnxHistory = createIcon(
+  "AnxHistory",
+  <>
+    <path d="M2.75 8a5.25 5.25 0 1 0 1.54-3.71M2.75 2.75v2.5h2.5" />
+    <path d="M8 5.25V8l1.9 1.25" />
+  </>,
+);

@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   AnxGlance, AnxSignals, AnxProfitLoss, AnxDashboard, AnxTrends, AnxGeo, AnxAdvertising, AnxCampaignManager,
-  AnxCampaignCreator, AnxImpact, AnxTargeting, AnxRules, AnxRuleAgents, AnxCatalog, AnxAmc, AnxLogs, AnxSchedule,
+  AnxCampaignCreator, AnxImpact, AnxTargeting, AnxRules, AnxRuleAgents, AnxHistory, AnxCatalog, AnxAmc, AnxLogs, AnxSchedule,
   AnxTeam, AnxBi, AnxSearch, AnxDayParting,
   AnxSidebarToggle as PanelLeft, AnxChevronDown as ChevronDown, AnxChevronRight as ChevronRight, AnxSettings as Settings,
   AnxLink as Link, AnxIntegrations as Plug, AnxTeam as Users, AnxBilling as CreditCard, AnxLogs as ScrollText,
@@ -69,6 +69,7 @@ const navigationGroups: NavGroup[] = [{
   items: [
     { title: "Rule Agents", url: "/advertising/rules/agents", icon: AnxRuleAgents },
     { title: "Applied Rules", url: "/advertising/rules/applied", icon: AnxRules },
+    { title: "History", url: "/advertising/rules/history", icon: AnxHistory },
   ]
 }, {
   label: "Catalog",
