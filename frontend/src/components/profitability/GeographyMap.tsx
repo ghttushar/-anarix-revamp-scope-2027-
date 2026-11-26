@@ -181,13 +181,15 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
     <ChartCard
       title="Where the sales land"
       height="lg"
-      className="pf-tone-lilac pf-topwash pf-hero pf-rise h-full"
+      className="pf-rise h-full"
       footer={
           <div className="flex items-center justify-center gap-6 pt-3">
             <div className="flex items-center gap-3">
               <span className="text-2xs text-muted-foreground">Low</span>
               <div className="flex rounded overflow-hidden">
-                <div className="h-2.5 w-24 rounded-full" style={{ backgroundImage: `linear-gradient(90deg, ${brandShade(0)}, ${brandShade(0.5)}, ${brandShade(1)})` }} />
+                <div className="flex gap-0.5">
+                  {[0, 0.5, 1].map((t) => <span key={t} className="h-2.5 w-6 rounded-sm" style={{ backgroundColor: brandShade(t) }} />)}
+                </div>
               </div>
               <span className="text-2xs text-muted-foreground">High</span>
             </div>
@@ -200,7 +202,7 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
     >
       {() => (
           <div
-            className="pf-glow-bg relative h-full overflow-hidden rounded-lg border border-border select-none"
+            className="relative h-full overflow-hidden rounded-lg border border-border bg-card select-none"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}

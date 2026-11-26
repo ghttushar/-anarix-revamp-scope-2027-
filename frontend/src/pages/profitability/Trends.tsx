@@ -101,12 +101,6 @@ export default function ProfitabilityTrends() {
 
   const handleDownload = () => toast.success("Exporting data as CSV...");
 
-  // The largest single period value on this page, for the heat tint.
-  const heatMax = Math.max(
-    0,
-    ...paginatedProducts.flatMap((p) => columns.map((c, idx) => valueForColumn(p, c, idx)))
-  );
-
   return (
     <AppLayout>
       <div className="flex flex-1 h-full min-h-0 min-w-0">
@@ -296,13 +290,12 @@ export default function ProfitabilityTrends() {
                         {columns.map((c, idx) => {
                           const v = valueForColumn(product, c, idx);
                           return (
-                            // a soft lilac heat: the bigger the period, the deeper the tint
-                            <TableCell key={c} className="pf-heat text-right whitespace-nowrap" style={{ ["--pf-heat" as string]: heatMax ? Math.max(0, v) / heatMax : 0 }}>
+                            <TableCell key={c} className="text-right whitespace-nowrap">
                               {formatCurrency(v)}
                             </TableCell>
                           );
                         })}
-                        <TableCell className="pf-tone-mint bg-[color:var(--pf-wash-a)] text-right font-semibold whitespace-nowrap">
+                        <TableCell className="pf-tone-mint text-right font-semibold whitespace-nowrap">
                           <span className="pf-text">{formatCurrency(total)}</span>
                         </TableCell>
                         <TableCell className="text-center">

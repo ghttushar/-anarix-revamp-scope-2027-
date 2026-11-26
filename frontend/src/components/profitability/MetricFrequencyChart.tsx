@@ -171,9 +171,8 @@ export function MetricFrequencyChart({
           </LineChart>
         ) : (
           <AreaChart data={chartData} margin={margin}>
-            {seriesGradients(selectedMetrics.map((m) => ({ id: gradientId("mfc", m), color: colorOf(m) })))}
             {common}
-            {selectedMetrics.map((m, i) => <Area key={m} dataKey={m} {...areaSeries(colorOf(m), gradientId("mfc", m))} {...drawIn(i)} />)}
+            {selectedMetrics.map((m, i) => <Area key={m} dataKey={m} {...areaSeries(colorOf(m), gradientId("mfc", m))} fill={colorOf(m)} fillOpacity={0.12} {...drawIn(i)} />)}
           </AreaChart>
         )}
       </ResponsiveContainer>
@@ -185,7 +184,7 @@ export function MetricFrequencyChart({
       title="How the money moved"
       context={contextLabel}
       height="fill"
-      className="pf-tone-lilac pf-topwash pf-hero pf-rise h-full"
+      className="pf-rise h-full"
       controls={
         <>
           <BarChip

@@ -1,100 +1,41 @@
 /*
-  Profitability "pastel kit": the colour and motion language of Glance (nugget art washes, rise/float/lift),
-  the Campaign Creator (gradient headings, hero strip, pop, shimmer) and Signals (3px selected bar, tinted
-  pills, ping rings, the brand→coral headline), brought across as plain classes for the Profitability pages.
-  Every class is pf-prefixed, so nothing outside the pages that use it changes. Built on the palette ramps
-  in index.css; dark mode swaps pastel fills for low-alpha accents.
+  Profitability kit, calm: white cards, colour only in small marks. Each section has a mood
+  (mint profit, lilac sales, peach costs, rose fees/refunds, sky volume) shown as a dot, a 3px side bar, a 2px
+  column-group line or coloured figures. No gradients anywhere. Motion: rise / stagger / pop / grow / ping / lift.
+  Every class is pf-prefixed, so nothing outside the pages that use it changes.
 */
 
 /* ------------------------------------------------------------------ moods */
 .pf-tone-mint {
   --pf-accent: hsl(var(--positive-500));
   --pf-soft: hsl(var(--positive-150));
-  --pf-wash-a: hsl(var(--positive-50));
-  --pf-wash-b: hsl(162 38% 91%);
 }
 .pf-tone-lilac {
   --pf-accent: hsl(var(--peri-500));
   --pf-soft: hsl(var(--peri-150));
-  --pf-wash-a: hsl(var(--peri-50));
-  --pf-wash-b: hsl(229 76% 93%);
 }
 .pf-tone-peach {
   --pf-accent: hsl(var(--caution-600));
   --pf-soft: hsl(36 90% 88%);
-  --pf-wash-a: hsl(var(--caution-50));
-  --pf-wash-b: hsl(38 85% 92%);
 }
 .pf-tone-rose {
   --pf-accent: hsl(var(--danger-500));
   --pf-soft: hsl(350 72% 90%);
-  --pf-wash-a: hsl(var(--danger-50));
-  --pf-wash-b: hsl(350 75% 94.5%);
 }
 .pf-tone-sky {
   --pf-accent: hsl(var(--info-500));
   --pf-soft: hsl(214 85% 90%);
-  --pf-wash-a: hsl(214 90% 97.5%);
-  --pf-wash-b: hsl(214 85% 93.5%);
 }
 .dark :is(.pf-tone-mint, .pf-tone-lilac, .pf-tone-peach, .pf-tone-rose, .pf-tone-sky) {
   --pf-soft: color-mix(in oklab, var(--pf-accent) 22%, transparent);
-  --pf-wash-a: color-mix(in oklab, var(--pf-accent) 5%, transparent);
-  --pf-wash-b: color-mix(in oklab, var(--pf-accent) 13%, transparent);
 }
 
-/* A Glance art-panel wash (top → bottom), a Signals accent bar, a dot, accent text, a soft fill. */
-.pf-wash { background-image: linear-gradient(180deg, var(--pf-wash-a), var(--pf-wash-b)); }
-.pf-wash-x { background-image: linear-gradient(90deg, var(--pf-wash-b), var(--pf-wash-a) 70%, transparent); }
+/* The marks: a 3px side bar, a dot, accent text, a flat soft fill (chips only), a hairline ring. */
 .pf-bar { box-shadow: inset 3px 0 0 var(--pf-accent); }
 .pf-dot { display: inline-block; width: 7px; height: 7px; flex-shrink: 0; border-radius: 9999px; background: var(--pf-accent); box-shadow: 0 0 0 3px var(--pf-soft); }
 .pf-text { color: var(--pf-accent); }
 .pf-soft { background-color: var(--pf-soft); }
 .pf-ring { box-shadow: 0 0 0 1px color-mix(in oklab, var(--pf-accent) 30%, transparent); }
-
-/* Value heat (Trends period cells): set --pf-heat 0..1 inline. */
-.pf-heat { background-color: color-mix(in oklab, hsl(var(--peri-400)) calc(var(--pf-heat, 0) * 18%), transparent); }
-
-/* -------------------------------------------------------------- headings */
-/* Creator's gradient heading; one word in the Signals brand→coral two-tone. */
-.pf-title {
-  background-image: linear-gradient(100deg, hsl(var(--foreground)) 0%, #232f73 62%, #3f4fda 120%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.dark .pf-title { background-image: linear-gradient(100deg, hsl(var(--foreground)) 0%, hsl(var(--peri-200)) 70%, hsl(var(--peri-300)) 120%); }
-.pf-accent {
-  background-image: linear-gradient(90deg, #3f4fda, #8a5cf0 55%, #fb6972);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.dark .pf-accent { background-image: linear-gradient(90deg, hsl(var(--peri-300)), #b08cff 55%, #ff8a92); }
-
-/* Creator's hero strip: a thin gradient line across the top of a key card. */
-.pf-hero { position: relative; }
-.pf-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  z-index: 1;
-  height: 3px;
-  border-radius: inherit;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  background: linear-gradient(90deg, #5a68df, #3f4fda 45%, #8a5cf0 75%, #fb6972);
-  pointer-events: none;
-}
-
-/* Brand gradient fill (bars, confidence, progress) and the dashed gradient frame of a projected card. */
-.pf-gradient { background-image: linear-gradient(90deg, #919cf2, #5a68df 55%, #3f4fda); }
-.pf-frame-dashed {
-  border: 1.5px dashed transparent !important;
-  background:
-    linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-    linear-gradient(120deg, #919cf2, #3f4fda 55%, #fb6972) border-box;
-}
 
 /* Signals' frosted tile. */
 .pf-glass {
@@ -110,7 +51,6 @@
 @keyframes pf-pop { 0% { opacity: 0; transform: scale(0.4); } 70% { opacity: 1; transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes pf-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes pf-grow-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes pf-sheen { from { transform: translateX(-120%); } to { transform: translateX(320%); } }
 @keyframes pf-ping { 0% { transform: scale(0.6); opacity: 0.55; } 100% { transform: scale(2.4); opacity: 0; } }
 @keyframes pf-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
@@ -131,17 +71,6 @@
   .pf-grow-x { animation: pf-grow-x 900ms cubic-bezier(0.22, 0.8, 0.3, 1) both; transform-origin: left center; }
   .pf-grow-y { animation: pf-grow-y 700ms cubic-bezier(0.22, 0.8, 0.3, 1) both; transform-origin: center bottom; }
   .pf-float { animation: pf-float 4.2s ease-in-out infinite; }
-  /* Creator's sheen: a white light that sweeps across now and then. */
-  .pf-shimmer { position: relative; overflow: hidden; }
-  .pf-shimmer::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    width: 35%;
-    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
-    animation: pf-sheen 2.8s ease-in-out 1s infinite;
-    pointer-events: none;
-  }
   /* Signals' ping rings around a live / selected marker (SVG or HTML). */
   .pf-ping { animation: pf-ping 1.8s cubic-bezier(0.22, 0.8, 0.3, 1) infinite; transform-box: fill-box; transform-origin: center; }
   .pf-ping-late { animation-delay: 0.9s; }
@@ -157,18 +86,11 @@
 .pf-accordion[data-open="true"] { grid-template-rows: 1fr; }
 .pf-accordion > * { min-height: 0; overflow: hidden; }
 
-/* A soft wash fading down from the top of a card (chart cards, panels): Glance's art panel, quieter. */
-.pf-topwash { background-image: linear-gradient(180deg, var(--pf-wash-b) 0, var(--pf-wash-a) 56px, transparent 150px); }
 
 /* Column-group heads: a 2px mood line on top of the header cell (keeps the column divider). */
 .pf-head { box-shadow: inset 0 2px 0 var(--pf-accent), inset -1px 0 0 hsl(var(--border) / 0.6) !important; }
 
-/* An opaque mood fill for table cells (sticky ones stay solid in dark mode too). */
-.pf-fill { background-color: hsl(var(--card)); background-image: linear-gradient(90deg, var(--pf-wash-b), var(--pf-wash-a)); }
-.pf-fill-soft { background-color: hsl(var(--card)); background-image: linear-gradient(var(--pf-wash-a), var(--pf-wash-a)); }
 
-/* A soft brand glow behind a canvas (the map), like the Creator's ad-format art. */
-.pf-glow-bg { background-image: radial-gradient(ellipse at 28% 42%, rgb(63 79 218 / 0.09), transparent 62%), radial-gradient(ellipse at 80% 20%, rgb(251 105 114 / 0.05), transparent 55%); }
 @keyframes pf-fade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
   .pf-fade { animation: pf-fade 600ms ease-out both; animation-delay: calc(var(--pf-i, 0) * 9ms); }

@@ -21,7 +21,7 @@ export function ScatterTooltipCard({ points, tier, x, y, onAskAan, onViewDetails
   const head = points[0];
   return (
     <div
-      className={cn(TIER_TONE[tier], "pf-topwash pointer-events-auto absolute z-30 w-[300px] rounded-lg border border-[color:var(--pf-soft)] bg-popover p-3 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150")}
+      className={cn(TIER_TONE[tier], "pf-bar pointer-events-auto absolute z-30 w-[300px] rounded-lg border border-border bg-popover p-3 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150")}
       style={{ left: x + 14, top: y - 8, transform: y > 220 ? "translateY(-100%)" : undefined }}
       onMouseEnter={onHoverIn}
       onMouseLeave={onHoverOut}

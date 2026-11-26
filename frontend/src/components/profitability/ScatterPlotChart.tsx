@@ -306,33 +306,7 @@ function ScatterCanvas({
           <marker id="arrow-y" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="8" markerHeight="8" orient="auto">
             <path d="M0,10 L5,0 L10,10 z" fill="hsl(var(--muted-foreground))" />
           </marker>
-          <linearGradient id="pf-zero" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#3f4fda" />
-            <stop offset="100%" stopColor="#fb6972" />
-          </linearGradient>
-          {(["loss", "mid", "winner"] as const).map((t) => (
-            <radialGradient key={t} id={`pf-glow-${t}`}>
-              <stop offset="0%" stopColor={tierColor[t]} stopOpacity={0.32} />
-              <stop offset="100%" stopColor={tierColor[t]} stopOpacity={0} />
-            </radialGradient>
-          ))}
         </defs>
-
-        {/* mood bands behind the plot: leaking (< 0%) rose, middle peach, winning (≥ 30%) mint */}
-        {(() => {
-          const clamp = (x: number) => Math.min(PAD.l + plotW, Math.max(PAD.l, x));
-          const bands: { from: number; to: number; tier: "loss" | "mid" | "winner" }[] = [
-            { from: view.xMin, to: 0, tier: "loss" },
-            { from: 0, to: 30, tier: "mid" },
-            { from: 30, to: view.xMax, tier: "winner" },
-          ];
-          return bands.map((b) => {
-            const x1 = clamp(xToPx(b.from));
-            const x2 = clamp(xToPx(b.to));
-            if (x2 - x1 < 1) return null;
-            return <rect key={b.tier} x={x1} y={PAD.t} width={x2 - x1} height={plotH} fill={tierColor[b.tier]} fillOpacity={0.045} />;
-          });
-        })()}
 
         {/* grid */}
         {xTicks.map((t) => (
@@ -357,7 +331,7 @@ function ScatterCanvas({
           <line
             x1={xToPx(0)} x2={xToPx(0)}
             y1={PAD.t} y2={PAD.t + plotH}
-            stroke="url(#pf-zero)" strokeOpacity={0.75} strokeWidth={1.5} strokeDasharray="6 4"
+            stroke="hsl(var(--muted-foreground))" strokeOpacity={0.55} strokeDasharray="6 4"
           />
         )}
 
@@ -422,7 +396,6 @@ function ScatterCanvas({
               onMouseLeave={scheduleHoverClose}
               onClick={(e) => { e.stopPropagation(); handleBubble(c); }}
             >
-              <circle cx={c.cx + PAD.l} cy={c.cy + PAD.t} r={c.r * 2.1} fill={`url(#pf-glow-${c.tier})`} pointerEvents="none" />
               <circle
                 cx={c.cx + PAD.l}
                 cy={c.cy + PAD.t}
@@ -568,7 +541,7 @@ export function ScatterPlotChart({ data, selectedIds, onPointToggle, onPointDeta
   return (
     <ChartCard
       title="Where each product lands"
-      className="pf-tone-mint pf-topwash pf-hero pf-rise"
+      className="pf-rise"
       context={chartView === "scatter" ? "Profit margin vs ad spend" : "Aggregated by quadrant"}
       info="Click a cluster to zoom in; click a dot for the product's details."
       chartType={chartView}

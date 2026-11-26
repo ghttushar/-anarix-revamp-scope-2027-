@@ -110,7 +110,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
       <ScrollArea className="flex-1 min-h-0">
         <div className="space-y-5 p-4">
           {/* Net Profit Hero + Sparkline */}
-          <div className={cn(product.netProfit < 0 ? "pf-tone-rose" : "pf-tone-mint", "pf-wash pf-hero pf-rise overflow-hidden rounded-lg border border-[color:var(--pf-soft)] p-3")}>
+          <div className={cn(product.netProfit < 0 ? "pf-tone-rose" : "pf-tone-mint", "pf-bar pf-rise overflow-hidden rounded-lg border border-border bg-card p-3")}>
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xs text-muted-foreground font-medium">What this product keeps</div>
@@ -125,13 +125,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                 <div className="h-10 w-24">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={sparkData} margin={{ top: 2, right: 0, left: 0, bottom: 2 }}>
-                      <defs>
-                        <linearGradient id="pf-spark" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} stopOpacity={0.35} />
-                          <stop offset="100%" stopColor={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <Area type="monotone" dataKey="value" stroke={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} fill="url(#pf-spark)" strokeWidth={1.75} dot={false} animationDuration={900} />
+                      <Area type="monotone" dataKey="value" stroke={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} fill={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} fillOpacity={0.12} strokeWidth={1.75} dot={false} animationDuration={900} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -166,8 +160,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                       onClick={() => hasChildren && toggleSection(section.id)}
                       className={cn(
                         "pf-bar flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                        hasChildren ? "cursor-pointer hover:bg-[color:var(--pf-wash-a)]" : "cursor-default",
-                        isExpanded && "pf-wash-x"
+                        hasChildren ? "cursor-pointer hover:bg-hover" : "cursor-default"
                       )}
                     >
                       <div className="flex items-center gap-2">
@@ -194,7 +187,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
               })}
 
               {/* Net Profit total row */}
-              <div className={cn(product.netProfit < 0 ? "pf-tone-rose" : "pf-tone-mint", "pf-wash flex items-center justify-between rounded-md px-3 py-2 border border-[color:var(--pf-soft)] mt-2")}>
+              <div className={cn(product.netProfit < 0 ? "pf-tone-rose" : "pf-tone-mint", "pf-bar flex items-center justify-between rounded-md bg-card px-3 py-2 border border-border mt-2")}>
                 <span className="text-sm font-semibold text-foreground">Net Profit</span>
                 <span className={cn("text-sm font-bold", product.netProfit >= 0 ? "text-success" : "text-destructive")}>
                   {fmt(product.netProfit)}

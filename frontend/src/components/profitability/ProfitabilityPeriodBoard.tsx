@@ -138,11 +138,10 @@ function PeriodRow({
     { label: ["Est. Payout"], value: [money(s.estPayout)] },
     { label: [row.forecast ? "Est. Net Profit" : "Net Profit"], value: [money(s.netProfit)], net: true },
   ];
-  // Each period wears its own mood: a pastel wash on the header (Glance's nugget-art wash). The selected one adds the
-  // Signals accent bar and a ring in its mood colour.
+  // Calm: a white card; the period's mood shows only as a dot (and, when selected, a side bar and ring).
   const tone = ROW_TONE[row.key];
-  const headerTone = "pf-wash text-foreground border-b border-[color:var(--pf-soft)]";
-  const hoverTone = "hover:bg-card/70 hover:text-[color:var(--pf-accent)]";
+  const headerTone = "bg-card text-foreground border-b border-border";
+  const hoverTone = "hover:bg-hover hover:text-[color:var(--pf-accent)]";
 
   return (
     <div
@@ -157,7 +156,7 @@ function PeriodRow({
         selected
           ? "border-[color:var(--pf-accent)] shadow-[0_6px_18px_-10px_var(--pf-accent)] before:absolute before:inset-y-0 before:left-0 before:z-[1] before:w-[3px] before:bg-[color:var(--pf-accent)]"
           : "border-border shadow-[0_1px_2px_rgba(16,24,40,0.04)]",
-        row.forecast && "pf-frame-dashed"
+        row.forecast && !selected && "border-dashed border-primary/40"
       )}
     >
       <div className={cn("grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 h-8 text-xs font-semibold transition-colors", headerTone)}>
@@ -192,7 +191,7 @@ function PeriodRow({
       </div>
       <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1.05fr)_minmax(0,1.15fr)_minmax(0,0.85fr)_minmax(0,0.9fr)_minmax(0,0.9fr)] divide-x divide-border">
         {cells.map((c) => (
-          <div key={c.label.join("|")} className={cn("px-1 py-2.5 text-center min-w-0", c.net && "bg-[color:var(--pf-wash-a)]")}>
+          <div key={c.label.join("|")} className="px-1 py-2.5 text-center min-w-0">
             <Pair a={c.label[0]} b={c.label[1]} className="text-2xs text-muted-foreground" />
             <Pair
               a={<Count value={c.value[0].v} format={c.value[0].f} />}
@@ -209,7 +208,7 @@ function PeriodRow({
         <div className="flex items-center gap-2 border-t border-border/60 px-4 py-1.5">
           <span className="text-2xs text-muted-foreground">Confidence</span>
           <div className="h-1.5 flex-1 rounded-full bg-track overflow-hidden">
-            <div className="pf-gradient pf-grow-x pf-shimmer h-full rounded-full" style={{ width: `${FORECAST_CONFIDENCE}%` }} />
+            <div className="pf-grow-x h-full rounded-full bg-primary" style={{ width: `${FORECAST_CONFIDENCE}%` }} />
           </div>
           <span className="text-2xs font-medium text-foreground">{FORECAST_CONFIDENCE}% · {FORECAST_MULTIPLIER}x</span>
         </div>
@@ -269,8 +268,8 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
   ];
 
   return (
-    <div className="pf-hero pf-rise rounded-lg border border-border bg-card overflow-hidden flex flex-col h-full min-h-[320px]">
-      <div className={cn(ROW_TONE[row.key], "pf-wash flex items-center gap-2 border-b border-[color:var(--pf-soft)] px-3 h-11 shrink-0 text-foreground")}>
+    <div className="pf-rise rounded-lg border border-border bg-card overflow-hidden flex flex-col h-full min-h-[320px]">
+      <div className={cn(ROW_TONE[row.key], "pf-bar flex items-center gap-2 border-b border-border px-3 h-11 shrink-0 text-foreground")}>
         <button type="button" onClick={onClose} className="rounded p-1 hover:bg-primary/10 transition-colors" aria-label="Back to chart" title="Back to chart">
           <ChevronsRight className="h-4 w-4" />
         </button>
@@ -290,7 +289,7 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
             <button
               type="button"
               onClick={() => g.children && toggle(g.key)}
-              className={cn("pf-bar flex w-full items-center gap-2 px-3 py-2 text-left transition-colors", g.children ? "hover:bg-[color:var(--pf-wash-a)]" : "cursor-default", open[g.key] && g.children && "pf-wash-x")}
+              className={cn("pf-bar flex w-full items-center gap-2 px-3 py-2 text-left transition-colors", g.children ? "hover:bg-hover" : "cursor-default")}
             >
               <span className="w-3.5 shrink-0 text-muted-foreground">
                 {g.children && <ChevronRight className={cn("h-3.5 w-3.5 transition-transform duration-200", open[g.key] && "rotate-90")} />}
@@ -313,10 +312,10 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
         ))}
       </div>
 
-      <div className="pf-tone-mint pf-wash border-t border-[color:var(--pf-soft)] px-3 py-2 shrink-0">
+      <div className="pf-tone-mint border-t border-border px-3 py-2 shrink-0">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">What's left</p>
         {calculated.map((c, i) => (
-          <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-[color:var(--pf-soft)] first:border-t-0">
+          <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-border/60 first:border-t-0">
             <span className="text-muted-foreground">{c.label}</span>
             <span className={cn("font-semibold tabular-nums", i === 0 ? (s.netProfit < 0 ? "text-destructive" : "text-success") : "text-foreground")}>{c.value}</span>
           </div>

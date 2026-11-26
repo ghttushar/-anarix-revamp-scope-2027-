@@ -88,7 +88,7 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
           style={!top ? { ["--pf-i" as string]: childIndex } : undefined}
           className={cn("group", tone, row.isParent && "font-medium", !top && "pf-rise")}
         >
-          <TableCell className={cn("sticky left-0 z-10 transition-colors", filled ? "pf-fill pf-bar" : "bg-card", !filled && tone && top && "pf-bar")}>
+          <TableCell className={cn("sticky left-0 z-10 transition-colors", filled ? "bg-card pf-bar" : "bg-card", !filled && tone && top && "pf-bar")}>
             <div
               className="flex items-center gap-2"
               style={{ paddingLeft: `${row.indent * 20}px` }}
@@ -108,7 +108,7 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
             </div>
           </TableCell>
           {weeks.map((week) => (
-            <TableCell key={week} className={cn("text-right text-sm", filled && "pf-fill-soft")}>
+            <TableCell key={week} className="text-right text-sm">
               <div className="flex items-center justify-end gap-1">
                 <span className={fig(row.weeklyValues[week])}>{formatValue(row.weeklyValues[week], isCurrency)}</span>
                 {showDeltas && row.weeklyValues[week] !== null && (
@@ -117,7 +117,7 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
               </div>
             </TableCell>
           ))}
-          <TableCell className={cn("text-right font-medium text-sm", filled && "pf-fill-soft")}>
+          <TableCell className="text-right font-medium text-sm">
             <div className="flex items-center justify-end gap-1">
               <span className={cn(fig(row.total), filled && !bottomLine && "pf-text")}>{formatValue(row.total, isCurrency)}</span>
               {showDeltas && row.total !== null && (
@@ -136,7 +136,7 @@ export function PnLParameterTable({ data, weeks, showDeltas = false }: PnLParame
   };
 
   return (
-    <div data-table-frame className="pf-hero rounded-lg border border-border bg-card overflow-hidden">
+    <div data-table-frame className="rounded-lg border border-border bg-card overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>

@@ -26,7 +26,7 @@ export function RegionStatsPanel({ region, dateRange }: RegionStatsPanelProps) {
   const roi = (region.sales / region.amazonFees) * 100;
 
   return (
-    <div className="pf-hero pf-rise h-full rounded-lg border border-border bg-card p-4 flex flex-col">
+    <div className="pf-rise h-full rounded-lg border border-border bg-card p-4 flex flex-col">
       {/* Header */}
       <div className="mb-4 flex items-center gap-3 border-b border-border pb-4">
         <span className="text-3xl">{region.flag}</span>
@@ -38,19 +38,19 @@ export function RegionStatsPanel({ region, dateRange }: RegionStatsPanelProps) {
 
       {/* Key Metrics */}
       <div className="pf-stagger mb-4 grid grid-cols-2 gap-3">
-        <div className="pf-tone-mint pf-wash pf-lift rounded-lg border border-[color:var(--pf-soft)] p-3">
+        <div className="pf-tone-mint pf-bar pf-lift rounded-lg border border-border bg-card p-3">
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className="pf-dot" />Sales</p>
           <p className="mt-1 text-xl font-semibold text-foreground"><Count value={region.sales} format={formatCurrency} /></p>
         </div>
-        <div className="pf-tone-lilac pf-wash pf-lift rounded-lg border border-[color:var(--pf-soft)] p-3">
+        <div className="pf-tone-lilac pf-bar pf-lift rounded-lg border border-border bg-card p-3">
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className="pf-dot" />Units</p>
           <p className="mt-1 text-xl font-semibold text-foreground"><Count value={region.unitsSold} format={(v) => formatNumber(Math.round(v))} /></p>
         </div>
-        <div className="pf-tone-sky pf-wash pf-lift rounded-lg border border-[color:var(--pf-soft)] p-3">
+        <div className="pf-tone-sky pf-bar pf-lift rounded-lg border border-border bg-card p-3">
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className="pf-dot" />Orders</p>
           <p className="mt-1 text-xl font-semibold text-foreground"><Count value={region.orders} format={(v) => formatNumber(Math.round(v))} /></p>
         </div>
-        <div className="pf-tone-rose pf-wash pf-lift rounded-lg border border-[color:var(--pf-soft)] p-3">
+        <div className="pf-tone-rose pf-bar pf-lift rounded-lg border border-border bg-card p-3">
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className="pf-dot" />Total Expenses</p>
           <p className="mt-1 text-xl font-semibold text-foreground"><Count value={region.amazonFees} format={formatCurrency} /></p>
         </div>
