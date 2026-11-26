@@ -101,11 +101,17 @@ export default function ProfitabilityTrends() {
 
   const handleDownload = () => toast.success("Exporting data as CSV...");
 
+  // The largest single period value on this page, for the heat tint.
+  const heatMax = Math.max(
+    0,
+    ...paginatedProducts.flatMap((p) => columns.map((c, idx) => valueForColumn(p, c, idx)))
+  );
+
   return (
     <AppLayout>
       <div className="flex flex-1 h-full min-h-0 min-w-0">
         <div className="flex-1 min-w-0 space-y-6">
-        <PageHeader title="Profitability Trends" subtitle="Analyze product performance quadrants" />
+        <PageHeader title="Profitability" accent="Trends" subtitle="Which products are winning, growing or leaking" />
 
         <AppTaskbar
           showDateRange
@@ -170,7 +176,7 @@ export default function ProfitabilityTrends() {
               const p = profitabilityProducts.find((x) => x.id === id);
               if (!p) return null;
               return (
-                <Badge key={id} variant="secondary" className="gap-1 pr-1 text-2xs">
+                <Badge key={id} variant="secondary" className="pf-tone-lilac pf-soft pf-pop gap-1 border-transparent pr-1 text-2xs text-foreground">
                   <span className="max-w-[160px] truncate">{p.name}</span>
                   <button
                     onClick={() => toggleProduct(id)}
@@ -226,11 +232,11 @@ export default function ProfitabilityTrends() {
                   <TableRow className="bg-card">
                     <TableHead className="sticky left-0 z-20 bg-card min-w-[320px]">Product Details</TableHead>
                     {columns.map((c) => (
-                      <TableHead key={c} className="text-right min-w-[100px] whitespace-nowrap">
+                      <TableHead key={c} className="pf-tone-lilac pf-head text-right min-w-[100px] whitespace-nowrap">
                         {c}
                       </TableHead>
                     ))}
-                    <TableHead className="text-right min-w-[120px] font-semibold whitespace-nowrap">Total</TableHead>
+                    <TableHead className="pf-tone-mint pf-head text-right min-w-[120px] font-semibold whitespace-nowrap">Total</TableHead>
                     <TableHead className="text-center min-w-[90px]">More Info</TableHead>
                   </TableRow>
                   <TableTotalsRow>
@@ -287,13 +293,17 @@ export default function ProfitabilityTrends() {
                             </div>
                           </div>
                         </TableCell>
-                        {columns.map((c, idx) => (
-                          <TableCell key={c} className="text-right whitespace-nowrap">
-                            {formatCurrency(valueForColumn(product, c, idx))}
-                          </TableCell>
-                        ))}
-                        <TableCell className="text-right font-medium whitespace-nowrap">
-                          {formatCurrency(total)}
+                        {columns.map((c, idx) => {
+                          const v = valueForColumn(product, c, idx);
+                          return (
+                            // a soft lilac heat: the bigger the period, the deeper the tint
+                            <TableCell key={c} className="pf-heat text-right whitespace-nowrap" style={{ ["--pf-heat" as string]: heatMax ? Math.max(0, v) / heatMax : 0 }}>
+                              {formatCurrency(v)}
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell className="pf-tone-mint bg-[color:var(--pf-wash-a)] text-right font-semibold whitespace-nowrap">
+                          <span className="pf-text">{formatCurrency(total)}</span>
                         </TableCell>
                         <TableCell className="text-center">
                           <button

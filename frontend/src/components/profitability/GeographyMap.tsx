@@ -145,6 +145,14 @@ const DOT_RADIUS = 2.2;
 const SVG_WIDTH = 520;
 const SVG_HEIGHT = 260;
 
+/** Sales intensity along the brand gradient: soft periwinkle (#919cf2) for low → brand (#3f4fda) for high. */
+function brandShade(t: number, lift = 0) {
+  const k = Math.min(1, Math.max(0, t + lift));
+  return `hsl(${233 + k}, ${79 - k * 12}%, ${76 - k * 21}%)`;
+}
+const OP_MIN = 0.3;
+const OP_MAX = 0.7;
+
 export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapProps) {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -171,18 +179,15 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
 
   return (
     <ChartCard
-      title="Sales by Region"
+      title="Where the sales land"
       height="lg"
-      className="h-full"
+      className="pf-tone-lilac pf-topwash pf-hero pf-rise h-full"
       footer={
           <div className="flex items-center justify-center gap-6 pt-3">
             <div className="flex items-center gap-3">
               <span className="text-2xs text-muted-foreground">Low</span>
               <div className="flex rounded overflow-hidden">
-                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.2)" }} />
-                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.35)" }} />
-                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.5)" }} />
-                <div className="h-3 w-6" style={{ backgroundColor: "hsl(var(--primary) / 0.8)" }} />
+                <div className="h-2.5 w-24 rounded-full" style={{ backgroundImage: `linear-gradient(90deg, ${brandShade(0)}, ${brandShade(0.5)}, ${brandShade(1)})` }} />
               </div>
               <span className="text-2xs text-muted-foreground">High</span>
             </div>
@@ -195,7 +200,7 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
     >
       {() => (
           <div
-            className="relative h-full overflow-hidden rounded-lg bg-muted/5 border border-border select-none"
+            className="pf-glow-bg relative h-full overflow-hidden rounded-lg border border-border select-none"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -222,7 +227,7 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
                 let fill: string;
                 if (isActive) {
                   const op = activeCountryData[country].opacity;
-                  fill = `hsl(var(--primary) / ${isHovered ? Math.min(op + 0.2, 1) : op})`;
+                  fill = brandShade((op - OP_MIN) / (OP_MAX - OP_MIN), isHovered ? 0.25 : 0);
                 } else {
                   fill = "hsl(var(--muted-foreground) / 0.1)";
                 }
@@ -234,10 +239,10 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
                     cy={cy}
                     r={isSelected ? DOT_RADIUS + 0.5 : DOT_RADIUS}
                     fill={fill}
-                    stroke={isSelected ? "hsl(var(--primary))" : "none"}
+                    stroke={isSelected ? "#fb6972" : "none"}
                     strokeWidth={isSelected ? 0.8 : 0}
-                    className="transition-colors duration-150"
-                    style={{ cursor: isActive ? "pointer" : "default" }}
+                    className={isActive ? "pf-fade transition-colors duration-150" : undefined}
+                    style={{ cursor: isActive ? "pointer" : "default", ["--pf-i" as string]: col }}
                     onMouseEnter={() => isActive && setHoveredCountry(country)}
                     onMouseLeave={() => setHoveredCountry(null)}
                     onClick={(e) => {
@@ -263,13 +268,21 @@ export function GeographyMap({ selectedRegion, onRegionSelect }: GeographyMapPro
               return (
                 <div
                   key={code}
-                  className={`absolute rounded-md border bg-popover/95 backdrop-blur-sm px-2.5 py-1.5 shadow-sm transition-all duration-150 ${
-                    selectedRegion === code ? "border-primary ring-1 ring-primary/20" : "border-border"
+                  className={`pf-glass pf-rise absolute rounded-lg px-2.5 py-1.5 transition-all duration-150 ${
+                    selectedRegion === code ? "ring-2 ring-[#fb6972]/40" : ""
                   } ${hoveredCountry === code ? "scale-105" : ""}`}
-                  style={{ left: pos.left, top: pos.top, pointerEvents: "none" }}
+                  style={{ left: pos.left, top: pos.top, pointerEvents: "none", ["--pf-i" as string]: 6 }}
                 >
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3 w-3 text-primary" />
+                    <span className="relative flex h-3 w-3 items-center justify-center">
+                      {selectedRegion === code && (
+                        <>
+                          <span className="pf-ping absolute inset-0 rounded-full bg-[#fb6972]/40" />
+                          <span className="pf-ping pf-ping-late absolute inset-0 rounded-full bg-[#fb6972]/30" />
+                        </>
+                      )}
+                      <MapPin className={`relative h-3 w-3 ${selectedRegion === code ? "text-[#fb6972]" : "text-primary"}`} />
+                    </span>
                     <span className="text-xs font-medium text-foreground">{data.name}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">

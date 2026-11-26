@@ -60,6 +60,12 @@ function ScatterCanvas({
   const [view, setView] = useState({ xMin: -35, xMax: 100, yMin: 0, yMax: 90 });
   const [hover, setHover] = useState<Hover | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  // Bubbles pop in once, on arrival; panning and zooming re-cluster without re-animating.
+  const [arrived, setArrived] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setArrived(true), 1400);
+    return () => window.clearTimeout(t);
+  }, []);
   const dragRef = useRef<{ sx: number; sy: number; view: typeof view; moved: boolean } | null>(null);
   const viewRef = useRef(view);
   useEffect(() => { viewRef.current = view; }, [view]);
@@ -300,7 +306,33 @@ function ScatterCanvas({
           <marker id="arrow-y" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="8" markerHeight="8" orient="auto">
             <path d="M0,10 L5,0 L10,10 z" fill="hsl(var(--muted-foreground))" />
           </marker>
+          <linearGradient id="pf-zero" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3f4fda" />
+            <stop offset="100%" stopColor="#fb6972" />
+          </linearGradient>
+          {(["loss", "mid", "winner"] as const).map((t) => (
+            <radialGradient key={t} id={`pf-glow-${t}`}>
+              <stop offset="0%" stopColor={tierColor[t]} stopOpacity={0.32} />
+              <stop offset="100%" stopColor={tierColor[t]} stopOpacity={0} />
+            </radialGradient>
+          ))}
         </defs>
+
+        {/* mood bands behind the plot: leaking (< 0%) rose, middle peach, winning (≥ 30%) mint */}
+        {(() => {
+          const clamp = (x: number) => Math.min(PAD.l + plotW, Math.max(PAD.l, x));
+          const bands: { from: number; to: number; tier: "loss" | "mid" | "winner" }[] = [
+            { from: view.xMin, to: 0, tier: "loss" },
+            { from: 0, to: 30, tier: "mid" },
+            { from: 30, to: view.xMax, tier: "winner" },
+          ];
+          return bands.map((b) => {
+            const x1 = clamp(xToPx(b.from));
+            const x2 = clamp(xToPx(b.to));
+            if (x2 - x1 < 1) return null;
+            return <rect key={b.tier} x={x1} y={PAD.t} width={x2 - x1} height={plotH} fill={tierColor[b.tier]} fillOpacity={0.045} />;
+          });
+        })()}
 
         {/* grid */}
         {xTicks.map((t) => (
@@ -325,7 +357,7 @@ function ScatterCanvas({
           <line
             x1={xToPx(0)} x2={xToPx(0)}
             y1={PAD.t} y2={PAD.t + plotH}
-            stroke="hsl(var(--muted-foreground))" strokeOpacity={0.5} strokeDasharray="6 4"
+            stroke="url(#pf-zero)" strokeOpacity={0.75} strokeWidth={1.5} strokeDasharray="6 4"
           />
         )}
 
@@ -377,18 +409,20 @@ function ScatterCanvas({
         </text>
 
         {/* bubbles */}
-        {clusters.map((c) => {
+        {clusters.map((c, i) => {
           const selected = selectedIds && c.points.some((p) => selectedIds.includes(p.id));
           const color = tierColor[c.tier];
           return (
             <g
               key={c.key}
               data-bubble
-              style={{ cursor: "pointer" }}
+              className={arrived ? undefined : "pf-pop"}
+              style={{ cursor: "pointer", ["--pf-i" as string]: i }}
               onMouseEnter={() => { cancelHoverClose(); setHover({ cluster: c, x: c.cx + PAD.l, y: c.cy + PAD.t }); }}
               onMouseLeave={scheduleHoverClose}
               onClick={(e) => { e.stopPropagation(); handleBubble(c); }}
             >
+              <circle cx={c.cx + PAD.l} cy={c.cy + PAD.t} r={c.r * 2.1} fill={`url(#pf-glow-${c.tier})`} pointerEvents="none" />
               <circle
                 cx={c.cx + PAD.l}
                 cy={c.cy + PAD.t}
@@ -456,11 +490,12 @@ function niceStep(span: number, target: number) {
   return nice * pow;
 }
 
+/** Quadrants in the Profitability moods: winners mint, grow lilac, optimize peach, review rose. */
 const quadrantColors = {
-  winners: "hsl(var(--positive-500))",
-  grow: "hsl(162, 40%, 62%)",
-  optimize: "hsl(35, 92%, 55%)",
-  review: "hsl(var(--danger-500))",
+  winners: "hsl(162, 52%, 38%)",
+  grow: "hsl(229, 65%, 57%)",
+  optimize: "hsl(33, 80%, 52%)",
+  review: "hsl(350, 58%, 56%)",
 };
 const quadrantLabels = {
   winners: { title: "Winners" },
@@ -532,7 +567,8 @@ export function ScatterPlotChart({ data, selectedIds, onPointToggle, onPointDeta
 
   return (
     <ChartCard
-      title="Product Performance"
+      title="Where each product lands"
+      className="pf-tone-mint pf-topwash pf-hero pf-rise"
       context={chartView === "scatter" ? "Profit margin vs ad spend" : "Aggregated by quadrant"}
       info="Click a cluster to zoom in; click a dot for the product's details."
       chartType={chartView}

@@ -32,6 +32,18 @@ const STATUS_STYLES: Record<string, string> = {
   returned: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
 };
 
+/** Column groups wear the Profitability moods (profit-kit.css): sales lilac, refunds rose, costs peach, profit mint. */
+const COL_TONE: Record<string, string> = {
+  units: "pf-tone-lilac", gmv: "pf-tone-lilac", authSales: "pf-tone-lilac",
+  refundUnits: "pf-tone-rose", cancelledUnits: "pf-tone-rose", refundSales: "pf-tone-rose", cancelledSales: "pf-tone-rose",
+  adSpend: "pf-tone-peach", commissionProduct: "pf-tone-peach", commissionShipping: "pf-tone-peach",
+  wfsFulfillmentFee: "pf-tone-peach", shippingFees: "pf-tone-peach", cogs: "pf-tone-peach", additionalFee: "pf-tone-peach",
+  netProfit: "pf-tone-mint",
+};
+const headTone = (id: string) => (COL_TONE[id] ? cn(COL_TONE[id], "pf-head") : undefined);
+/** Net profit reads as gain or loss; every other figure stays neutral. */
+const figTone = (id: string, v: number) => (id === "netProfit" ? (v < 0 ? "text-destructive font-semibold" : "text-success font-semibold") : "text-foreground");
+
 export function ProductsPnLTable({ products, orders = [], mode = "products", visibleColumns, showDeltas = false, onCogsClick, onTrendsClick, onMoreClick }: ProductsPnLTableProps) {
   const { formatCurrency } = useCurrency();
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
@@ -149,7 +161,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
               <TableRow className="bg-card hover:bg-card">
                 <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[280px] border-r border-border">Product / Category</SortableTableHead>
                 {cols.map((col) => (
-                  <SortableTableHead key={col.id} field={col.id} {...sp} className={cn("text-right", pc(col.id, true))} style={ps(col.id)} align="right">{col.label}</SortableTableHead>
+                  <SortableTableHead key={col.id} field={col.id} {...sp} className={cn("text-right", pc(col.id, true), headTone(col.id))} style={ps(col.id)} align="right">{col.label}</SortableTableHead>
                 ))}
                 <TableHead data-info-col className="text-center w-[80px]">Info</TableHead>
               </TableRow>
@@ -194,7 +206,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                             <ChevronRight className={cn("h-4 w-4 transition-transform duration-200 ease-out", isExpanded && "rotate-90")} />
                           </button>
                           {cat.image && (
-                            <img src={cat.image} alt={cat.key} className="h-9 w-9 rounded-md border border-border object-cover flex-shrink-0" />
+                            <img src={cat.image} alt={cat.key} className={cn("h-9 w-9 rounded-md object-cover flex-shrink-0 ring-2 ring-offset-1 ring-offset-card", ((cat.agg as any).netProfit ?? 0) < 0 ? "ring-[hsl(var(--danger-300))]" : "ring-[hsl(var(--positive-150))]")} />
                           )}
                           <div className="flex flex-col min-w-0">
                             <span className="font-medium text-foreground line-clamp-1">{cat.key}</span>
@@ -211,7 +223,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         return (
                           <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
                             <div className="flex flex-col items-end">
-                              <span className="text-foreground font-medium">
+                              <span className={cn("font-medium", figTone(col.id, val))}>
                                 {col.isUnit ? formatNumber(val) : formatCurrency(val)}
                               </span>
                               {showDeltas && <DeltaBadge value={getDelta(`cat-${cat.key}`, col.id)} />}
@@ -259,7 +271,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                         {cols.map((col) => (
                           <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
                             <div className="flex flex-col items-end">
-                              <span className="text-foreground">{col.getValue(product)}</span>
+                              <span className={figTone(col.id, (product as any)[col.id] ?? 0)}>{col.getValue(product)}</span>
                               {showDeltas && <DeltaBadge value={getDelta(product.id, col.id)} />}
                             </div>
                           </TableCell>
@@ -322,7 +334,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
             <TableRow className="bg-card hover:bg-card">
               <SortableTableHead field="orderId" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[300px] border-r border-border">Order Details</SortableTableHead>
               {cols.map((col) => (
-                <SortableTableHead key={col.id} field={col.id} {...sp} className={cn("text-right", pc(col.id, true))} style={ps(col.id)} align="right">{col.label}</SortableTableHead>
+                <SortableTableHead key={col.id} field={col.id} {...sp} className={cn("text-right", pc(col.id, true), headTone(col.id))} style={ps(col.id)} align="right">{col.label}</SortableTableHead>
               ))}
               <TableHead data-info-col className="text-center w-[80px]">Info</TableHead>
             </TableRow>
@@ -389,7 +401,7 @@ export function ProductsPnLTable({ products, orders = [], mode = "products", vis
                     {cols.map((col) => (
                       <TableCell key={col.id} className={cn("text-right", pc(col.id))} style={ps(col.id)}>
                         <div className="flex flex-col items-end">
-                          <span>{getOrderColumnValue(order, col.id)}</span>
+                          <span className={figTone(col.id, (order as any)[col.id] ?? 0)}>{getOrderColumnValue(order, col.id)}</span>
                           {showDeltas && <DeltaBadge value={getDelta(order.id, col.id)} />}
                         </div>
                       </TableCell>

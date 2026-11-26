@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { format, startOfMonth, endOfMonth, subDays, subMonths, isSameMonth } from "date-fns";
-import { Calendar as CalendarIcon, ChevronDown, ChevronRight, ChevronsDown, ChevronsRight, Sparkles, X } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronRight, ChevronsDown, ChevronsRight, Sparkles, X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -8,6 +8,22 @@ import { cn } from "@/lib/utils";
 import { ProfitabilitySummary, TrendDataPoint } from "@/types/profitability";
 import { MetricFrequencyChart, MetricKey, Frequency } from "./MetricFrequencyChart";
 import { getCountryFlagIcon } from "@legacy/utils";
+import { useCountUp } from "@/hooks/useCountUp";
+
+/** Each period has its own mood (profit-kit.css): a pastel wash on its header and an accent for its marks. */
+const ROW_TONE: Record<RowKey, string> = {
+  today: "pf-tone-lilac",
+  yesterday: "pf-tone-sky",
+  this_month: "pf-tone-mint",
+  last_month: "pf-tone-peach",
+  forecast: "pf-tone-lilac",
+};
+
+/** A figure that counts up to its value when it arrives or changes. */
+function Count({ value, format }: { value: number; format: (v: number) => string }) {
+  const v = useCountUp(value, 700);
+  return <>{format(v)}</>;
+}
 
 /**
  * The Profitability dashboard's first card: one row per period (Today, Yesterday, This Month, Last Month and the
@@ -59,7 +75,7 @@ function projected(s: ProfitabilitySummary): ProfitabilitySummary {
 }
 
 /** "GMV | Auth Sales" style label and value pairs. */
-function Pair({ a, b, className }: { a: string; b?: string; className?: string }) {
+function Pair({ a, b, className }: { a: React.ReactNode; b?: React.ReactNode; className?: string }) {
   return (
     <span className={cn("flex flex-wrap items-baseline justify-center gap-x-1", className)}>
       <span className="whitespace-nowrap">{a}</span>
@@ -99,9 +115,10 @@ function DatePick({ pick, children, hoverTone }: { pick: NonNullable<Row["pick"]
 }
 
 function PeriodRow({
-  row, selected, expanded, onSelect, onViewMore, formatCurrency,
+  row, index, selected, expanded, onSelect, onViewMore, formatCurrency,
 }: {
   row: Row;
+  index: number;
   selected: boolean;
   expanded: boolean;
   onSelect: () => void;
@@ -110,20 +127,22 @@ function PeriodRow({
 }) {
   const s = row.summary;
   const n = (v: number) => (v ? Math.round(v).toLocaleString() : "-");
-  const cells: { label: [string, string?]; value: [string, string?] }[] = [
-    { label: ["GMV", "Auth Sales"], value: [formatCurrency(s.gmv), formatCurrency(s.authSales)] },
-    { label: ["Orders", "Units"], value: [n(s.orders), n(s.units)] },
-    { label: ["Returns", "Cancelled"], value: [n(s.returns), n(s.cancelled)] },
-    { label: ["Ad Cost"], value: [formatCurrency(s.adCost)] },
-    { label: ["Est. Payout"], value: [formatCurrency(s.estPayout)] },
-    { label: [row.forecast ? "Est. Net Profit" : "Net Profit"], value: [formatCurrency(s.netProfit)] },
+  type Fig = { v: number; f: (x: number) => string };
+  const money = (v: number): Fig => ({ v, f: formatCurrency });
+  const count = (v: number): Fig => ({ v, f: n });
+  const cells: { label: [string, string?]; value: [Fig, Fig?]; net?: boolean }[] = [
+    { label: ["GMV", "Auth Sales"], value: [money(s.gmv), money(s.authSales)] },
+    { label: ["Orders", "Units"], value: [count(s.orders), count(s.units)] },
+    { label: ["Returns", "Cancelled"], value: [count(s.returns), count(s.cancelled)] },
+    { label: ["Ad Cost"], value: [money(s.adCost)] },
+    { label: ["Est. Payout"], value: [money(s.estPayout)] },
+    { label: [row.forecast ? "Est. Net Profit" : "Net Profit"], value: [money(s.netProfit)], net: true },
   ];
-  // Calm tones: the selected row is a soft primary tint with an accent bar, not a solid fill; the others keep a white
-  // header on a bordered card so they stand off the page instead of fading into it.
-  const headerTone = selected
-    ? "bg-primary/[0.07] text-primary border-b border-primary/20"
-    : "bg-card text-foreground border-b border-border";
-  const hoverTone = selected ? "hover:bg-primary/10" : "hover:bg-hover hover:text-primary";
+  // Each period wears its own mood: a pastel wash on the header (Glance's nugget-art wash). The selected one adds the
+  // Signals accent bar and a ring in its mood colour.
+  const tone = ROW_TONE[row.key];
+  const headerTone = "pf-wash text-foreground border-b border-[color:var(--pf-soft)]";
+  const hoverTone = "hover:bg-card/70 hover:text-[color:var(--pf-accent)]";
 
   return (
     <div
@@ -131,18 +150,20 @@ function PeriodRow({
       tabIndex={0}
       onClick={onSelect}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onSelect())}
+      style={{ ["--pf-i" as string]: index }}
       className={cn(
-        "relative rounded-lg border bg-card overflow-hidden cursor-pointer transition-[box-shadow,border-color] outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        tone,
+        "pf-rise pf-lift relative rounded-lg border bg-card overflow-hidden cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring",
         selected
-          ? "border-primary/40 shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.18)] before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-primary"
-          : "border-border shadow-[0_1px_2px_rgba(16,24,40,0.04)] hover:border-primary/25 hover:shadow-sm",
-        row.forecast && !selected && "border-dashed"
+          ? "border-[color:var(--pf-accent)] shadow-[0_6px_18px_-10px_var(--pf-accent)] before:absolute before:inset-y-0 before:left-0 before:z-[1] before:w-[3px] before:bg-[color:var(--pf-accent)]"
+          : "border-border shadow-[0_1px_2px_rgba(16,24,40,0.04)]",
+        row.forecast && "pf-frame-dashed"
       )}
     >
       <div className={cn("grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 h-8 text-xs font-semibold transition-colors", headerTone)}>
-        <span className="flex items-center gap-1.5 truncate">
-          {row.forecast && <Sparkles className="h-3 w-3" />}
-          {row.label}
+        <span className="flex items-center gap-2 truncate">
+          {row.forecast ? <Sparkles className="h-3 w-3 pf-text" /> : <span className={cn("pf-dot", selected && "pf-pop")} />}
+          <span className={cn(selected && "pf-text")}>{row.label}</span>
         </span>
         {row.pick ? (
           <DatePick pick={row.pick} hoverTone={hoverTone}>
@@ -171,12 +192,15 @@ function PeriodRow({
       </div>
       <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1.05fr)_minmax(0,1.15fr)_minmax(0,0.85fr)_minmax(0,0.9fr)_minmax(0,0.9fr)] divide-x divide-border">
         {cells.map((c) => (
-          <div key={c.label.join("|")} className="px-1 py-2.5 text-center min-w-0">
+          <div key={c.label.join("|")} className={cn("px-1 py-2.5 text-center min-w-0", c.net && "bg-[color:var(--pf-wash-a)]")}>
             <Pair a={c.label[0]} b={c.label[1]} className="text-2xs text-muted-foreground" />
             <Pair
-              a={c.value[0]}
-              b={c.value[1]}
-              className="mt-1 text-caption font-semibold tabular-nums text-foreground"
+              a={<Count value={c.value[0].v} format={c.value[0].f} />}
+              b={c.value[1] ? <Count value={c.value[1].v} format={c.value[1].f} /> : undefined}
+              className={cn(
+                "mt-1 text-caption font-semibold tabular-nums",
+                c.net ? (c.value[0].v < 0 ? "text-destructive" : "text-success") : "text-foreground"
+              )}
             />
           </div>
         ))}
@@ -184,8 +208,8 @@ function PeriodRow({
       {row.forecast && (
         <div className="flex items-center gap-2 border-t border-border/60 px-4 py-1.5">
           <span className="text-2xs text-muted-foreground">Confidence</span>
-          <div className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
-            <div className="h-full rounded-full bg-primary/60" style={{ width: `${FORECAST_CONFIDENCE}%` }} />
+          <div className="h-1.5 flex-1 rounded-full bg-track overflow-hidden">
+            <div className="pf-gradient pf-grow-x pf-shimmer h-full rounded-full" style={{ width: `${FORECAST_CONFIDENCE}%` }} />
           </div>
           <span className="text-2xs font-medium text-foreground">{FORECAST_CONFIDENCE}% · {FORECAST_MULTIPLIER}x</span>
         </div>
@@ -203,9 +227,9 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
   const n = (v: number) => (v ? Math.round(v).toLocaleString() : "-");
   const otherFees = Math.max(0, b.totalExpenses - s.adCost - b.cogs);
 
-  const groups: { key: string; label: string; value: string; children?: { label: string; value: string }[] }[] = [
+  const groups: { key: string; label: string; value: string; tone: string; children?: { label: string; value: string }[] }[] = [
     {
-      key: "sales", label: "Sales", value: formatCurrency(s.gmv),
+      key: "sales", label: "Sales", tone: "pf-tone-lilac", value: formatCurrency(s.gmv),
       children: [
         { label: "Organic", value: formatCurrency(b.organic) },
         { label: "Sponsored Products", value: formatCurrency(b.sponsoredProducts) },
@@ -214,7 +238,7 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
       ],
     },
     {
-      key: "orders", label: "Orders", value: n(s.orders),
+      key: "orders", label: "Orders", tone: "pf-tone-sky", value: n(s.orders),
       children: [
         { label: "Auth Sales", value: formatCurrency(s.authSales) },
         { label: "Returns", value: n(s.returns) },
@@ -222,15 +246,15 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
       ],
     },
     {
-      key: "units", label: "Total Units", value: n(s.units),
+      key: "units", label: "Total Units", tone: "pf-tone-sky", value: n(s.units),
       children: [
         { label: "Returned units", value: n(s.returns) },
         { label: "Cancelled units", value: n(s.cancelled) },
       ],
     },
-    { key: "cogs", label: "COGS", value: formatCurrency(b.cogs) },
+    { key: "cogs", label: "COGS", tone: "pf-tone-peach", value: formatCurrency(b.cogs) },
     {
-      key: "expenses", label: "Total Expenses", value: formatCurrency(b.totalExpenses),
+      key: "expenses", label: "Total Expenses", tone: "pf-tone-rose", value: formatCurrency(b.totalExpenses),
       children: [
         { label: "Ad Cost", value: formatCurrency(s.adCost) },
         { label: "COGS", value: formatCurrency(b.cogs) },
@@ -245,36 +269,38 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
   ];
 
   return (
-    <div className="rounded-lg border border-border bg-card overflow-hidden flex flex-col h-full min-h-[320px]">
-      <div className="flex items-center gap-2 bg-primary/[0.07] text-primary border-b border-primary/20 px-3 h-10 shrink-0">
+    <div className="pf-hero pf-rise rounded-lg border border-border bg-card overflow-hidden flex flex-col h-full min-h-[320px]">
+      <div className={cn(ROW_TONE[row.key], "pf-wash flex items-center gap-2 border-b border-[color:var(--pf-soft)] px-3 h-11 shrink-0 text-foreground")}>
         <button type="button" onClick={onClose} className="rounded p-1 hover:bg-primary/10 transition-colors" aria-label="Back to chart" title="Back to chart">
           <ChevronsRight className="h-4 w-4" />
         </button>
         <img src={getCountryFlagIcon("US")} alt="" className="h-4 w-6 rounded-[2px] object-cover" />
-        <span className="flex-1 truncate text-sm font-semibold">
-          {row.label} - {row.range}
+        <span className="flex-1 min-w-0">
+          <span className="block truncate text-sm font-semibold">Where every dollar went</span>
+          <span className="block truncate text-2xs text-muted-foreground">{row.label} · {row.range}</span>
         </span>
         <button type="button" onClick={onClose} className="rounded p-1 hover:bg-primary/10 transition-colors" aria-label="Close breakdown">
           <X className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-auto">
+      <div className="pf-stagger flex-1 min-h-0 overflow-auto">
         {groups.map((g) => (
-          <div key={g.key} className="border-b border-border/60">
+          <div key={g.key} className={cn(g.tone, "border-b border-border/60")}>
             <button
               type="button"
               onClick={() => g.children && toggle(g.key)}
-              className={cn("flex w-full items-center gap-2 px-3 py-2 text-left", g.children ? "hover:bg-hover" : "cursor-default", open[g.key] && g.children && "bg-muted/40")}
+              className={cn("pf-bar flex w-full items-center gap-2 px-3 py-2 text-left transition-colors", g.children ? "hover:bg-[color:var(--pf-wash-a)]" : "cursor-default", open[g.key] && g.children && "pf-wash-x")}
             >
               <span className="w-3.5 shrink-0 text-muted-foreground">
-                {g.children && (open[g.key] ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />)}
+                {g.children && <ChevronRight className={cn("h-3.5 w-3.5 transition-transform duration-200", open[g.key] && "rotate-90")} />}
               </span>
+              <span className="pf-dot" />
               <span className="flex-1 text-sm font-medium text-foreground">{g.label}</span>
               <span className="text-sm font-semibold tabular-nums text-foreground">{g.value}</span>
             </button>
             {g.children && open[g.key] && (
-              <div className="pb-1">
+              <div className="pf-stagger pb-1">
                 {g.children.map((c) => (
                   <div key={c.label} className="flex items-center justify-between py-1.5 pl-10 pr-3 text-sm border-t border-border/40 first:border-t-0">
                     <span className="text-foreground">{c.label}</span>
@@ -287,12 +313,12 @@ function PeriodBreakdown({ row, onClose, formatCurrency }: { row: Row; onClose: 
         ))}
       </div>
 
-      <div className="bg-muted/70 border-t border-border px-3 py-2 shrink-0">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Calculated Metrics</p>
-        {calculated.map((c) => (
-          <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-border/60 first:border-t-0">
+      <div className="pf-tone-mint pf-wash border-t border-[color:var(--pf-soft)] px-3 py-2 shrink-0">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">What's left</p>
+        {calculated.map((c, i) => (
+          <div key={c.label} className="flex items-center justify-between py-1 text-xs border-t border-[color:var(--pf-soft)] first:border-t-0">
             <span className="text-muted-foreground">{c.label}</span>
-            <span className="font-semibold tabular-nums text-foreground">{c.value}</span>
+            <span className={cn("font-semibold tabular-nums", i === 0 ? (s.netProfit < 0 ? "text-destructive" : "text-success") : "text-foreground")}>{c.value}</span>
           </div>
         ))}
       </div>
@@ -356,10 +382,11 @@ export function ProfitabilityPeriodBoard({ summaries, trendDataByPeriod, onPerio
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-4 items-stretch">
       <div className="space-y-2.5 min-w-0">
-        {rows.map((r) => (
+        {rows.map((r, i) => (
           <PeriodRow
             key={r.key}
             row={r}
+            index={i}
             selected={selected === r.key}
             expanded={expanded === r.key}
             onSelect={() => select(r.key)}

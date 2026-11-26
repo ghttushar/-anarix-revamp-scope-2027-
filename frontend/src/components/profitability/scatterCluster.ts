@@ -9,9 +9,10 @@ export function tierOf(margin: number): Tier {
 }
 
 export const tierColor: Record<Tier, string> = {
-  loss: "hsl(0, 72%, 58%)",
-  mid: "hsl(35, 92%, 55%)",
-  winner: "hsl(142, 65%, 42%)",
+  // Profitability moods (profit-kit.css): leaking rose, middle peach, winning mint.
+  loss: "hsl(350, 58%, 56%)",
+  mid: "hsl(33, 80%, 52%)",
+  winner: "hsl(162, 52%, 38%)",
 };
 
 export interface ClusterItem {

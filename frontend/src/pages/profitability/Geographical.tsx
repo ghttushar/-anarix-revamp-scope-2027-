@@ -13,7 +13,12 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
+const byId = (id: string) => geographicalData.find((g) => g.id === id);
 const regionLookup: Record<string, typeof geographicalData[0]> = {
+  // The map emits ISO-3 country codes.
+  USA: geographicalData[0],
+  CAN: byId("geo-ca") || geographicalData[0],
+  MEX: byId("geo-mx") || geographicalData[0],
   US: geographicalData[0],
   CA: geographicalData[0].children?.[0] || geographicalData[0],
   TX: geographicalData[0].children?.[1] || geographicalData[0],
@@ -48,7 +53,7 @@ const breadcrumbItems = [
 ];
 export default function Geographical() {
   const { formatCurrency } = useCurrency();
-  const [selectedRegionCode, setSelectedRegionCode] = useState<string>("US");
+  const [selectedRegionCode, setSelectedRegionCode] = useState<string>("USA");
   const [drillRegionId, setDrillRegionId] = useState<string | null>(null);
   const [viewLevel, setViewLevel] = useState<"state" | "product">("state");
   const [searchValue, setSearchValue] = useState("");
@@ -77,8 +82,9 @@ export default function Geographical() {
     <AppLayout>
       <div className="space-y-6">
         <PageHeader
-          title="Geographical Data"
-          subtitle="Regional performance breakdown across markets"
+          title="Geographical"
+          accent="Data"
+          subtitle="Where your shoppers are — and what each market earns"
         />
         <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} />
 

@@ -144,7 +144,7 @@ export default function ProfitLoss() {
     <AppLayout>
       <div className="flex flex-1 h-full min-h-0 min-w-0">
         <div className="flex-1 min-w-0 space-y-6 p-0">
-          <PageHeader title="Profit & Loss" subtitle="Detailed P&L breakdown by period" />
+          <PageHeader title="Profit" accent="& Loss" subtitle="Every line of the story, from first sale to net profit" />
 
           <AppTaskbar
             showDateRange

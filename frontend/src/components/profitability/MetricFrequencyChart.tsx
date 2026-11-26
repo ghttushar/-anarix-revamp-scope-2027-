@@ -29,6 +29,23 @@ export const METRIC_DEFS: { key: MetricKey; label: string; format: "currency" | 
   { key: "cancelled",  label: "Cancelled",    format: "number",   color: METRIC_COLORS.cancelled },
 ];
 
+/** Profitability's mood colours (profit-kit.css): net profit mint, sales lilac, costs peach, fees/ads rose. */
+const PF_COLORS: Record<MetricKey, string> = {
+  gmv: "hsl(229, 65%, 57%)",
+  authSales: "hsl(214, 80%, 58%)",
+  netProfit: "hsl(162, 52%, 38%)",
+  adCost: "hsl(350, 58%, 56%)",
+  cogs: "hsl(33, 80%, 52%)",
+  estPayout: "hsl(262, 52%, 62%)",
+  orders: "hsl(199, 70%, 50%)",
+  units: "hsl(173, 58%, 39%)",
+  returns: "hsl(20, 78%, 55%)",
+  cancelled: "hsl(330, 52%, 58%)",
+};
+const colorOf = (m: MetricKey) => PF_COLORS[m];
+/** Series draw in one after another. */
+const drawIn = (i: number) => ({ isAnimationActive: true, animationDuration: 900, animationBegin: i * 140, animationEasing: "ease-out" as const });
+
 export type Frequency = "daily" | "weekly" | "monthly";
 
 const MAX_METRICS = 4;
@@ -145,18 +162,18 @@ export function MetricFrequencyChart({
         {chartView === "bar" ? (
           <BarChart data={chartData} margin={margin} barGap={2}>
             {common}
-            {selectedMetrics.map((m) => <Bar key={m} dataKey={m} {...barSeries(METRIC_DEFS.find((d) => d.key === m)!.color)} />)}
+            {selectedMetrics.map((m, i) => <Bar key={m} dataKey={m} {...barSeries(colorOf(m))} {...drawIn(i)} />)}
           </BarChart>
         ) : chartView === "line" ? (
           <LineChart data={chartData} margin={margin}>
             {common}
-            {selectedMetrics.map((m) => <Line key={m} dataKey={m} {...lineSeries(METRIC_DEFS.find((d) => d.key === m)!.color)} />)}
+            {selectedMetrics.map((m, i) => <Line key={m} dataKey={m} {...lineSeries(colorOf(m))} {...drawIn(i)} />)}
           </LineChart>
         ) : (
           <AreaChart data={chartData} margin={margin}>
-            {seriesGradients(selectedMetrics.map((m) => ({ id: gradientId("mfc", m), color: METRIC_DEFS.find((d) => d.key === m)!.color })))}
+            {seriesGradients(selectedMetrics.map((m) => ({ id: gradientId("mfc", m), color: colorOf(m) })))}
             {common}
-            {selectedMetrics.map((m) => <Area key={m} dataKey={m} {...areaSeries(METRIC_DEFS.find((d) => d.key === m)!.color, gradientId("mfc", m))} />)}
+            {selectedMetrics.map((m, i) => <Area key={m} dataKey={m} {...areaSeries(colorOf(m), gradientId("mfc", m))} {...drawIn(i)} />)}
           </AreaChart>
         )}
       </ResponsiveContainer>
@@ -165,10 +182,10 @@ export function MetricFrequencyChart({
 
   return (
     <ChartCard
-      title="Performance Trend"
+      title="How the money moved"
       context={contextLabel}
       height="fill"
-      className="h-full"
+      className="pf-tone-lilac pf-topwash pf-hero pf-rise h-full"
       controls={
         <>
           <BarChip
@@ -176,7 +193,7 @@ export function MetricFrequencyChart({
             label="Metrics"
             value={selectedMetrics}
             onChange={(v) => onSelectedMetricsChange(v as MetricKey[])}
-            options={METRIC_DEFS.map((d) => ({ value: d.key, label: d.label, color: d.color }))}
+            options={METRIC_DEFS.map((d) => ({ value: d.key, label: d.label, color: colorOf(d.key) }))}
             max={MAX_METRICS}
             align="end"
           />
@@ -188,7 +205,7 @@ export function MetricFrequencyChart({
       chartTypes={["line", "bar", "area"]}
       legend={selectedMetrics.map((m) => {
         const def = METRIC_DEFS.find((d) => d.key === m)!;
-        return { key: m, label: def.label, color: def.color };
+        return { key: m, label: def.label, color: colorOf(m) };
       })}
     >
       {({ height }) =>

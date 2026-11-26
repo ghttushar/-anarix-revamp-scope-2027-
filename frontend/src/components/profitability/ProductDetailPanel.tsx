@@ -20,6 +20,9 @@ interface PnLSection {
   children?: { label: string; value: number }[];
 }
 
+/** Breakdown sections in the Profitability moods: revenue lilac, cost of goods peach, expenses rose. */
+const SECTION_TONE: Record<string, string> = { revenue: "pf-tone-lilac", cogs: "pf-tone-peach", expenses: "pf-tone-rose" };
+
 export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPanelProps) {
   const { formatCurrency: fmt } = useCurrency();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["revenue"]));
@@ -107,11 +110,11 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
       <ScrollArea className="flex-1 min-h-0">
         <div className="space-y-5 p-4">
           {/* Net Profit Hero + Sparkline */}
-          <div className="rounded-lg border border-primary/20 bg-primary/[0.08] p-3">
+          <div className={cn(product.netProfit < 0 ? "pf-tone-rose" : "pf-tone-mint", "pf-wash pf-hero pf-rise overflow-hidden rounded-lg border border-[color:var(--pf-soft)] p-3")}>
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xs text-muted-foreground font-medium">Net Profit</div>
-                <div className="text-xl font-semibold text-foreground">{fmt(product.netProfit)}</div>
+                <div className="text-2xs text-muted-foreground font-medium">What this product keeps</div>
+                <div className="pf-text text-xl font-semibold">{fmt(product.netProfit)}</div>
                 {product.profitMargin != null && (
                   <div className="text-xs text-muted-foreground mt-0.5">
                     Margin: <span className={cn("font-medium", product.profitMargin > 20 ? "text-success" : "text-destructive")}>{product.profitMargin.toFixed(1)}%</span>
@@ -122,7 +125,13 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                 <div className="h-10 w-24">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={sparkData} margin={{ top: 2, right: 0, left: 0, bottom: 2 }}>
-                      <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.15} strokeWidth={1.5} dot={false} />
+                      <defs>
+                        <linearGradient id="pf-spark" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} stopOpacity={0.35} />
+                          <stop offset="100%" stopColor={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <Area type="monotone" dataKey="value" stroke={product.netProfit < 0 ? "hsl(350, 58%, 56%)" : "hsl(162, 52%, 38%)"} fill="url(#pf-spark)" strokeWidth={1.75} dot={false} animationDuration={900} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -133,7 +142,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
           {/* P&L Breakdown — expandable sections */}
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">P&L Breakdown</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Where the money went</h3>
               <button
                 onClick={() => {
                   const allIds = pnlSections.filter((s) => s.children && s.children.length > 0).map((s) => s.id);
@@ -147,24 +156,23 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
                 {pnlSections.filter((s) => s.children?.length).every((s) => expandedSections.has(s.id)) ? "Collapse all" : "Expand all"}
               </button>
             </div>
-            <div className="space-y-1">
+            <div className="pf-stagger space-y-1">
               {pnlSections.map((section) => {
                 const isExpanded = expandedSections.has(section.id);
                 const hasChildren = section.children && section.children.length > 0;
                 return (
-                  <div key={section.id}>
+                  <div key={section.id} className={SECTION_TONE[section.id] ?? "pf-tone-lilac"}>
                     <button
                       onClick={() => hasChildren && toggleSection(section.id)}
                       className={cn(
-                        "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-                        hasChildren ? "cursor-pointer hover:bg-hover" : "cursor-default",
-                        isExpanded && "bg-muted/30"
+                        "pf-bar flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                        hasChildren ? "cursor-pointer hover:bg-[color:var(--pf-wash-a)]" : "cursor-default",
+                        isExpanded && "pf-wash-x"
                       )}
                     >
                       <div className="flex items-center gap-2">
-                        {hasChildren && (
-                          isExpanded ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />
-                        )}
+                        {hasChildren && <ChevronRight className={cn("h-3 w-3 text-muted-foreground transition-transform duration-200", isExpanded && "rotate-90")} />}
+                        <span className="pf-dot" />
                         <span className="font-medium text-foreground">{section.label}</span>
                       </div>
                       <span className={cn("font-semibold", section.total >= 0 ? "text-success" : "text-destructive")}>
@@ -186,7 +194,7 @@ export function ProductDetailPanel({ product, isOpen, onClose }: ProductDetailPa
               })}
 
               {/* Net Profit total row */}
-              <div className="flex items-center justify-between rounded-md bg-primary/[0.08] px-3 py-2 border border-primary/20 mt-2">
+              <div className={cn(product.netProfit < 0 ? "pf-tone-rose" : "pf-tone-mint", "pf-wash flex items-center justify-between rounded-md px-3 py-2 border border-[color:var(--pf-soft)] mt-2")}>
                 <span className="text-sm font-semibold text-foreground">Net Profit</span>
                 <span className={cn("text-sm font-bold", product.netProfit >= 0 ? "text-success" : "text-destructive")}>
                   {fmt(product.netProfit)}

@@ -139,8 +139,9 @@ export default function ProfitabilityDashboard() {
       <div className="flex flex-1 h-full min-h-0 min-w-0">
         <div className="flex-1 min-w-0 space-y-6 p-0">
           <PageHeader
-            title="Profitability Dashboard"
-            subtitle="Track your profit metrics and financial performance"
+            title="Profitability"
+            accent="Dashboard"
+            subtitle="Where your money came from — and where it went"
           />
           <IntegrationsBanner />
           <AppTaskbar showDateRange showRunButton onRun={() => toast.info("Refreshing data...")} />

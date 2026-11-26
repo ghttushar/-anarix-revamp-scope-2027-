@@ -74,12 +74,12 @@ export function RegionalProductTable({ searchValue = "", showDeltas = false, sor
           <TableHeader>
             <TableRow className="bg-card hover:bg-card">
               <SortableTableHead field="name" {...sp} isFixed className="sticky left-0 z-20 bg-card min-w-[300px] border-r border-border">Product Details</SortableTableHead>
-              <SortableTableHead field="units" {...sp} className={cn("text-right", pc("units", true))} style={ps("units")} align="right">Units</SortableTableHead>
-              <SortableTableHead field="gmv" {...sp} className={cn("text-right", pc("gmv", true))} style={ps("gmv")} align="right">GMV</SortableTableHead>
-              <SortableTableHead field="authSales" {...sp} className={cn("text-right", pc("authSales", true))} style={ps("authSales")} align="right">Auth Sales</SortableTableHead>
-              <SortableTableHead field="adSpend" {...sp} className={cn("text-right", pc("adSpend", true))} style={ps("adSpend")} align="right">Ad Spend</SortableTableHead>
-              <SortableTableHead field="netProfit" {...sp} className={cn("text-right", pc("netProfit", true))} style={ps("netProfit")} align="right">Net Profit</SortableTableHead>
-              <SortableTableHead field="margin" {...sp} className={cn("text-right", pc("margin", true))} style={ps("margin")} align="right">Margin</SortableTableHead>
+              <SortableTableHead field="units" {...sp} className={cn("text-right pf-tone-sky pf-head", pc("units", true))} style={ps("units")} align="right">Units</SortableTableHead>
+              <SortableTableHead field="gmv" {...sp} className={cn("text-right pf-tone-lilac pf-head", pc("gmv", true))} style={ps("gmv")} align="right">GMV</SortableTableHead>
+              <SortableTableHead field="authSales" {...sp} className={cn("text-right pf-tone-lilac pf-head", pc("authSales", true))} style={ps("authSales")} align="right">Auth Sales</SortableTableHead>
+              <SortableTableHead field="adSpend" {...sp} className={cn("text-right pf-tone-peach pf-head", pc("adSpend", true))} style={ps("adSpend")} align="right">Ad Spend</SortableTableHead>
+              <SortableTableHead field="netProfit" {...sp} className={cn("text-right pf-tone-mint pf-head", pc("netProfit", true))} style={ps("netProfit")} align="right">Net Profit</SortableTableHead>
+              <SortableTableHead field="margin" {...sp} className={cn("text-right pf-tone-mint pf-head", pc("margin", true))} style={ps("margin")} align="right">Margin</SortableTableHead>
             </TableRow>
             <TableTotalsRow>
               <TableCell className="sticky left-0 z-10 bg-card border-r border-border">Total ({filtered.length} products)</TableCell>
@@ -87,7 +87,7 @@ export function RegionalProductTable({ searchValue = "", showDeltas = false, sor
               <TableCell className="text-right text-foreground">{formatCurrency(totals.gmv)}</TableCell>
               <TableCell className="text-right text-foreground">{formatCurrency(totals.authSales)}</TableCell>
               <TableCell className="text-right text-foreground">{formatCurrency(totals.adSpend)}</TableCell>
-              <TableCell className="text-right font-medium text-foreground">{formatCurrency(totals.netProfit)}</TableCell>
+              <TableCell className={cn("text-right font-semibold", totals.netProfit < 0 ? "text-destructive" : "text-success")}>{formatCurrency(totals.netProfit)}</TableCell>
               <TableCell className="text-right text-foreground">{totalMargin.toFixed(1)}%</TableCell>
             </TableTotalsRow>
           </TableHeader>
@@ -115,8 +115,8 @@ export function RegionalProductTable({ searchValue = "", showDeltas = false, sor
                   <TableCell style={ps("gmv")} className={cn("text-right text-foreground", pc("gmv"))}>{withDelta(formatCurrency(product.gmv), product.id, "gmv")}</TableCell>
                   <TableCell style={ps("authSales")} className={cn("text-right text-foreground", pc("authSales"))}>{withDelta(formatCurrency(product.authSales), product.id, "authSales")}</TableCell>
                   <TableCell style={ps("adSpend")} className={cn("text-right text-foreground", pc("adSpend"))}>{withDelta(formatCurrency(product.adSpend), product.id, "adSpend")}</TableCell>
-                  <TableCell style={ps("netProfit")} className={cn("text-right font-medium text-foreground", pc("netProfit"))}>{withDelta(formatCurrency(product.netProfit), product.id, "netProfit")}</TableCell>
-                  <TableCell style={ps("margin")} className={cn("text-right text-foreground", pc("margin"))}>{withDelta(`${margin.toFixed(1)}%`, product.id, "margin")}</TableCell>
+                  <TableCell style={ps("netProfit")} className={cn("text-right font-semibold", product.netProfit < 0 ? "text-destructive" : "text-success", pc("netProfit"))}>{withDelta(formatCurrency(product.netProfit), product.id, "netProfit")}</TableCell>
+                  <TableCell style={ps("margin")} className={cn("text-right font-medium", margin < 0 ? "text-destructive" : margin >= 30 ? "text-success" : "text-foreground", pc("margin"))}>{withDelta(`${margin.toFixed(1)}%`, product.id, "margin")}</TableCell>
                 </TableRow>
               );
             })}
